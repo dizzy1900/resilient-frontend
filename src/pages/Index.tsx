@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Sidebar } from '@/components/dashboard/Sidebar';
 import { MapView } from '@/components/dashboard/MapView';
+import { toast } from '@/hooks/use-toast';
 
 const mockMonthlyData = [
   { month: 'Jan', value: 45 },
@@ -25,6 +26,8 @@ const Index = () => {
   const [results, setResults] = useState({
     avoidedLoss: 0,
     riskReduction: 0,
+    yieldBaseline: 0,
+    yieldResilient: 0,
     monthlyData: mockMonthlyData,
   });
 
@@ -33,34 +36,54 @@ const Index = () => {
     setShowResults(false);
   }, []);
 
-  const handleSimulate = useCallback(() => {
+  const handleSimulate = useCallback(async () => {
     if (!markerPosition) return;
     
     setIsSimulating(true);
     setShowResults(false);
     
-    // Simulate API call
-    setTimeout(() => {
-      // Generate mock results based on location and crop
-      const baseValue = cropType === 'maize' ? 2400 : 3200;
-      const locationFactor = Math.abs(markerPosition.lat) / 10;
-      const avoidedLoss = Math.round(baseValue + (locationFactor * 500) + (Math.random() * 800));
-      const riskReduction = Math.round(15 + (Math.random() * 25));
+    try {
+      const response = await fetch('https://primary-production-679e.up.railway.app/webhook/simulate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          lat: markerPosition.lat,
+          lon: markerPosition.lng,
+          crop: cropType,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const data = await response.json();
       
-      // Randomize monthly data slightly
-      const monthlyData = mockMonthlyData.map(d => ({
-        ...d,
-        value: Math.max(20, Math.min(100, d.value + (Math.random() * 20 - 10)))
-      }));
+      // Calculate risk reduction as percentage difference between resilient and baseline
+      const riskReduction = data.yield_baseline > 0 
+        ? Math.round(((data.yield_resilient - data.yield_baseline) / data.yield_baseline) * 100)
+        : 0;
       
       setResults({
-        avoidedLoss,
+        avoidedLoss: Math.round(data.avoided_loss),
         riskReduction,
-        monthlyData,
+        yieldBaseline: data.yield_baseline,
+        yieldResilient: data.yield_resilient,
+        monthlyData: mockMonthlyData,
       });
-      setIsSimulating(false);
       setShowResults(true);
-    }, 1500);
+    } catch (error) {
+      console.error('Simulation failed:', error);
+      toast({
+        title: 'Simulation Failed',
+        description: error instanceof Error ? error.message : 'Unable to connect to the simulation server. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSimulating(false);
+    }
   }, [markerPosition, cropType]);
 
   return (
