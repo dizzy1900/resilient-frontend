@@ -153,15 +153,19 @@ const Index = () => {
       // Handle response - adjust based on actual API response structure
       const result = Array.isArray(responseData) ? responseData[0] : responseData;
       const data = result?.data || result;
+      const analysis = data?.data?.analysis || data?.analysis || data;
       
       // Try multiple possible field paths for slope and storm wave
-      const rawSlope = data?.slope ?? data?.detected_slope ?? data?.terrain?.slope ?? result?.slope ?? null;
-      const rawStormWave = data?.storm_wave ?? data?.stormWave ?? data?.wave_height ?? data?.storm?.wave_height ?? result?.storm_wave ?? null;
+      const rawSlope = analysis?.slope ?? data?.slope ?? data?.detected_slope ?? data?.terrain?.slope ?? result?.slope ?? null;
+      const rawStormWave = analysis?.storm_wave ?? analysis?.stormWave ?? data?.storm_wave ?? data?.stormWave ?? data?.wave_height ?? result?.storm_wave ?? null;
       
-      console.log('Parsed coastal data - slope:', rawSlope, 'stormWave:', rawStormWave, 'avoided_loss:', data?.avoided_loss);
+      // Extract avoided_loss from nested path: data.data.analysis.avoided_loss
+      const rawAvoidedLoss = analysis?.avoided_loss ?? analysis?.avoidedLoss ?? data?.avoided_loss ?? data?.avoidedLoss ?? null;
+      
+      console.log('Parsed coastal data - slope:', rawSlope, 'stormWave:', rawStormWave, 'avoided_loss:', rawAvoidedLoss);
       
       setCoastalResults({
-        avoidedLoss: data?.avoided_loss ?? data?.avoidedLoss ?? Math.round(propertyValue * 0.3),
+        avoidedLoss: rawAvoidedLoss !== null ? Math.round(rawAvoidedLoss) : Math.round(propertyValue * 0.3),
         slope: rawSlope !== null ? Math.round(rawSlope * 10) / 10 : null,
         stormWave: rawStormWave !== null ? Math.round(rawStormWave * 10) / 10 : null,
       });
