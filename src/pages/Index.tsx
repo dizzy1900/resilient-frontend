@@ -159,13 +159,19 @@ const Index = () => {
       const rawSlope = analysis?.slope ?? data?.slope ?? data?.detected_slope ?? data?.terrain?.slope ?? result?.slope ?? null;
       const rawStormWave = analysis?.storm_wave ?? analysis?.stormWave ?? data?.storm_wave ?? data?.stormWave ?? data?.wave_height ?? result?.storm_wave ?? null;
       
-      // Extract avoided_loss from nested path: data.data.analysis.avoided_loss
+      // Extract avoided_loss (backend may return it at multiple paths)
       const rawAvoidedLoss = analysis?.avoided_loss ?? analysis?.avoidedLoss ?? data?.avoided_loss ?? data?.avoidedLoss ?? null;
+      const avoidedLossNumber =
+        typeof rawAvoidedLoss === 'string' ? Number(rawAvoidedLoss) : rawAvoidedLoss;
       
       console.log('Parsed coastal data - slope:', rawSlope, 'stormWave:', rawStormWave, 'avoided_loss:', rawAvoidedLoss);
       
       setCoastalResults({
-        avoidedLoss: rawAvoidedLoss !== null ? Math.round(rawAvoidedLoss) : Math.round(propertyValue * 0.3),
+        // Keep cents precision so small values don't get rounded to $0
+        avoidedLoss:
+          avoidedLossNumber !== null && Number.isFinite(avoidedLossNumber)
+            ? Math.round(avoidedLossNumber * 100) / 100
+            : Math.round(propertyValue * 0.3),
         slope: rawSlope !== null ? Math.round(rawSlope * 10) / 10 : null,
         stormWave: rawStormWave !== null ? Math.round(rawStormWave * 10) / 10 : null,
       });
