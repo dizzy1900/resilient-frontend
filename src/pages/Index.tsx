@@ -147,12 +147,18 @@ const Index = () => {
 
       const responseData = await response.json();
       
+      // Debug log the full response to see actual structure
+      console.log('Coastal API response:', JSON.stringify(responseData, null, 2));
+      
       // Handle response - adjust based on actual API response structure
       const result = Array.isArray(responseData) ? responseData[0] : responseData;
       const data = result?.data || result;
       
-      const rawSlope = data?.slope ?? data?.detected_slope ?? null;
-      const rawStormWave = data?.storm_wave ?? data?.stormWave ?? data?.wave_height ?? null;
+      // Try multiple possible field paths for slope and storm wave
+      const rawSlope = data?.slope ?? data?.detected_slope ?? data?.terrain?.slope ?? result?.slope ?? null;
+      const rawStormWave = data?.storm_wave ?? data?.stormWave ?? data?.wave_height ?? data?.storm?.wave_height ?? result?.storm_wave ?? null;
+      
+      console.log('Parsed coastal data - slope:', rawSlope, 'stormWave:', rawStormWave, 'avoided_loss:', data?.avoided_loss);
       
       setCoastalResults({
         avoidedLoss: data?.avoided_loss ?? data?.avoidedLoss ?? Math.round(propertyValue * 0.3),
