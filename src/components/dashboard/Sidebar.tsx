@@ -108,8 +108,15 @@ export const Sidebar = ({
             <MangroveSlider
               value={mangroveWidth}
               onChange={onMangroveWidthChange}
-              onChangeEnd={onMangroveWidthChangeEnd}
+              onChangeEnd={() => {}} // No auto-trigger, use button instead
               disabled={!canSimulate}
+            />
+            
+            <SimulateButton 
+              onClick={() => onMangroveWidthChangeEnd(mangroveWidth)} 
+              isLoading={isCoastalSimulating}
+              disabled={!canSimulate}
+              label="Simulate Protection"
             />
             
             <CoastalResultsCard

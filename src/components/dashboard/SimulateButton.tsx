@@ -5,9 +5,10 @@ interface SimulateButtonProps {
   onClick: () => void;
   isLoading?: boolean;
   disabled?: boolean;
+  label?: string;
 }
 
-export const SimulateButton = ({ onClick, isLoading, disabled }: SimulateButtonProps) => {
+export const SimulateButton = ({ onClick, isLoading, disabled, label = 'Simulate Resilience' }: SimulateButtonProps) => {
   return (
     <Button
       onClick={onClick}
@@ -22,7 +23,7 @@ export const SimulateButton = ({ onClick, isLoading, disabled }: SimulateButtonP
       ) : (
         <>
           <Zap className="w-5 h-5 mr-2" />
-          Simulate Resilience
+          {label}
         </>
       )}
     </Button>
