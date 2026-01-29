@@ -3,10 +3,12 @@ import { ModeSelector, DashboardMode } from './ModeSelector';
 import { CropSelector } from './CropSelector';
 import { MangroveSlider } from './MangroveSlider';
 import { PropertyValueInput } from './PropertyValueInput';
+import { SpongeCityToolkit } from './SpongeCityToolkit';
 import { SimulateButton } from './SimulateButton';
 import { CoordinatesDisplay } from './CoordinatesDisplay';
 import { ResultsCard } from './ResultsCard';
 import { CoastalResultsCard } from './CoastalResultsCard';
+import { FloodResultsCard } from './FloodResultsCard';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
@@ -21,6 +23,21 @@ interface SidebarProps {
   onMangroveWidthChangeEnd: (value: number) => void;
   propertyValue: number;
   onPropertyValueChange: (value: number) => void;
+  // Flood mode props
+  buildingValue: number;
+  onBuildingValueChange: (value: number) => void;
+  greenRoofsEnabled: boolean;
+  onGreenRoofsChange: (enabled: boolean) => void;
+  permeablePavementEnabled: boolean;
+  onPermeablePavementChange: (enabled: boolean) => void;
+  onFloodSimulate: () => void;
+  isFloodSimulating: boolean;
+  showFloodResults: boolean;
+  floodResults: {
+    floodDepthReduction: number;
+    valueProtected: number;
+  };
+  // Common props
   latitude: number | null;
   longitude: number | null;
   onSimulate: () => void;
@@ -33,8 +50,8 @@ interface SidebarProps {
   };
   coastalResults: {
     avoidedLoss: number;
-    slope: number;
-    stormWave: number;
+    slope: number | null;
+    stormWave: number | null;
   };
   showCoastalResults: boolean;
   isCoastalSimulating: boolean;
@@ -52,6 +69,16 @@ export const Sidebar = ({
   onMangroveWidthChangeEnd,
   propertyValue,
   onPropertyValueChange,
+  buildingValue,
+  onBuildingValueChange,
+  greenRoofsEnabled,
+  onGreenRoofsChange,
+  permeablePavementEnabled,
+  onPermeablePavementChange,
+  onFloodSimulate,
+  isFloodSimulating,
+  showFloodResults,
+  floodResults,
   latitude,
   longitude,
   onSimulate,
@@ -109,12 +136,12 @@ export const Sidebar = ({
               monthlyData={results.monthlyData}
             />
           </>
-        ) : (
+        ) : mode === 'coastal' ? (
           <>
             <MangroveSlider
               value={mangroveWidth}
               onChange={onMangroveWidthChange}
-              onChangeEnd={() => {}} // No auto-trigger, use button instead
+              onChangeEnd={() => {}}
               disabled={!canSimulate}
             />
             
@@ -138,6 +165,34 @@ export const Sidebar = ({
               slope={coastalResults.slope}
               stormWave={coastalResults.stormWave}
               mangroveWidth={mangroveWidth}
+            />
+          </>
+        ) : (
+          <>
+            <SpongeCityToolkit
+              buildingValue={buildingValue}
+              onBuildingValueChange={onBuildingValueChange}
+              greenRoofsEnabled={greenRoofsEnabled}
+              onGreenRoofsChange={onGreenRoofsChange}
+              permeablePavementEnabled={permeablePavementEnabled}
+              onPermeablePavementChange={onPermeablePavementChange}
+              disabled={!canSimulate}
+            />
+            
+            <SimulateButton 
+              onClick={onFloodSimulate} 
+              isLoading={isFloodSimulating}
+              disabled={!canSimulate}
+              label="Simulate Flood Risk"
+            />
+            
+            <FloodResultsCard
+              visible={showFloodResults}
+              isLoading={isFloodSimulating}
+              floodDepthReduction={floodResults.floodDepthReduction}
+              valueProtected={floodResults.valueProtected}
+              greenRoofsEnabled={greenRoofsEnabled}
+              permeablePavementEnabled={permeablePavementEnabled}
             />
           </>
         )}

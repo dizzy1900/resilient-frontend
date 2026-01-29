@@ -21,19 +21,25 @@ const mockMonthlyData = [
   { month: "Dec", value: 35 },
 ];
 
-// Coastal simulation endpoint (n8n webhook)
+// API Endpoints
 const COASTAL_API_URL = "https://web-production-8ff9e.up.railway.app/predict-coastal";
+const FLOOD_API_URL = "https://primary-production-679e.up.railway.app/webhook/flood-simulate";
 
 const Index = () => {
   const [mode, setMode] = useState<DashboardMode>("agriculture");
   const [cropType, setCropType] = useState("maize");
   const [mangroveWidth, setMangroveWidth] = useState(100);
   const [propertyValue, setPropertyValue] = useState(500000);
+  const [buildingValue, setBuildingValue] = useState(750000);
+  const [greenRoofsEnabled, setGreenRoofsEnabled] = useState(false);
+  const [permeablePavementEnabled, setPermeablePavementEnabled] = useState(false);
   const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [isCoastalSimulating, setIsCoastalSimulating] = useState(false);
+  const [isFloodSimulating, setIsFloodSimulating] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [showCoastalResults, setShowCoastalResults] = useState(false);
+  const [showFloodResults, setShowFloodResults] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [results, setResults] = useState({
@@ -54,13 +60,20 @@ const Index = () => {
     stormWave: null,
   });
 
+  const [floodResults, setFloodResults] = useState({
+    floodDepthReduction: 0,
+    valueProtected: 0,
+  });
+
   // Determine map style based on mode
-  const mapStyle: MapStyle = mode === "coastal" ? "satellite" : "dark";
+  const mapStyle: MapStyle = mode === "coastal" ? "satellite" : mode === "flood" ? "flood" : "dark";
+  const showFloodOverlay = mode === "flood" && markerPosition !== null;
 
   const handleLocationSelect = useCallback((lat: number, lng: number) => {
     setMarkerPosition({ lat, lng });
     setShowResults(false);
     setShowCoastalResults(false);
+    setShowFloodResults(false);
   }, []);
 
   const handleSimulate = useCallback(async () => {
@@ -88,7 +101,6 @@ const Index = () => {
 
       const responseData = await response.json();
 
-      // API returns an array with nested data structure
       const result = Array.isArray(responseData) ? responseData[0] : responseData;
       const analysis = result?.data?.analysis;
       const predictions = result?.data?.predictions;
@@ -147,11 +159,8 @@ const Index = () => {
         }
 
         const responseData = await response.json();
-
-        // Debug log the full response to see actual structure
         console.log("Coastal API response:", JSON.stringify(responseData, null, 2));
 
-        // Railway API returns clean structure with flat fields
         const data = responseData.data;
         const rawSlope = data.slope;
         const rawStormWave = data.storm_wave;
@@ -167,7 +176,6 @@ const Index = () => {
         );
 
         setCoastalResults({
-          // Keep cents precision so small values don't get rounded to $0
           avoidedLoss:
             rawAvoidedLoss !== null && Number.isFinite(rawAvoidedLoss)
               ? Math.round(rawAvoidedLoss * 100) / 100
@@ -178,7 +186,6 @@ const Index = () => {
         setShowCoastalResults(true);
       } catch (error) {
         console.error("Coastal simulation failed:", error);
-        // On API error, use a fallback calculation for demo purposes
         setCoastalResults({
           avoidedLoss: Math.round(propertyValue * (width / 500) * 0.5),
           slope: null,
@@ -197,6 +204,85 @@ const Index = () => {
     [markerPosition, propertyValue],
   );
 
+  const handleFloodSimulate = useCallback(async () => {
+    if (!markerPosition) return;
+
+    setIsFloodSimulating(true);
+
+    try {
+      const response = await fetch(FLOOD_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          lat: markerPosition.lat,
+          lon: markerPosition.lng,
+          building_value: buildingValue,
+          green_roofs: greenRoofsEnabled,
+          permeable_pavement: permeablePavementEnabled,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      console.log("Flood API response:", JSON.stringify(responseData, null, 2));
+
+      const data = responseData.data || responseData;
+      const floodDepthReduction = data.flood_depth_reduction ?? data.floodDepthReduction ?? 0;
+      const valueProtected = data.value_protected ?? data.valueProtected ?? 0;
+
+      setFloodResults({
+        floodDepthReduction: Math.round(floodDepthReduction * 10) / 10,
+        valueProtected: Math.round(valueProtected * 100) / 100,
+      });
+      setShowFloodResults(true);
+    } catch (error) {
+      console.error("Flood simulation failed:", error);
+      // Fallback calculation for demo
+      const baseReduction = greenRoofsEnabled ? 8 : 0;
+      const pavementReduction = permeablePavementEnabled ? 4 : 0;
+      const totalReduction = baseReduction + pavementReduction;
+      const protectedValue = buildingValue * (totalReduction / 100);
+
+      setFloodResults({
+        floodDepthReduction: totalReduction,
+        valueProtected: Math.round(protectedValue),
+      });
+      setShowFloodResults(true);
+      toast({
+        title: "Using Estimated Values",
+        description: "Could not reach the flood simulation API. Showing estimated values.",
+        variant: "default",
+      });
+    } finally {
+      setIsFloodSimulating(false);
+    }
+  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled]);
+
+  // Trigger flood simulation when toggles change
+  const handleGreenRoofsChange = useCallback((enabled: boolean) => {
+    setGreenRoofsEnabled(enabled);
+    if (markerPosition) {
+      // Trigger simulation after state updates
+      setTimeout(() => {
+        handleFloodSimulate();
+      }, 100);
+    }
+  }, [markerPosition, handleFloodSimulate]);
+
+  const handlePermeablePavementChange = useCallback((enabled: boolean) => {
+    setPermeablePavementEnabled(enabled);
+    if (markerPosition) {
+      setTimeout(() => {
+        handleFloodSimulate();
+      }, 100);
+    }
+  }, [markerPosition, handleFloodSimulate]);
+
   const handleMangroveWidthChange = useCallback((value: number) => {
     setMangroveWidth(value);
   }, []);
@@ -212,9 +298,9 @@ const Index = () => {
 
   const handleModeChange = useCallback((newMode: DashboardMode) => {
     setMode(newMode);
-    // Reset results when switching modes
     setShowResults(false);
     setShowCoastalResults(false);
+    setShowFloodResults(false);
   }, []);
 
   return (
@@ -237,7 +323,7 @@ const Index = () => {
         />
       )}
 
-      {/* Sidebar - transforms to drawer on mobile */}
+      {/* Sidebar */}
       <div
         className={`
         fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out
@@ -255,6 +341,16 @@ const Index = () => {
           onMangroveWidthChangeEnd={handleMangroveWidthChangeEnd}
           propertyValue={propertyValue}
           onPropertyValueChange={setPropertyValue}
+          buildingValue={buildingValue}
+          onBuildingValueChange={setBuildingValue}
+          greenRoofsEnabled={greenRoofsEnabled}
+          onGreenRoofsChange={handleGreenRoofsChange}
+          permeablePavementEnabled={permeablePavementEnabled}
+          onPermeablePavementChange={handlePermeablePavementChange}
+          onFloodSimulate={handleFloodSimulate}
+          isFloodSimulating={isFloodSimulating}
+          showFloodResults={showFloodResults}
+          floodResults={floodResults}
           latitude={markerPosition?.lat ?? null}
           longitude={markerPosition?.lng ?? null}
           onSimulate={handleSimulate}
@@ -270,7 +366,12 @@ const Index = () => {
       </div>
 
       <main className="flex-1 relative">
-        <MapView onLocationSelect={handleLocationSelect} markerPosition={markerPosition} mapStyle={mapStyle} />
+        <MapView 
+          onLocationSelect={handleLocationSelect} 
+          markerPosition={markerPosition} 
+          mapStyle={mapStyle}
+          showFloodOverlay={showFloodOverlay}
+        />
       </main>
     </div>
   );

@@ -3,21 +3,23 @@ import { MapPin, Map as MapIcon, AlertCircle } from 'lucide-react';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGF2aWRpemkiLCJhIjoiY21rd2dzeHN6MDFoYzNkcXYxOHZ0YXRuNCJ9.P_g5wstTHNzglNEQfHIoBg';
 
-export type MapStyle = 'dark' | 'satellite';
+export type MapStyle = 'dark' | 'satellite' | 'flood';
 
 const MAP_STYLES: Record<MapStyle, string> = {
   dark: 'mapbox://styles/mapbox/dark-v11',
   satellite: 'mapbox://styles/mapbox/satellite-v9',
+  flood: 'mapbox://styles/mapbox/dark-v11',
 };
 
 interface MapViewProps {
   onLocationSelect: (lat: number, lng: number) => void;
   markerPosition: { lat: number; lng: number } | null;
   mapStyle?: MapStyle;
+  showFloodOverlay?: boolean;
 }
 
 // Lazy load the map to prevent SSR issues
-const LazyMap = ({ onLocationSelect, markerPosition, mapStyle = 'dark' }: MapViewProps) => {
+const LazyMap = ({ onLocationSelect, markerPosition, mapStyle = 'dark', showFloodOverlay = false }: MapViewProps) => {
   const [MapComponents, setMapComponents] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [viewState, setViewState] = useState({
@@ -103,14 +105,37 @@ const LazyMap = ({ onLocationSelect, markerPosition, mapStyle = 'dark' }: MapVie
           </div>
         </Marker>
       )}
+
+      {/* Flood risk heatmap overlay */}
+      {showFloodOverlay && markerPosition && (
+        <Marker
+          longitude={markerPosition.lng}
+          latitude={markerPosition.lat}
+          anchor="center"
+        >
+          <div 
+            className="rounded-full pointer-events-none"
+            style={{
+              width: '300px',
+              height: '300px',
+              background: 'radial-gradient(circle, rgba(59, 130, 246, 0.5) 0%, rgba(59, 130, 246, 0.3) 40%, rgba(59, 130, 246, 0.1) 70%, transparent 100%)',
+            }}
+          />
+        </Marker>
+      )}
     </Map>
   );
 };
 
-export const MapView = ({ onLocationSelect, markerPosition, mapStyle = 'dark' }: MapViewProps) => {
+export const MapView = ({ onLocationSelect, markerPosition, mapStyle = 'dark', showFloodOverlay = false }: MapViewProps) => {
   return (
     <div className="relative w-full h-full">
-      <LazyMap onLocationSelect={onLocationSelect} markerPosition={markerPosition} mapStyle={mapStyle} />
+      <LazyMap 
+        onLocationSelect={onLocationSelect} 
+        markerPosition={markerPosition} 
+        mapStyle={mapStyle}
+        showFloodOverlay={showFloodOverlay}
+      />
       
       {/* Map overlay gradient */}
       <div className="absolute inset-0 pointer-events-none">
