@@ -23,7 +23,7 @@ const mockMonthlyData = [
 
 // API Endpoints
 const COASTAL_API_URL = "https://web-production-8ff9e.up.railway.app/predict-coastal";
-const FLOOD_API_URL = "https://primary-production-679e.up.railway.app/webhook/flood-simulate";
+const FLOOD_API_URL = "https://web-production-8ff9e.up.railway.app/predict-flood";
 
 const Index = () => {
   const [mode, setMode] = useState<DashboardMode>("agriculture");
@@ -204,44 +204,68 @@ const Index = () => {
     [markerPosition, propertyValue],
   );
 
+  const getInterventionType = useCallback(() => {
+    if (greenRoofsEnabled && permeablePavementEnabled) {
+      return "combined";
+    } else if (greenRoofsEnabled) {
+      return "green_roof";
+    } else if (permeablePavementEnabled) {
+      return "permeable_pavement";
+    }
+    return "none";
+  }, [greenRoofsEnabled, permeablePavementEnabled]);
+
   const handleFloodSimulate = useCallback(async () => {
     if (!markerPosition) return;
 
     setIsFloodSimulating(true);
 
     try {
+      const payload = {
+        rain_intensity: 100,
+        current_imperviousness: 0.7,
+        intervention_type: getInterventionType(),
+        slope_pct: 2.0,
+      };
+
+      console.log("🚀 Flood simulation - Sending to:", FLOOD_API_URL);
+      console.log("📦 Payload:", payload);
+
       const response = await fetch(FLOOD_API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          lat: markerPosition.lat,
-          lon: markerPosition.lng,
-          building_value: buildingValue,
-          green_roofs: greenRoofsEnabled,
-          permeable_pavement: permeablePavementEnabled,
-        }),
+        body: JSON.stringify(payload),
       });
 
+      console.log("📥 Response status:", response.status);
+
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`API error: ${response.status} - ${errorText}`);
       }
 
       const responseData = await response.json();
-      console.log("Flood API response:", JSON.stringify(responseData, null, 2));
+      console.log("✅ Flood API response:", JSON.stringify(responseData, null, 2));
 
-      const data = responseData.data || responseData;
-      const floodDepthReduction = data.flood_depth_reduction ?? data.floodDepthReduction ?? 0;
-      const valueProtected = data.value_protected ?? data.valueProtected ?? 0;
+      // Extract values using the correct response path
+      const analysis = responseData.data?.analysis || responseData.analysis || responseData;
+      const avoidedLoss = analysis.avoided_loss ?? 0;
+      const floodDepthReduction = analysis.avoided_depth_cm ?? 0;
+      const percentageImprovement = analysis.percentage_improvement ?? 0;
+
+      console.log("💰 Avoided Loss:", avoidedLoss);
+      console.log("📏 Depth Reduction:", floodDepthReduction, "cm");
+      console.log("📈 Improvement:", percentageImprovement, "%");
 
       setFloodResults({
         floodDepthReduction: Math.round(floodDepthReduction * 10) / 10,
-        valueProtected: Math.round(valueProtected * 100) / 100,
+        valueProtected: Math.round(avoidedLoss * 100) / 100,
       });
       setShowFloodResults(true);
     } catch (error) {
-      console.error("Flood simulation failed:", error);
+      console.error("❌ Flood simulation failed:", error);
       // Fallback calculation for demo
       const baseReduction = greenRoofsEnabled ? 8 : 0;
       const pavementReduction = permeablePavementEnabled ? 4 : 0;
@@ -261,7 +285,7 @@ const Index = () => {
     } finally {
       setIsFloodSimulating(false);
     }
-  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled]);
+  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled, getInterventionType]);
 
   // Trigger flood simulation when toggles change
   const handleGreenRoofsChange = useCallback((enabled: boolean) => {
