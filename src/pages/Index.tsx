@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { MapView, MapStyle } from "@/components/dashboard/MapView";
 import { DashboardMode } from "@/components/dashboard/ModeSelector";
+import { TimelinePlayer } from "@/components/TimelinePlayer";
 import { toast } from "@/hooks/use-toast";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,9 @@ const Index = () => {
   const [showCoastalResults, setShowCoastalResults] = useState(false);
   const [showFloodResults, setShowFloodResults] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const [selectedYear, setSelectedYear] = useState(2026);
+  const [isTimelinePlaying, setIsTimelinePlaying] = useState(false);
 
   const [results, setResults] = useState({
     avoidedLoss: 0,
@@ -364,6 +368,8 @@ const Index = () => {
     setShowResults(false);
     setShowCoastalResults(false);
     setShowFloodResults(false);
+    setSelectedYear(2026);
+    setIsTimelinePlaying(false);
   }, []);
 
   return (
@@ -429,11 +435,17 @@ const Index = () => {
       </div>
 
       <main className="flex-1 relative">
-        <MapView 
-          onLocationSelect={handleLocationSelect} 
-          markerPosition={markerPosition} 
+        <MapView
+          onLocationSelect={handleLocationSelect}
+          markerPosition={markerPosition}
           mapStyle={mapStyle}
           showFloodOverlay={showFloodOverlay}
+        />
+        <TimelinePlayer
+          selectedYear={selectedYear}
+          onYearChange={setSelectedYear}
+          isPlaying={isTimelinePlaying}
+          onPlayToggle={() => setIsTimelinePlaying((prev) => !prev)}
         />
       </main>
     </div>
