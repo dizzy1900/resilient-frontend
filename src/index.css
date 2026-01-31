@@ -13,6 +13,11 @@
     --primary-risk: 24 100% 58%; /* Coral #ff832b */
     --accent: 262 97% 62%; /* Purple #8a3ffc */
     
+    /* Mode-specific action colors */
+    --mode-agriculture: 179 100% 31%; /* Teal - matches safe */
+    --mode-coastal: 179 100% 31%; /* Teal - coastal protection */
+    --mode-flood: 217 91% 60%; /* Blue #3b82f6 - water/flood */
+    
     /* Dark slate theme */
     --background: 240 33% 14%; /* Dark Slate #1a1a2e */
     --foreground: 0 0% 100%; /* White */

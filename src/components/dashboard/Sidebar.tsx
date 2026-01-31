@@ -126,6 +126,7 @@ export const Sidebar = ({
               onClick={onSimulate} 
               isLoading={isSimulating}
               disabled={!canSimulate}
+              mode="agriculture"
             />
             
             <ResultsCard 
@@ -156,6 +157,7 @@ export const Sidebar = ({
               isLoading={isCoastalSimulating}
               disabled={!canSimulate}
               label="Simulate Protection"
+              mode="coastal"
             />
             
             <CoastalResultsCard
@@ -184,6 +186,7 @@ export const Sidebar = ({
               isLoading={isFloodSimulating}
               disabled={!canSimulate}
               label="Simulate Flood Risk"
+              mode="flood"
             />
             
             <FloodResultsCard

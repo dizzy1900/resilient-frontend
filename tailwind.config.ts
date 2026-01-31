@@ -62,6 +62,11 @@ export default {
         },
         safe: "hsl(var(--primary-safe))",
         risk: "hsl(var(--primary-risk))",
+        mode: {
+          agriculture: "hsl(var(--mode-agriculture))",
+          coastal: "hsl(var(--mode-coastal))",
+          flood: "hsl(var(--mode-flood))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

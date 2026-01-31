@@ -1,4 +1,4 @@
-import { MapPin, Navigation } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface CoordinatesDisplayProps {
   latitude: number | null;
@@ -8,34 +8,23 @@ interface CoordinatesDisplayProps {
 export const CoordinatesDisplay = ({ latitude, longitude }: CoordinatesDisplayProps) => {
   const hasCoordinates = latitude !== null && longitude !== null;
 
-  return (
-    <div className="glass-panel p-4 space-y-3">
-      <div className="flex items-center gap-2">
-        <MapPin className="w-4 h-4 text-accent" />
-        <span className="text-sm font-medium text-muted-foreground">Selected Coordinates</span>
+  if (!hasCoordinates) {
+    return (
+      <div className="flex items-center gap-2 text-muted-foreground text-xs px-1">
+        <MapPin className="w-3.5 h-3.5" />
+        <span>Click map to select location</span>
       </div>
-      
-      {hasCoordinates ? (
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-secondary/50 rounded-lg p-3">
-            <span className="text-xs text-muted-foreground block mb-1">Latitude</span>
-            <span className="text-lg font-semibold text-white tabular-nums">
-              {latitude?.toFixed(6)}
-            </span>
-          </div>
-          <div className="bg-secondary/50 rounded-lg p-3">
-            <span className="text-xs text-muted-foreground block mb-1">Longitude</span>
-            <span className="text-lg font-semibold text-white tabular-nums">
-              {longitude?.toFixed(6)}
-            </span>
-          </div>
-        </div>
-      ) : (
-        <div className="flex items-center gap-3 text-muted-foreground bg-secondary/30 rounded-lg p-4">
-          <Navigation className="w-5 h-5" />
-          <span className="text-sm">Click on the map to select a location</span>
-        </div>
-      )}
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-3 text-xs px-1">
+      <MapPin className="w-3.5 h-3.5 text-safe" />
+      <div className="flex items-center gap-2 font-mono text-muted-foreground">
+        <span>{latitude?.toFixed(4)}°</span>
+        <span className="text-border">|</span>
+        <span>{longitude?.toFixed(4)}°</span>
+      </div>
     </div>
   );
 };
