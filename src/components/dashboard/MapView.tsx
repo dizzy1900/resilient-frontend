@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect } from 'react';
-import { MapPin, Map as MapIcon, AlertCircle } from 'lucide-react';
+import { MapPin, Map as MapIcon, CircleAlert as AlertCircle } from 'lucide-react';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGF2aWRpemkiLCJhIjoiY21rd2dzeHN6MDFoYzNkcXYxOHZ0YXRuNCJ9.P_g5wstTHNzglNEQfHIoBg';
 
