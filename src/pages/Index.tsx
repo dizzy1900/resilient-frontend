@@ -1,34 +1,35 @@
-import { useState, useCallback } from "react";
-import { Sidebar } from "@/components/dashboard/Sidebar";
-import { MapView, MapStyle, ViewState } from "@/components/dashboard/MapView";
-import { DashboardMode } from "@/components/dashboard/ModeSelector";
-import { TimelinePlayer } from "@/components/TimelinePlayer";
-import { toast } from "@/hooks/use-toast";
-import { Menu, Columns2, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useCallback } from 'react';
+import { MapView, MapStyle, ViewState } from '@/components/dashboard/MapView';
+import { DashboardMode } from '@/components/dashboard/ModeSelector';
+import { TimelinePlayer } from '@/components/TimelinePlayer';
+import { FloatingControlPanel } from '@/components/hud/FloatingControlPanel';
+import { SimulationPanel } from '@/components/hud/SimulationPanel';
+import { ResultsPanel } from '@/components/hud/ResultsPanel';
+import { toast } from '@/hooks/use-toast';
+import { Columns2, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const mockMonthlyData = [
-  { month: "Jan", value: 45 },
-  { month: "Feb", value: 52 },
-  { month: "Mar", value: 78 },
-  { month: "Apr", value: 85 },
-  { month: "May", value: 92 },
-  { month: "Jun", value: 88 },
-  { month: "Jul", value: 65 },
-  { month: "Aug", value: 55 },
-  { month: "Sep", value: 48 },
-  { month: "Oct", value: 42 },
-  { month: "Nov", value: 38 },
-  { month: "Dec", value: 35 },
+  { month: 'Jan', value: 45 },
+  { month: 'Feb', value: 52 },
+  { month: 'Mar', value: 78 },
+  { month: 'Apr', value: 85 },
+  { month: 'May', value: 92 },
+  { month: 'Jun', value: 88 },
+  { month: 'Jul', value: 65 },
+  { month: 'Aug', value: 55 },
+  { month: 'Sep', value: 48 },
+  { month: 'Oct', value: 42 },
+  { month: 'Nov', value: 38 },
+  { month: 'Dec', value: 35 },
 ];
 
-// API Endpoints
-const COASTAL_API_URL = "https://web-production-8ff9e.up.railway.app/predict-coastal";
-const FLOOD_API_URL = "https://web-production-8ff9e.up.railway.app/predict-flood";
+const COASTAL_API_URL = 'https://web-production-8ff9e.up.railway.app/predict-coastal';
+const FLOOD_API_URL = 'https://web-production-8ff9e.up.railway.app/predict-flood';
 
 const Index = () => {
-  const [mode, setMode] = useState<DashboardMode>("agriculture");
-  const [cropType, setCropType] = useState("maize");
+  const [mode, setMode] = useState<DashboardMode>('agriculture');
+  const [cropType, setCropType] = useState('maize');
   const [mangroveWidth, setMangroveWidth] = useState(100);
   const [propertyValue, setPropertyValue] = useState(500000);
   const [buildingValue, setBuildingValue] = useState(750000);
@@ -41,7 +42,6 @@ const Index = () => {
   const [showResults, setShowResults] = useState(false);
   const [showCoastalResults, setShowCoastalResults] = useState(false);
   const [showFloodResults, setShowFloodResults] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSplitMode, setIsSplitMode] = useState(false);
   const [viewState, setViewState] = useState<ViewState>({
     longitude: 37.9062,
@@ -77,9 +77,9 @@ const Index = () => {
     valueProtected: 0,
   });
 
-  // Determine map style based on mode
-  const mapStyle: MapStyle = mode === "coastal" ? "satellite" : mode === "flood" ? "flood" : "dark";
-  const showFloodOverlay = mode === "flood" && markerPosition !== null;
+  const mapStyle: MapStyle = mode === 'coastal' ? 'satellite' : mode === 'flood' ? 'flood' : 'dark';
+  const showFloodOverlay = mode === 'flood' && markerPosition !== null;
+  const canSimulate = markerPosition !== null;
 
   const handleLocationSelect = useCallback((lat: number, lng: number) => {
     setMarkerPosition({ lat, lng });
@@ -95,30 +95,32 @@ const Index = () => {
     setShowResults(false);
 
     try {
-      const response = await fetch("https://primary-production-679e.up.railway.app/webhook/simulate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          lat: markerPosition.lat,
-          lon: markerPosition.lng,
-          crop: cropType,
-        }),
-      });
+      const response = await fetch(
+        'https://primary-production-679e.up.railway.app/webhook/simulate',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            lat: markerPosition.lat,
+            lon: markerPosition.lng,
+            crop: cropType,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
 
       const responseData = await response.json();
-
       const result = Array.isArray(responseData) ? responseData[0] : responseData;
       const analysis = result?.data?.analysis;
       const predictions = result?.data?.predictions;
 
       if (!analysis || !predictions) {
-        throw new Error("Invalid response format from simulation API");
+        throw new Error('Invalid response format from simulation API');
       }
 
       const yieldBaseline = predictions.standard_seed?.predicted_yield ?? 0;
@@ -135,12 +137,14 @@ const Index = () => {
       });
       setShowResults(true);
     } catch (error) {
-      console.error("Simulation failed:", error);
+      console.error('Simulation failed:', error);
       toast({
-        title: "Simulation Failed",
+        title: 'Simulation Failed',
         description:
-          error instanceof Error ? error.message : "Unable to connect to the simulation server. Please try again.",
-        variant: "destructive",
+          error instanceof Error
+            ? error.message
+            : 'Unable to connect to the simulation server. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsSimulating(false);
@@ -155,9 +159,9 @@ const Index = () => {
 
       try {
         const response = await fetch(COASTAL_API_URL, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             lat: markerPosition.lat,
@@ -171,21 +175,10 @@ const Index = () => {
         }
 
         const responseData = await response.json();
-        console.log("Coastal API response:", JSON.stringify(responseData, null, 2));
-
         const data = responseData.data;
         const rawSlope = data.slope;
         const rawStormWave = data.storm_wave;
         const rawAvoidedLoss = data.avoided_loss;
-
-        console.log(
-          "Parsed coastal data - slope:",
-          rawSlope,
-          "stormWave:",
-          rawStormWave,
-          "avoided_loss:",
-          rawAvoidedLoss,
-        );
 
         setCoastalResults({
           avoidedLoss:
@@ -197,7 +190,7 @@ const Index = () => {
         });
         setShowCoastalResults(true);
       } catch (error) {
-        console.error("Coastal simulation failed:", error);
+        console.error('Coastal simulation failed:', error);
         setCoastalResults({
           avoidedLoss: Math.round(propertyValue * (width / 500) * 0.5),
           slope: null,
@@ -205,63 +198,46 @@ const Index = () => {
         });
         setShowCoastalResults(true);
         toast({
-          title: "Using Estimated Values",
-          description: "Could not reach the coastal simulation API. Showing estimated values.",
-          variant: "default",
+          title: 'Using Estimated Values',
+          description: 'Could not reach the coastal simulation API. Showing estimated values.',
+          variant: 'default',
         });
       } finally {
         setIsCoastalSimulating(false);
       }
     },
-    [markerPosition, propertyValue],
+    [markerPosition, propertyValue]
   );
 
   const getInterventionType = useCallback(() => {
-    // Derive a toolkit list from our current UI toggles so we can reuse
-    // the backend team's robust string-matching logic.
     const selectedToolkits: string[] = [
-      ...(greenRoofsEnabled ? ["Install Green Roofs"] : []),
-      ...(permeablePavementEnabled ? ["Permeable Pavement"] : []),
+      ...(greenRoofsEnabled ? ['Install Green Roofs'] : []),
+      ...(permeablePavementEnabled ? ['Permeable Pavement'] : []),
     ];
 
-    // Check what's actually in selectedToolkits
-    console.log("🔍 Selected toolkits:", selectedToolkits);
-
     if (!selectedToolkits || selectedToolkits.length === 0) {
-      console.log("⚠️ No toolkit selected, using green_roof as default");
-      return "green_roof";
+      return 'green_roof';
     }
 
-    // Convert to lowercase for comparison
     const toolkitsLower = selectedToolkits.map((t) => t.toLowerCase());
 
-    // Check for green roofs
-    if (toolkitsLower.some((t) => t.includes("green") && t.includes("roof"))) {
-      console.log("✅ Using: green_roof");
-      return "green_roof";
+    if (toolkitsLower.some((t) => t.includes('green') && t.includes('roof'))) {
+      return 'green_roof';
     }
 
-    // Check for permeable pavement
-    if (toolkitsLower.some((t) => t.includes("permeable") || t.includes("pavement"))) {
-      console.log("✅ Using: permeable_pavement");
-      return "permeable_pavement";
+    if (toolkitsLower.some((t) => t.includes('permeable') || t.includes('pavement'))) {
+      return 'permeable_pavement';
     }
 
-    // Check for bioswales
-    if (toolkitsLower.some((t) => t.includes("bioswale"))) {
-      console.log("✅ Using: bioswales");
-      return "bioswales";
+    if (toolkitsLower.some((t) => t.includes('bioswale'))) {
+      return 'bioswales';
     }
 
-    // Check for rain gardens
-    if (toolkitsLower.some((t) => t.includes("rain") && t.includes("garden"))) {
-      console.log("✅ Using: rain_gardens");
-      return "rain_gardens";
+    if (toolkitsLower.some((t) => t.includes('rain') && t.includes('garden'))) {
+      return 'rain_gardens';
     }
 
-    // Default to green_roof if nothing matches
-    console.log("⚠️ No match found, defaulting to green_roof");
-    return "green_roof";
+    return 'green_roof';
   }, [greenRoofsEnabled, permeablePavementEnabled]);
 
   const handleFloodSimulate = useCallback(async () => {
@@ -279,18 +255,13 @@ const Index = () => {
         slope_pct: 2.0,
       };
 
-      console.log("🚀 Flood simulation - Sending to:", FLOOD_API_URL);
-      console.log("📦 Payload:", payload);
-
       const response = await fetch(FLOOD_API_URL, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
-
-      console.log("📥 Response status:", response.status);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -298,17 +269,9 @@ const Index = () => {
       }
 
       const responseData = await response.json();
-      console.log("✅ Flood API response:", JSON.stringify(responseData, null, 2));
-
-      // Extract values using the correct response path
       const analysis = responseData.data?.analysis || responseData.analysis || responseData;
       const avoidedLoss = analysis.avoided_loss ?? 0;
       const floodDepthReduction = analysis.avoided_depth_cm ?? 0;
-      const percentageImprovement = analysis.percentage_improvement ?? 0;
-
-      console.log("💰 Avoided Loss:", avoidedLoss);
-      console.log("📏 Depth Reduction:", floodDepthReduction, "cm");
-      console.log("📈 Improvement:", percentageImprovement, "%");
 
       setFloodResults({
         floodDepthReduction: Math.round(floodDepthReduction * 10) / 10,
@@ -316,8 +279,7 @@ const Index = () => {
       });
       setShowFloodResults(true);
     } catch (error) {
-      console.error("❌ Flood simulation failed:", error);
-      // Fallback calculation for demo
+      console.error('Flood simulation failed:', error);
       const baseReduction = greenRoofsEnabled ? 8 : 0;
       const pavementReduction = permeablePavementEnabled ? 4 : 0;
       const totalReduction = baseReduction + pavementReduction;
@@ -329,34 +291,38 @@ const Index = () => {
       });
       setShowFloodResults(true);
       toast({
-        title: "Using Estimated Values",
-        description: "Could not reach the flood simulation API. Showing estimated values.",
-        variant: "default",
+        title: 'Using Estimated Values',
+        description: 'Could not reach the flood simulation API. Showing estimated values.',
+        variant: 'default',
       });
     } finally {
       setIsFloodSimulating(false);
     }
   }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled, getInterventionType]);
 
-  // Trigger flood simulation when toggles change
-  const handleGreenRoofsChange = useCallback((enabled: boolean) => {
-    setGreenRoofsEnabled(enabled);
-    if (markerPosition) {
-      // Trigger simulation after state updates
-      setTimeout(() => {
-        handleFloodSimulate();
-      }, 100);
-    }
-  }, [markerPosition, handleFloodSimulate]);
+  const handleGreenRoofsChange = useCallback(
+    (enabled: boolean) => {
+      setGreenRoofsEnabled(enabled);
+      if (markerPosition) {
+        setTimeout(() => {
+          handleFloodSimulate();
+        }, 100);
+      }
+    },
+    [markerPosition, handleFloodSimulate]
+  );
 
-  const handlePermeablePavementChange = useCallback((enabled: boolean) => {
-    setPermeablePavementEnabled(enabled);
-    if (markerPosition) {
-      setTimeout(() => {
-        handleFloodSimulate();
-      }, 100);
-    }
-  }, [markerPosition, handleFloodSimulate]);
+  const handlePermeablePavementChange = useCallback(
+    (enabled: boolean) => {
+      setPermeablePavementEnabled(enabled);
+      if (markerPosition) {
+        setTimeout(() => {
+          handleFloodSimulate();
+        }, 100);
+      }
+    },
+    [markerPosition, handleFloodSimulate]
+  );
 
   const handleMangroveWidthChange = useCallback((value: number) => {
     setMangroveWidth(value);
@@ -368,7 +334,7 @@ const Index = () => {
         handleCoastalSimulate(value);
       }
     },
-    [markerPosition, handleCoastalSimulate],
+    [markerPosition, handleCoastalSimulate]
   );
 
   const handleModeChange = useCallback((newMode: DashboardMode) => {
@@ -384,37 +350,63 @@ const Index = () => {
     setViewState(newViewState);
   }, []);
 
+  const getCurrentSimulateHandler = useCallback(() => {
+    if (mode === 'agriculture') return handleSimulate;
+    if (mode === 'coastal') return () => handleCoastalSimulate(mangroveWidth);
+    return handleFloodSimulate;
+  }, [mode, handleSimulate, handleCoastalSimulate, handleFloodSimulate, mangroveWidth]);
+
+  const isCurrentlySimulating =
+    mode === 'agriculture'
+      ? isSimulating
+      : mode === 'coastal'
+        ? isCoastalSimulating
+        : isFloodSimulating;
+
+  const showCurrentResults =
+    mode === 'agriculture' ? showResults : mode === 'coastal' ? showCoastalResults : showFloodResults;
+
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-background">
-      {/* Mobile Menu Button */}
-      <Button
-        variant="outline"
-        size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden bg-sidebar border-sidebar-border"
-        onClick={() => setIsMobileMenuOpen(true)}
-      >
-        <Menu className="h-5 w-5" />
-      </Button>
+    <div className="relative h-screen w-full overflow-hidden bg-slate-950">
+      <div className="absolute inset-0 hex-grid-pattern pointer-events-none z-10" />
 
-      {/* Mobile Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-sm"
-          onClick={() => setIsMobileMenuOpen(false)}
+      <div className={`absolute inset-0 ${isSplitMode ? 'grid grid-cols-2' : ''}`}>
+        <MapView
+          onLocationSelect={handleLocationSelect}
+          markerPosition={markerPosition}
+          mapStyle={mapStyle}
+          showFloodOverlay={showFloodOverlay}
+          viewState={isSplitMode ? viewState : undefined}
+          onViewStateChange={isSplitMode ? handleViewStateChange : undefined}
+          scenarioLabel={isSplitMode ? 'Current Forecast' : undefined}
         />
-      )}
 
-      {/* Sidebar */}
-      <div
-        className={`
-        fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out
-        md:relative md:translate-x-0
-        ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
-      `}
-      >
-        <Sidebar
+        {isSplitMode && (
+          <>
+            <MapView
+              onLocationSelect={handleLocationSelect}
+              markerPosition={markerPosition}
+              mapStyle={mapStyle}
+              showFloodOverlay={showFloodOverlay}
+              viewState={viewState}
+              onViewStateChange={handleViewStateChange}
+              scenarioLabel="With Adaptation"
+              isAdaptationScenario={true}
+            />
+
+            <div className="absolute left-1/2 top-0 bottom-0 -translate-x-1/2 z-20 pointer-events-none">
+              <div className="w-px h-full bg-white/20 backdrop-blur-sm" />
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="absolute top-6 left-6 z-30 flex flex-col gap-4">
+        <FloatingControlPanel
           mode={mode}
           onModeChange={handleModeChange}
+          latitude={markerPosition?.lat ?? null}
+          longitude={markerPosition?.lng ?? null}
           cropType={cropType}
           onCropChange={setCropType}
           mangroveWidth={mangroveWidth}
@@ -428,28 +420,22 @@ const Index = () => {
           onGreenRoofsChange={handleGreenRoofsChange}
           permeablePavementEnabled={permeablePavementEnabled}
           onPermeablePavementChange={handlePermeablePavementChange}
-          onFloodSimulate={handleFloodSimulate}
-          isFloodSimulating={isFloodSimulating}
-          showFloodResults={showFloodResults}
-          floodResults={floodResults}
-          latitude={markerPosition?.lat ?? null}
-          longitude={markerPosition?.lng ?? null}
-          onSimulate={handleSimulate}
-          isSimulating={isSimulating}
-          showResults={showResults}
-          results={results}
-          coastalResults={coastalResults}
-          showCoastalResults={showCoastalResults}
-          isCoastalSimulating={isCoastalSimulating}
-          onClose={() => setIsMobileMenuOpen(false)}
-          isMobile={isMobileMenuOpen}
+          canSimulate={canSimulate}
         />
       </div>
 
-      <main className="flex-1 relative flex flex-col">
+      <div className="absolute bottom-24 left-6 z-30">
+        <SimulationPanel
+          mode={mode}
+          onSimulate={getCurrentSimulateHandler()}
+          isSimulating={isCurrentlySimulating}
+          canSimulate={canSimulate}
+        />
+      </div>
+
+      <div className="absolute top-6 right-6 z-30 flex flex-col gap-4">
         <Button
-          variant="outline"
-          className="absolute top-4 left-4 z-30 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white gap-2"
+          className="bg-black/30 backdrop-blur-xl border border-white/10 hover:bg-white/10 text-white gap-2 rounded-xl px-4 py-2 h-auto"
           onClick={() => setIsSplitMode(!isSplitMode)}
         >
           {isSplitMode ? (
@@ -465,45 +451,34 @@ const Index = () => {
           )}
         </Button>
 
-        <div className={`flex-1 relative ${isSplitMode ? "grid grid-cols-2" : ""}`}>
-          <MapView
-            onLocationSelect={handleLocationSelect}
-            markerPosition={markerPosition}
-            mapStyle={mapStyle}
-            showFloodOverlay={showFloodOverlay}
-            viewState={isSplitMode ? viewState : undefined}
-            onViewStateChange={isSplitMode ? handleViewStateChange : undefined}
-            scenarioLabel={isSplitMode ? "Current Forecast" : undefined}
-          />
-
-          {isSplitMode && (
-            <>
-              <MapView
-                onLocationSelect={handleLocationSelect}
-                markerPosition={markerPosition}
-                mapStyle={mapStyle}
-                showFloodOverlay={showFloodOverlay}
-                viewState={viewState}
-                onViewStateChange={handleViewStateChange}
-                scenarioLabel="With Adaptation"
-                isAdaptationScenario={true}
-              />
-
-              <div className="absolute left-1/2 top-0 bottom-0 -translate-x-1/2 z-20 pointer-events-none">
-                <div className="w-px h-full bg-white/30 backdrop-blur-sm" />
-              </div>
-            </>
-          )}
-        </div>
-
-        <TimelinePlayer
-          selectedYear={selectedYear}
-          onYearChange={setSelectedYear}
-          isPlaying={isTimelinePlaying}
-          onPlayToggle={() => setIsTimelinePlaying((prev) => !prev)}
-          isSplitMode={isSplitMode}
+        <ResultsPanel
+          mode={mode}
+          visible={showCurrentResults}
+          isLoading={isCurrentlySimulating}
+          agricultureResults={
+            mode === 'agriculture'
+              ? {
+                  avoidedLoss: results.avoidedLoss,
+                  riskReduction: results.riskReduction,
+                  monthlyData: results.monthlyData,
+                }
+              : undefined
+          }
+          coastalResults={mode === 'coastal' ? coastalResults : undefined}
+          floodResults={mode === 'flood' ? floodResults : undefined}
+          mangroveWidth={mangroveWidth}
+          greenRoofsEnabled={greenRoofsEnabled}
+          permeablePavementEnabled={permeablePavementEnabled}
         />
-      </main>
+      </div>
+
+      <TimelinePlayer
+        selectedYear={selectedYear}
+        onYearChange={setSelectedYear}
+        isPlaying={isTimelinePlaying}
+        onPlayToggle={() => setIsTimelinePlaying((prev) => !prev)}
+        isSplitMode={isSplitMode}
+      />
     </div>
   );
 };

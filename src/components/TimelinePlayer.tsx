@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
-import { Slider } from "@/components/ui/slider";
-import { Button } from "@/components/ui/button";
-import { Play, Pause } from "lucide-react";
+import { useEffect, useRef } from 'react';
+import { Slider } from '@/components/ui/slider';
+import { Button } from '@/components/ui/button';
+import { Play, Pause, Calendar } from 'lucide-react';
 
 interface TimelinePlayerProps {
   selectedYear: number;
@@ -43,56 +43,74 @@ export function TimelinePlayer({
 
   return (
     <div
-      className={`fixed bottom-8 z-40 ${
+      className={`fixed bottom-6 z-40 ${
         isSplitMode
-          ? "left-[calc(240px+25vw)] -translate-x-1/2 w-[280px]"
-          : "left-1/2 -translate-x-1/2 w-[90%] max-w-lg"
+          ? 'left-1/2 -translate-x-1/2 w-[320px]'
+          : 'left-1/2 -translate-x-1/2 w-[90%] max-w-xl'
       }`}
     >
-      <div className={`bg-black/60 backdrop-blur-md rounded-lg border border-white/10 shadow-xl ${
-        isSplitMode ? "px-3 py-2" : "px-6 py-4"
-      }`}>
-        <div className={`flex items-center ${isSplitMode ? "gap-2" : "gap-4"}`}>
+      <div
+        className={`bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl ${
+          isSplitMode ? 'px-4 py-3' : 'px-6 py-4'
+        }`}
+      >
+        <div className={`flex items-center ${isSplitMode ? 'gap-3' : 'gap-4'}`}>
           <Button
             variant="ghost"
             size="icon"
             onClick={onPlayToggle}
-            className={`rounded-full bg-white/10 hover:bg-white/20 text-white shrink-0 ${
-              isSplitMode ? "h-7 w-7" : "h-10 w-10"
-            }`}
+            className={`rounded-xl bg-white/10 hover:bg-white/20 text-white shrink-0 border border-white/10 transition-all duration-200 ${
+              isSplitMode ? 'h-9 w-9' : 'h-11 w-11'
+            } ${isPlaying ? 'bg-emerald-500/20 border-emerald-500/30' : ''}`}
           >
             {isPlaying ? (
-              <Pause className={isSplitMode ? "h-3.5 w-3.5" : "h-5 w-5"} />
+              <Pause className={isSplitMode ? 'h-4 w-4' : 'h-5 w-5'} />
             ) : (
-              <Play className={`ml-0.5 ${isSplitMode ? "h-3.5 w-3.5" : "h-5 w-5"}`} />
+              <Play className={`ml-0.5 ${isSplitMode ? 'h-4 w-4' : 'h-5 w-5'}`} />
             )}
           </Button>
 
-          <div className={`text-white font-bold tabular-nums text-center shrink-0 ${
-            isSplitMode ? "text-base w-12" : "text-2xl w-16"
-          }`}>
-            {selectedYear}
+          <div
+            className={`flex items-center gap-2 shrink-0 ${
+              isSplitMode ? 'min-w-[70px]' : 'min-w-[90px]'
+            }`}
+          >
+            <Calendar className={`text-emerald-400 ${isSplitMode ? 'w-4 h-4' : 'w-5 h-5'}`} />
+            <span
+              className={`text-white font-bold tabular-nums ${
+                isSplitMode ? 'text-lg' : 'text-2xl'
+              }`}
+            >
+              {selectedYear}
+            </span>
           </div>
 
-          <div className={`flex-1 flex flex-col ${isSplitMode ? "gap-1" : "gap-2"}`}>
+          <div className={`flex-1 flex flex-col ${isSplitMode ? 'gap-1.5' : 'gap-2'}`}>
             <Slider
               value={[selectedYear]}
               onValueChange={(value) => onYearChange(value[0])}
               min={MIN_YEAR}
               max={MAX_YEAR}
               step={1}
-              className="w-full [&_[data-radix-slider-track]]:bg-white/20 [&_[data-radix-slider-range]]:bg-emerald-500 [&_[data-radix-slider-thumb]]:border-emerald-500 [&_[data-radix-slider-thumb]]:bg-white"
+              className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-track]]:h-2 [&_[data-radix-slider-range]]:bg-gradient-to-r [&_[data-radix-slider-range]]:from-emerald-500 [&_[data-radix-slider-range]]:to-blue-500 [&_[data-radix-slider-thumb]]:border-2 [&_[data-radix-slider-thumb]]:border-white [&_[data-radix-slider-thumb]]:bg-emerald-500 [&_[data-radix-slider-thumb]]:shadow-lg [&_[data-radix-slider-thumb]]:shadow-emerald-500/30"
             />
-            <div className={`flex justify-between text-white/60 ${isSplitMode ? "text-[10px]" : "text-xs"}`}>
+            <div
+              className={`flex justify-between text-white/40 ${
+                isSplitMode ? 'text-[10px]' : 'text-xs'
+              }`}
+            >
               <span>{MIN_YEAR}</span>
+              <span className="text-white/30">Climate Projection Timeline</span>
               <span>{MAX_YEAR}</span>
             </div>
           </div>
         </div>
 
-        <div className={`bg-white/10 rounded-full overflow-hidden ${isSplitMode ? "mt-1.5 h-0.5" : "mt-3 h-1"}`}>
+        <div
+          className={`bg-white/5 rounded-full overflow-hidden ${isSplitMode ? 'mt-2 h-1' : 'mt-3 h-1.5'}`}
+        >
           <div
-            className="h-full bg-emerald-500/50 transition-all duration-300"
+            className="h-full bg-gradient-to-r from-emerald-500/60 to-blue-500/60 transition-all duration-300 rounded-full"
             style={{ width: `${progress}%` }}
           />
         </div>

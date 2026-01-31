@@ -4,65 +4,51 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ADAPTMetric Design System - Climate Risk Dashboard */
-
 @layer base {
   :root {
-    /* Core brand colors - converted to HSL */
-    --primary-safe: 179 100% 31%; /* Teal #009d9a */
-    --primary-risk: 24 100% 58%; /* Coral #ff832b */
-    --accent: 262 97% 62%; /* Purple #8a3ffc */
-    
-    /* Mode-specific action colors */
-    --mode-agriculture: 179 100% 31%; /* Teal - matches safe */
-    --mode-coastal: 179 100% 31%; /* Teal - coastal protection */
-    --mode-flood: 217 91% 60%; /* Blue #3b82f6 - water/flood */
-    
-    /* Dark slate theme */
-    --background: 240 33% 14%; /* Dark Slate #1a1a2e */
-    --foreground: 0 0% 100%; /* White */
-    
-    --card: 240 25% 18%;
-    --card-foreground: 0 0% 100%;
-    
-    --popover: 240 25% 16%;
-    --popover-foreground: 0 0% 100%;
-    
-    --primary: 179 100% 31%; /* Teal */
-    --primary-foreground: 0 0% 100%;
-    
-    --secondary: 240 20% 22%;
-    --secondary-foreground: 0 0% 100%;
-    
-    --muted: 240 20% 25%;
-    --muted-foreground: 214 100% 83%; /* Light Slate #a6c8ff */
-    
-    --accent: 262 97% 62%;
-    --accent-foreground: 0 0% 100%;
-    
-    --destructive: 24 100% 58%; /* Coral for warnings */
-    --destructive-foreground: 0 0% 100%;
-    
-    --border: 240 20% 28%;
-    --input: 240 20% 22%;
-    --ring: 262 97% 62%;
-    
+    --primary-safe: 160 84% 39%;
+    --primary-risk: 24 100% 58%;
+    --accent-blue: 217 91% 60%;
+
+    --mode-agriculture: 160 84% 39%;
+    --mode-coastal: 173 80% 40%;
+    --mode-flood: 217 91% 60%;
+
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 160 84% 39%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 160 84% 39%;
+
     --radius: 0.75rem;
-    
-    /* Sidebar - slightly darker */
-    --sidebar-background: 240 35% 12%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 179 100% 31%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 25% 20%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 240 20% 25%;
-    --sidebar-ring: 262 97% 62%;
-    
-    /* Custom tokens */
-    --text-secondary: 214 100% 83%;
-    --glass: 240 25% 18% / 0.8;
-    --glow-safe: 179 100% 31% / 0.4;
+
+    --glass-bg: 0 0% 0%;
+    --glass-border: 0 0% 100%;
+
+    --text-secondary: 215 20% 65%;
+    --glow-safe: 160 84% 39% / 0.4;
     --glow-risk: 24 100% 58% / 0.4;
   }
 }
@@ -71,11 +57,11 @@
   * {
     @apply border-border;
   }
-  
+
   html {
     font-family: 'Inter', sans-serif;
   }
-  
+
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: 'cv01', 'cv02', 'cv03', 'cv04';
@@ -84,33 +70,91 @@
 
 @layer components {
   .glass-panel {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-xl;
+    @apply bg-black/30 backdrop-blur-xl border border-white/10 rounded-xl;
   }
-  
+
+  .glass-panel-solid {
+    @apply bg-black/50 backdrop-blur-xl border border-white/10 rounded-xl;
+  }
+
+  .glass-button {
+    @apply bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all duration-200;
+  }
+
+  .glass-input {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 focus:border-white/20 focus:bg-white/10 transition-all duration-200;
+  }
+
   .metric-big {
     @apply text-4xl font-bold tracking-tight;
   }
-  
+
   .metric-label {
     @apply text-sm font-normal text-muted-foreground;
   }
-  
+
   .glow-safe {
     box-shadow: 0 0 30px hsl(var(--glow-safe));
   }
-  
+
   .glow-risk {
     box-shadow: 0 0 30px hsl(var(--glow-risk));
   }
-  
-  .sidebar-width {
-    width: 320px;
-    min-width: 320px;
+
+  .hud-panel {
+    @apply bg-black/30 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl;
+  }
+
+  .hex-grid-pattern {
+    background-image:
+      radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 50%),
+      linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
   }
 }
 
 @layer utilities {
   .text-gradient-brand {
-    @apply bg-gradient-to-r from-[hsl(179,100%,31%)] to-[hsl(262,97%,62%)] bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out forwards;
+  }
+
+  .animate-glow-pulse {
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
   }
 }
