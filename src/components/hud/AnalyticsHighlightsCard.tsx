@@ -225,8 +225,8 @@ export const AnalyticsHighlightsCard = ({
     <div
       className={`transition-all duration-400 ease-out ${
         isExpanded
-          ? 'fixed inset-4 lg:top-16 lg:right-20 lg:bottom-32 lg:left-auto lg:w-[380px] z-50'
-          : 'w-full lg:w-72'
+          ? 'fixed inset-4 lg:top-16 lg:right-20 lg:bottom-32 lg:left-auto lg:w-80 z-50'
+          : 'w-full lg:w-80'
       }`}
     >
       <GlassCard
