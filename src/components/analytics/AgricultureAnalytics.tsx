@@ -16,12 +16,14 @@ interface AgricultureAnalyticsProps {
   latitude: number;
   temperatureIncrease: number;
   cropType: string;
+  embedded?: boolean;
 }
 
 export const AgricultureAnalytics = ({
   latitude,
   temperatureIncrease,
   cropType,
+  embedded = false,
 }: AgricultureAnalyticsProps) => {
   const rainfallData = useMemo(
     () => generateRainfallData(latitude, temperatureIncrease),
@@ -49,9 +51,8 @@ export const AgricultureAnalytics = ({
     [temperatureIncrease, riskFactors, soilMoistureData, cropType]
   );
 
-  return (
-    <ScrollArea className="h-[calc(100vh-180px)]">
-      <div className="space-y-6 pr-4">
+  const content = (
+    <div className={`space-y-6 ${embedded ? '' : 'pr-4'}`}>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <CloudRain className="w-4 h-4 text-blue-400" />
@@ -106,6 +107,15 @@ export const AgricultureAnalytics = ({
           </div>
         </div>
       </div>
+  );
+
+  if (embedded) {
+    return content;
+  }
+
+  return (
+    <ScrollArea className="h-[calc(100vh-180px)]">
+      {content}
     </ScrollArea>
   );
 };

@@ -15,6 +15,7 @@ interface FloodAnalyticsProps {
   permeablePavementEnabled: boolean;
   floodDepthReduction: number;
   valueProtected: number;
+  embedded?: boolean;
 }
 
 export const FloodAnalytics = ({
@@ -22,6 +23,7 @@ export const FloodAnalytics = ({
   permeablePavementEnabled,
   floodDepthReduction,
   valueProtected,
+  embedded = false,
 }: FloodAnalyticsProps) => {
   const capacityData = useMemo(
     () => generateFloodCapacityData(greenRoofsEnabled, permeablePavementEnabled),
@@ -49,9 +51,8 @@ export const FloodAnalytics = ({
     permeablePavementEnabled && 'Permeable Pavement',
   ].filter(Boolean);
 
-  return (
-    <ScrollArea className="h-[calc(100vh-180px)]">
-      <div className="space-y-6 pr-4">
+  const content = (
+    <div className={`space-y-6 ${embedded ? '' : 'pr-4'}`}>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Droplets className="w-4 h-4 text-blue-400" />
@@ -122,6 +123,15 @@ export const FloodAnalytics = ({
           </div>
         </div>
       </div>
+  );
+
+  if (embedded) {
+    return content;
+  }
+
+  return (
+    <ScrollArea className="h-[calc(100vh-180px)]">
+      {content}
     </ScrollArea>
   );
 };

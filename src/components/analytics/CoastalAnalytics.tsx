@@ -15,6 +15,7 @@ interface CoastalAnalyticsProps {
   slope: number | null;
   stormWave: number | null;
   avoidedLoss: number;
+  embedded?: boolean;
 }
 
 export const CoastalAnalytics = ({
@@ -22,6 +23,7 @@ export const CoastalAnalytics = ({
   slope,
   stormWave,
   avoidedLoss,
+  embedded = false,
 }: CoastalAnalyticsProps) => {
   const stormSurgeData = useMemo(
     () => generateStormSurgeData(mangroveWidth),
@@ -51,9 +53,8 @@ export const CoastalAnalytics = ({
     return Math.round((1 - protected_ / baseline) * 100);
   }, [stormSurgeData]);
 
-  return (
-    <ScrollArea className="h-[calc(100vh-180px)]">
-      <div className="space-y-6 pr-4">
+  const content = (
+    <div className={`space-y-6 ${embedded ? '' : 'pr-4'}`}>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Waves className="w-4 h-4 text-teal-400" />
@@ -118,6 +119,15 @@ export const CoastalAnalytics = ({
           </div>
         </div>
       </div>
+  );
+
+  if (embedded) {
+    return content;
+  }
+
+  return (
+    <ScrollArea className="h-[calc(100vh-180px)]">
+      {content}
     </ScrollArea>
   );
 };

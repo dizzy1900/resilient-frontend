@@ -293,6 +293,7 @@ export const AnalyticsHighlightsCard = ({
                   latitude={latitude}
                   temperatureIncrease={temperature}
                   cropType={cropType}
+                  embedded
                 />
               )}
               {mode === 'coastal' && coastalResults && (
@@ -301,6 +302,7 @@ export const AnalyticsHighlightsCard = ({
                   slope={coastalResults.slope}
                   stormWave={coastalResults.stormWave}
                   avoidedLoss={coastalResults.avoidedLoss}
+                  embedded
                 />
               )}
               {mode === 'flood' && floodResults && (
@@ -309,6 +311,7 @@ export const AnalyticsHighlightsCard = ({
                   permeablePavementEnabled={permeablePavementEnabled}
                   floodDepthReduction={floodResults.floodDepthReduction}
                   valueProtected={floodResults.valueProtected}
+                  embedded
                 />
               )}
             </div>
