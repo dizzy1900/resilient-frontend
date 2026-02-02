@@ -466,7 +466,7 @@ const Index = () => {
         />
       </div>
 
-      <div className="hidden lg:block absolute bottom-24 left-6 z-30">
+      <div className="hidden lg:block absolute bottom-32 left-6 z-30">
         <SimulationPanel
           mode={mode}
           onSimulate={getCurrentSimulateHandler()}
@@ -477,7 +477,7 @@ const Index = () => {
         />
       </div>
 
-      <div className="hidden lg:block absolute bottom-24 left-[340px] z-30">
+      <div className="hidden lg:block absolute bottom-32 left-[340px] z-30">
         <ZoneLegend
           baselineZone={baselineZone}
           currentZone={currentZone}
@@ -533,7 +533,7 @@ const Index = () => {
         </Button>
       </div>
 
-      <div className="absolute bottom-20 lg:bottom-24 right-4 lg:right-6 left-4 lg:left-auto z-30 flex flex-col gap-3">
+      <div className="absolute bottom-24 lg:bottom-32 right-4 lg:right-20 left-4 lg:left-auto z-30 flex flex-col gap-3">
         <ResultsPanel
           mode={mode}
           visible={showCurrentResults}
