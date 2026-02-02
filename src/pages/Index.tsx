@@ -457,7 +457,7 @@ const Index = () => {
         isSimulating={isCurrentlySimulating}
       />
 
-      <div className={`absolute top-4 left-4 lg:top-6 lg:left-auto z-40 ${isSplitMode ? 'lg:right-16' : 'lg:right-20'}`}>
+      <div className={`absolute top-4 right-16 lg:top-6 z-40 ${isSplitMode ? 'lg:right-16' : 'lg:right-20'}`}>
         <Button
           className="bg-black/30 backdrop-blur-xl border border-white/10 hover:bg-white/10 text-white gap-2 rounded-xl px-3 py-2 lg:px-4 h-auto shadow-lg text-xs lg:text-sm"
           onClick={() => setIsSplitMode(!isSplitMode)}
