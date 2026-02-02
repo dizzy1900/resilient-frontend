@@ -7,8 +7,9 @@ import { SimulationPanel } from '@/components/hud/SimulationPanel';
 import { ResultsPanel } from '@/components/hud/ResultsPanel';
 import { MobileMenu } from '@/components/hud/MobileMenu';
 import { ZoneLegend } from '@/components/dashboard/ZoneLegend';
+import { AnalyticsDrawer } from '@/components/hud/AnalyticsDrawer';
 import { toast } from '@/hooks/use-toast';
-import { Columns2, X } from 'lucide-react';
+import { Columns2, X, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Polygon } from '@/utils/polygonMath';
 import { generateIrregularZone, ZoneMode } from '@/utils/zoneGeneration';
@@ -48,6 +49,7 @@ const Index = () => {
   const [showCoastalResults, setShowCoastalResults] = useState(false);
   const [showFloodResults, setShowFloodResults] = useState(false);
   const [isSplitMode, setIsSplitMode] = useState(false);
+  const [analyticsDrawerOpen, setAnalyticsDrawerOpen] = useState(false);
   const [viewState, setViewState] = useState<ViewState>({
     longitude: 37.9062,
     latitude: -0.0236,
@@ -381,6 +383,7 @@ const Index = () => {
     setShowResults(false);
     setShowCoastalResults(false);
     setShowFloodResults(false);
+    setAnalyticsDrawerOpen(false);
     setSelectedYear(2026);
     setIsTimelinePlaying(false);
   }, []);
@@ -404,6 +407,12 @@ const Index = () => {
 
   const showCurrentResults =
     mode === 'agriculture' ? showResults : mode === 'coastal' ? showCoastalResults : showFloodResults;
+
+  useEffect(() => {
+    if (showCurrentResults && !isCurrentlySimulating) {
+      setAnalyticsDrawerOpen(true);
+    }
+  }, [showCurrentResults, isCurrentlySimulating]);
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-slate-950">
@@ -511,7 +520,17 @@ const Index = () => {
         onTemperatureChange={handleTemperatureChange}
       />
 
-      <div className={`absolute top-4 right-16 lg:top-6 z-40 ${isSplitMode ? 'lg:right-16' : 'lg:right-20'}`}>
+      <div className={`absolute top-4 right-16 lg:top-6 z-40 flex items-center gap-2 ${isSplitMode ? 'lg:right-16' : 'lg:right-20'}`}>
+        {showCurrentResults && !analyticsDrawerOpen && (
+          <Button
+            className="bg-black/30 backdrop-blur-xl border border-white/10 hover:bg-white/10 text-white gap-2 rounded-xl px-3 py-2 lg:px-4 h-auto shadow-lg text-xs lg:text-sm"
+            onClick={() => setAnalyticsDrawerOpen(true)}
+          >
+            <BarChart3 className="h-4 w-4" />
+            <span className="hidden sm:inline">View Analytics</span>
+            <span className="sm:hidden">Analytics</span>
+          </Button>
+        )}
         <Button
           className="bg-black/30 backdrop-blur-xl border border-white/10 hover:bg-white/10 text-white gap-2 rounded-xl px-3 py-2 lg:px-4 h-auto shadow-lg text-xs lg:text-sm"
           onClick={() => setIsSplitMode(!isSplitMode)}
@@ -553,6 +572,26 @@ const Index = () => {
           permeablePavementEnabled={permeablePavementEnabled}
         />
       </div>
+
+      <AnalyticsDrawer
+        open={analyticsDrawerOpen}
+        onOpenChange={setAnalyticsDrawerOpen}
+        mode={mode}
+        latitude={markerPosition?.lat ?? null}
+        longitude={markerPosition?.lng ?? null}
+        temperature={temperature}
+        cropType={cropType}
+        mangroveWidth={mangroveWidth}
+        greenRoofsEnabled={greenRoofsEnabled}
+        permeablePavementEnabled={permeablePavementEnabled}
+        agricultureResults={
+          mode === 'agriculture'
+            ? { avoidedLoss: results.avoidedLoss, riskReduction: results.riskReduction }
+            : undefined
+        }
+        coastalResults={mode === 'coastal' ? coastalResults : undefined}
+        floodResults={mode === 'flood' ? floodResults : undefined}
+      />
 
       <TimelinePlayer
         selectedYear={selectedYear}
