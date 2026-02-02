@@ -12,9 +12,9 @@ interface SimulateButtonProps {
 }
 
 const modeStyles: Record<DashboardMode, string> = {
-  agriculture: 'bg-mode-agriculture hover:bg-mode-agriculture/90',
-  coastal: 'bg-mode-coastal hover:bg-mode-coastal/90',
-  flood: 'bg-mode-flood hover:bg-mode-flood/90',
+  agriculture: 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2),0_0_20px_0_rgba(16,185,129,0.3)] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3),0_0_30px_0_rgba(16,185,129,0.5)] active:shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3),0_0_20px_0_rgba(16,185,129,0.3)]',
+  coastal: 'bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2),0_0_20px_0_rgba(20,184,166,0.3)] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3),0_0_30px_0_rgba(20,184,166,0.5)] active:shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3),0_0_20px_0_rgba(20,184,166,0.3)]',
+  flood: 'bg-gradient-to-r from-blue-500 to-blue-400 hover:from-blue-600 hover:to-blue-500 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2),0_0_20px_0_rgba(59,130,246,0.3)] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3),0_0_30px_0_rgba(59,130,246,0.5)] active:shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3),0_0_20px_0_rgba(59,130,246,0.3)]',
 };
 
 export const SimulateButton = ({ 
@@ -29,7 +29,7 @@ export const SimulateButton = ({
       onClick={onClick}
       disabled={disabled || isLoading}
       className={cn(
-        "w-full h-12 text-sm font-semibold text-white transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed",
+        "w-full h-12 text-sm font-semibold text-white transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
         modeStyles[mode]
       )}
     >
