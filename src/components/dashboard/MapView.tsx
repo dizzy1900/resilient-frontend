@@ -112,10 +112,10 @@ const LazyMap = ({
         type: 'line',
         source: ZONE_LAYERS.BASELINE_SOURCE,
         paint: {
-          'line-color': colors.outlineColor,
-          'line-width': 2,
+          'line-color': colors.baselineOutlineColor,
+          'line-width': 2.5,
           'line-dasharray': [4, 3],
-          'line-opacity': 0.6,
+          'line-opacity': 0.85,
         },
       });
     }
@@ -131,7 +131,7 @@ const LazyMap = ({
         source: ZONE_LAYERS.LOSS_SOURCE,
         paint: {
           'fill-color': colors.lossColor,
-          'fill-opacity': 0.5,
+          'fill-opacity': 0.55,
         },
       });
     }
@@ -157,7 +157,7 @@ const LazyMap = ({
     if (baselineZone) {
       const baselineGeoJSON = polygonToGeoJSON(baselineZone);
       map.getSource(ZONE_LAYERS.BASELINE_SOURCE)?.setData(baselineGeoJSON);
-      map.setPaintProperty(ZONE_LAYERS.BASELINE_OUTLINE, 'line-color', colors.outlineColor);
+      map.setPaintProperty(ZONE_LAYERS.BASELINE_OUTLINE, 'line-color', colors.baselineOutlineColor);
     } else {
       map.getSource(ZONE_LAYERS.BASELINE_SOURCE)?.setData({ type: 'FeatureCollection', features: [] });
     }

@@ -76,7 +76,20 @@ export interface ZoneColors {
   fillOpacity: number;
   outlineColor: string;
   lossColor: string;
+  baselineOutlineColor: string;
 }
+
+const BASELINE_COLORS: Record<ZoneMode, string> = {
+  agriculture: '#22c55e',
+  coastal: '#14b8a6',
+  flood: '#3b82f6',
+};
+
+const LOSS_COLORS: Record<ZoneMode, string> = {
+  agriculture: 'rgba(239, 68, 68, 0.55)',
+  coastal: 'rgba(239, 68, 68, 0.55)',
+  flood: 'rgba(249, 115, 22, 0.55)',
+};
 
 export function getZoneColors(mode: ZoneMode, temperature: number): ZoneColors {
   const tempRatio = Math.min(temperature / 3, 1);
@@ -109,6 +122,7 @@ export function getZoneColors(mode: ZoneMode, temperature: number): ZoneColors {
     fillColor: `rgb(${r}, ${g}, ${b})`,
     fillOpacity: 0.3 + tempRatio * 0.15,
     outlineColor: mode === 'agriculture' ? '#22c55e' : mode === 'coastal' ? '#14b8a6' : '#f97316',
-    lossColor: mode === 'flood' ? 'rgba(239, 68, 68, 0.4)' : 'rgba(239, 68, 68, 0.35)',
+    lossColor: LOSS_COLORS[mode],
+    baselineOutlineColor: BASELINE_COLORS[mode],
   };
 }
