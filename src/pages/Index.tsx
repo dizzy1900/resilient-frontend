@@ -477,7 +477,7 @@ const Index = () => {
         />
       </div>
 
-      <div className="hidden lg:block absolute bottom-32 left-[340px] z-30">
+      <div className="hidden lg:block absolute bottom-32 left-[360px] z-30">
         <ZoneLegend
           baselineZone={baselineZone}
           currentZone={currentZone}
