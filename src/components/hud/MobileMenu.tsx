@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { FloatingControlPanel } from './FloatingControlPanel';
 import { SimulationPanel } from './SimulationPanel';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
+import { PortfolioHeader } from '@/components/portfolio/PortfolioHeader';
+import { PortfolioPanel } from '@/components/portfolio/PortfolioPanel';
 import { useState, useEffect } from 'react';
 
 interface MobileMenuProps {
@@ -92,7 +94,9 @@ export const MobileMenu = ({
           <div className="lg:hidden fixed top-0 left-0 bottom-0 w-[85%] max-w-sm bg-slate-950/95 backdrop-blur-xl border-r border-white/20 z-[70] shadow-2xl overflow-y-auto animate-in slide-in-from-left duration-300">
             <div className="sticky top-0 z-10 bg-slate-950/95 backdrop-blur-xl border-b border-white/10 p-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-white">Controls</h2>
+                <h2 className="text-lg font-bold text-white">
+                  {mode === 'portfolio' ? 'Portfolio' : 'Controls'}
+                </h2>
                 <Button
                   onClick={() => setIsOpen(false)}
                   className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0 flex items-center justify-center"
@@ -104,35 +108,44 @@ export const MobileMenu = ({
             </div>
 
             <div className="p-4 space-y-4">
-              <FloatingControlPanel
-                mode={mode}
-                onModeChange={onModeChange}
-                latitude={latitude}
-                longitude={longitude}
-                cropType={cropType}
-                onCropChange={onCropChange}
-                mangroveWidth={mangroveWidth}
-                onMangroveWidthChange={onMangroveWidthChange}
-                onMangroveWidthChangeEnd={onMangroveWidthChangeEnd}
-                propertyValue={propertyValue}
-                onPropertyValueChange={onPropertyValueChange}
-                buildingValue={buildingValue}
-                onBuildingValueChange={onBuildingValueChange}
-                greenRoofsEnabled={greenRoofsEnabled}
-                onGreenRoofsChange={onGreenRoofsChange}
-                permeablePavementEnabled={permeablePavementEnabled}
-                onPermeablePavementChange={onPermeablePavementChange}
-                canSimulate={canSimulate}
-              />
+              {mode === 'portfolio' ? (
+                <>
+                  <PortfolioHeader onModeChange={onModeChange} />
+                  <PortfolioPanel />
+                </>
+              ) : (
+                <>
+                  <FloatingControlPanel
+                    mode={mode}
+                    onModeChange={onModeChange}
+                    latitude={latitude}
+                    longitude={longitude}
+                    cropType={cropType}
+                    onCropChange={onCropChange}
+                    mangroveWidth={mangroveWidth}
+                    onMangroveWidthChange={onMangroveWidthChange}
+                    onMangroveWidthChangeEnd={onMangroveWidthChangeEnd}
+                    propertyValue={propertyValue}
+                    onPropertyValueChange={onPropertyValueChange}
+                    buildingValue={buildingValue}
+                    onBuildingValueChange={onBuildingValueChange}
+                    greenRoofsEnabled={greenRoofsEnabled}
+                    onGreenRoofsChange={onGreenRoofsChange}
+                    permeablePavementEnabled={permeablePavementEnabled}
+                    onPermeablePavementChange={onPermeablePavementChange}
+                    canSimulate={canSimulate}
+                  />
 
-              <SimulationPanel
-                mode={mode}
-                onSimulate={handleSimulate}
-                isSimulating={isSimulating}
-                canSimulate={canSimulate}
-                temperature={temperature}
-                onTemperatureChange={onTemperatureChange}
-              />
+                  <SimulationPanel
+                    mode={mode}
+                    onSimulate={handleSimulate}
+                    isSimulating={isSimulating}
+                    canSimulate={canSimulate}
+                    temperature={temperature}
+                    onTemperatureChange={onTemperatureChange}
+                  />
+                </>
+              )}
             </div>
           </div>
         </>
