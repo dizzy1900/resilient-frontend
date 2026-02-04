@@ -4,12 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { GlassCard } from '@/components/hud/GlassCard';
 import { Button } from '@/components/ui/button';
 import { PortfolioCSVUpload, PortfolioAsset } from './PortfolioCSVUpload';
-import { supabase } from '@/integrations/supabase/clientSafe';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import confetti from 'canvas-confetti';
-
-const RAILWAY_API_URL = 'https://primary-production-679e.up.railway.app/webhook/start-batch';
 
 type JobStatus = 'idle' | 'pending' | 'processing' | 'completed' | 'failed';
 
@@ -26,7 +24,7 @@ export const PortfolioPanel = () => {
   const [parsedData, setParsedData] = useState<PortfolioAsset[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentJob, setCurrentJob] = useState<BatchJob | null>(null);
-  const { user, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   // Subscribe to realtime updates for batch_jobs
@@ -88,7 +86,7 @@ export const PortfolioPanel = () => {
 
   const handleAnalyzePortfolio = async () => {
     if (parsedData.length === 0) return;
-    if (!user) {
+    if (!user || !session) {
       toast({
         title: 'Authentication Required',
         description: 'Please sign in to analyze your portfolio.',
@@ -101,55 +99,41 @@ export const PortfolioPanel = () => {
     setIsSubmitting(true);
 
     try {
-      // 1. Create a new batch job with user_id
-      const { data: jobData, error: jobError } = await supabase
-        .from('batch_jobs')
-        .insert({
-          status: 'pending',
-          total_assets: parsedData.length,
-          processed_assets: 0,
-          user_id: user.id,
-        })
-        .select()
-        .single();
-
-      if (jobError) throw jobError;
-
-      const jobId = jobData.id;
-      setCurrentJob(jobData as BatchJob);
-
-      // 2. Bulk insert portfolio assets with user_id
-      const assetsToInsert = parsedData.map((asset) => ({
-        job_id: jobId,
+      // Prepare assets for server-side validation
+      const assets = parsedData.map((asset) => ({
         name: asset.Name,
         lat: asset.Lat,
         lon: asset.Lon,
         value: asset.Value,
-        user_id: user.id,
       }));
 
-      const { error: assetsError } = await supabase
-        .from('portfolio_assets')
-        .insert(assetsToInsert);
-
-      if (assetsError) throw assetsError;
-
-      // 3. Call Railway API to start batch processing
-      const response = await fetch(RAILWAY_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ job_id: jobId }),
+      // Call the secure edge function
+      const { data, error } = await supabase.functions.invoke('submit-portfolio', {
+        body: { assets },
       });
 
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+      if (error) {
+        throw new Error(error.message || 'Failed to submit portfolio');
       }
+
+      if (!data?.success) {
+        const errorMessage = data?.message || data?.details?.[0]?.message || 'Validation failed';
+        throw new Error(errorMessage);
+      }
+
+      // Set the current job from the response
+      setCurrentJob({
+        id: data.job_id,
+        status: 'pending',
+        total_assets: data.assets_count,
+        processed_assets: 0,
+        report_url: null,
+        error_message: null,
+      });
 
       toast({
         title: 'Portfolio Analysis Started',
-        description: `Analyzing ${parsedData.length} assets...`,
+        description: `Analyzing ${data.assets_count} assets...`,
       });
     } catch (error) {
       console.error('Portfolio analysis failed:', error);

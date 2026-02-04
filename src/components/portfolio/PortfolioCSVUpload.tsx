@@ -54,21 +54,62 @@ export const PortfolioCSVUpload = ({
         return;
       }
 
+      // Check for maximum rows (10,000 limit enforced server-side)
+      if (rows.length > 10001) {
+        setError('Maximum 10,000 assets allowed per upload');
+        return;
+      }
+
       const assets: PortfolioAsset[] = [];
+      const validationErrors: string[] = [];
+
       for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
         if (row.length < 4 || row.every((cell) => !cell.trim())) continue;
 
+        const name = row[nameIdx]?.trim() || '';
         const lat = parseFloat(row[latIdx]);
         const lon = parseFloat(row[lonIdx]);
         const value = parseFloat(row[valueIdx]);
 
+        // Validate name length
+        if (name.length === 0) {
+          validationErrors.push(`Row ${i + 1}: Name is required`);
+          continue;
+        }
+        if (name.length > 200) {
+          validationErrors.push(`Row ${i + 1}: Name exceeds 200 characters`);
+          continue;
+        }
+
+        // Validate numeric values
         if (isNaN(lat) || isNaN(lon) || isNaN(value)) {
+          validationErrors.push(`Row ${i + 1}: Invalid numeric values`);
+          continue;
+        }
+
+        // Validate coordinate ranges
+        if (lat < -90 || lat > 90) {
+          validationErrors.push(`Row ${i + 1}: Latitude must be between -90 and 90`);
+          continue;
+        }
+        if (lon < -180 || lon > 180) {
+          validationErrors.push(`Row ${i + 1}: Longitude must be between -180 and 180`);
+          continue;
+        }
+
+        // Validate value range
+        if (value < 0) {
+          validationErrors.push(`Row ${i + 1}: Value cannot be negative`);
+          continue;
+        }
+        if (value > 999999999999) {
+          validationErrors.push(`Row ${i + 1}: Value exceeds maximum allowed`);
           continue;
         }
 
         assets.push({
-          Name: row[nameIdx].trim(),
+          Name: name,
           Lat: lat,
           Lon: lon,
           Value: value,
@@ -76,8 +117,17 @@ export const PortfolioCSVUpload = ({
       }
 
       if (assets.length === 0) {
-        setError('No valid data rows found in CSV');
+        if (validationErrors.length > 0) {
+          setError(`No valid data rows found. ${validationErrors[0]}`);
+        } else {
+          setError('No valid data rows found in CSV');
+        }
         return;
+      }
+
+      // Show warning if some rows were skipped
+      if (validationErrors.length > 0 && validationErrors.length <= 5) {
+        console.warn('CSV validation warnings:', validationErrors);
       }
 
       onDataParsed(assets);

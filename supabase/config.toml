@@ -1,1 +1,4 @@
 project_id = "ldvneffsoqhkngmrpdai"
+
+[functions.submit-portfolio]
+verify_jwt = false
