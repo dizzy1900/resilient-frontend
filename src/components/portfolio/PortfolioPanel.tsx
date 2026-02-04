@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { GlassCard } from '@/components/hud/GlassCard';
 import { Button } from '@/components/ui/button';
 import { PortfolioCSVUpload, PortfolioAsset } from './PortfolioCSVUpload';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/clientSafe';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import confetti from 'canvas-confetti';

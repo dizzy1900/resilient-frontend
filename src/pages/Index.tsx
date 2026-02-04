@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Polygon } from '@/utils/polygonMath';
 import { generateIrregularZone, ZoneMode } from '@/utils/zoneGeneration';
 import { calculateZoneAtTemperature } from '@/utils/zoneMorphing';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/clientSafe';
 
 const mockMonthlyData = [
   { month: 'Jan', value: 45 },
