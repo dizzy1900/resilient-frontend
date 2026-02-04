@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Polygon } from '@/utils/polygonMath';
 import { generateIrregularZone, ZoneMode } from '@/utils/zoneGeneration';
 import { calculateZoneAtTemperature } from '@/utils/zoneMorphing';
+import { supabase } from '@/integrations/supabase/client';
 
 const mockMonthlyData = [
   { month: 'Jan', value: 45 },
@@ -32,9 +33,6 @@ const mockMonthlyData = [
   { month: 'Nov', value: 38 },
   { month: 'Dec', value: 35 },
 ];
-
-const COASTAL_API_URL = 'https://web-production-8ff9e.up.railway.app/predict-coastal';
-const FLOOD_API_URL = 'https://web-production-8ff9e.up.railway.app/predict-flood';
 
 const Index = () => {
   const [mode, setMode] = useState<DashboardMode>('agriculture');
@@ -138,26 +136,18 @@ const Index = () => {
     setShowResults(false);
 
     try {
-      const response = await fetch(
-        'https://primary-production-679e.up.railway.app/webhook/simulate',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            lat: markerPosition.lat,
-            lon: markerPosition.lng,
-            crop: cropType,
-          }),
-        }
-      );
+      const { data: responseData, error } = await supabase.functions.invoke('simulate-agriculture', {
+        body: {
+          lat: markerPosition.lat,
+          lon: markerPosition.lng,
+          crop: cropType,
+        },
+      });
 
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+      if (error) {
+        throw new Error(error.message || 'Agriculture simulation failed');
       }
 
-      const responseData = await response.json();
       const result = Array.isArray(responseData) ? responseData[0] : responseData;
       const analysis = result?.data?.analysis;
       const predictions = result?.data?.predictions;
@@ -201,23 +191,18 @@ const Index = () => {
       setIsCoastalSimulating(true);
 
       try {
-        const response = await fetch(COASTAL_API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+        const { data: responseData, error } = await supabase.functions.invoke('simulate-coastal', {
+          body: {
             lat: markerPosition.lat,
             lon: markerPosition.lng,
             mangrove_width: width,
-          }),
+          },
         });
 
-        if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
+        if (error) {
+          throw new Error(error.message || 'Coastal simulation failed');
         }
 
-        const responseData = await response.json();
         const data = responseData.data;
         const rawSlope = data.slope;
         const rawStormWave = data.storm_wave;
@@ -298,20 +283,14 @@ const Index = () => {
         slope_pct: 2.0,
       };
 
-      const response = await fetch(FLOOD_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+      const { data: responseData, error } = await supabase.functions.invoke('simulate-flood', {
+        body: payload,
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API error: ${response.status} - ${errorText}`);
+      if (error) {
+        throw new Error(error.message || 'Flood simulation failed');
       }
 
-      const responseData = await response.json();
       const analysis = responseData.data?.analysis || responseData.analysis || responseData;
       const avoidedLoss = analysis.avoided_loss ?? 0;
       const floodDepthReduction = analysis.avoided_depth_cm ?? 0;

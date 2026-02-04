@@ -2,3 +2,12 @@ project_id = "ldvneffsoqhkngmrpdai"
 
 [functions.submit-portfolio]
 verify_jwt = false
+
+[functions.simulate-agriculture]
+verify_jwt = false
+
+[functions.simulate-coastal]
+verify_jwt = false
+
+[functions.simulate-flood]
+verify_jwt = false
