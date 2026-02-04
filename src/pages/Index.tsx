@@ -10,6 +10,7 @@ import { PortfolioHeader } from '@/components/portfolio/PortfolioHeader';
 import { MobileMenu } from '@/components/hud/MobileMenu';
 import { ZoneLegend } from '@/components/dashboard/ZoneLegend';
 import { AnalyticsHighlightsCard } from '@/components/hud/AnalyticsHighlightsCard';
+import { UserMenu } from '@/components/auth/UserMenu';
 import { toast } from '@/hooks/use-toast';
 import { Columns2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -530,6 +531,7 @@ const Index = () => {
           ? 'right-4 sm:right-16 lg:right-16' 
           : 'right-16 lg:right-20'
       }`}>
+        <UserMenu />
         <Button
           className="bg-black/30 backdrop-blur-xl border border-white/10 hover:bg-white/10 text-white gap-1.5 sm:gap-2 rounded-xl px-2.5 sm:px-3 py-2 lg:px-4 h-auto shadow-lg text-[11px] sm:text-xs lg:text-sm"
           onClick={() => setIsSplitMode(!isSplitMode)}

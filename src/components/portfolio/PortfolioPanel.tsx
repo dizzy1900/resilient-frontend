@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Briefcase, Play, Loader2, Download, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
+import { Briefcase, Play, Loader2, Download, CheckCircle2, AlertCircle, RefreshCw, LogIn } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { GlassCard } from '@/components/hud/GlassCard';
 import { Button } from '@/components/ui/button';
 import { PortfolioCSVUpload, PortfolioAsset } from './PortfolioCSVUpload';
 import { supabase } from '@/integrations/supabase/clientSafe';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import confetti from 'canvas-confetti';
 
 const RAILWAY_API_URL = 'https://primary-production-679e.up.railway.app/webhook/start-batch';
@@ -24,6 +26,8 @@ export const PortfolioPanel = () => {
   const [parsedData, setParsedData] = useState<PortfolioAsset[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentJob, setCurrentJob] = useState<BatchJob | null>(null);
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
 
   // Subscribe to realtime updates for batch_jobs
   useEffect(() => {
@@ -84,17 +88,27 @@ export const PortfolioPanel = () => {
 
   const handleAnalyzePortfolio = async () => {
     if (parsedData.length === 0) return;
+    if (!user) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please sign in to analyze your portfolio.',
+        variant: 'destructive',
+      });
+      navigate('/auth');
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
-      // 1. Create a new batch job
+      // 1. Create a new batch job with user_id
       const { data: jobData, error: jobError } = await supabase
         .from('batch_jobs')
         .insert({
           status: 'pending',
           total_assets: parsedData.length,
           processed_assets: 0,
+          user_id: user.id,
         })
         .select()
         .single();
@@ -104,13 +118,14 @@ export const PortfolioPanel = () => {
       const jobId = jobData.id;
       setCurrentJob(jobData as BatchJob);
 
-      // 2. Bulk insert portfolio assets
+      // 2. Bulk insert portfolio assets with user_id
       const assetsToInsert = parsedData.map((asset) => ({
         job_id: jobId,
         name: asset.Name,
         lat: asset.Lat,
         lon: asset.Lon,
         value: asset.Value,
+        user_id: user.id,
       }));
 
       const { error: assetsError } = await supabase
@@ -195,6 +210,30 @@ export const PortfolioPanel = () => {
       </div>
     );
   };
+
+  // Show login prompt if not authenticated
+  if (!authLoading && !user) {
+    return (
+      <div className="space-y-4">
+        <GlassCard className="p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Briefcase className="w-5 h-5 text-purple-400" />
+            <span className="text-sm font-semibold text-white">Portfolio Mode</span>
+          </div>
+          <p className="text-xs text-white/50 mb-4">
+            Sign in to upload and analyze your portfolio assets with bulk climate risk analysis.
+          </p>
+          <Button
+            onClick={() => navigate('/auth')}
+            className="w-full bg-gradient-to-r from-purple-600 to-purple-400 text-white hover:opacity-90"
+          >
+            <LogIn className="w-4 h-4 mr-2" />
+            Sign In to Continue
+          </Button>
+        </GlassCard>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

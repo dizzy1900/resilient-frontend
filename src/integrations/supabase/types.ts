@@ -24,6 +24,7 @@ export type Database = {
           status: string
           total_assets: number | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -34,6 +35,7 @@ export type Database = {
           status?: string
           total_assets?: number | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -44,6 +46,7 @@ export type Database = {
           status?: string
           total_assets?: number | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -56,6 +59,7 @@ export type Database = {
           lon: number
           name: string
           result: Json | null
+          user_id: string | null
           value: number
         }
         Insert: {
@@ -66,6 +70,7 @@ export type Database = {
           lon: number
           name: string
           result?: Json | null
+          user_id?: string | null
           value: number
         }
         Update: {
@@ -76,6 +81,7 @@ export type Database = {
           lon?: number
           name?: string
           result?: Json | null
+          user_id?: string | null
           value?: number
         }
         Relationships: [
