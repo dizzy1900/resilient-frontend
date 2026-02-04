@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
@@ -26,47 +25,7 @@ serve(async (req) => {
   console.log("simulate-agriculture: Request received");
 
   try {
-    // 1. Validate authentication
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      console.log("simulate-agriculture: Missing or invalid authorization header");
-      return new Response(
-        JSON.stringify({ error: "Unauthorized", message: "Missing authorization header" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      console.error("simulate-agriculture: Missing Supabase configuration");
-      return new Response(
-        JSON.stringify({ error: "Server configuration error" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
-
-    // Validate JWT and get user claims
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
-
-    if (claimsError || !claimsData?.claims) {
-      console.log("simulate-agriculture: Invalid token", claimsError);
-      return new Response(
-        JSON.stringify({ error: "Unauthorized", message: "Invalid or expired token" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const userId = claimsData.claims.sub;
-    console.log("simulate-agriculture: User authenticated", { userId });
-
-    // 2. Parse and validate request body
+    // Parse and validate request body
     let body;
     try {
       body = await req.json();
@@ -95,9 +54,9 @@ serve(async (req) => {
     }
 
     const { lat, lon, crop } = validationResult.data;
-    console.log("simulate-agriculture: Request from user", { userId, lat, lon, crop });
+    console.log("simulate-agriculture: Validated request", { lat, lon, crop });
 
-    // 3. Call Railway API
+    // Call Railway API
     const response = await fetch(RAILWAY_API_URL, {
       method: "POST",
       headers: {
@@ -119,7 +78,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log("simulate-agriculture: Success for user", { userId });
+    console.log("simulate-agriculture: Success");
 
     return new Response(
       JSON.stringify(data),
