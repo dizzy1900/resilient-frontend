@@ -78,7 +78,7 @@ function generateSeed(lat: number, lng: number): number {
   return Math.floor((lat * 1000 + lng * 10000) * 31337) % 2147483647;
 }
 
-export type ZoneMode = 'agriculture' | 'coastal' | 'flood';
+export type ZoneMode = 'agriculture' | 'coastal' | 'flood' | 'portfolio';
 
 const MODE_CONFIG = {
   agriculture: {

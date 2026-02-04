@@ -84,31 +84,34 @@ export interface ZoneColors {
   baselineOutlineColor: string;
 }
 
-const BASELINE_COLORS: Record<ZoneMode, string> = {
+const BASELINE_COLORS: Record<string, string> = {
   agriculture: '#22c55e',
   coastal: '#14b8a6',
   flood: '#3b82f6',
+  portfolio: '#a855f7',
 };
 
-const LOSS_COLORS: Record<ZoneMode, string> = {
+const LOSS_COLORS: Record<string, string> = {
   agriculture: 'rgba(239, 68, 68, 0.55)',
   coastal: 'rgba(239, 68, 68, 0.55)',
   flood: 'rgba(249, 115, 22, 0.55)',
+  portfolio: 'rgba(168, 85, 247, 0.55)',
 };
 
 export function getZoneColors(mode: ZoneMode, temperature: number): ZoneColors {
   const tempRatio = Math.min(temperature / 3, 1);
 
-  const baseColors = {
+  const baseColors: Record<string, { r: number; g: number; b: number }> = {
     agriculture: { r: 34, g: 197, b: 94 },
     coastal: { r: 20, g: 184, b: 166 },
     flood: { r: 59, g: 130, b: 246 },
+    portfolio: { r: 168, g: 85, b: 247 },
   };
 
   const warningColor = { r: 245, g: 158, b: 11 };
   const dangerColor = { r: 239, g: 68, b: 68 };
 
-  const base = baseColors[mode];
+  const base = baseColors[mode] || baseColors.agriculture;
   let target = warningColor;
   let ratio = tempRatio * 2;
 
@@ -126,8 +129,8 @@ export function getZoneColors(mode: ZoneMode, temperature: number): ZoneColors {
   return {
     fillColor: `rgb(${r}, ${g}, ${b})`,
     fillOpacity: 0.3 + tempRatio * 0.15,
-    outlineColor: mode === 'agriculture' ? '#22c55e' : mode === 'coastal' ? '#14b8a6' : '#f97316',
-    lossColor: LOSS_COLORS[mode],
-    baselineOutlineColor: BASELINE_COLORS[mode],
+    outlineColor: mode === 'agriculture' ? '#22c55e' : mode === 'coastal' ? '#14b8a6' : mode === 'portfolio' ? '#a855f7' : '#f97316',
+    lossColor: LOSS_COLORS[mode] || LOSS_COLORS.agriculture,
+    baselineOutlineColor: BASELINE_COLORS[mode] || BASELINE_COLORS.agriculture,
   };
 }
