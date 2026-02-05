@@ -61,7 +61,8 @@ const Index = () => {
   const [selectedYear, setSelectedYear] = useState(2026);
   const [isTimelinePlaying, setIsTimelinePlaying] = useState(false);
 
-  const [temperature, setTemperature] = useState(1.5);
+  const [tempIncrease, setTempIncrease] = useState(0);
+  const [rainChange, setRainChange] = useState(0);
   const [baselineZone, setBaselineZone] = useState<Polygon | null>(null);
 
   const [results, setResults] = useState({
@@ -105,18 +106,18 @@ const Index = () => {
 
   const currentZone = useMemo(() => {
     if (!baselineZone) return null;
-    return calculateZoneAtTemperature(baselineZone, temperature, mode as ZoneMode);
-  }, [baselineZone, temperature, mode]);
+    return calculateZoneAtTemperature(baselineZone, tempIncrease, mode as ZoneMode);
+  }, [baselineZone, tempIncrease, mode]);
 
   const zoneData: ZoneData | undefined = useMemo(() => {
     if (!baselineZone) return undefined;
     return {
       baselineZone,
       currentZone,
-      temperature,
+      temperature: tempIncrease,
       mode: mode as ZoneMode,
     };
-  }, [baselineZone, currentZone, temperature, mode]);
+  }, [baselineZone, currentZone, tempIncrease, mode]);
 
   const handleLocationSelect = useCallback((lat: number, lng: number) => {
     setMarkerPosition({ lat, lng });
@@ -125,8 +126,16 @@ const Index = () => {
     setShowFloodResults(false);
   }, []);
 
-  const handleTemperatureChange = useCallback((value: number) => {
-    setTemperature(value);
+  const handleTempIncreaseChange = useCallback((value: number) => {
+    setTempIncrease(value);
+  }, []);
+
+  const handleRainChangeChange = useCallback((value: number) => {
+    setRainChange(value);
+  }, []);
+
+  const handleSelectedYearChange = useCallback((value: number) => {
+    setSelectedYear(value);
   }, []);
 
   const handleSimulate = useCallback(async () => {
@@ -141,6 +150,8 @@ const Index = () => {
           lat: markerPosition.lat,
           lon: markerPosition.lng,
           crop: cropType,
+          temp_increase: tempIncrease,
+          rain_change: rainChange,
         },
       });
 
@@ -182,7 +193,7 @@ const Index = () => {
     } finally {
       setIsSimulating(false);
     }
-  }, [markerPosition, cropType]);
+  }, [markerPosition, cropType, tempIncrease, rainChange]);
 
   const handleCoastalSimulate = useCallback(
     async (width: number) => {
@@ -366,6 +377,8 @@ const Index = () => {
     setShowFloodResults(false);
     setSelectedYear(2026);
     setIsTimelinePlaying(false);
+    setTempIncrease(0);
+    setRainChange(0);
   }, []);
 
   const handleViewStateChange = useCallback((newViewState: ViewState) => {
@@ -467,8 +480,12 @@ const Index = () => {
             onSimulate={getCurrentSimulateHandler()}
             isSimulating={isCurrentlySimulating}
             canSimulate={canSimulate}
-            temperature={temperature}
-            onTemperatureChange={handleTemperatureChange}
+            tempIncrease={tempIncrease}
+            onTempIncreaseChange={handleTempIncreaseChange}
+            rainChange={rainChange}
+            onRainChangeChange={handleRainChangeChange}
+            selectedYear={selectedYear}
+            onSelectedYearChange={handleSelectedYearChange}
           />
         </div>
       )}
@@ -479,7 +496,7 @@ const Index = () => {
             baselineZone={baselineZone}
             currentZone={currentZone}
             mode={mode as ZoneMode}
-            temperature={temperature}
+            temperature={tempIncrease}
             visible={!!baselineZone && !!currentZone}
           />
         </div>
@@ -506,8 +523,12 @@ const Index = () => {
         canSimulate={canSimulate}
         onSimulate={getCurrentSimulateHandler()}
         isSimulating={isCurrentlySimulating}
-        temperature={temperature}
-        onTemperatureChange={handleTemperatureChange}
+        tempIncrease={tempIncrease}
+        onTempIncreaseChange={handleTempIncreaseChange}
+        rainChange={rainChange}
+        onRainChangeChange={handleRainChangeChange}
+        selectedYear={selectedYear}
+        onSelectedYearChange={handleSelectedYearChange}
       />
 
       <div className={`absolute top-4 z-40 flex items-center gap-2 ${
@@ -566,7 +587,7 @@ const Index = () => {
             mode={mode}
             latitude={markerPosition?.lat ?? null}
             longitude={markerPosition?.lng ?? null}
-            temperature={temperature}
+            temperature={tempIncrease}
             cropType={cropType}
             mangroveWidth={mangroveWidth}
             greenRoofsEnabled={greenRoofsEnabled}
