@@ -20,6 +20,10 @@ interface AgricultureResults {
   avoidedLoss: number;
   riskReduction: number;
   monthlyData: { month: string; value: number }[];
+  simulationDebug?: {
+    final_simulated_temp?: number;
+    final_simulated_rain?: number;
+  };
 }
 
 interface CoastalResults {
@@ -43,6 +47,8 @@ interface ResultsPanelProps {
   mangroveWidth?: number;
   greenRoofsEnabled?: boolean;
   permeablePavementEnabled?: boolean;
+  tempIncrease?: number;
+  rainChange?: number;
 }
 
 const formatCurrency = (value: number) => {
@@ -53,6 +59,53 @@ const formatCurrency = (value: number) => {
     return `$${(value / 1000).toFixed(0)}K`;
   }
   return `$${value.toFixed(2)}`;
+};
+// Helper to determine yield penalty explanation
+const getYieldExplanation = (
+  simulationDebug?: { final_simulated_temp?: number; final_simulated_rain?: number },
+  tempIncrease?: number,
+  rainChange?: number
+) => {
+  // Use simulation debug if available, otherwise estimate from inputs
+  const baseTemp = 28; // Baseline temp in °C
+  const baseRain = 700; // Baseline rain in mm
+  
+  const finalTemp = simulationDebug?.final_simulated_temp ?? (baseTemp + (tempIncrease ?? 0));
+  const finalRain = simulationDebug?.final_simulated_rain ?? (baseRain * (1 + (rainChange ?? 0) / 100));
+  
+  if (finalTemp > 32.0) {
+    return {
+      icon: '⚠️',
+      text: 'Yield penalized due to High Heat Stress (>32°C)',
+      colorClass: 'text-orange-400',
+      bgClass: 'bg-orange-500/10 border-orange-500/20',
+    };
+  }
+  
+  if (finalRain > 900) {
+    return {
+      icon: '💧',
+      text: 'Yield penalized due to Waterlogging (>900mm)',
+      colorClass: 'text-blue-400',
+      bgClass: 'bg-blue-500/10 border-blue-500/20',
+    };
+  }
+  
+  if (finalRain < 500) {
+    return {
+      icon: '🍂',
+      text: 'Yield penalized due to Drought (<500mm)',
+      colorClass: 'text-amber-600',
+      bgClass: 'bg-amber-600/10 border-amber-600/20',
+    };
+  }
+  
+  return {
+    icon: '✅',
+    text: 'Climate conditions are optimal',
+    colorClass: 'text-emerald-400',
+    bgClass: 'bg-emerald-500/10 border-emerald-500/20',
+  };
 };
 
 export const ResultsPanel = ({
@@ -65,6 +118,8 @@ export const ResultsPanel = ({
   mangroveWidth = 100,
   greenRoofsEnabled = false,
   permeablePavementEnabled = false,
+  tempIncrease = 0,
+  rainChange = 0,
 }: ResultsPanelProps) => {
   if (!visible && !isLoading) return null;
 
@@ -84,9 +139,10 @@ export const ResultsPanel = ({
   }
 
   if (mode === 'agriculture' && agricultureResults) {
-    const { avoidedLoss, riskReduction, monthlyData } = agricultureResults;
+    const { avoidedLoss, riskReduction, monthlyData, simulationDebug } = agricultureResults;
     const maxValue = Math.max(...monthlyData.map((d) => d.value));
     const isPositive = riskReduction > 0;
+    const yieldExplanation = getYieldExplanation(simulationDebug, tempIncrease, rainChange);
 
     return (
       <GlassCard className="w-full lg:w-80 p-3 sm:p-4 lg:p-5 border-emerald-500/20 animate-in slide-in-from-bottom lg:slide-in-from-right duration-300">
@@ -96,7 +152,7 @@ export const ResultsPanel = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 lg:w-5 lg:h-5 text-emerald-400" />
-              <span className="text-sm lg:text-base font-semibold text-white">Resilience Results</span>
+              <span className="text-sm lg:text-base font-semibold text-white">Projected Yield Potential</span>
             </div>
             <div
               className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
@@ -109,6 +165,14 @@ export const ResultsPanel = ({
               {isPositive ? '+' : ''}
               {riskReduction}%
             </div>
+          </div>
+
+          {/* Dynamic Root Cause Explanation */}
+          <div className={`p-2.5 rounded-lg border ${yieldExplanation.bgClass}`}>
+            <p className={`text-xs font-medium ${yieldExplanation.colorClass}`}>
+              <span className="mr-1.5">{yieldExplanation.icon}</span>
+              {yieldExplanation.text}
+            </p>
           </div>
 
           <div className="space-y-1">
@@ -144,6 +208,21 @@ export const ResultsPanel = ({
             <div className="flex items-center gap-2 text-[10px] lg:text-xs text-white/50">
               <BarChart3 className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
               Monthly Risk Profile
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="w-3 h-3 text-white/40 hover:text-white/60 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="top"
+                    className="max-w-[220px] bg-slate-900/95 backdrop-blur-xl border-white/10"
+                  >
+                    <p className="text-xs">
+                      Maize requires 500-900mm of rain. Too little causes drought; too much causes root rot.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             <div className="flex items-end gap-1 lg:gap-1.5 h-16 lg:h-20">
               {monthlyData.map((data) => {

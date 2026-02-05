@@ -580,6 +580,8 @@ const Index = () => {
             mangroveWidth={mangroveWidth}
             greenRoofsEnabled={greenRoofsEnabled}
             permeablePavementEnabled={permeablePavementEnabled}
+            tempIncrease={tempIncrease}
+            rainChange={rainChange}
           />
 
           <AnalyticsHighlightsCard

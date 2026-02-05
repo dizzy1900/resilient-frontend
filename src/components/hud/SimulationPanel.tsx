@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Zap, Loader2, Thermometer, Calendar, CloudRain } from 'lucide-react';
+import { Zap, Loader2, Thermometer, Calendar, CloudRain, Info } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 interface SimulationPanelProps {
@@ -45,6 +46,8 @@ const calculateTempFromYear = (year: number): number => {
   // If beyond the last anchor, return the last value
   return CLIMATE_ANCHORS[CLIMATE_ANCHORS.length - 1].temp;
 };
+// Baseline rainfall in mm for calculations
+const BASELINE_RAINFALL_MM = 700;
 
 const modeConfig = {
   agriculture: {
@@ -152,9 +155,16 @@ export const SimulationPanel = ({
   };
 
   const getRainBadgeColor = () => {
-    if (rainChange < -15) return 'bg-red-500/20 text-red-400 border-red-500/30';
-    if (rainChange < 0) return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-    return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+    const projectedRain = BASELINE_RAINFALL_MM * (1 + rainChange / 100);
+    // Waterlogging threshold
+    if (projectedRain > 900) return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+    // Drought threshold
+    if (projectedRain < 500) return 'bg-amber-600/20 text-amber-600 border-amber-600/30';
+    return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+  };
+
+  const getProjectedRainfall = () => {
+    return Math.round(BASELINE_RAINFALL_MM * (1 + rainChange / 100));
   };
 
   const buttonLabel =
@@ -235,6 +245,21 @@ export const SimulationPanel = ({
             <div className="flex items-center gap-1.5">
               <CloudRain className="w-3 h-3 text-blue-400" />
               <span className="text-[10px] lg:text-xs text-white/50">Rainfall Δ</span>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="w-3 h-3 text-white/40 hover:text-white/60 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="top"
+                    className="max-w-[200px] bg-slate-900/95 backdrop-blur-xl border-white/10"
+                  >
+                    <p className="text-xs">
+                      Projected: {getProjectedRainfall()}mm. Optimal range is 500-900mm for maize.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             <Badge className={cn('text-[10px] px-2 py-0.5 font-bold tabular-nums border', getRainBadgeColor())}>
               {rainChange > 0 ? '+' : ''}{rainChange}%
@@ -258,7 +283,7 @@ export const SimulationPanel = ({
         {/* Resilience Score */}
         <div className="space-y-1.5 pt-1">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] lg:text-xs text-white/50">Resilience Score</span>
+            <span className="text-[10px] lg:text-xs text-white/50">Projected Yield Potential</span>
             <span className={cn('text-xs lg:text-sm font-semibold tabular-nums', getScoreTextColor())}>
               {Math.round(resilienceScore)}%
             </span>
