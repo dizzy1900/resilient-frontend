@@ -1,8 +1,10 @@
-import { Zap, Loader2, Thermometer } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Zap, Loader2, Thermometer, Calendar, CloudRain } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 interface SimulationPanelProps {
@@ -11,9 +13,38 @@ interface SimulationPanelProps {
   isSimulating: boolean;
   canSimulate: boolean;
   label?: string;
-  temperature: number;
-  onTemperatureChange: (value: number) => void;
+  tempIncrease: number;
+  onTempIncreaseChange: (value: number) => void;
+  rainChange: number;
+  onRainChangeChange: (value: number) => void;
+  selectedYear: number;
+  onSelectedYearChange: (value: number) => void;
 }
+
+// Scientific anchor points from research
+const CLIMATE_ANCHORS = [
+  { year: 2026, temp: 0.0 },
+  { year: 2030, temp: 1.5 },
+  { year: 2050, temp: 2.1 },
+];
+
+// Calculate temperature from year using linear interpolation
+const calculateTempFromYear = (year: number): number => {
+  // Find the two anchor points to interpolate between
+  for (let i = 0; i < CLIMATE_ANCHORS.length - 1; i++) {
+    const current = CLIMATE_ANCHORS[i];
+    const next = CLIMATE_ANCHORS[i + 1];
+    
+    if (year >= current.year && year <= next.year) {
+      // Linear interpolation
+      const t = (year - current.year) / (next.year - current.year);
+      return current.temp + t * (next.temp - current.temp);
+    }
+  }
+  
+  // If beyond the last anchor, return the last value
+  return CLIMATE_ANCHORS[CLIMATE_ANCHORS.length - 1].temp;
+};
 
 const modeConfig = {
   agriculture: {
@@ -48,15 +79,56 @@ export const SimulationPanel = ({
   isSimulating,
   canSimulate,
   label,
-  temperature,
-  onTemperatureChange,
+  tempIncrease,
+  onTempIncreaseChange,
+  rainChange,
+  onRainChangeChange,
+  selectedYear,
+  onSelectedYearChange,
 }: SimulationPanelProps) => {
   const config = modeConfig[mode];
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const [isDebouncing, setIsDebouncing] = useState(false);
+
+  // Handle year change with automatic temperature interpolation
+  const handleYearChange = useCallback((year: number) => {
+    onSelectedYearChange(year);
+    const interpolatedTemp = calculateTempFromYear(year);
+    onTempIncreaseChange(Math.round(interpolatedTemp * 10) / 10);
+  }, [onSelectedYearChange, onTempIncreaseChange]);
+
+  // Debounced simulation trigger
+  const triggerDebouncedSimulation = useCallback(() => {
+    if (!canSimulate) return;
+    
+    setIsDebouncing(true);
+    
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    
+    debounceRef.current = setTimeout(() => {
+      setIsDebouncing(false);
+      onSimulate();
+    }, 500);
+  }, [canSimulate, onSimulate]);
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
 
   const getResilienceScore = () => {
     const base = 85;
-    const reduction = temperature * 20;
-    return Math.max(0, Math.min(100, base - reduction));
+    // Temperature impact: each degree reduces score
+    const tempReduction = tempIncrease * 15;
+    // Rain impact: negative rain change reduces score, positive slightly improves
+    const rainImpact = rainChange < 0 ? Math.abs(rainChange) * 0.5 : rainChange * -0.2;
+    return Math.max(0, Math.min(100, base - tempReduction + rainImpact));
   };
 
   const resilienceScore = getResilienceScore();
@@ -73,6 +145,18 @@ export const SimulationPanel = ({
     return 'text-red-400';
   };
 
+  const getTempBadgeColor = () => {
+    if (tempIncrease > 2.0) return 'bg-red-500/20 text-red-400 border-red-500/30';
+    if (tempIncrease > 1.5) return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+    return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+  };
+
+  const getRainBadgeColor = () => {
+    if (rainChange < -15) return 'bg-red-500/20 text-red-400 border-red-500/30';
+    if (rainChange < 0) return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+    return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+  };
+
   const buttonLabel =
     label ||
     (mode === 'agriculture'
@@ -83,33 +167,96 @@ export const SimulationPanel = ({
 
   return (
     <GlassCard className="w-full lg:w-80 p-2.5 sm:p-3 lg:p-4">
-      <div className="space-y-2.5 sm:space-y-3 lg:space-y-4">
+      <div className="space-y-3 lg:space-y-4">
         <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs lg:text-sm font-medium text-white/70">
           <Thermometer className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 text-amber-400" />
           <span>Simulation Parameters</span>
+          {isDebouncing && (
+            <span className="ml-auto text-[10px] text-white/40 animate-pulse">Updating...</span>
+          )}
         </div>
 
-        <div className="space-y-2">
+        {/* Year Slider (Scientific Timeline) */}
+        <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] lg:text-xs text-white/50">Temperature Increase</span>
-            <span className="text-sm lg:text-base font-bold text-amber-400 tabular-nums">+{temperature.toFixed(1)}°C</span>
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-3 h-3 text-white/50" />
+              <span className="text-[10px] lg:text-xs text-white/50">Projection Year</span>
+            </div>
+            <Badge className={cn('text-[10px] px-2 py-0.5 border', getTempBadgeColor())}>
+              {selectedYear}
+            </Badge>
           </div>
           <Slider
-            value={[temperature]}
-            onValueChange={(v) => onTemperatureChange(v[0])}
+            value={[selectedYear]}
+            onValueChange={(v) => handleYearChange(v[0])}
+            min={2026}
+            max={2050}
+            step={1}
+            className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-gradient-to-r [&_[data-radix-slider-range]]:from-emerald-500 [&_[data-radix-slider-range]]:via-amber-500 [&_[data-radix-slider-range]]:to-red-500 [&_[data-radix-slider-thumb]]:border-white/50 [&_[data-radix-slider-thumb]]:bg-white"
+          />
+          <div className="flex justify-between text-[9px] lg:text-[10px] text-white/40">
+            <span>2026</span>
+            <span>2030</span>
+            <span>2040</span>
+            <span>2050</span>
+          </div>
+        </div>
+
+        {/* Temperature Slider */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <Thermometer className="w-3 h-3 text-amber-400" />
+              <span className="text-[10px] lg:text-xs text-white/50">Temperature Δ</span>
+            </div>
+            <Badge className={cn('text-[10px] px-2 py-0.5 font-bold tabular-nums border', getTempBadgeColor())}>
+              +{tempIncrease.toFixed(1)}°C
+            </Badge>
+          </div>
+          <Slider
+            value={[tempIncrease]}
+            onValueChange={(v) => onTempIncreaseChange(v[0])}
             min={0}
-            max={3}
+            max={5}
             step={0.1}
             className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-gradient-to-r [&_[data-radix-slider-range]]:from-emerald-500 [&_[data-radix-slider-range]]:via-amber-500 [&_[data-radix-slider-range]]:to-red-500 [&_[data-radix-slider-thumb]]:border-white/50 [&_[data-radix-slider-thumb]]:bg-white"
           />
-          <div className="flex justify-between text-[10px] lg:text-xs text-white/40">
+          <div className="flex justify-between text-[9px] lg:text-[10px] text-white/40">
             <span>0°C</span>
-            <span>+1.5°C</span>
-            <span>+3°C</span>
+            <span>+2.5°C</span>
+            <span>+5°C</span>
           </div>
         </div>
 
-        <div className="space-y-2">
+        {/* Rainfall Change Slider */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <CloudRain className="w-3 h-3 text-blue-400" />
+              <span className="text-[10px] lg:text-xs text-white/50">Rainfall Δ</span>
+            </div>
+            <Badge className={cn('text-[10px] px-2 py-0.5 font-bold tabular-nums border', getRainBadgeColor())}>
+              {rainChange > 0 ? '+' : ''}{rainChange}%
+            </Badge>
+          </div>
+          <Slider
+            value={[rainChange]}
+            onValueChange={(v) => onRainChangeChange(v[0])}
+            min={-30}
+            max={30}
+            step={5}
+            className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-gradient-to-r [&_[data-radix-slider-range]]:from-amber-500 [&_[data-radix-slider-range]]:to-blue-500 [&_[data-radix-slider-thumb]]:border-white/50 [&_[data-radix-slider-thumb]]:bg-white"
+          />
+          <div className="flex justify-between text-[9px] lg:text-[10px] text-white/40">
+            <span>-30%</span>
+            <span>0%</span>
+            <span>+30%</span>
+          </div>
+        </div>
+
+        {/* Resilience Score */}
+        <div className="space-y-1.5 pt-1">
           <div className="flex items-center justify-between">
             <span className="text-[10px] lg:text-xs text-white/50">Resilience Score</span>
             <span className={cn('text-xs lg:text-sm font-semibold tabular-nums', getScoreTextColor())}>
@@ -129,7 +276,7 @@ export const SimulationPanel = ({
           onClick={onSimulate}
           disabled={!canSimulate || isSimulating}
           className={cn(
-            'w-full h-11 lg:h-12 text-xs lg:text-sm font-semibold text-white transition-all duration-200 rounded-xl',
+            'w-full h-10 lg:h-11 text-xs lg:text-sm font-semibold text-white transition-all duration-200 rounded-xl',
             'hover:scale-[1.02] active:scale-[0.98]',
             config.gradientClass,
             config.shadowClass,
