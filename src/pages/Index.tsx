@@ -552,14 +552,14 @@ const Index = () => {
           {isSplitMode ? (
             <>
               <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="hidden md:inline">Exit Comparison</span>
-              <span className="md:hidden">Exit</span>
+              <span className="hidden xl:inline">Exit Comparison</span>
+              <span className="xl:hidden">Exit</span>
             </>
           ) : (
             <>
               <Columns2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="hidden md:inline">Compare Scenarios</span>
-              <span className="md:hidden">Compare</span>
+              <span className="hidden xl:inline">Compare Scenarios</span>
+              <span className="xl:hidden">Compare</span>
             </>
           )}
         </Button>
