@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Zap, Loader2, Thermometer, Calendar, CloudRain, Info, Leaf, AlertTriangle } from 'lucide-react';
+import { Zap, Loader2, Thermometer, Calendar, CloudRain, Info } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -149,29 +149,15 @@ export const SimulationPanel = ({
     return 'text-red-400';
   };
 
-  const getGWLBadgeStyle = () => {
+  const getGWLBadgeColor = () => {
     if (globalTempTarget <= 1.5) {
-      return {
-        colorClass: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-        label: 'Paris Agreement Goal',
-        icon: <Leaf className="w-3 h-3" />,
-      };
+      return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
     }
     if (globalTempTarget > 2.0) {
-      return {
-        colorClass: 'bg-red-500/20 text-red-400 border-red-500/30',
-        label: 'Critical Threshold',
-        icon: <AlertTriangle className="w-3 h-3" />,
-      };
+      return 'bg-red-500/20 text-red-400 border-red-500/30';
     }
-    return {
-      colorClass: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-      label: null,
-      icon: null,
-    };
+    return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
   };
-
-  const gwlBadgeStyle = getGWLBadgeStyle();
 
   const getRainBadgeColor = () => {
     const projectedRain = BASELINE_RAINFALL_MM * (1 + rainChange / 100);
@@ -239,17 +225,9 @@ export const SimulationPanel = ({
               <Thermometer className="w-3 h-3 text-amber-400" />
               <span className="text-[10px] lg:text-xs text-white/50">Global Warming</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              {gwlBadgeStyle.label && (
-                <Badge className={cn('text-[9px] px-1.5 py-0.5 border flex items-center gap-1', gwlBadgeStyle.colorClass)}>
-                  {gwlBadgeStyle.icon}
-                  <span className="hidden sm:inline">{gwlBadgeStyle.label}</span>
-                </Badge>
-              )}
-              <Badge className={cn('text-[10px] px-2 py-0.5 font-bold tabular-nums border', gwlBadgeStyle.colorClass)}>
-                +{globalTempTarget.toFixed(1)}°C
-              </Badge>
-            </div>
+            <Badge className={cn('text-[10px] px-2 py-0.5 font-bold tabular-nums border', getGWLBadgeColor())}>
+              +{globalTempTarget.toFixed(1)}°C
+            </Badge>
           </div>
           <Slider
             value={[globalTempTarget]}
