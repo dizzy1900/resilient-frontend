@@ -95,6 +95,14 @@ const Index = () => {
     valueProtected: 0,
   });
 
+  // Spatial analysis data from API (for Viable Growing Area card)
+  const [spatialAnalysis, setSpatialAnalysis] = useState<{
+    baseline_sq_km: number;
+    future_sq_km: number;
+    loss_pct: number;
+  } | null>(null);
+  const [isSpatialLoading, setIsSpatialLoading] = useState(false);
+
   const mapStyle: MapStyle = mode === 'coastal' ? 'satellite' : mode === 'flood' ? 'flood' : 'dark';
   const showFloodOverlay = mode === 'flood' && markerPosition !== null;
   const canSimulate = markerPosition !== null;
@@ -151,7 +159,9 @@ const Index = () => {
     if (!markerPosition) return;
 
     setIsSimulating(true);
+    setIsSpatialLoading(true);
     setShowResults(false);
+    setSpatialAnalysis(null);
 
     try {
       // Calculate delta for API (backend expects relative increase)
@@ -219,6 +229,17 @@ const Index = () => {
         });
       }
 
+      // Parse spatial_analysis from API if available
+      const apiSpatialAnalysis = result?.data?.spatial_analysis;
+      if (apiSpatialAnalysis) {
+        setSpatialAnalysis({
+          baseline_sq_km: apiSpatialAnalysis.baseline_sq_km ?? 0,
+          future_sq_km: apiSpatialAnalysis.future_sq_km ?? 0,
+          loss_pct: apiSpatialAnalysis.loss_pct ?? 0,
+        });
+      }
+      setIsSpatialLoading(false);
+
       setResults({
         avoidedLoss: Math.round(avoidedLoss * 100) / 100,
         riskReduction: Math.round(percentageImprovement * 100),
@@ -240,6 +261,7 @@ const Index = () => {
       });
     } finally {
       setIsSimulating(false);
+      setIsSpatialLoading(false);
     }
   }, [markerPosition, cropType, globalTempTarget, rainChange]);
 
@@ -540,13 +562,15 @@ const Index = () => {
       )}
 
       {mode !== 'portfolio' && (
-        <div className="hidden lg:block absolute bottom-32 left-[344px] xl:left-[360px] z-30 max-w-[180px]">
+        <div className="hidden lg:block absolute bottom-32 left-[344px] xl:left-[360px] z-30 max-w-[200px]">
           <ZoneLegend
             baselineZone={baselineZone}
             currentZone={currentZone}
             mode={mode as ZoneMode}
             temperature={globalTempTarget - 1.4}
             visible={!!baselineZone && !!currentZone}
+            spatialAnalysis={mode === 'agriculture' ? spatialAnalysis : null}
+            isSpatialLoading={mode === 'agriculture' && isSpatialLoading}
           />
         </div>
       )}
