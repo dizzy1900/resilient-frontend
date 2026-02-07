@@ -97,10 +97,10 @@ const Index = () => {
     floodDepth: null,
   });
 
-  // Coastal-specific state
-  const [seaLevelRise, setSeaLevelRise] = useState(0.05);
+  // Coastal-specific state (calibrated to Year 2000 baseline)
+  const [totalSLR, setTotalSLR] = useState(0.10); // Default: 2026 value (includes 2000-2026 rise)
   const [includeStormSurge, setIncludeStormSurge] = useState(false);
-  const [coastalSelectedYear, setCoastalSelectedYear] = useState(2030);
+  const [coastalSelectedYear, setCoastalSelectedYear] = useState(2026);
 
   const [floodResults, setFloodResults] = useState({
     floodDepthReduction: 0,
@@ -284,16 +284,16 @@ const Index = () => {
       setIsCoastalSimulating(true);
 
       try {
-        // Calculate total water level for the API
+        // Calculate total water level for the API (totalSLR already includes 2000-2026 rise)
         const stormSurgeHeight = includeStormSurge ? 2.5 : 0;
-        const totalWaterLevel = seaLevelRise + stormSurgeHeight;
+        const totalWaterLevel = totalSLR + stormSurgeHeight;
 
         const { data: responseData, error } = await supabase.functions.invoke('simulate-coastal', {
           body: {
             lat: markerPosition.lat,
             lon: markerPosition.lng,
             mangrove_width: mangroveWidth,
-            sea_level_rise: seaLevelRise,
+            slr_projection: totalSLR, // Send totalSLR directly (vs Year 2000 baseline)
             include_storm_surge: includeStormSurge,
           },
         });
@@ -318,7 +318,7 @@ const Index = () => {
           stormWave: rawStormWave !== null ? Math.round(rawStormWave * 10) / 10 : null,
           isUnderwater: rawIsUnderwater ?? (totalWaterLevel > 1.5),
           floodDepth: rawFloodDepth ?? (totalWaterLevel > 1.5 ? totalWaterLevel - 1.5 : null),
-          seaLevelRise,
+          seaLevelRise: totalSLR,
           includeStormSurge,
         });
         setShowCoastalResults(true);
@@ -326,7 +326,7 @@ const Index = () => {
         console.error('Coastal simulation failed:', error);
         // Fallback calculation
         const stormSurgeHeight = includeStormSurge ? 2.5 : 0;
-        const totalWaterLevel = seaLevelRise + stormSurgeHeight;
+        const totalWaterLevel = totalSLR + stormSurgeHeight;
         const isUnderwater = totalWaterLevel > 1.5;
         
         setCoastalResults({
@@ -335,7 +335,7 @@ const Index = () => {
           stormWave: null,
           isUnderwater,
           floodDepth: isUnderwater ? totalWaterLevel - 1.5 : null,
-          seaLevelRise,
+          seaLevelRise: totalSLR,
           includeStormSurge,
         });
         setShowCoastalResults(true);
@@ -348,7 +348,7 @@ const Index = () => {
         setIsCoastalSimulating(false);
       }
     },
-    [markerPosition, propertyValue, mangroveWidth, seaLevelRise, includeStormSurge]
+    [markerPosition, propertyValue, mangroveWidth, totalSLR, includeStormSurge]
   );
 
   const getInterventionType = useCallback(() => {
@@ -582,8 +582,8 @@ const Index = () => {
             onSimulate={handleCoastalSimulate}
             isSimulating={isCoastalSimulating}
             canSimulate={canSimulate}
-            seaLevelRise={seaLevelRise}
-            onSeaLevelRiseChange={setSeaLevelRise}
+            totalSLR={totalSLR}
+            onTotalSLRChange={setTotalSLR}
             includeStormSurge={includeStormSurge}
             onIncludeStormSurgeChange={setIncludeStormSurge}
             selectedYear={coastalSelectedYear}
