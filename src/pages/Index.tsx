@@ -185,9 +185,19 @@ const Index = () => {
       const avoidedLoss = analysis.avoided_loss ?? 0;
       const percentageImprovement = analysis.percentage_improvement ?? 0;
       
-      // Calculate yield potential as a percentage (normalized 0-100)
-      // Using resilient seed yield as the primary metric
-      const yieldPotential = Math.min(100, Math.max(0, yieldResilient));
+      // Extract resilience_score from API - this is the single source of truth
+      // Look for resilience_score in multiple possible locations in the response
+      const resilienceScore = 
+        analysis.resilience_score ?? 
+        predictions.resilient_seed?.resilience_score ?? 
+        result?.data?.resilience_score ??
+        result?.resilience_score ??
+        null;
+      
+      // Use resilience_score as the unified yield potential (0-100 scale)
+      const yieldPotential = resilienceScore !== null 
+        ? Math.min(100, Math.max(0, resilienceScore)) 
+        : Math.min(100, Math.max(0, yieldResilient));
 
       // Parse chart_data from API if available
       if (apiChartData) {
