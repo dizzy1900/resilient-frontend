@@ -11,28 +11,31 @@ interface CoastalSimulationPanelProps {
   onSimulate: () => void;
   isSimulating: boolean;
   canSimulate: boolean;
-  seaLevelRise: number;
-  onSeaLevelRiseChange: (value: number) => void;
+  totalSLR: number;
+  onTotalSLRChange: (value: number) => void;
   includeStormSurge: boolean;
   onIncludeStormSurgeChange: (value: boolean) => void;
   selectedYear: number;
   onSelectedYearChange: (value: number) => void;
 }
 
-// SLR anchor points (IPCC projections)
+// SLR anchor points (vs Year 2000 baseline for elevation map calibration)
+// These values represent TOTAL sea level rise since year 2000
 const SLR_ANCHORS = [
-  { year: 2030, slr: 0.05 },
-  { year: 2050, slr: 0.19 },
+  { year: 2026, slr: 0.10 }, // Current: includes 2000-2026 rise
+  { year: 2030, slr: 0.13 },
+  { year: 2050, slr: 0.27 },
 ];
 
-// Calculate SLR from year using linear interpolation
+// Calculate SLR from year using linear interpolation (vs Year 2000 baseline)
 const calculateSLRFromYear = (year: number): number => {
+  // Before 2026, interpolate from 0 at year 2000 to 0.10 at 2026
   if (year <= SLR_ANCHORS[0].year) {
-    // Linear interpolation from 0 at 2025 to first anchor
-    const t = (year - 2025) / (SLR_ANCHORS[0].year - 2025);
+    const t = (year - 2000) / (SLR_ANCHORS[0].year - 2000);
     return t * SLR_ANCHORS[0].slr;
   }
   
+  // Between anchor points - linear interpolation
   for (let i = 0; i < SLR_ANCHORS.length - 1; i++) {
     const current = SLR_ANCHORS[i];
     const next = SLR_ANCHORS[i + 1];
@@ -43,9 +46,10 @@ const calculateSLRFromYear = (year: number): number => {
     }
   }
   
-  // Beyond last anchor - extrapolate
+  // Beyond last anchor - extrapolate linearly
   const last = SLR_ANCHORS[SLR_ANCHORS.length - 1];
-  const rate = (last.slr - SLR_ANCHORS[0].slr) / (last.year - SLR_ANCHORS[0].year);
+  const prev = SLR_ANCHORS[SLR_ANCHORS.length - 2];
+  const rate = (last.slr - prev.slr) / (last.year - prev.year);
   return last.slr + rate * (year - last.year);
 };
 
@@ -55,8 +59,8 @@ export const CoastalSimulationPanel = ({
   onSimulate,
   isSimulating,
   canSimulate,
-  seaLevelRise,
-  onSeaLevelRiseChange,
+  totalSLR,
+  onTotalSLRChange,
   includeStormSurge,
   onIncludeStormSurgeChange,
   selectedYear,
@@ -65,12 +69,12 @@ export const CoastalSimulationPanel = ({
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const [isDebouncing, setIsDebouncing] = useState(false);
 
-  // Handle year change with automatic SLR interpolation
+  // Handle year change with automatic SLR interpolation (vs Year 2000 baseline)
   const handleYearChange = useCallback((year: number) => {
     onSelectedYearChange(year);
     const interpolatedSLR = calculateSLRFromYear(year);
-    onSeaLevelRiseChange(Math.round(interpolatedSLR * 100) / 100);
-  }, [onSelectedYearChange, onSeaLevelRiseChange]);
+    onTotalSLRChange(Math.round(interpolatedSLR * 100) / 100);
+  }, [onSelectedYearChange, onTotalSLRChange]);
 
   // Debounced simulation trigger
   const triggerDebouncedSimulation = useCallback(() => {
@@ -98,13 +102,13 @@ export const CoastalSimulationPanel = ({
   }, []);
 
   // Calculate total water level (SLR + optional storm surge)
-  const totalWaterLevel = seaLevelRise + (includeStormSurge ? STORM_SURGE_HEIGHT : 0);
+  const totalWaterLevel = totalSLR + (includeStormSurge ? STORM_SURGE_HEIGHT : 0);
 
   const getSLRBadgeColor = () => {
-    if (seaLevelRise <= 0.1) {
+    if (totalSLR <= 0.1) {
       return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
     }
-    if (seaLevelRise <= 0.5) {
+    if (totalSLR <= 0.5) {
       return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
     }
     return 'bg-red-500/20 text-red-400 border-red-500/30';
@@ -141,24 +145,24 @@ export const CoastalSimulationPanel = ({
           <Slider
             value={[selectedYear]}
             onValueChange={(v) => handleYearChange(v[0])}
-            min={2025}
-            max={2100}
-            step={5}
+            min={2026}
+            max={2050}
+            step={1}
             className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-gradient-to-r [&_[data-radix-slider-range]]:from-teal-500 [&_[data-radix-slider-range]]:via-cyan-500 [&_[data-radix-slider-range]]:to-blue-500 [&_[data-radix-slider-thumb]]:border-white/50 [&_[data-radix-slider-thumb]]:bg-white"
           />
           <div className="flex justify-between text-[9px] lg:text-[10px] text-white/40">
-            <span>2025</span>
+            <span>2026</span>
+            <span>2038</span>
             <span>2050</span>
-            <span>2100</span>
           </div>
         </div>
 
-        {/* Sea Level Rise Slider */}
+        {/* Sea Level Rise Slider (vs Year 2000) */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <Waves className="w-3 h-3 text-teal-400" />
-              <span className="text-[10px] lg:text-xs text-white/50">Sea Level Rise (SLR)</span>
+              <span className="text-[10px] lg:text-xs text-white/50">Sea Level Rise (vs 2000)</span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -166,31 +170,37 @@ export const CoastalSimulationPanel = ({
                   </TooltipTrigger>
                   <TooltipContent
                     side="top"
-                    className="max-w-[200px] bg-slate-900/95 backdrop-blur-xl border-white/10"
+                    className="max-w-[220px] bg-slate-900/95 backdrop-blur-xl border-white/10"
                   >
                     <p className="text-xs">
-                      Projected rise in mean sea level. Values auto-update based on IPCC projections for the selected year.
+                      Total sea level rise since year 2000, when the elevation map was recorded. Values auto-update based on IPCC projections for the selected year.
                     </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>
             <Badge className={cn('text-[10px] px-2 py-0.5 font-bold tabular-nums border', getSLRBadgeColor())}>
-              +{seaLevelRise.toFixed(2)}m
+              +{totalSLR.toFixed(2)}m
             </Badge>
           </div>
           <Slider
-            value={[seaLevelRise]}
-            onValueChange={(v) => onSeaLevelRiseChange(v[0])}
+            value={[totalSLR]}
+            onValueChange={(v) => onTotalSLRChange(v[0])}
             min={0}
             max={2.0}
-            step={0.01}
+            step={0.05}
             className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-gradient-to-r [&_[data-radix-slider-range]]:from-teal-500 [&_[data-radix-slider-range]]:via-cyan-500 [&_[data-radix-slider-range]]:to-blue-500 [&_[data-radix-slider-thumb]]:border-white/50 [&_[data-radix-slider-thumb]]:bg-white"
           />
           <div className="flex justify-between text-[9px] lg:text-[10px] text-white/40">
             <span>0m</span>
             <span>1.0m</span>
             <span>2.0m</span>
+          </div>
+          {/* Calibration badge */}
+          <div className="flex items-center gap-1 pt-0.5">
+            <Badge variant="outline" className="text-[9px] px-1.5 py-0 border-cyan-500/30 text-cyan-400/80 bg-cyan-500/5">
+              Includes 2000–2026 rise
+            </Badge>
           </div>
         </div>
 
