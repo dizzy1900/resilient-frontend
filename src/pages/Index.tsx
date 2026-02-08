@@ -35,6 +35,23 @@ const mockMonthlyData = [
   { month: 'Dec', value: 35 },
 ];
 
+// Generate fallback storm chart data based on SLR
+const generateFallbackStormChartData = (slr: number) => {
+  // Base surge heights for different return periods (in meters)
+  const baseSurges = {
+    '1yr': 0.5,
+    '10yr': 1.2,
+    '50yr': 2.0,
+    '100yr': 2.8,
+  };
+
+  return Object.entries(baseSurges).map(([period, currentDepth]) => ({
+    period,
+    current_depth: currentDepth,
+    future_depth: currentDepth + slr, // SLR adds to future surge depth
+  }));
+};
+
 const Index = () => {
   const [mode, setMode] = useState<DashboardMode>('agriculture');
   const [cropType, setCropType] = useState('maize');
@@ -89,6 +106,7 @@ const Index = () => {
     floodDepth?: number | null;
     seaLevelRise?: number;
     includeStormSurge?: boolean;
+    stormChartData?: Array<{ period: string; current_depth: number; future_depth: number }>;
   }>({
     avoidedLoss: 0,
     slope: null,
@@ -308,6 +326,10 @@ const Index = () => {
         const rawAvoidedLoss = data.avoided_loss;
         const rawIsUnderwater = data.is_underwater;
         const rawFloodDepth = data.flood_depth;
+        const rawStormChartData = data.storm_chart_data;
+
+        // Generate fallback storm chart data if API doesn't provide it
+        const stormChartData = rawStormChartData ?? generateFallbackStormChartData(totalSLR);
 
         setCoastalResults({
           avoidedLoss:
@@ -320,6 +342,7 @@ const Index = () => {
           floodDepth: rawFloodDepth ?? (totalWaterLevel > 1.5 ? totalWaterLevel - 1.5 : null),
           seaLevelRise: totalSLR,
           includeStormSurge,
+          stormChartData,
         });
         setShowCoastalResults(true);
       } catch (error) {
@@ -337,6 +360,7 @@ const Index = () => {
           floodDepth: isUnderwater ? totalWaterLevel - 1.5 : null,
           seaLevelRise: totalSLR,
           includeStormSurge,
+          stormChartData: generateFallbackStormChartData(totalSLR),
         });
         setShowCoastalResults(true);
         toast({

@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { cn } from '@/lib/utils';
+import { FloodFrequencyChart, StormChartDataItem } from '@/components/analytics/FloodFrequencyChart';
 
 interface AgricultureResults {
   avoidedLoss: number;
@@ -36,6 +37,7 @@ interface CoastalResults {
   floodDepth?: number | null;
   seaLevelRise?: number;
   includeStormSurge?: boolean;
+  stormChartData?: StormChartDataItem[];
 }
 
 interface FloodResults {
@@ -267,7 +269,7 @@ export const ResultsPanel = ({
   }
 
   if (mode === 'coastal' && coastalResults) {
-    const { avoidedLoss, slope, stormWave, isUnderwater, floodDepth, seaLevelRise, includeStormSurge } = coastalResults;
+    const { avoidedLoss, slope, stormWave, isUnderwater, floodDepth, seaLevelRise, includeStormSurge, stormChartData } = coastalResults;
 
     return (
       <GlassCard className="w-full lg:w-80 p-3 sm:p-4 lg:p-5 border-teal-500/20 animate-in slide-in-from-bottom lg:slide-in-from-right duration-300">
@@ -320,6 +322,34 @@ export const ResultsPanel = ({
             <div className="flex items-center gap-2 p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
               <CloudRain className="w-4 h-4 text-cyan-400" />
               <span className="text-xs text-cyan-400">1-in-100 Year Storm Surge (+2.5m)</span>
+            </div>
+          )}
+
+          {/* Flood Frequency Chart */}
+          {stormChartData && stormChartData.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5">
+                <BarChart3 className="w-3.5 h-3.5 text-white/60" />
+                <span className="text-[10px] lg:text-xs text-white/50">Flood Frequency</span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-3 h-3 text-white/40 hover:text-white/60 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      className="max-w-[240px] bg-slate-900/95 backdrop-blur-xl border-white/10"
+                    >
+                      <p className="text-xs">
+                        Shows how Sea Level Rise amplifies storm impact. Note how a future 10-year storm (Orange) might become as tall as today's 100-year storm (Blue).
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="bg-white/5 rounded-xl p-2 border border-white/10">
+                <FloodFrequencyChart data={stormChartData} />
+              </div>
             </div>
           )}
 
