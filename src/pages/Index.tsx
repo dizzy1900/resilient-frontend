@@ -136,6 +136,9 @@ const Index = () => {
     valueProtected: 0,
     riskIncreasePct: null as number | null,
     futureFloodAreaKm2: null as number | null,
+    rainChartData: null as Array<{ month: string; historical: number; projected: number }> | null,
+    future100yr: null as number | null,
+    baseline100yr: null as number | null,
   });
 
   // Spatial analysis data from API (for Viable Growing Area card)
@@ -467,11 +470,20 @@ const Index = () => {
       const riskIncreasePct = analysis.risk_increase_pct ?? null;
       const futureFloodAreaKm2 = analysis.future_flood_area_km2 ?? null;
 
+      // Extract rain chart data from analytics
+      const analytics = responseData.data?.analytics || responseData.analytics;
+      const rainChartData = analytics?.rain_chart_data ?? null;
+      const future100yr = analytics?.future_100yr ?? null;
+      const baseline100yr = analytics?.baseline_100yr ?? null;
+
       setFloodResults({
         floodDepthReduction: Math.round(floodDepthReduction * 10) / 10,
         valueProtected: Math.round(avoidedLoss * 100) / 100,
         riskIncreasePct: riskIncreasePct !== null ? Math.round(riskIncreasePct * 10) / 10 : null,
         futureFloodAreaKm2: futureFloodAreaKm2 !== null ? Math.round(futureFloodAreaKm2 * 100) / 100 : null,
+        rainChartData,
+        future100yr,
+        baseline100yr,
       });
       setShowFloodResults(true);
     } catch (error) {
@@ -485,11 +497,25 @@ const Index = () => {
       const riskIncreasePct = totalRainIntensity > 10 ? (totalRainIntensity - 10) * 3 : 0;
       const futureFloodAreaKm2 = 2.5 + (totalRainIntensity / 100) * 5;
 
+      // Generate fallback rain chart data
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const baseRain = [45, 50, 80, 120, 95, 30, 15, 20, 55, 90, 110, 60];
+      const fallbackRainChart = months.map((month, i) => ({
+        month,
+        historical: baseRain[i],
+        projected: Math.round(baseRain[i] * (1 + totalRainIntensity / 100)),
+      }));
+      const fallbackBaseline100yr = 185;
+      const fallbackFuture100yr = Math.round(fallbackBaseline100yr * (1 + totalRainIntensity / 100));
+
       setFloodResults({
         floodDepthReduction: totalReduction,
         valueProtected: Math.round(protectedValue),
         riskIncreasePct,
         futureFloodAreaKm2,
+        rainChartData: fallbackRainChart,
+        future100yr: fallbackFuture100yr,
+        baseline100yr: fallbackBaseline100yr,
       });
       setShowFloodResults(true);
       toast({

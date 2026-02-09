@@ -17,6 +17,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { cn } from '@/lib/utils';
 import { FloodFrequencyChart, StormChartDataItem } from '@/components/analytics/FloodFrequencyChart';
+import { RainfallComparisonChart, RainfallChartData } from '@/components/analytics/RainfallComparisonChart';
 
 interface AgricultureResults {
   avoidedLoss: number;
@@ -45,6 +46,9 @@ interface FloodResults {
   valueProtected: number;
   riskIncreasePct?: number | null;
   futureFloodAreaKm2?: number | null;
+  rainChartData?: RainfallChartData[] | null;
+  future100yr?: number | null;
+  baseline100yr?: number | null;
 }
 
 interface ResultsPanelProps {
@@ -416,7 +420,7 @@ export const ResultsPanel = ({
   }
 
   if (mode === 'flood' && floodResults) {
-    const { floodDepthReduction, valueProtected, riskIncreasePct, futureFloodAreaKm2 } = floodResults;
+    const { floodDepthReduction, valueProtected, riskIncreasePct, futureFloodAreaKm2, rainChartData, future100yr, baseline100yr } = floodResults;
     const activeInterventions = [
       greenRoofsEnabled && 'Green Roofs',
       permeablePavementEnabled && 'Permeable Pavement',
@@ -427,7 +431,7 @@ export const ResultsPanel = ({
     const isExtremeRisk = riskIncreasePct !== null && riskIncreasePct !== undefined && riskIncreasePct > 40;
 
     return (
-      <GlassCard className="w-full lg:w-80 p-3 sm:p-4 lg:p-5 border-blue-500/20 animate-in slide-in-from-bottom lg:slide-in-from-right duration-300">
+      <GlassCard className="w-full lg:w-80 p-3 sm:p-4 lg:p-5 border-blue-500/20 animate-in slide-in-from-bottom lg:slide-in-from-right duration-300 max-h-[70vh] overflow-y-auto">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none rounded-2xl" />
 
         <div className="relative space-y-3 lg:space-y-4">
@@ -502,6 +506,40 @@ export const ResultsPanel = ({
             </div>
             <span className="text-sm lg:text-lg font-bold text-emerald-400">{formatCurrency(valueProtected)}</span>
           </div>
+
+          {/* Rainfall Shift Chart */}
+          {rainChartData && rainChartData.length > 0 && (
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-1.5">
+                <BarChart3 className="w-3 h-3 text-white/60" />
+                <span className="text-[10px] text-white/50">Rainfall Shift</span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-3 h-3 text-white/40 hover:text-white/60 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      className="max-w-[240px] bg-slate-900/95 backdrop-blur-xl border-white/10"
+                    >
+                      <p className="text-xs">
+                        Compares historical baseline rainfall (Blue) with projected future rainfall (Orange) under the selected warming scenario.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="bg-white/5 rounded-lg p-1.5 border border-white/10">
+                <RainfallComparisonChart data={rainChartData} animateProjected />
+              </div>
+              {future100yr !== null && future100yr !== undefined && baseline100yr !== null && baseline100yr !== undefined && (
+                <p className="text-[10px] text-white/50 px-1">
+                  Future 100-Year Storm: <span className="text-orange-400 font-semibold">{Math.round(future100yr)}mm</span>
+                  {' '}(Historic: <span className="text-blue-400 font-semibold">{Math.round(baseline100yr)}mm</span>)
+                </p>
+              )}
+            </div>
+          )}
 
           {activeInterventions.length > 0 && (
             <div className="pt-2 border-t border-white/10">
