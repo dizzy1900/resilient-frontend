@@ -12,6 +12,7 @@ import { PortfolioHeader } from '@/components/portfolio/PortfolioHeader';
 import { MobileMenu } from '@/components/hud/MobileMenu';
 import { ZoneLegend } from '@/components/dashboard/ZoneLegend';
 import { UrbanInundationCard } from '@/components/dashboard/UrbanInundationCard';
+import { InfrastructureRiskCard } from '@/components/dashboard/InfrastructureRiskCard';
 import { AnalyticsHighlightsCard } from '@/components/hud/AnalyticsHighlightsCard';
 import { UserMenu } from '@/components/auth/UserMenu';
 import { toast } from '@/hooks/use-toast';
@@ -726,6 +727,13 @@ const Index = () => {
               isLoading={isCoastalSimulating}
               floodedUrbanKm2={coastalResults.floodedUrbanKm2 ?? null}
               urbanImpactPct={coastalResults.urbanImpactPct ?? null}
+            />
+          ) : mode === 'flood' ? (
+            <InfrastructureRiskCard
+              visible={showFloodResults}
+              isLoading={isFloodSimulating}
+              floodedKm2={floodResults.futureFloodAreaKm2}
+              riskPct={floodResults.riskIncreasePct}
             />
           ) : (
             <ZoneLegend
