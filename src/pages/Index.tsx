@@ -15,6 +15,7 @@ import { UrbanInundationCard } from '@/components/dashboard/UrbanInundationCard'
 import { InfrastructureRiskCard } from '@/components/dashboard/InfrastructureRiskCard';
 import { AnalyticsHighlightsCard } from '@/components/hud/AnalyticsHighlightsCard';
 import { UserMenu } from '@/components/auth/UserMenu';
+import { FinancialSettingsModal } from '@/components/hud/FinancialSettingsModal';
 import { toast } from '@/hooks/use-toast';
 import { Columns2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -639,8 +640,9 @@ const Index = () => {
       </div>
 
       {/* User Menu - positioned above left panel */}
-      <div className="hidden lg:block absolute top-4 left-6 z-40">
+      <div className="hidden lg:flex absolute top-4 left-6 z-40 items-center gap-2">
         <UserMenu />
+        <FinancialSettingsModal />
       </div>
 
       {mode !== 'portfolio' && (

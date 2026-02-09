@@ -1,4 +1,4 @@
-import { Activity, MapPin, Wheat, Coffee, TreePine, Building2, Droplets, Briefcase } from 'lucide-react';
+import { Activity, MapPin, Wheat, Coffee, TreePine, Building2, Droplets, Briefcase, DollarSign } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { useState, useEffect, useRef } from 'react';
+import { useFinancialSettings } from '@/contexts/FinancialContext';
 
 interface FloatingControlPanelProps {
   mode: DashboardMode;
@@ -57,6 +58,7 @@ export const FloatingControlPanel = ({
 }: FloatingControlPanelProps) => {
   const [localMangroveWidth, setLocalMangroveWidth] = useState(mangroveWidth);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { settings, updateSettings } = useFinancialSettings();
 
   useEffect(() => {
     setLocalMangroveWidth(mangroveWidth);
@@ -212,7 +214,11 @@ export const FloatingControlPanel = ({
             </div>
 
             <div className="space-y-3">
-              <Label className="text-sm font-medium text-white/70">Property Value ($)</Label>
+              <div className="flex items-center gap-2 text-xs font-medium text-white/70">
+                <DollarSign className="w-4 h-4 text-teal-400" />
+                <span>Asset Valuation</span>
+              </div>
+              <Label className="text-xs text-white/50">Property Value ($)</Label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">
                   $
@@ -229,6 +235,39 @@ export const FloatingControlPanel = ({
                   placeholder="Enter property value"
                 />
               </div>
+
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-amber-500" />
+                  <Label htmlFor="biz-interrupt-coastal" className="text-xs text-white/80 cursor-pointer">
+                    Include Business Interruption?
+                  </Label>
+                </div>
+                <Switch
+                  id="biz-interrupt-coastal"
+                  checked={settings.includeBusinessInterruption}
+                  onCheckedChange={(checked) => updateSettings({ includeBusinessInterruption: checked })}
+                />
+              </div>
+
+              {settings.includeBusinessInterruption && (
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-white/50">Daily Revenue ($)</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
+                    <Input
+                      type="text"
+                      value={settings.dailyRevenue.toLocaleString()}
+                      onChange={(e) => {
+                        const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, '')) || 0;
+                        updateSettings({ dailyRevenue: numValue });
+                      }}
+                      className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
+                      placeholder="Enter daily revenue"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </>
         )}
@@ -236,8 +275,8 @@ export const FloatingControlPanel = ({
         {mode === 'flood' && (
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-xs font-medium text-white/70">
-              <Building2 className="w-4 h-4 text-blue-400" />
-              <span>Sponge City Toolkit</span>
+              <DollarSign className="w-4 h-4 text-blue-400" />
+              <span>Asset Valuation</span>
             </div>
 
             <div className="space-y-2">
@@ -258,6 +297,46 @@ export const FloatingControlPanel = ({
                   placeholder="Enter building value"
                 />
               </div>
+            </div>
+
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-amber-500" />
+                <Label htmlFor="biz-interrupt-flood" className="text-xs text-white/80 cursor-pointer">
+                  Include Business Interruption?
+                </Label>
+              </div>
+              <Switch
+                id="biz-interrupt-flood"
+                checked={settings.includeBusinessInterruption}
+                onCheckedChange={(checked) => updateSettings({ includeBusinessInterruption: checked })}
+              />
+            </div>
+
+            {settings.includeBusinessInterruption && (
+              <div className="space-y-1.5">
+                <Label className="text-xs text-white/50">Daily Revenue ($)</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
+                  <Input
+                    type="text"
+                    value={settings.dailyRevenue.toLocaleString()}
+                    onChange={(e) => {
+                      const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, '')) || 0;
+                      updateSettings({ dailyRevenue: numValue });
+                    }}
+                    className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
+                    placeholder="Enter daily revenue"
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="h-px bg-white/10 my-1" />
+
+            <div className="flex items-center gap-2 text-xs font-medium text-white/70">
+              <Building2 className="w-4 h-4 text-blue-400" />
+              <span>Sponge City Toolkit</span>
             </div>
 
             <div className="space-y-2">
