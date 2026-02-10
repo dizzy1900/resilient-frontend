@@ -99,6 +99,16 @@ const MODE_CONFIG = {
     irregularity: 0.2,
     vertices: 36,
   },
+  health: {
+    baseRadiusKm: 12,
+    irregularity: 0.25,
+    vertices: 30,
+  },
+  portfolio: {
+    baseRadiusKm: 15,
+    irregularity: 0.2,
+    vertices: 32,
+  },
 };
 
 export function generateIrregularZone(
