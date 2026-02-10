@@ -1,15 +1,26 @@
-import { Activity, MapPin, Wheat, Coffee, TreePine, Building2, Droplets, Briefcase, DollarSign, Sprout } from 'lucide-react';
-import { GlassCard } from './GlassCard';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { DashboardMode } from '@/components/dashboard/ModeSelector';
-import { useState, useEffect, useRef } from 'react';
-import { useFinancialSettings } from '@/contexts/FinancialContext';
+import {
+  Activity,
+  MapPin,
+  Wheat,
+  Coffee,
+  TreePine,
+  Building2,
+  Droplets,
+  Briefcase,
+  DollarSign,
+  Sprout,
+} from "lucide-react";
+import { GlassCard } from "./GlassCard";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { DashboardMode } from "@/components/dashboard/ModeSelector";
+import { useState, useEffect, useRef } from "react";
+import { useFinancialSettings } from "@/contexts/FinancialContext";
 
 interface FloatingControlPanelProps {
   mode: DashboardMode;
@@ -34,8 +45,8 @@ interface FloatingControlPanelProps {
 }
 
 const crops = [
-  { value: 'maize', label: 'Maize (Corn)', icon: Wheat },
-  { value: 'cocoa', label: 'Cocoa (Tree Crop)', icon: Coffee },
+  { value: "maize", label: "Maize (Corn)", icon: Wheat },
+  { value: "cocoa", label: "Cocoa", icon: Coffee },
 ];
 
 export const FloatingControlPanel = ({
@@ -109,11 +120,7 @@ export const FloatingControlPanel = ({
         </div>
       </div>
 
-      <Tabs
-        value={mode}
-        onValueChange={(v) => onModeChange(v as DashboardMode)}
-        className="w-full mb-3 sm:mb-4"
-      >
+      <Tabs value={mode} onValueChange={(v) => onModeChange(v as DashboardMode)} className="w-full mb-3 sm:mb-4">
         <TabsList className="w-full grid grid-cols-4 h-9 sm:h-10 lg:h-11 bg-white/5 border border-white/10 rounded-xl p-0.5 sm:p-1">
           <TabsTrigger
             value="agriculture"
@@ -142,9 +149,9 @@ export const FloatingControlPanel = ({
         </TabsList>
       </Tabs>
 
-      {mode !== 'portfolio' && (
+      {mode !== "portfolio" && (
         <div className="flex items-center gap-2 mb-3 sm:mb-4 px-1">
-          <MapPin className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${hasCoordinates ? 'text-emerald-400' : 'text-white/40'}`} />
+          <MapPin className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${hasCoordinates ? "text-emerald-400" : "text-white/40"}`} />
           {hasCoordinates ? (
             <div className="flex items-center gap-1.5 sm:gap-2 font-mono text-xs sm:text-sm text-white/70">
               <span>{latitude?.toFixed(4)}</span>
@@ -158,7 +165,7 @@ export const FloatingControlPanel = ({
       )}
 
       <div className="space-y-3 overflow-y-auto flex-1 min-h-0 pr-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-        {mode === 'agriculture' && (
+        {mode === "agriculture" && (
           <div className="space-y-3">
             <label className="text-sm font-medium text-white/70">Select Crop Commodity</label>
             <Select value={cropType} onValueChange={onCropChange}>
@@ -193,7 +200,7 @@ export const FloatingControlPanel = ({
           </div>
         )}
 
-        {mode === 'coastal' && (
+        {mode === "coastal" && (
           <>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -201,9 +208,7 @@ export const FloatingControlPanel = ({
                   <TreePine className="w-4 h-4 text-teal-400" />
                   Mangrove Width
                 </label>
-                <span className="text-sm font-semibold text-teal-400 tabular-nums">
-                  {localMangroveWidth}m
-                </span>
+                <span className="text-sm font-semibold text-teal-400 tabular-nums">{localMangroveWidth}m</span>
               </div>
               <Slider
                 value={[localMangroveWidth]}
@@ -228,14 +233,12 @@ export const FloatingControlPanel = ({
               </div>
               <Label className="text-xs text-white/50">Property Value ($)</Label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">
-                  $
-                </span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
                 <Input
                   type="text"
                   value={propertyValue.toLocaleString()}
                   onChange={(e) => {
-                    const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, '')) || 0;
+                    const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
                     onPropertyValueChange(numValue);
                   }}
                   disabled={!canSimulate}
@@ -267,7 +270,7 @@ export const FloatingControlPanel = ({
                       type="text"
                       value={settings.dailyRevenue.toLocaleString()}
                       onChange={(e) => {
-                        const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, '')) || 0;
+                        const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
                         updateSettings({ dailyRevenue: numValue });
                       }}
                       className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
@@ -280,7 +283,7 @@ export const FloatingControlPanel = ({
           </>
         )}
 
-        {mode === 'flood' && (
+        {mode === "flood" && (
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-xs font-medium text-white/70">
               <DollarSign className="w-4 h-4 text-blue-400" />
@@ -290,14 +293,12 @@ export const FloatingControlPanel = ({
             <div className="space-y-2">
               <Label className="text-xs text-white/50">Building Value ($)</Label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">
-                  $
-                </span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
                 <Input
                   type="text"
                   value={buildingValue.toLocaleString()}
                   onChange={(e) => {
-                    const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, '')) || 0;
+                    const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
                     onBuildingValueChange(numValue);
                   }}
                   disabled={!canSimulate}
@@ -330,7 +331,7 @@ export const FloatingControlPanel = ({
                     type="text"
                     value={settings.dailyRevenue.toLocaleString()}
                     onChange={(e) => {
-                      const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, '')) || 0;
+                      const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
                       updateSettings({ dailyRevenue: numValue });
                     }}
                     className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
@@ -366,10 +367,7 @@ export const FloatingControlPanel = ({
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-blue-500" />
-                  <Label
-                    htmlFor="permeable-pavement"
-                    className="text-xs text-white/80 cursor-pointer"
-                  >
+                  <Label htmlFor="permeable-pavement" className="text-xs text-white/80 cursor-pointer">
                     Permeable Pavement
                   </Label>
                 </div>
