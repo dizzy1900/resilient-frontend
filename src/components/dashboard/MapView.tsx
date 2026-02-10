@@ -29,6 +29,14 @@ export interface ZoneData {
   mode: ZoneMode;
 }
 
+export interface PortfolioMapAsset {
+  lat: number;
+  lng: number;
+  name: string;
+  value: number;
+  resilienceScore?: number; // 0-100, used for color
+}
+
 interface MapViewProps {
   onLocationSelect: (lat: number, lng: number) => void;
   markerPosition: { lat: number; lng: number } | null;
@@ -39,6 +47,7 @@ interface MapViewProps {
   scenarioLabel?: string;
   isAdaptationScenario?: boolean;
   zoneData?: ZoneData;
+  portfolioAssets?: PortfolioMapAsset[];
 }
 
 const DEFAULT_VIEW_STATE: ViewState = {
@@ -68,6 +77,7 @@ const LazyMap = ({
   scenarioLabel,
   isAdaptationScenario = false,
   zoneData,
+  portfolioAssets,
 }: MapViewProps) => {
   const [MapComponents, setMapComponents] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -196,6 +206,73 @@ const LazyMap = ({
     }
   }, [zoneData]);
 
+  const updatePortfolioLayers = useCallback((map: any) => {
+    if (!map) return;
+
+    const PORTFOLIO_SOURCE = 'portfolio-assets-source';
+    const PORTFOLIO_HEATMAP = 'portfolio-heatmap-layer';
+    const PORTFOLIO_CIRCLES = 'portfolio-circles-layer';
+
+    const geojsonData: GeoJSON.FeatureCollection = {
+      type: 'FeatureCollection',
+      features: (portfolioAssets || []).map((a) => ({
+        type: 'Feature' as const,
+        geometry: { type: 'Point' as const, coordinates: [a.lng, a.lat] },
+        properties: { name: a.name, value: a.value, score: a.resilienceScore ?? 50 },
+      })),
+    };
+
+    if (!map.getSource(PORTFOLIO_SOURCE)) {
+      map.addSource(PORTFOLIO_SOURCE, { type: 'geojson', data: geojsonData });
+
+      map.addLayer({
+        id: PORTFOLIO_HEATMAP,
+        type: 'heatmap',
+        source: PORTFOLIO_SOURCE,
+        paint: {
+          'heatmap-weight': ['interpolate', ['linear'], ['get', 'value'], 0, 0.1, 200000, 1],
+          'heatmap-intensity': 0.6,
+          'heatmap-radius': 30,
+          'heatmap-opacity': 0.5,
+          'heatmap-color': [
+            'interpolate', ['linear'], ['heatmap-density'],
+            0, 'rgba(0,0,0,0)',
+            0.2, 'rgba(34,197,94,0.3)',
+            0.5, 'rgba(234,179,8,0.5)',
+            0.8, 'rgba(239,68,68,0.7)',
+            1, 'rgba(239,68,68,0.9)',
+          ],
+        },
+      });
+
+      map.addLayer({
+        id: PORTFOLIO_CIRCLES,
+        type: 'circle',
+        source: PORTFOLIO_SOURCE,
+        paint: {
+          'circle-radius': 8,
+          'circle-color': [
+            'interpolate', ['linear'], ['get', 'score'],
+            0, '#ef4444',
+            40, '#f59e0b',
+            70, '#22c55e',
+            100, '#10b981',
+          ],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': 'rgba(255,255,255,0.8)',
+          'circle-opacity': 0.9,
+        },
+      });
+    } else {
+      map.getSource(PORTFOLIO_SOURCE)?.setData(geojsonData);
+    }
+
+    // Toggle visibility
+    const visible = (portfolioAssets?.length ?? 0) > 0;
+    map.setLayoutProperty(PORTFOLIO_HEATMAP, 'visibility', visible ? 'visible' : 'none');
+    map.setLayoutProperty(PORTFOLIO_CIRCLES, 'visibility', visible ? 'visible' : 'none');
+  }, [portfolioAssets]);
+
   useEffect(() => {
     const map = mapRef.current?.getMap?.();
     if (map && map.isStyleLoaded()) {
@@ -203,13 +280,23 @@ const LazyMap = ({
     }
   }, [zoneData, updateZoneLayers]);
 
+  useEffect(() => {
+    const map = mapRef.current?.getMap?.();
+    if (map && map.isStyleLoaded()) {
+      updatePortfolioLayers(map);
+    }
+  }, [portfolioAssets, updatePortfolioLayers]);
+
   const handleMapLoad = useCallback((event: any) => {
     const map = event.target;
     mapRef.current = { getMap: () => map };
     if (zoneData) {
       updateZoneLayers(map);
     }
-  }, [zoneData, updateZoneLayers]);
+    if (portfolioAssets?.length) {
+      updatePortfolioLayers(map);
+    }
+  }, [zoneData, updateZoneLayers, portfolioAssets, updatePortfolioLayers]);
 
   const handleClick = useCallback((event: any) => {
     const { lng, lat } = event.lngLat;
@@ -326,6 +413,7 @@ export const MapView = ({
   scenarioLabel,
   isAdaptationScenario = false,
   zoneData,
+  portfolioAssets,
 }: MapViewProps) => {
   return (
     <div className="relative w-full h-full">
@@ -339,6 +427,7 @@ export const MapView = ({
         scenarioLabel={scenarioLabel}
         isAdaptationScenario={isAdaptationScenario}
         zoneData={zoneData}
+        portfolioAssets={portfolioAssets}
       />
 
       <div className="absolute inset-0 pointer-events-none">

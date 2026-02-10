@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { MapView, MapStyle, ViewState, ZoneData } from '@/components/dashboard/MapView';
+import { MapView, MapStyle, ViewState, ZoneData, PortfolioMapAsset } from '@/components/dashboard/MapView';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { TimelinePlayer } from '@/components/TimelinePlayer';
 import { FloatingControlPanel } from '@/components/hud/FloatingControlPanel';
@@ -8,6 +8,7 @@ import { FloodSimulationPanel } from '@/components/hud/FloodSimulationPanel';
 import { CoastalSimulationPanel } from '@/components/hud/CoastalSimulationPanel';
 import { ResultsPanel } from '@/components/hud/ResultsPanel';
 import { PortfolioPanel } from '@/components/portfolio/PortfolioPanel';
+import { PortfolioAsset } from '@/components/portfolio/PortfolioCSVUpload';
 import { PortfolioHeader } from '@/components/portfolio/PortfolioHeader';
 import { MobileMenu } from '@/components/hud/MobileMenu';
 import { ZoneLegend } from '@/components/dashboard/ZoneLegend';
@@ -155,6 +156,7 @@ const Index = () => {
     loss_pct: number;
   } | null>(null);
   const [isSpatialLoading, setIsSpatialLoading] = useState(false);
+  const [portfolioAssets, setPortfolioAssets] = useState<PortfolioAsset[]>([]);
 
   const mapStyle: MapStyle = mode === 'coastal' ? 'satellite' : mode === 'flood' ? 'flood' : 'dark';
   const showFloodOverlay = mode === 'flood' && markerPosition !== null;
@@ -188,6 +190,16 @@ const Index = () => {
       mode: mode as ZoneMode,
     };
   }, [baselineZone, currentZone, globalTempTarget, mode]);
+
+  const portfolioMapAssets: PortfolioMapAsset[] = useMemo(() => {
+    if (mode !== 'portfolio' || portfolioAssets.length === 0) return [];
+    return portfolioAssets.map((a) => ({
+      lat: a.Lat,
+      lng: a.Lon,
+      name: a.Name,
+      value: a.Value,
+    }));
+  }, [mode, portfolioAssets]);
 
   const handleLocationSelect = useCallback((lat: number, lng: number) => {
     setMarkerPosition({ lat, lng });
@@ -641,6 +653,7 @@ const Index = () => {
           onViewStateChange={isSplitMode ? handleViewStateChange : undefined}
           scenarioLabel={isSplitMode ? 'Current Forecast' : undefined}
           zoneData={zoneData}
+          portfolioAssets={portfolioMapAssets}
         />
 
         {isSplitMode && (
@@ -699,7 +712,7 @@ const Index = () => {
       {mode === 'portfolio' ? (
         <div className="hidden lg:block absolute top-16 left-6 bottom-20 z-30 w-80 overflow-y-auto">
           <PortfolioHeader onModeChange={handleModeChange} />
-          <PortfolioPanel />
+          <PortfolioPanel onAssetsChange={setPortfolioAssets} />
         </div>
       ) : mode === 'coastal' ? (
         <div className="hidden lg:block absolute bottom-32 left-6 z-30">

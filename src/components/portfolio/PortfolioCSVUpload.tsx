@@ -44,13 +44,13 @@ export const PortfolioCSVUpload = ({
       }
 
       const headers = rows[0].map((h) => h.trim().toLowerCase());
-      const nameIdx = headers.findIndex((h) => h === 'name');
+      const nameIdx = headers.findIndex((h) => h === 'name' || h === 'farm_id');
       const latIdx = headers.findIndex((h) => h === 'lat');
       const lonIdx = headers.findIndex((h) => h === 'lon');
       const valueIdx = headers.findIndex((h) => h === 'value');
 
-      if (nameIdx === -1 || latIdx === -1 || lonIdx === -1 || valueIdx === -1) {
-        setError('CSV must have columns: Name, Lat, Lon, Value');
+      if (latIdx === -1 || lonIdx === -1) {
+        setError('CSV must have at least columns: Lat, Lon (optional: Name/farm_id, Value)');
         return;
       }
 
@@ -65,28 +65,25 @@ export const PortfolioCSVUpload = ({
 
       for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
-        if (row.length < 4 || row.every((cell) => !cell.trim())) continue;
+        if (row.length < 2 || row.every((cell) => !cell.trim())) continue;
 
-        const name = row[nameIdx]?.trim() || '';
+        const name = nameIdx !== -1 ? (row[nameIdx]?.trim() || `Asset ${i}`) : `Asset ${i}`;
         const lat = parseFloat(row[latIdx]);
         const lon = parseFloat(row[lonIdx]);
-        const value = parseFloat(row[valueIdx]);
+        const value = valueIdx !== -1 ? parseFloat(row[valueIdx]) : 0;
 
         // Validate name length
-        if (name.length === 0) {
-          validationErrors.push(`Row ${i + 1}: Name is required`);
-          continue;
-        }
         if (name.length > 200) {
           validationErrors.push(`Row ${i + 1}: Name exceeds 200 characters`);
           continue;
         }
 
         // Validate numeric values
-        if (isNaN(lat) || isNaN(lon) || isNaN(value)) {
-          validationErrors.push(`Row ${i + 1}: Invalid numeric values`);
+        if (isNaN(lat) || isNaN(lon)) {
+          validationErrors.push(`Row ${i + 1}: Invalid lat/lon values`);
           continue;
         }
+        const parsedValue = isNaN(value) ? 0 : value;
 
         // Validate coordinate ranges
         if (lat < -90 || lat > 90) {
@@ -99,11 +96,11 @@ export const PortfolioCSVUpload = ({
         }
 
         // Validate value range
-        if (value < 0) {
+        if (parsedValue < 0) {
           validationErrors.push(`Row ${i + 1}: Value cannot be negative`);
           continue;
         }
-        if (value > 999999999999) {
+        if (parsedValue > 999999999999) {
           validationErrors.push(`Row ${i + 1}: Value exceeds maximum allowed`);
           continue;
         }
@@ -112,7 +109,7 @@ export const PortfolioCSVUpload = ({
           Name: name,
           Lat: lat,
           Lon: lon,
-          Value: value,
+          Value: parsedValue,
         });
       }
 
@@ -221,7 +218,7 @@ export const PortfolioCSVUpload = ({
                 or click to browse
               </p>
               <p className="text-[10px] text-white/30 mt-3">
-                Required columns: Name, Lat, Lon, Value
+                Columns: Lat, Lon (required) · Name/farm_id, Value (optional)
               </p>
             </div>
 

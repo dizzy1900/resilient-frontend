@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Briefcase, Play, Loader2, Download, CheckCircle2, AlertCircle, RefreshCw, LogIn } from 'lucide-react';
+import { Briefcase, Play, Loader2, Download, CheckCircle2, AlertCircle, RefreshCw, LogIn, MapPinned } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { GlassCard } from '@/components/hud/GlassCard';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,14 @@ import { supabase } from '@/integrations/supabase/clientSafe';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import confetti from 'canvas-confetti';
+
+const GHANA_COCOA_DEMO: PortfolioAsset[] = [
+  { Name: 'Kumasi Farm', Lat: 6.6885, Lon: -1.6244, Value: 120000 },
+  { Name: 'Takoradi Estate', Lat: 4.8986, Lon: -1.7550, Value: 95000 },
+  { Name: 'Sunyani Plot', Lat: 7.3349, Lon: -2.3266, Value: 80000 },
+  { Name: 'Ahafo Plantation', Lat: 7.0833, Lon: -2.3333, Value: 150000 },
+  { Name: 'Eastern Region Farm', Lat: 6.1000, Lon: -0.7500, Value: 110000 },
+];
 
 type JobStatus = 'idle' | 'pending' | 'processing' | 'completed' | 'failed';
 
@@ -20,7 +28,11 @@ interface BatchJob {
   error_message: string | null;
 }
 
-export const PortfolioPanel = () => {
+interface PortfolioPanelProps {
+  onAssetsChange?: (assets: PortfolioAsset[]) => void;
+}
+
+export const PortfolioPanel = ({ onAssetsChange }: PortfolioPanelProps) => {
   const [parsedData, setParsedData] = useState<PortfolioAsset[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentJob, setCurrentJob] = useState<BatchJob | null>(null);
@@ -77,12 +89,24 @@ export const PortfolioPanel = () => {
   const handleDataParsed = useCallback((data: PortfolioAsset[]) => {
     setParsedData(data);
     setCurrentJob(null);
-  }, []);
+    onAssetsChange?.(data);
+  }, [onAssetsChange]);
 
   const handleClear = useCallback(() => {
     setParsedData([]);
     setCurrentJob(null);
-  }, []);
+    onAssetsChange?.([]);
+  }, [onAssetsChange]);
+
+  const handleLoadDemo = useCallback(() => {
+    setParsedData(GHANA_COCOA_DEMO);
+    setCurrentJob(null);
+    onAssetsChange?.(GHANA_COCOA_DEMO);
+    toast({
+      title: 'Demo Portfolio Loaded',
+      description: '5 Ghana Cocoa farm locations loaded.',
+    });
+  }, [onAssetsChange]);
 
   const handleAnalyzePortfolio = async () => {
     if (parsedData.length === 0) return;
@@ -236,6 +260,17 @@ export const PortfolioPanel = () => {
         parsedData={parsedData}
         onClear={handleClear}
       />
+
+      {parsedData.length === 0 && (
+        <Button
+          variant="outline"
+          onClick={handleLoadDemo}
+          className="w-full border-purple-500/30 text-purple-300 hover:bg-purple-500/10 hover:text-purple-200"
+        >
+          <MapPinned className="w-4 h-4 mr-2" />
+          Load Demo Portfolio (Ghana Cocoa)
+        </Button>
+      )}
 
       {parsedData.length > 0 && (
         <GlassCard className="p-4 space-y-4">
