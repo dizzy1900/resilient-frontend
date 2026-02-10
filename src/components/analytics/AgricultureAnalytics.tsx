@@ -11,6 +11,7 @@ import {
 } from '@/utils/mockAnalyticsData';
 import { generateAgricultureRecommendations } from '@/utils/generateRecommendations';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { SupplyChainRiskSection } from './SupplyChainRiskSection';
 
 export interface ApiChartData {
   rainfall: RainfallChartData[];
@@ -24,6 +25,9 @@ interface AgricultureAnalyticsProps {
   embedded?: boolean;
   chartData?: ApiChartData | null;
   rainChange?: number;
+  portfolioVolatilityPct?: number | null;
+  adaptationActive?: boolean;
+  adaptedVolatilityPct?: number | null;
 }
 
 export const AgricultureAnalytics = ({
@@ -33,6 +37,9 @@ export const AgricultureAnalytics = ({
   embedded = false,
   chartData = null,
   rainChange = 0,
+  portfolioVolatilityPct = null,
+  adaptationActive = false,
+  adaptedVolatilityPct = null,
 }: AgricultureAnalyticsProps) => {
   // Use API data if available, otherwise generate mock data
   const rainfallData = useMemo(() => {
@@ -130,6 +137,14 @@ export const AgricultureAnalytics = ({
             ))}
           </div>
         </div>
+        {/* Supply Chain Risk */}
+        {portfolioVolatilityPct !== null && portfolioVolatilityPct !== undefined && (
+          <SupplyChainRiskSection
+            portfolioVolatilityPct={portfolioVolatilityPct}
+            adaptationActive={adaptationActive}
+            adaptedVolatilityPct={adaptedVolatilityPct ?? undefined}
+          />
+        )}
     </div>
   );
 

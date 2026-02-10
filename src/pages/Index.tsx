@@ -105,6 +105,7 @@ const Index = () => {
     yieldBaseline: 0,
     yieldResilient: 0,
     yieldPotential: null as number | null, // Unified yield metric from API
+    portfolioVolatilityPct: null as number | null, // Supply chain volatility CV%
     monthlyData: mockMonthlyData,
   });
 
@@ -313,12 +314,16 @@ const Index = () => {
       }
       setIsSpatialLoading(false);
 
+      // Extract portfolio_volatility_pct from API if available
+      const apiVolatility = analysis.portfolio_volatility_pct ?? result?.data?.portfolio_volatility_pct ?? null;
+
       setResults({
         avoidedLoss: Math.round(avoidedLoss * 100) / 100,
         riskReduction: Math.round(percentageImprovement * 100),
         yieldBaseline,
         yieldResilient,
         yieldPotential,
+        portfolioVolatilityPct: apiVolatility !== null ? apiVolatility : Math.round(15 + (globalTempTarget - 1.4) * 10), // Fallback estimate
         monthlyData: mockMonthlyData,
       });
       setShowResults(true);
@@ -889,6 +894,8 @@ const Index = () => {
                 ? { avoidedLoss: results.avoidedLoss, riskReduction: results.riskReduction }
                 : undefined
             }
+            portfolioVolatilityPct={mode === 'agriculture' ? results.portfolioVolatilityPct : null}
+            adaptationActive={mode === 'agriculture' && projectParams !== null}
             coastalResults={mode === 'coastal' ? coastalResults : undefined}
             floodResults={mode === 'flood' ? floodResults : undefined}
             chartData={mode === 'agriculture' ? chartData : null}

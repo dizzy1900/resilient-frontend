@@ -59,6 +59,8 @@ interface AnalyticsHighlightsCardProps {
   chartData?: ApiChartData | null;
   rainChange?: number;
   projectParams?: ProjectParams | null;
+  portfolioVolatilityPct?: number | null;
+  adaptationActive?: boolean;
 }
 
 const modeConfig = {
@@ -118,6 +120,8 @@ export const AnalyticsHighlightsCard = ({
   chartData = null,
   rainChange = 0,
   projectParams = null,
+  portfolioVolatilityPct = null,
+  adaptationActive = false,
 }: AnalyticsHighlightsCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -314,6 +318,9 @@ export const AnalyticsHighlightsCard = ({
                       embedded
                       chartData={chartData}
                       rainChange={rainChange}
+                      portfolioVolatilityPct={portfolioVolatilityPct}
+                      adaptationActive={adaptationActive}
+                      adaptedVolatilityPct={adaptationActive && portfolioVolatilityPct !== null ? Math.round(portfolioVolatilityPct * 0.45) : null}
                     />
                     {projectParams && (
                       <div className="mt-6 space-y-3">
