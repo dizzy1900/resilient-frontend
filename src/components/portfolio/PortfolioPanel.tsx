@@ -219,30 +219,6 @@ export const PortfolioPanel = ({ onAssetsChange }: PortfolioPanelProps) => {
     );
   };
 
-  // Show login prompt if not authenticated
-  if (!authLoading && !user) {
-    return (
-      <div className="space-y-4">
-        <GlassCard className="p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Briefcase className="w-5 h-5 text-purple-400" />
-            <span className="text-sm font-semibold text-white">Portfolio Mode</span>
-          </div>
-          <p className="text-xs text-white/50 mb-4">
-            Sign in to upload and analyze your portfolio assets with bulk climate risk analysis.
-          </p>
-          <Button
-            onClick={() => navigate('/auth')}
-            className="w-full bg-gradient-to-r from-purple-600 to-purple-400 text-white hover:opacity-90"
-          >
-            <LogIn className="w-4 h-4 mr-2" />
-            Sign In to Continue
-          </Button>
-        </GlassCard>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
       <GlassCard className="p-4">
