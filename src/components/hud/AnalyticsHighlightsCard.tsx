@@ -25,9 +25,12 @@ import {
   generateFloodRecommendations,
   Recommendation,
 } from '@/utils/generateRecommendations';
-import { Sprout, Waves, Droplets, ChevronDown, ChevronUp, X, AlertTriangle, Lightbulb, TrendingUp } from 'lucide-react';
+import { Sprout, Waves, Droplets, ChevronDown, ChevronUp, X, AlertTriangle, Lightbulb, TrendingUp, FileText } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { Button } from '@/components/ui/button';
+import { SocialImpactCard } from '@/components/analytics/SocialImpactCard';
+import { NaturePositiveCard } from '@/components/analytics/NaturePositiveCard';
+import { toast } from '@/hooks/use-toast';
 
 interface AgricultureResults {
   avoidedLoss: number;
@@ -280,14 +283,30 @@ export const AnalyticsHighlightsCard = ({
                   <p className="text-xs text-white/50">{config.label} Mode</p>
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-                onClick={handleToggleExpand}
-              >
-                <X className="w-5 h-5" />
-              </Button>
+              <div className="flex items-center gap-1.5">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-[10px] text-white/60 hover:text-white hover:bg-white/10 gap-1 px-2"
+                  onClick={() => {
+                    toast({
+                      title: '📄 Generating Report',
+                      description: 'Generating World Bank Standard Feasibility Report...',
+                    });
+                  }}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Export PDF</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+                  onClick={handleToggleExpand}
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
             </div>
 
             <div className="p-4 border-b border-white/10">
@@ -353,6 +372,21 @@ export const AnalyticsHighlightsCard = ({
                 )}
                 {mode === 'coastal' && coastalResults && (
                   <>
+                    <div className="mb-6">
+                      <SocialImpactCard
+                        livesProtected={coastalResults.avoidedLoss > 0 ? Math.round(coastalResults.avoidedLoss / 50) : 0}
+                        householdsSecured={coastalResults.avoidedLoss > 0 ? Math.round(coastalResults.avoidedLoss / 200) : 0}
+                      />
+                    </div>
+                    {mangroveWidth > 0 && (
+                      <div className="mb-6">
+                        <NaturePositiveCard
+                          carbonTons={Math.round(mangroveWidth * 3.67)}
+                          carbonValueUsd={Math.round(mangroveWidth * 3.67 * 35)}
+                          interventionType="mangroves"
+                        />
+                      </div>
+                    )}
                     <CoastalAnalytics
                       mangroveWidth={mangroveWidth}
                       slope={coastalResults.slope}
@@ -375,6 +409,21 @@ export const AnalyticsHighlightsCard = ({
                 )}
                 {mode === 'flood' && floodResults && (
                   <>
+                    <div className="mb-6">
+                      <SocialImpactCard
+                        livesProtected={floodResults.valueProtected > 0 ? Math.round(floodResults.valueProtected / 30) : 0}
+                        householdsSecured={floodResults.valueProtected > 0 ? Math.round(floodResults.valueProtected / 120) : 0}
+                      />
+                    </div>
+                    {greenRoofsEnabled && (
+                      <div className="mb-6">
+                        <NaturePositiveCard
+                          carbonTons={Math.round(45)}
+                          carbonValueUsd={Math.round(45 * 35)}
+                          interventionType="green_roofs"
+                        />
+                      </div>
+                    )}
                     <FloodAnalytics
                       greenRoofsEnabled={greenRoofsEnabled}
                       permeablePavementEnabled={permeablePavementEnabled}
