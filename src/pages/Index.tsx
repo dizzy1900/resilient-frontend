@@ -756,6 +756,12 @@ const Index = () => {
             onIncludeStormSurgeChange={setIncludeStormSurge}
             selectedYear={coastalSelectedYear}
             onSelectedYearChange={setCoastalSelectedYear}
+            propertyValue={propertyValue}
+            onPropertyValueChange={setPropertyValue}
+            dailyRevenue={dailyRevenue}
+            onDailyRevenueChange={setDailyRevenue}
+            assetLifespan={assetLifespan}
+            onAssetLifespanChange={setAssetLifespan}
           />
         </div>
       ) : mode === 'flood' ? (

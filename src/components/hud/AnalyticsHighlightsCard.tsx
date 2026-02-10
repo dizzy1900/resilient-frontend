@@ -360,19 +360,17 @@ export const AnalyticsHighlightsCard = ({
                       avoidedLoss={coastalResults.avoidedLoss}
                       embedded
                     />
-                    {defensiveProjectParams && (
-                      <div className="mt-6">
-                        <InvestmentAnalysisCard
-                          avoidedLoss={coastalResults.avoidedLoss}
-                          projectParams={defensiveProjectParams}
-                          assetLifespan={assetLifespan}
-                          discountRate={15}
-                          propertyValue={propertyValue}
-                          dailyRevenue={dailyRevenue}
-                          includeBusinessInterruption={dailyRevenue > 0}
-                        />
-                      </div>
-                    )}
+                    <div className="mt-6">
+                      <InvestmentAnalysisCard
+                        avoidedLoss={coastalResults.avoidedLoss}
+                        projectParams={defensiveProjectParams}
+                        assetLifespan={assetLifespan}
+                        discountRate={15}
+                        propertyValue={propertyValue}
+                        dailyRevenue={dailyRevenue}
+                        includeBusinessInterruption={dailyRevenue > 0}
+                      />
+                    </div>
                   </>
                 )}
                 {mode === 'flood' && floodResults && (
@@ -384,19 +382,17 @@ export const AnalyticsHighlightsCard = ({
                       valueProtected={floodResults.valueProtected}
                       embedded
                     />
-                    {defensiveProjectParams && (
-                      <div className="mt-6">
-                        <InvestmentAnalysisCard
-                          avoidedLoss={floodResults.valueProtected}
-                          projectParams={defensiveProjectParams}
-                          assetLifespan={assetLifespan}
-                          discountRate={15}
-                          propertyValue={propertyValue}
-                          dailyRevenue={dailyRevenue}
-                          includeBusinessInterruption={dailyRevenue > 0}
-                        />
-                      </div>
-                    )}
+                    <div className="mt-6">
+                      <InvestmentAnalysisCard
+                        avoidedLoss={floodResults.valueProtected}
+                        projectParams={defensiveProjectParams}
+                        assetLifespan={assetLifespan}
+                        discountRate={15}
+                        propertyValue={propertyValue}
+                        dailyRevenue={dailyRevenue}
+                        includeBusinessInterruption={dailyRevenue > 0}
+                      />
+                    </div>
                   </>
                 )}
               </div>
