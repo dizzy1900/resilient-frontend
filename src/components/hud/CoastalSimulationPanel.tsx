@@ -73,11 +73,11 @@ export const CoastalSimulationPanel = ({
   onIncludeStormSurgeChange,
   selectedYear,
   onSelectedYearChange,
-  propertyValue,
+  propertyValue = 5000000,
   onPropertyValueChange,
-  dailyRevenue,
+  dailyRevenue = 20000,
   onDailyRevenueChange,
-  assetLifespan,
+  assetLifespan = 30,
   onAssetLifespanChange,
 }: CoastalSimulationPanelProps) => {
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
