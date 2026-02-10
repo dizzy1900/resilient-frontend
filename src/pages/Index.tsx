@@ -890,6 +890,7 @@ const Index = () => {
         onOpenChange={setShowWizard}
         onRunAnalysis={handleWizardRunAnalysis}
         isSimulating={isSimulating}
+        cropType={cropType}
       />
 
       <TimelinePlayer

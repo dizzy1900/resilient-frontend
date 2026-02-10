@@ -34,8 +34,8 @@ interface FloatingControlPanelProps {
 }
 
 const crops = [
-  { value: 'maize', label: 'Maize', icon: Wheat },
-  { value: 'coffee', label: 'Coffee', icon: Coffee },
+  { value: 'maize', label: '🌽 Maize (Corn)', icon: Wheat },
+  { value: 'cocoa', label: '🍫 Cocoa (Tree Crop)', icon: Coffee },
 ];
 
 export const FloatingControlPanel = ({
@@ -168,7 +168,7 @@ export const FloatingControlPanel = ({
               🌱 Define Adaptation Project
             </Button>
 
-            <label className="text-sm font-medium text-white/70">Crop Type</label>
+            <label className="text-sm font-medium text-white/70">Select Crop Commodity</label>
             <Select value={cropType} onValueChange={onCropChange}>
               <SelectTrigger className="w-full h-12 bg-white/5 border-white/10 hover:border-white/20 transition-colors rounded-xl">
                 <div className="flex items-center gap-3">
@@ -178,7 +178,7 @@ export const FloatingControlPanel = ({
                   <SelectValue placeholder="Select crop type" />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-slate-900/95 backdrop-blur-xl border-white/10">
+              <SelectContent className="bg-slate-900/95 backdrop-blur-xl border-white/10 z-50">
                 {crops.map((crop) => (
                   <SelectItem
                     key={crop.value}

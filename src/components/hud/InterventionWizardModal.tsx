@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sprout, DollarSign, TrendingUp, BarChart3, Loader2 } from 'lucide-react';
 import {
   Dialog,
@@ -19,11 +19,17 @@ export interface ProjectParams {
   cropPrice: number;
 }
 
+const cropDefaults: Record<string, { capex: number; opex: number; yieldBenefit: number; cropPrice: number; title: string }> = {
+  maize: { capex: 150, opex: 80, yieldBenefit: 25, cropPrice: 250, title: 'Drought-Resilient Maize' },
+  cocoa: { capex: 2000, opex: 425, yieldBenefit: 30, cropPrice: 4800, title: 'Drought-Resilient Cocoa' },
+};
+
 interface InterventionWizardModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onRunAnalysis: (params: ProjectParams) => void;
   isSimulating: boolean;
+  cropType?: string;
 }
 
 export const InterventionWizardModal = ({
@@ -31,11 +37,22 @@ export const InterventionWizardModal = ({
   onOpenChange,
   onRunAnalysis,
   isSimulating,
+  cropType = 'cocoa',
 }: InterventionWizardModalProps) => {
-  const [capex, setCapex] = useState(2000);
-  const [opex, setOpex] = useState(425);
-  const [yieldBenefit, setYieldBenefit] = useState(30);
-  const [cropPrice, setCropPrice] = useState(4800);
+  const defaults = cropDefaults[cropType] || cropDefaults.cocoa;
+  const [capex, setCapex] = useState(defaults.capex);
+  const [opex, setOpex] = useState(defaults.opex);
+  const [yieldBenefit, setYieldBenefit] = useState(defaults.yieldBenefit);
+  const [cropPrice, setCropPrice] = useState(defaults.cropPrice);
+
+  // Reset defaults when crop type changes
+  useEffect(() => {
+    const d = cropDefaults[cropType] || cropDefaults.cocoa;
+    setCapex(d.capex);
+    setOpex(d.opex);
+    setYieldBenefit(d.yieldBenefit);
+    setCropPrice(d.cropPrice);
+  }, [cropType]);
 
   const handleSubmit = () => {
     onRunAnalysis({ capex, opex, yieldBenefit, cropPrice });
@@ -47,7 +64,7 @@ export const InterventionWizardModal = ({
         <DialogHeader>
           <DialogTitle className="text-white flex items-center gap-2">
             <Sprout className="w-5 h-5 text-emerald-400" />
-            Project Definition: Drought-Resilient Cocoa
+            Project Definition: {defaults.title}
           </DialogTitle>
           <DialogDescription className="text-white/50">
             Define your adaptation project parameters to run an ROI analysis.

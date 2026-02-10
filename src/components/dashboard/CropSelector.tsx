@@ -13,8 +13,8 @@ interface CropSelectorProps {
 }
 
 const crops = [
-  { value: 'maize', label: 'Maize', icon: Wheat },
-  { value: 'coffee', label: 'Coffee', icon: Coffee },
+  { value: 'maize', label: '🌽 Maize (Corn)', icon: Wheat },
+  { value: 'cocoa', label: '🍫 Cocoa (Tree Crop)', icon: Coffee },
 ];
 
 export const CropSelector = ({ value, onChange }: CropSelectorProps) => {
