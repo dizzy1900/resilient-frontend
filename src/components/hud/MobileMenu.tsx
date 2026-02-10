@@ -144,6 +144,14 @@ export const MobileMenu = ({
                     permeablePavementEnabled={permeablePavementEnabled}
                     onPermeablePavementChange={onPermeablePavementChange}
                     canSimulate={canSimulate}
+                    assetLifespan={30}
+                    onAssetLifespanChange={() => {}}
+                    dailyRevenue={0}
+                    onDailyRevenueChange={() => {}}
+                    seaWallEnabled={false}
+                    onSeaWallChange={() => {}}
+                    drainageEnabled={false}
+                    onDrainageChange={() => {}}
                   />
 
                   <SimulationPanel

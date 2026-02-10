@@ -18,6 +18,7 @@ import { AnalyticsHighlightsCard } from '@/components/hud/AnalyticsHighlightsCar
 import { UserMenu } from '@/components/auth/UserMenu';
 import { FinancialSettingsModal } from '@/components/hud/FinancialSettingsModal';
 import { InterventionWizardModal, ProjectParams } from '@/components/hud/InterventionWizardModal';
+import { DefensiveInfrastructureModal, DefensiveProjectParams } from '@/components/hud/DefensiveInfrastructureModal';
 import { toast } from '@/hooks/use-toast';
 import { Columns2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -62,8 +63,8 @@ const Index = () => {
   const [mode, setMode] = useState<DashboardMode>('agriculture');
   const [cropType, setCropType] = useState('maize');
   const [mangroveWidth, setMangroveWidth] = useState(100);
-  const [propertyValue, setPropertyValue] = useState(500000);
-  const [buildingValue, setBuildingValue] = useState(750000);
+  const [propertyValue, setPropertyValue] = useState(5000000);
+  const [buildingValue, setBuildingValue] = useState(5000000);
   const [greenRoofsEnabled, setGreenRoofsEnabled] = useState(false);
   const [permeablePavementEnabled, setPermeablePavementEnabled] = useState(false);
   const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
@@ -72,6 +73,18 @@ const Index = () => {
   // Intervention Wizard state
   const [showWizard, setShowWizard] = useState(false);
   const [projectParams, setProjectParams] = useState<ProjectParams | null>(null);
+
+  // Defensive Infrastructure state
+  const [showDefensiveWizard, setShowDefensiveWizard] = useState(false);
+  const [defensiveProjectType, setDefensiveProjectType] = useState<'sea_wall' | 'drainage'>('sea_wall');
+  const [defensiveProjectParams, setDefensiveProjectParams] = useState<DefensiveProjectParams | null>(null);
+  const [seaWallEnabled, setSeaWallEnabled] = useState(false);
+  const [drainageEnabled, setDrainageEnabled] = useState(false);
+
+  // Asset valuation state
+  const [assetLifespan, setAssetLifespan] = useState(30);
+  const [dailyRevenue, setDailyRevenue] = useState(20000);
+
   const [isCoastalSimulating, setIsCoastalSimulating] = useState(false);
   const [isFloodSimulating, setIsFloodSimulating] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -710,6 +723,18 @@ const Index = () => {
             onPermeablePavementChange={handlePermeablePavementChange}
             canSimulate={canSimulate}
             onOpenInterventionWizard={() => setShowWizard(true)}
+            assetLifespan={assetLifespan}
+            onAssetLifespanChange={setAssetLifespan}
+            dailyRevenue={dailyRevenue}
+            onDailyRevenueChange={setDailyRevenue}
+            seaWallEnabled={seaWallEnabled}
+            onSeaWallChange={setSeaWallEnabled}
+            drainageEnabled={drainageEnabled}
+            onDrainageChange={setDrainageEnabled}
+            onOpenDefensiveWizard={(type) => {
+              setDefensiveProjectType(type);
+              setShowDefensiveWizard(true);
+            }}
           />
         </div>
       )}
@@ -901,6 +926,10 @@ const Index = () => {
             chartData={mode === 'agriculture' ? chartData : null}
             rainChange={rainChange}
             projectParams={mode === 'agriculture' ? projectParams : null}
+            defensiveProjectParams={(mode === 'coastal' || mode === 'flood') ? defensiveProjectParams : null}
+            assetLifespan={assetLifespan}
+            dailyRevenue={dailyRevenue}
+            propertyValue={mode === 'coastal' ? propertyValue : buildingValue}
           />
         </div>
       )}
@@ -911,6 +940,25 @@ const Index = () => {
         onRunAnalysis={handleWizardRunAnalysis}
         isSimulating={isSimulating}
         cropType={cropType}
+      />
+
+      <DefensiveInfrastructureModal
+        open={showDefensiveWizard}
+        onOpenChange={setShowDefensiveWizard}
+        projectType={defensiveProjectType}
+        onDefineProject={(params) => {
+          setDefensiveProjectParams(params);
+          setShowDefensiveWizard(false);
+          // Trigger re-simulation
+          if (markerPosition) {
+            if (mode === 'coastal') {
+              setTimeout(() => handleCoastalSimulate(), 100);
+            } else if (mode === 'flood') {
+              setTimeout(() => handleFloodSimulate(), 100);
+            }
+          }
+        }}
+        isSimulating={isCoastalSimulating || isFloodSimulating}
       />
 
       <TimelinePlayer

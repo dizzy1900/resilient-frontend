@@ -4,7 +4,9 @@ import { AgricultureAnalytics, ApiChartData } from '@/components/analytics/Agric
 import { CoastalAnalytics } from '@/components/analytics/CoastalAnalytics';
 import { FloodAnalytics } from '@/components/analytics/FloodAnalytics';
 import { CumulativeCashFlowChart } from '@/components/analytics/CumulativeCashFlowChart';
+import { InvestmentAnalysisCard } from '@/components/analytics/InvestmentAnalysisCard';
 import { ProjectParams } from '@/components/hud/InterventionWizardModal';
+import { DefensiveProjectParams } from '@/components/hud/DefensiveInfrastructureModal';
 import { MiniSoilMoistureChart } from '@/components/analytics/MiniSoilMoistureChart';
 import { MiniStormSurgeChart } from '@/components/analytics/MiniStormSurgeChart';
 import { MiniFloodCapacityChart } from '@/components/analytics/MiniFloodCapacityChart';
@@ -61,6 +63,10 @@ interface AnalyticsHighlightsCardProps {
   projectParams?: ProjectParams | null;
   portfolioVolatilityPct?: number | null;
   adaptationActive?: boolean;
+  defensiveProjectParams?: DefensiveProjectParams | null;
+  assetLifespan?: number;
+  dailyRevenue?: number;
+  propertyValue?: number;
 }
 
 const modeConfig = {
@@ -122,6 +128,10 @@ export const AnalyticsHighlightsCard = ({
   projectParams = null,
   portfolioVolatilityPct = null,
   adaptationActive = false,
+  defensiveProjectParams = null,
+  assetLifespan = 30,
+  dailyRevenue = 20000,
+  propertyValue = 5000000,
 }: AnalyticsHighlightsCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -342,22 +352,52 @@ export const AnalyticsHighlightsCard = ({
                   </>
                 )}
                 {mode === 'coastal' && coastalResults && (
-                  <CoastalAnalytics
-                    mangroveWidth={mangroveWidth}
-                    slope={coastalResults.slope}
-                    stormWave={coastalResults.stormWave}
-                    avoidedLoss={coastalResults.avoidedLoss}
-                    embedded
-                  />
+                  <>
+                    <CoastalAnalytics
+                      mangroveWidth={mangroveWidth}
+                      slope={coastalResults.slope}
+                      stormWave={coastalResults.stormWave}
+                      avoidedLoss={coastalResults.avoidedLoss}
+                      embedded
+                    />
+                    {defensiveProjectParams && (
+                      <div className="mt-6">
+                        <InvestmentAnalysisCard
+                          avoidedLoss={coastalResults.avoidedLoss}
+                          projectParams={defensiveProjectParams}
+                          assetLifespan={assetLifespan}
+                          discountRate={15}
+                          propertyValue={propertyValue}
+                          dailyRevenue={dailyRevenue}
+                          includeBusinessInterruption={dailyRevenue > 0}
+                        />
+                      </div>
+                    )}
+                  </>
                 )}
                 {mode === 'flood' && floodResults && (
-                  <FloodAnalytics
-                    greenRoofsEnabled={greenRoofsEnabled}
-                    permeablePavementEnabled={permeablePavementEnabled}
-                    floodDepthReduction={floodResults.floodDepthReduction}
-                    valueProtected={floodResults.valueProtected}
-                    embedded
-                  />
+                  <>
+                    <FloodAnalytics
+                      greenRoofsEnabled={greenRoofsEnabled}
+                      permeablePavementEnabled={permeablePavementEnabled}
+                      floodDepthReduction={floodResults.floodDepthReduction}
+                      valueProtected={floodResults.valueProtected}
+                      embedded
+                    />
+                    {defensiveProjectParams && (
+                      <div className="mt-6">
+                        <InvestmentAnalysisCard
+                          avoidedLoss={floodResults.valueProtected}
+                          projectParams={defensiveProjectParams}
+                          assetLifespan={assetLifespan}
+                          discountRate={15}
+                          propertyValue={propertyValue}
+                          dailyRevenue={dailyRevenue}
+                          includeBusinessInterruption={dailyRevenue > 0}
+                        />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>

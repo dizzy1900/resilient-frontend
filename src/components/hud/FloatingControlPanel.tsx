@@ -9,6 +9,9 @@ import {
   Briefcase,
   DollarSign,
   Sprout,
+  Shield,
+  ArrowUpFromLine,
+  Calendar,
 } from "lucide-react";
 import { GlassCard } from "./GlassCard";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -42,6 +45,15 @@ interface FloatingControlPanelProps {
   onPermeablePavementChange: (enabled: boolean) => void;
   canSimulate: boolean;
   onOpenInterventionWizard?: () => void;
+  assetLifespan: number;
+  onAssetLifespanChange: (value: number) => void;
+  dailyRevenue: number;
+  onDailyRevenueChange: (value: number) => void;
+  seaWallEnabled: boolean;
+  onSeaWallChange: (enabled: boolean) => void;
+  drainageEnabled: boolean;
+  onDrainageChange: (enabled: boolean) => void;
+  onOpenDefensiveWizard?: (type: 'sea_wall' | 'drainage') => void;
 }
 
 const crops = [
@@ -69,6 +81,15 @@ export const FloatingControlPanel = ({
   onPermeablePavementChange,
   canSimulate,
   onOpenInterventionWizard,
+  assetLifespan,
+  onAssetLifespanChange,
+  dailyRevenue,
+  onDailyRevenueChange,
+  seaWallEnabled,
+  onSeaWallChange,
+  drainageEnabled,
+  onDrainageChange,
+  onOpenDefensiveWizard,
 }: FloatingControlPanelProps) => {
   const [localMangroveWidth, setLocalMangroveWidth] = useState(mangroveWidth);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -229,7 +250,7 @@ export const FloatingControlPanel = ({
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs font-medium text-white/70">
                 <DollarSign className="w-4 h-4 text-teal-400" />
-                <span>Asset Valuation</span>
+                <span>Asset at Risk</span>
               </div>
               <Label className="text-xs text-white/50">Property Value ($)</Label>
               <div className="relative">
@@ -243,42 +264,66 @@ export const FloatingControlPanel = ({
                   }}
                   disabled={!canSimulate}
                   className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
-                  placeholder="Enter property value"
+                  placeholder="5,000,000"
                 />
               </div>
 
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-500" />
-                  <Label htmlFor="biz-interrupt-coastal" className="text-xs text-white/80 cursor-pointer">
-                    Include Business Interruption?
-                  </Label>
-                </div>
-                <Switch
-                  id="biz-interrupt-coastal"
-                  checked={settings.includeBusinessInterruption}
-                  onCheckedChange={(checked) => updateSettings({ includeBusinessInterruption: checked })}
+              <Label className="text-xs text-white/50">Daily Revenue ($)</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
+                <Input
+                  type="text"
+                  value={dailyRevenue.toLocaleString()}
+                  onChange={(e) => {
+                    const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
+                    onDailyRevenueChange(numValue);
+                  }}
+                  disabled={!canSimulate}
+                  className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
+                  placeholder="20,000"
                 />
               </div>
 
-              {settings.includeBusinessInterruption && (
-                <div className="space-y-1.5">
-                  <Label className="text-xs text-white/50">Daily Revenue ($)</Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
-                    <Input
-                      type="text"
-                      value={settings.dailyRevenue.toLocaleString()}
-                      onChange={(e) => {
-                        const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
-                        updateSettings({ dailyRevenue: numValue });
-                      }}
-                      className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
-                      placeholder="Enter daily revenue"
-                    />
-                  </div>
-                </div>
-              )}
+              <div className="flex items-center justify-between">
+                <Label className="text-xs text-white/50 flex items-center gap-1.5">
+                  <Calendar className="w-3 h-3 text-white/40" />
+                  Asset Lifespan
+                </Label>
+                <span className="text-xs font-semibold text-teal-400 tabular-nums">{assetLifespan} yrs</span>
+              </div>
+              <Slider
+                value={[assetLifespan]}
+                onValueChange={(v) => onAssetLifespanChange(v[0])}
+                min={5}
+                max={50}
+                step={5}
+                className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-teal-500 [&_[data-radix-slider-thumb]]:border-teal-500 [&_[data-radix-slider-thumb]]:bg-white"
+              />
+            </div>
+
+            <div className="h-px bg-white/10 my-1" />
+
+            <div className="flex items-center gap-2 text-xs font-medium text-white/70">
+              <Shield className="w-4 h-4 text-teal-400" />
+              <span>Defensive Infrastructure</span>
+            </div>
+
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-teal-500" />
+                <Label htmlFor="sea-wall" className="text-xs text-white/80 cursor-pointer">
+                  Sea Wall
+                </Label>
+              </div>
+              <Switch
+                id="sea-wall"
+                checked={seaWallEnabled}
+                onCheckedChange={(checked) => {
+                  onSeaWallChange(checked);
+                  if (checked && onOpenDefensiveWizard) onOpenDefensiveWizard('sea_wall');
+                }}
+                disabled={!canSimulate}
+              />
             </div>
           </>
         )}
@@ -287,11 +332,11 @@ export const FloatingControlPanel = ({
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-xs font-medium text-white/70">
               <DollarSign className="w-4 h-4 text-blue-400" />
-              <span>Asset Valuation</span>
+              <span>Asset at Risk</span>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs text-white/50">Building Value ($)</Label>
+              <Label className="text-xs text-white/50">Property Value ($)</Label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
                 <Input
@@ -303,43 +348,42 @@ export const FloatingControlPanel = ({
                   }}
                   disabled={!canSimulate}
                   className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
-                  placeholder="Enter building value"
+                  placeholder="5,000,000"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-amber-500" />
-                <Label htmlFor="biz-interrupt-flood" className="text-xs text-white/80 cursor-pointer">
-                  Include Business Interruption?
-                </Label>
-              </div>
-              <Switch
-                id="biz-interrupt-flood"
-                checked={settings.includeBusinessInterruption}
-                onCheckedChange={(checked) => updateSettings({ includeBusinessInterruption: checked })}
+            <Label className="text-xs text-white/50">Daily Revenue ($)</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
+              <Input
+                type="text"
+                value={dailyRevenue.toLocaleString()}
+                onChange={(e) => {
+                  const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
+                  onDailyRevenueChange(numValue);
+                }}
+                disabled={!canSimulate}
+                className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
+                placeholder="20,000"
               />
             </div>
 
-            {settings.includeBusinessInterruption && (
-              <div className="space-y-1.5">
-                <Label className="text-xs text-white/50">Daily Revenue ($)</Label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
-                  <Input
-                    type="text"
-                    value={settings.dailyRevenue.toLocaleString()}
-                    onChange={(e) => {
-                      const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
-                      updateSettings({ dailyRevenue: numValue });
-                    }}
-                    className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
-                    placeholder="Enter daily revenue"
-                  />
-                </div>
-              </div>
-            )}
+            <div className="flex items-center justify-between">
+              <Label className="text-xs text-white/50 flex items-center gap-1.5">
+                <Calendar className="w-3 h-3 text-white/40" />
+                Asset Lifespan
+              </Label>
+              <span className="text-xs font-semibold text-blue-400 tabular-nums">{assetLifespan} yrs</span>
+            </div>
+            <Slider
+              value={[assetLifespan]}
+              onValueChange={(v) => onAssetLifespanChange(v[0])}
+              min={5}
+              max={50}
+              step={5}
+              className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-blue-500 [&_[data-radix-slider-thumb]]:border-blue-500 [&_[data-radix-slider-thumb]]:bg-white"
+            />
 
             <div className="h-px bg-white/10 my-1" />
 
@@ -375,6 +419,24 @@ export const FloatingControlPanel = ({
                   id="permeable-pavement"
                   checked={permeablePavementEnabled}
                   onCheckedChange={onPermeablePavementChange}
+                  disabled={!canSimulate}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-cyan-500" />
+                  <Label htmlFor="drainage-upgrade" className="text-xs text-white/80 cursor-pointer">
+                    Drainage Upgrade
+                  </Label>
+                </div>
+                <Switch
+                  id="drainage-upgrade"
+                  checked={drainageEnabled}
+                  onCheckedChange={(checked) => {
+                    onDrainageChange(checked);
+                    if (checked && onOpenDefensiveWizard) onOpenDefensiveWizard('drainage');
+                  }}
                   disabled={!canSimulate}
                 />
               </div>
