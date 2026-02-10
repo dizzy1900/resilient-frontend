@@ -61,7 +61,23 @@ export const InvestmentAnalysisCard = ({
     };
   }, [avoidedLoss, projectParams, assetLifespan, discountRate, dailyRevenue, includeBusinessInterruption]);
 
-  if (!projectParams) return null;
+  if (!projectParams) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-emerald-400" />
+          <h3 className="text-sm font-medium text-white">Investment Analysis</h3>
+        </div>
+        <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+          <DollarSign className="w-6 h-6 text-white/30 mx-auto mb-2" />
+          <p className="text-xs text-white/50">
+            Enable <span className="text-teal-400 font-medium">Sea Wall</span> or{' '}
+            <span className="text-blue-400 font-medium">Drainage Upgrade</span> in the sidebar to see BCR analysis.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const isBankable = bcr >= 1.0;
 

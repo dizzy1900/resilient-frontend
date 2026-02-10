@@ -247,62 +247,6 @@ export const FloatingControlPanel = ({
               </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-xs font-medium text-white/70">
-                <DollarSign className="w-4 h-4 text-teal-400" />
-                <span>Asset at Risk</span>
-              </div>
-              <Label className="text-xs text-white/50">Property Value ($)</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
-                <Input
-                  type="text"
-                  value={propertyValue.toLocaleString()}
-                  onChange={(e) => {
-                    const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
-                    onPropertyValueChange(numValue);
-                  }}
-                  disabled={!canSimulate}
-                  className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
-                  placeholder="5,000,000"
-                />
-              </div>
-
-              <Label className="text-xs text-white/50">Daily Revenue ($)</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
-                <Input
-                  type="text"
-                  value={dailyRevenue.toLocaleString()}
-                  onChange={(e) => {
-                    const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
-                    onDailyRevenueChange(numValue);
-                  }}
-                  disabled={!canSimulate}
-                  className="pl-7 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
-                  placeholder="20,000"
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <Label className="text-xs text-white/50 flex items-center gap-1.5">
-                  <Calendar className="w-3 h-3 text-white/40" />
-                  Asset Lifespan
-                </Label>
-                <span className="text-xs font-semibold text-teal-400 tabular-nums">{assetLifespan} yrs</span>
-              </div>
-              <Slider
-                value={[assetLifespan]}
-                onValueChange={(v) => onAssetLifespanChange(v[0])}
-                min={5}
-                max={50}
-                step={5}
-                className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-teal-500 [&_[data-radix-slider-thumb]]:border-teal-500 [&_[data-radix-slider-thumb]]:bg-white"
-              />
-            </div>
-
-            <div className="h-px bg-white/10 my-1" />
-
             <div className="flex items-center gap-2 text-xs font-medium text-white/70">
               <Shield className="w-4 h-4 text-teal-400" />
               <span>Defensive Infrastructure</span>

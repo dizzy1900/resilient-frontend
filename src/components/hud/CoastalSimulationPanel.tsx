@@ -1,9 +1,11 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { Zap, Loader2, Waves, Calendar, CloudRain, Info, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Zap, Loader2, Waves, Calendar, CloudRain, Info, ToggleLeft, ToggleRight, DollarSign } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
@@ -17,6 +19,12 @@ interface CoastalSimulationPanelProps {
   onIncludeStormSurgeChange: (value: boolean) => void;
   selectedYear: number;
   onSelectedYearChange: (value: number) => void;
+  propertyValue: number;
+  onPropertyValueChange: (value: number) => void;
+  dailyRevenue: number;
+  onDailyRevenueChange: (value: number) => void;
+  assetLifespan: number;
+  onAssetLifespanChange: (value: number) => void;
 }
 
 // SLR anchor points (vs Year 2000 baseline for elevation map calibration)
@@ -65,6 +73,12 @@ export const CoastalSimulationPanel = ({
   onIncludeStormSurgeChange,
   selectedYear,
   onSelectedYearChange,
+  propertyValue,
+  onPropertyValueChange,
+  dailyRevenue,
+  onDailyRevenueChange,
+  assetLifespan,
+  onAssetLifespanChange,
 }: CoastalSimulationPanelProps) => {
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const [isDebouncing, setIsDebouncing] = useState(false);
@@ -121,7 +135,7 @@ export const CoastalSimulationPanel = ({
   };
 
   return (
-    <GlassCard className="w-full lg:w-80 p-2.5 sm:p-3 lg:p-4">
+    <GlassCard className="w-full lg:w-80 p-2.5 sm:p-3 lg:p-4 max-h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
       <div className="space-y-3 lg:space-y-4">
         <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs lg:text-sm font-medium text-white/70">
           <Waves className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 text-teal-400" />
@@ -249,6 +263,60 @@ export const CoastalSimulationPanel = ({
               style={{ width: `${Math.min((totalWaterLevel / 4.5) * 100, 100)}%` }}
             />
           </div>
+        </div>
+
+        {/* Asset at Risk */}
+        <div className="h-px bg-white/10" />
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-[10px] lg:text-xs font-medium text-white/70">
+            <DollarSign className="w-3.5 h-3.5 text-teal-400" />
+            <span>Asset at Risk</span>
+          </div>
+          <Label className="text-[10px] lg:text-xs text-white/50">Property Value ($)</Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
+            <Input
+              type="text"
+              value={propertyValue.toLocaleString()}
+              onChange={(e) => {
+                const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
+                onPropertyValueChange(numValue);
+              }}
+              disabled={!canSimulate}
+              className="pl-7 h-8 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl text-xs"
+              placeholder="5,000,000"
+            />
+          </div>
+          <Label className="text-[10px] lg:text-xs text-white/50">Daily Revenue ($)</Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
+            <Input
+              type="text"
+              value={dailyRevenue.toLocaleString()}
+              onChange={(e) => {
+                const numValue = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
+                onDailyRevenueChange(numValue);
+              }}
+              disabled={!canSimulate}
+              className="pl-7 h-8 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl text-xs"
+              placeholder="20,000"
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <Label className="text-[10px] lg:text-xs text-white/50 flex items-center gap-1.5">
+              <Calendar className="w-3 h-3 text-white/40" />
+              Asset Lifespan
+            </Label>
+            <span className="text-[10px] lg:text-xs font-semibold text-teal-400 tabular-nums">{assetLifespan} yrs</span>
+          </div>
+          <Slider
+            value={[assetLifespan]}
+            onValueChange={(v) => onAssetLifespanChange(v[0])}
+            min={5}
+            max={50}
+            step={5}
+            className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-teal-500 [&_[data-radix-slider-thumb]]:border-teal-500 [&_[data-radix-slider-thumb]]:bg-white"
+          />
         </div>
 
         <Button
