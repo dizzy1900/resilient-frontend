@@ -110,55 +110,70 @@ export const PortfolioPanel = ({ onAssetsChange }: PortfolioPanelProps) => {
 
   const handleAnalyzePortfolio = async () => {
     if (parsedData.length === 0) return;
-    if (!user || !session) {
-      toast({
-        title: 'Authentication Required',
-        description: 'Please sign in to analyze your portfolio.',
-        variant: 'destructive',
-      });
-      navigate('/auth');
-      return;
-    }
 
     setIsSubmitting(true);
 
     try {
-      // Prepare assets for server-side validation
-      const assets = parsedData.map((asset) => ({
-        name: asset.Name,
-        lat: asset.Lat,
-        lon: asset.Lon,
-        value: asset.Value,
-      }));
+      if (user && session) {
+        // Authenticated path: use edge function
+        const assets = parsedData.map((asset) => ({
+          name: asset.Name,
+          lat: asset.Lat,
+          lon: asset.Lon,
+          value: asset.Value,
+        }));
 
-      // Call the secure edge function
-      const { data, error } = await supabase.functions.invoke('submit-portfolio', {
-        body: { assets },
-      });
+        const { data, error } = await supabase.functions.invoke('submit-portfolio', {
+          body: { assets },
+        });
 
-      if (error) {
-        throw new Error(error.message || 'Failed to submit portfolio');
+        if (error) throw new Error(error.message || 'Failed to submit portfolio');
+        if (!data?.success) {
+          throw new Error(data?.message || data?.details?.[0]?.message || 'Validation failed');
+        }
+
+        setCurrentJob({
+          id: data.job_id,
+          status: 'pending',
+          total_assets: data.assets_count,
+          processed_assets: 0,
+          report_url: null,
+          error_message: null,
+        });
+
+        toast({
+          title: 'Portfolio Analysis Started',
+          description: `Analyzing ${data.assets_count} assets...`,
+        });
+      } else {
+        // Anonymous path: generate mock resilience scores locally
+        const scoredAssets = parsedData.map((asset) => ({
+          ...asset,
+          score: Math.round(40 + Math.random() * 55), // 40-95 range
+        }));
+        onAssetsChange?.(scoredAssets);
+
+        setCurrentJob({
+          id: 'demo-' + Date.now(),
+          status: 'completed',
+          total_assets: parsedData.length,
+          processed_assets: parsedData.length,
+          report_url: null,
+          error_message: null,
+        });
+
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#22c55e', '#14b8a6', '#3b82f6'],
+        });
+
+        toast({
+          title: 'Demo Analysis Complete!',
+          description: `Generated resilience scores for ${parsedData.length} assets. Sign in to run full analysis.`,
+        });
       }
-
-      if (!data?.success) {
-        const errorMessage = data?.message || data?.details?.[0]?.message || 'Validation failed';
-        throw new Error(errorMessage);
-      }
-
-      // Set the current job from the response
-      setCurrentJob({
-        id: data.job_id,
-        status: 'pending',
-        total_assets: data.assets_count,
-        processed_assets: 0,
-        report_url: null,
-        error_message: null,
-      });
-
-      toast({
-        title: 'Portfolio Analysis Started',
-        description: `Analyzing ${data.assets_count} assets...`,
-      });
     } catch (error) {
       console.error('Portfolio analysis failed:', error);
       toast({
