@@ -1,4 +1,4 @@
-import { Wheat, Coffee, ChevronDown } from "lucide-react";
+import { Wheat, Candy, ChevronDown } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface CropSelectorProps {
@@ -8,7 +8,7 @@ interface CropSelectorProps {
 
 const crops = [
   { value: "maize", label: "🌽 Maize (Corn)", icon: Wheat },
-  { value: "cocoa", label: "🍫 Cocoa", icon: Coffee },
+  { value: "cocoa", label: "🍫 Cocoa", icon: Candy },
 ];
 
 export const CropSelector = ({ value, onChange }: CropSelectorProps) => {
