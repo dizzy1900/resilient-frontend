@@ -797,9 +797,25 @@ const Index = () => {
             dailyRevenue={dailyRevenue}
             onDailyRevenueChange={setDailyRevenue}
             seaWallEnabled={seaWallEnabled}
-            onSeaWallChange={setSeaWallEnabled}
+            onSeaWallChange={(enabled) => {
+              setSeaWallEnabled(enabled);
+              if (enabled && !defensiveProjectParams) {
+                setDefensiveProjectParams({ type: 'sea_wall', capex: 500000, opex: 10000, heightIncrease: 1.0 });
+              }
+              if (!enabled && !drainageEnabled) {
+                setDefensiveProjectParams(null);
+              }
+            }}
             drainageEnabled={drainageEnabled}
-            onDrainageChange={setDrainageEnabled}
+            onDrainageChange={(enabled) => {
+              setDrainageEnabled(enabled);
+              if (enabled && !defensiveProjectParams) {
+                setDefensiveProjectParams({ type: 'drainage', capex: 500000, opex: 10000, capacityUpgrade: 20 });
+              }
+              if (!enabled && !seaWallEnabled) {
+                setDefensiveProjectParams(null);
+              }
+            }}
             onOpenDefensiveWizard={(type) => {
               setDefensiveProjectType(type);
               setShowDefensiveWizard(true);
