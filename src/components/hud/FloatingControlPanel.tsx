@@ -145,7 +145,7 @@ export const FloatingControlPanel = ({
           <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500 to-emerald-500 blur-lg opacity-40" />
         </div>
         <div className="flex flex-col">
-          <span className="text-lg sm:text-xl font-bold tracking-tight text-blue-400">ADAPTMetric</span>
+          <span className="text-lg sm:text-xl font-bold tracking-tight text-blue-400">Resilient</span>
           <span className="text-[10px] sm:text-xs font-medium text-white/50 tracking-wide uppercase">
             Resilience Engine
           </span>

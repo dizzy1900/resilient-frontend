@@ -10,7 +10,7 @@ export const Logo = () => {
         <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-safe to-accent blur-lg opacity-50" />
       </div>
       <div className="flex flex-col">
-        <span className="text-xl font-bold tracking-tight text-white">ADAPTMetric</span>
+        <span className="text-xl font-bold tracking-tight text-white">Resilient</span>
         <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">Resilience Engine</span>
       </div>
     </div>
