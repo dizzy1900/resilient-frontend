@@ -136,7 +136,7 @@ export const FloatingControlPanel = ({
   const CropIcon = selectedCrop?.icon || Wheat;
 
   return (
-    <GlassCard className="w-full lg:w-80 p-2.5 sm:p-3 lg:p-4 lg:max-h-[calc(100vh-360px)] flex flex-col">
+    <GlassCard className={`w-full lg:w-80 p-2.5 sm:p-3 lg:p-4 flex flex-col ${mode === 'flood' ? 'lg:max-h-[calc(100vh-520px)]' : 'lg:max-h-[calc(100vh-360px)]'}`}>
       <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
         <div className="relative">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center">
