@@ -18,7 +18,7 @@ export const PortfolioHeader = ({ onModeChange }: PortfolioHeaderProps) => {
           <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 blur-lg opacity-40" />
         </div>
         <div className="flex flex-col flex-1">
-          <span className="text-xl font-bold tracking-tight text-purple-400">ADAPTMetric</span>
+          <span className="text-xl font-bold tracking-tight text-purple-400">Resilient</span>
           <span className="text-xs font-medium text-white/50 tracking-wide uppercase">
             Portfolio Analysis
           </span>
