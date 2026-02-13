@@ -12,6 +12,7 @@ import { ResultsPanel } from '@/components/hud/ResultsPanel';
 import { PortfolioPanel } from '@/components/portfolio/PortfolioPanel';
 import { PortfolioAsset } from '@/components/portfolio/PortfolioCSVUpload';
 import { PortfolioHeader } from '@/components/portfolio/PortfolioHeader';
+import { PortfolioResultsPanel } from '@/components/portfolio/PortfolioResultsPanel';
 import { MobileMenu } from '@/components/hud/MobileMenu';
 import { ZoneLegend } from '@/components/dashboard/ZoneLegend';
 import { UrbanInundationCard } from '@/components/dashboard/UrbanInundationCard';
@@ -986,7 +987,14 @@ const Index = () => {
         </Button>
       </div>
 
-      {mode !== 'portfolio' && (
+      {mode === 'portfolio' ? (
+        <div className="absolute top-16 right-4 sm:right-6 lg:right-20 z-30 flex flex-col gap-2 sm:gap-3 sm:w-80 lg:w-80 max-h-[calc(100vh-120px)] overflow-y-auto">
+          <PortfolioResultsPanel
+            assets={portfolioAssets}
+            visible={portfolioAssets.some(a => 'score' in a)}
+          />
+        </div>
+      ) : (
         <div className="absolute bottom-28 sm:bottom-24 lg:bottom-32 right-4 sm:right-6 lg:right-20 left-4 sm:left-auto z-30 flex flex-col gap-2 sm:gap-3 max-w-full sm:max-w-none sm:w-80 lg:w-80">
           {mode === 'health' ? (
             <HealthResultsPanel
