@@ -3,6 +3,7 @@ import { MapPin, Map as MapIcon, CircleAlert as AlertCircle } from 'lucide-react
 import { Polygon, polygonToGeoJSON, createRingDifferenceGeoJSON, calculatePolygonArea } from '@/utils/polygonMath';
 import { ZoneMode } from '@/utils/zoneGeneration';
 import { getZoneColors } from '@/utils/zoneMorphing';
+import { AtlasMarkers, AtlasClickData } from './AtlasMarkers';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGF2aWRpemkiLCJhIjoiY21rd2dzeHN6MDFoYzNkcXYxOHZ0YXRuNCJ9.P_g5wstTHNzglNEQfHIoBg';
 
@@ -48,6 +49,7 @@ interface MapViewProps {
   isAdaptationScenario?: boolean;
   zoneData?: ZoneData;
   portfolioAssets?: PortfolioMapAsset[];
+  onAtlasClick?: (data: AtlasClickData) => void;
 }
 
 const DEFAULT_VIEW_STATE: ViewState = {
@@ -78,6 +80,7 @@ const LazyMap = ({
   isAdaptationScenario = false,
   zoneData,
   portfolioAssets,
+  onAtlasClick,
 }: MapViewProps) => {
   const [MapComponents, setMapComponents] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -399,6 +402,8 @@ const LazyMap = ({
           />
         </Marker>
       )}
+
+      {onAtlasClick && <AtlasMarkers Marker={Marker} onAtlasClick={onAtlasClick} />}
     </Map>
   );
 };
@@ -414,6 +419,7 @@ export const MapView = ({
   isAdaptationScenario = false,
   zoneData,
   portfolioAssets,
+  onAtlasClick,
 }: MapViewProps) => {
   return (
     <div className="relative w-full h-full">
@@ -428,6 +434,7 @@ export const MapView = ({
         isAdaptationScenario={isAdaptationScenario}
         zoneData={zoneData}
         portfolioAssets={portfolioAssets}
+        onAtlasClick={onAtlasClick}
       />
 
       <div className="absolute inset-0 pointer-events-none">

@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { MapView, MapStyle, ViewState, ZoneData, PortfolioMapAsset } from '@/components/dashboard/MapView';
+import { AtlasClickData } from '@/components/dashboard/AtlasMarkers';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { TimelinePlayer } from '@/components/TimelinePlayer';
 import { FloatingControlPanel } from '@/components/hud/FloatingControlPanel';
@@ -651,6 +652,58 @@ const Index = () => {
     setIsFloodUserOverride(false);
   }, []);
 
+  const handleAtlasClick = useCallback((data: AtlasClickData) => {
+    // Set marker position
+    setMarkerPosition({ lat: data.lat, lng: data.lng });
+
+    // Switch mode to match the scenario's project_type
+    const modeMap: Record<string, DashboardMode> = {
+      agriculture: 'agriculture',
+      coastal: 'coastal',
+      flood: 'flood',
+      health: 'health',
+    };
+    const newMode = modeMap[data.projectType] ?? 'agriculture';
+    if (newMode !== mode) {
+      setMode(newMode);
+      setShowResults(false);
+      setShowCoastalResults(false);
+      setShowFloodResults(false);
+      setShowHealthResults(false);
+    }
+
+    // Pre-fill mode-specific inputs from the atlas data
+    const item = data.item;
+    if (data.projectType === 'agriculture' && data.cropType) {
+      setCropType(data.cropType);
+    }
+    if (data.projectType === 'coastal' && 'input_conditions' in item) {
+      const ic = item.input_conditions as any;
+      if (ic.slr_projection_m != null) setTotalSLR(ic.slr_projection_m);
+      if (ic.include_surge != null) setIncludeStormSurge(ic.include_surge);
+    }
+    if (data.projectType === 'flood' && 'input_conditions' in item) {
+      const ic = item.input_conditions as any;
+      if (ic.rain_intensity_increase_pct != null) {
+        setTotalRainIntensity(ic.rain_intensity_increase_pct);
+        setIsFloodUserOverride(true);
+      }
+    }
+
+    // Fly the map to the clicked location
+    setViewState((prev) => ({
+      ...prev,
+      longitude: data.lng,
+      latitude: data.lat,
+      zoom: 8,
+    }));
+
+    toast({
+      title: item.target.name,
+      description: `Loaded ${data.projectType} scenario. Click "Simulate" to run analysis.`,
+    });
+  }, [mode]);
+
   const handleViewStateChange = useCallback((newViewState: ViewState) => {
     setViewState(newViewState);
   }, []);
@@ -742,6 +795,7 @@ const Index = () => {
           scenarioLabel={isSplitMode ? 'Current Forecast' : undefined}
           zoneData={zoneData}
           portfolioAssets={portfolioMapAssets}
+          onAtlasClick={handleAtlasClick}
         />
 
         {isSplitMode && (
