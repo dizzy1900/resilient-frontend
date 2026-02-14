@@ -653,10 +653,12 @@ const Index = () => {
   }, []);
 
   const handleAtlasClick = useCallback((data: AtlasClickData) => {
-    // Set marker position
+    const item = data.item as any;
+
+    // 1. Set marker position
     setMarkerPosition({ lat: data.lat, lng: data.lng });
 
-    // Switch mode to match the scenario's project_type
+    // 2. Switch mode
     const modeMap: Record<string, DashboardMode> = {
       agriculture: 'agriculture',
       coastal: 'coastal',
@@ -664,33 +666,135 @@ const Index = () => {
       health: 'health',
     };
     const newMode = modeMap[data.projectType] ?? 'agriculture';
-    if (newMode !== mode) {
-      setMode(newMode);
-      setShowResults(false);
-      setShowCoastalResults(false);
-      setShowFloodResults(false);
-      setShowHealthResults(false);
+    setMode(newMode);
+
+    // Reset all result flags first
+    setShowResults(false);
+    setShowCoastalResults(false);
+    setShowFloodResults(false);
+    setShowHealthResults(false);
+
+    // 3. Pre-fill inputs & instantly populate results from JSON (zero-latency)
+    if (data.projectType === 'agriculture') {
+      if (data.cropType) setCropType(data.cropType);
+      const crop = item.crop_analysis;
+      const fin = item.financial_analysis;
+      if (fin?.assumptions?.capex) setPropertyValue(fin.assumptions.capex);
+
+      setResults({
+        avoidedLoss: crop?.avoided_loss_pct ?? 0,
+        riskReduction: Math.round((crop?.percentage_improvement ?? 0) * 100),
+        yieldBaseline: crop?.standard_yield_pct ?? 0,
+        yieldResilient: crop?.resilient_yield_pct ?? 0,
+        yieldPotential: crop?.resilient_yield_pct ?? null,
+        portfolioVolatilityPct: null,
+        monthlyData: mockMonthlyData,
+      });
+
+      // Generate synthetic chart data from climate conditions
+      if (item.climate_conditions) {
+        const baseRain = (item.climate_conditions.rainfall_mm ?? 1200) / 12;
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const seasonalFactors = [0.6, 0.7, 0.9, 1.1, 1.3, 1.4, 1.3, 1.2, 1.0, 0.8, 0.7, 0.6];
+        setChartData({
+          rainfall: months.map((month, i) => ({
+            month,
+            historical: Math.round(baseRain * seasonalFactors[i]),
+            projected: Math.round(baseRain * seasonalFactors[i] * (1 + (item.climate_conditions.rain_pct_change ?? 0) / 100)),
+          })),
+          soilMoisture: months.map((month, i) => ({
+            month,
+            moisture: Math.round(40 + 20 * seasonalFactors[i]),
+          })),
+        });
+      }
+
+      setShowResults(true);
     }
 
-    // Pre-fill mode-specific inputs from the atlas data
-    const item = data.item;
-    if (data.projectType === 'agriculture' && data.cropType) {
-      setCropType(data.cropType);
+    if (data.projectType === 'coastal') {
+      const ic = item.input_conditions;
+      const fr = item.flood_risk;
+      if (ic?.slr_projection_m != null) setTotalSLR(ic.slr_projection_m);
+      if (ic?.include_surge != null) setIncludeStormSurge(ic.include_surge);
+      if (ic?.mangrove_width_m != null) setMangroveWidth(ic.mangrove_width_m);
+      setCoastalSelectedYear(item.scenario_year ?? 2050);
+
+      // Generate storm chart data from SLR
+      const slr = ic?.slr_projection_m ?? 1.0;
+      const stormChartData = [
+        { period: '1yr', current_depth: 0.5, future_depth: 0.5 + slr },
+        { period: '10yr', current_depth: 1.2, future_depth: 1.2 + slr },
+        { period: '50yr', current_depth: 2.0, future_depth: 2.0 + slr },
+        { period: '100yr', current_depth: 2.8, future_depth: 2.8 + slr },
+      ];
+
+      setCoastalResults({
+        avoidedLoss: 0,
+        slope: null,
+        stormWave: ic?.surge_m ?? 2.5,
+        isUnderwater: fr?.is_underwater ?? false,
+        floodDepth: fr?.flood_depth_m ?? 0,
+        seaLevelRise: slr,
+        includeStormSurge: ic?.include_surge ?? true,
+        stormChartData,
+        floodedUrbanKm2: slr > 0 ? slr * 12.5 : 0,
+        urbanImpactPct: slr > 0 ? Math.min(slr * 15, 100) : 0,
+      });
+      setShowCoastalResults(true);
     }
-    if (data.projectType === 'coastal' && 'input_conditions' in item) {
-      const ic = item.input_conditions as any;
-      if (ic.slr_projection_m != null) setTotalSLR(ic.slr_projection_m);
-      if (ic.include_surge != null) setIncludeStormSurge(ic.include_surge);
-    }
-    if (data.projectType === 'flood' && 'input_conditions' in item) {
-      const ic = item.input_conditions as any;
-      if (ic.rain_intensity_increase_pct != null) {
+
+    if (data.projectType === 'flood') {
+      const ic = item.input_conditions;
+      const ffa = item.flash_flood_analysis;
+      const rf = item.rainfall_frequency;
+      if (ic?.rain_intensity_increase_pct != null) {
         setTotalRainIntensity(ic.rain_intensity_increase_pct);
         setIsFloodUserOverride(true);
       }
+      setFloodSelectedYear(item.scenario_year ?? 2050);
+
+      // Extract 100yr values from rain chart data
+      const rainData = rf?.rain_chart_data;
+      const entry100yr = rainData?.find((d: any) => d.period === '100yr');
+
+      setFloodResults({
+        floodDepthReduction: 0,
+        valueProtected: 0,
+        riskIncreasePct: ffa?.risk_increase_pct ?? null,
+        futureFloodAreaKm2: ffa?.future_flood_area_km2 ?? null,
+        rainChartData: null,
+        future100yr: entry100yr?.future_mm ?? null,
+        baseline100yr: entry100yr?.baseline_mm ?? null,
+      });
+      setShowFloodResults(true);
     }
 
-    // Fly the map to the clicked location
+    if (data.projectType === 'health') {
+      const pa = item.productivity_analysis;
+      const mr = item.malaria_risk;
+      const ei = item.economic_impact;
+      const wp = item.workforce_parameters;
+      const cc = item.climate_conditions;
+
+      if (wp?.workforce_size) setWorkforceSize(wp.workforce_size);
+      if (wp?.daily_wage_usd) setAverageDailyWage(wp.daily_wage_usd);
+      setHealthSelectedYear(item.scenario_year ?? 2050);
+
+      setHealthResults({
+        productivity_loss_pct: pa?.productivity_loss_pct ?? 0,
+        economic_loss_daily: ei?.total_economic_impact?.daily_loss_average ?? 0,
+        wbgt: pa?.wbgt_estimate ?? 0,
+        projected_temp: cc?.temperature_c ?? 0,
+        malaria_risk: (mr?.risk_category as 'High' | 'Medium' | 'Low') ?? 'Low',
+        dengue_risk: 'Low',
+        workforce_size: wp?.workforce_size ?? 100,
+        daily_wage: wp?.daily_wage_usd ?? 15,
+      });
+      setShowHealthResults(true);
+    }
+
+    // 4. Fly the map to the clicked location
     setViewState((prev) => ({
       ...prev,
       longitude: data.lng,
@@ -700,9 +804,9 @@ const Index = () => {
 
     toast({
       title: item.target.name,
-      description: `Loaded ${data.projectType} scenario. Click "Simulate" to run analysis.`,
+      description: `${data.projectType.charAt(0).toUpperCase() + data.projectType.slice(1)} scenario loaded with pre-calculated results.`,
     });
-  }, [mode]);
+  }, []);
 
   const handleViewStateChange = useCallback((newViewState: ViewState) => {
     setViewState(newViewState);
