@@ -194,7 +194,7 @@ const Index = () => {
   const canSimulate = markerPosition !== null;
 
   useEffect(() => {
-    if (markerPosition) {
+    if (markerPosition && ['agriculture', 'coastal', 'flood', 'portfolio'].includes(mode)) {
       const newZone = generateIrregularZone(
         { lat: markerPosition.lat, lng: markerPosition.lng },
         mode as ZoneMode
