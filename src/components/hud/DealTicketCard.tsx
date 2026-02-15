@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
-import { Landmark, Download, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Landmark, Download, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { Button } from '@/components/ui/button';
 import { structureGreenBond, GreenBondDeal } from '@/utils/structureGreenBond';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface DealTicketCardProps {
   financialData: any | null;
   locationName: string | null;
+  isLoading?: boolean;
 }
 
 const formatCurrency = (value: number) => {
@@ -15,7 +17,7 @@ const formatCurrency = (value: number) => {
   return `$${value.toFixed(0)}`;
 };
 
-export const DealTicketCard = ({ financialData, locationName }: DealTicketCardProps) => {
+export const DealTicketCard = ({ financialData, locationName, isLoading }: DealTicketCardProps) => {
   const deal: GreenBondDeal | null = useMemo(() => {
     if (!financialData) return null;
     return structureGreenBond(financialData);
@@ -54,6 +56,25 @@ export const DealTicketCard = ({ financialData, locationName }: DealTicketCardPr
     URL.revokeObjectURL(url);
   };
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <GlassCard className="p-4 w-full space-y-3">
+        <div className="flex items-center gap-2">
+          <Loader2 className="w-4 h-4 text-amber-400 animate-spin" />
+          <h3 className="text-sm font-semibold text-white">Calculating...</h3>
+        </div>
+        <Skeleton className="h-20 w-full bg-white/10 rounded-xl" />
+        <div className="grid grid-cols-3 gap-2">
+          <Skeleton className="h-14 bg-white/10 rounded-xl" />
+          <Skeleton className="h-14 bg-white/10 rounded-xl" />
+          <Skeleton className="h-14 bg-white/10 rounded-xl" />
+        </div>
+        <Skeleton className="h-10 w-full bg-white/10 rounded-xl" />
+      </GlassCard>
+    );
+  }
+
   if (!deal) {
     return (
       <GlassCard className="p-4 w-full">
@@ -64,7 +85,7 @@ export const DealTicketCard = ({ financialData, locationName }: DealTicketCardPr
         <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-center">
           <Landmark className="w-6 h-6 text-white/30 mx-auto mb-2" />
           <p className="text-xs text-white/50">
-            Click a <span className="text-amber-400 font-medium">Global Atlas pin</span> to generate a deal ticket from its financial data.
+            Click a <span className="text-amber-400 font-medium">Global Atlas pin</span> or <span className="text-amber-400 font-medium">Run Simulation</span> to generate a deal ticket.
           </p>
         </div>
       </GlassCard>
