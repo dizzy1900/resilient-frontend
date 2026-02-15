@@ -153,7 +153,7 @@ export const FloatingControlPanel = ({
       </div>
 
       <Tabs value={mode} onValueChange={(v) => onModeChange(v as DashboardMode)} className="w-full mb-3 sm:mb-4">
-        <TabsList className="w-full grid grid-cols-5 h-9 sm:h-10 lg:h-11 bg-white/5 border border-white/10 rounded-xl p-0.5 sm:p-1">
+        <TabsList className="w-full grid grid-cols-6 h-9 sm:h-10 lg:h-11 bg-white/5 border border-white/10 rounded-xl p-0.5 sm:p-1">
           <TabsTrigger
             value="agriculture"
             className="rounded-lg text-[9px] lg:text-[10px] font-medium data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400 data-[state=active]:border data-[state=active]:border-emerald-500/30 text-white/60 transition-all px-1"
@@ -177,6 +177,12 @@ export const FloatingControlPanel = ({
             className="rounded-lg text-[9px] lg:text-[10px] font-medium data-[state=active]:bg-rose-500/20 data-[state=active]:text-rose-400 data-[state=active]:border data-[state=active]:border-rose-500/30 text-white/60 transition-all px-1"
           >
             Health
+          </TabsTrigger>
+          <TabsTrigger
+            value="finance"
+            className="rounded-lg text-[9px] lg:text-[10px] font-medium data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400 data-[state=active]:border data-[state=active]:border-amber-500/30 text-white/60 transition-all px-1"
+          >
+            Finance
           </TabsTrigger>
           <TabsTrigger
             value="portfolio"

@@ -25,6 +25,7 @@ import { InterventionWizardModal, ProjectParams } from '@/components/hud/Interve
 import { DefensiveInfrastructureModal, DefensiveProjectParams } from '@/components/hud/DefensiveInfrastructureModal';
 import { toast } from '@/hooks/use-toast';
 import { Columns2, X } from 'lucide-react';
+import { DealTicketCard } from '@/components/hud/DealTicketCard';
 import { Button } from '@/components/ui/button';
 import { Polygon } from '@/utils/polygonMath';
 import { generateIrregularZone, ZoneMode } from '@/utils/zoneGeneration';
@@ -104,6 +105,9 @@ const Index = () => {
   const [healthTempTarget, setHealthTempTarget] = useState(1.4);
   const [healthResults, setHealthResults] = useState<HealthResults | null>(null);
   const [isSplitMode, setIsSplitMode] = useState(false);
+  // Finance mode: track current atlas item's financial data
+  const [atlasFinancialData, setAtlasFinancialData] = useState<any>(null);
+  const [atlasLocationName, setAtlasLocationName] = useState<string | null>(null);
   const [viewState, setViewState] = useState<ViewState>({
     longitude: 37.9062,
     latitude: -0.0236,
@@ -658,6 +662,10 @@ const Index = () => {
     // 1. Set marker position
     setMarkerPosition({ lat: data.lat, lng: data.lng });
 
+    // Store financial data for Finance mode
+    setAtlasFinancialData(item.financial_analysis ?? null);
+    setAtlasLocationName(item.target?.name ?? null);
+
     // 2. Switch mode
     const modeMap: Record<string, DashboardMode> = {
       agriculture: 'agriculture',
@@ -1038,7 +1046,7 @@ const Index = () => {
             onSelectedYearChange={setHealthSelectedYear}
           />
         </div>
-      ) : (
+      ) : mode === 'finance' ? null : (
         <div className="hidden lg:block absolute bottom-32 left-6 z-30">
           <SimulationPanel
             mode={mode}
@@ -1056,7 +1064,7 @@ const Index = () => {
         </div>
       )}
 
-      {mode !== 'portfolio' && (
+      {mode !== 'portfolio' && mode !== 'finance' && (
         <div className="hidden lg:block absolute bottom-32 left-[344px] xl:left-[360px] z-30 max-w-[200px]">
           {mode === 'coastal' ? (
             <UrbanInundationCard
@@ -1150,6 +1158,13 @@ const Index = () => {
           <PortfolioResultsPanel
             assets={portfolioAssets}
             visible={portfolioAssets.some(a => 'score' in a)}
+          />
+        </div>
+      ) : mode === 'finance' ? (
+        <div className="absolute top-16 right-4 sm:right-6 lg:right-20 z-30 sm:w-80 lg:w-96">
+          <DealTicketCard
+            financialData={atlasFinancialData}
+            locationName={atlasLocationName}
           />
         </div>
       ) : (

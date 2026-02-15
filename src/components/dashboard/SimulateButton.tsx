@@ -35,6 +35,11 @@ const modeStyles: Record<DashboardMode, {
     hoverGradient: 'linear-gradient(to right, #be123c, #e11d48)',
     glowColor: '244, 63, 94',
   },
+  finance: {
+    gradient: 'linear-gradient(to right, #d97706, #f59e0b)',
+    hoverGradient: 'linear-gradient(to right, #b45309, #d97706)',
+    glowColor: '245, 158, 11',
+  },
   portfolio: {
     gradient: 'linear-gradient(to right, #9333ea, #a855f7)',
     hoverGradient: 'linear-gradient(to right, #7c3aed, #9333ea)',

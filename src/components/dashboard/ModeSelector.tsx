@@ -1,7 +1,7 @@
-import { Wheat, Waves, Droplets, Briefcase, HeartPulse } from 'lucide-react';
+import { Wheat, Waves, Droplets, Briefcase, HeartPulse, Landmark } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export type DashboardMode = 'agriculture' | 'coastal' | 'flood' | 'health' | 'portfolio';
+export type DashboardMode = 'agriculture' | 'coastal' | 'flood' | 'health' | 'finance' | 'portfolio';
 
 interface ModeSelectorProps {
   value: DashboardMode;
@@ -11,7 +11,7 @@ interface ModeSelectorProps {
 export const ModeSelector = ({ value, onChange }: ModeSelectorProps) => {
   return (
     <Tabs value={value} onValueChange={(v) => onChange(v as DashboardMode)} className="w-full">
-      <TabsList className="w-full grid grid-cols-5 h-12 bg-secondary border border-border/50">
+      <TabsList className="w-full grid grid-cols-6 h-12 bg-secondary border border-border/50">
         <TabsTrigger 
           value="agriculture" 
           className="flex items-center gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-1.5"
@@ -39,6 +39,13 @@ export const ModeSelector = ({ value, onChange }: ModeSelectorProps) => {
         >
           <HeartPulse className="w-3.5 h-3.5" />
           <span className="text-[9px] font-medium hidden sm:inline">Health</span>
+        </TabsTrigger>
+        <TabsTrigger 
+          value="finance" 
+          className="flex items-center gap-1 data-[state=active]:bg-amber-600 data-[state=active]:text-white px-1.5"
+        >
+          <Landmark className="w-3.5 h-3.5" />
+          <span className="text-[9px] font-medium hidden sm:inline">Finance</span>
         </TabsTrigger>
         <TabsTrigger 
           value="portfolio" 
