@@ -24,8 +24,9 @@ import { FinancialSettingsModal } from '@/components/hud/FinancialSettingsModal'
 import { InterventionWizardModal, ProjectParams } from '@/components/hud/InterventionWizardModal';
 import { DefensiveInfrastructureModal, DefensiveProjectParams } from '@/components/hud/DefensiveInfrastructureModal';
 import { toast } from '@/hooks/use-toast';
-import { Columns2, X } from 'lucide-react';
+import { Columns2, X, Landmark, Loader2, Zap } from 'lucide-react';
 import { DealTicketCard } from '@/components/hud/DealTicketCard';
+import { GlassCard } from '@/components/hud/GlassCard';
 import { Button } from '@/components/ui/button';
 import { Polygon } from '@/utils/polygonMath';
 import { generateIrregularZone, ZoneMode } from '@/utils/zoneGeneration';
@@ -93,6 +94,7 @@ const Index = () => {
   const [isCoastalSimulating, setIsCoastalSimulating] = useState(false);
   const [isFloodSimulating, setIsFloodSimulating] = useState(false);
   const [isHealthSimulating, setIsHealthSimulating] = useState(false);
+  const [isFinanceSimulating, setIsFinanceSimulating] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [showCoastalResults, setShowCoastalResults] = useState(false);
   const [showFloodResults, setShowFloodResults] = useState(false);
@@ -239,6 +241,43 @@ const Index = () => {
     setShowFloodResults(false);
     setShowHealthResults(false);
   }, []);
+
+  // Finance simulation handler
+  const handleFinanceSimulate = useCallback(async () => {
+    if (!markerPosition) return;
+    setIsFinanceSimulating(true);
+    setAtlasFinancialData(null); // Clear to show loading
+
+    try {
+      const { data: responseData, error } = await supabase.functions.invoke('simulate-finance', {
+        body: {
+          lat: markerPosition.lat,
+          lon: markerPosition.lng,
+          crop: cropType,
+        },
+      });
+
+      if (error) throw new Error(error.message || 'Finance simulation failed');
+
+      // Extract financial_analysis from response (adapt to API response shape)
+      const result = Array.isArray(responseData) ? responseData[0] : responseData;
+      const financialAnalysis = result?.financial_analysis ?? result?.data?.financial_analysis ?? result;
+      
+      setAtlasFinancialData(financialAnalysis);
+      setAtlasLocationName(`${markerPosition.lat.toFixed(2)}, ${markerPosition.lng.toFixed(2)}`);
+    } catch (error) {
+      console.error('Finance simulation failed:', error);
+      toast({
+        title: 'Finance Simulation Failed',
+        description: error instanceof Error ? error.message : 'Unable to connect. Please try again.',
+        variant: 'destructive',
+      });
+      // Restore null so empty state shows
+      setAtlasFinancialData(null);
+    } finally {
+      setIsFinanceSimulating(false);
+    }
+  }, [markerPosition, cropType]);
 
   const handleGlobalTempTargetChange = useCallback((value: number) => {
     setGlobalTempTarget(value);
@@ -1046,7 +1085,40 @@ const Index = () => {
             onSelectedYearChange={setHealthSelectedYear}
           />
         </div>
-      ) : mode === 'finance' ? null : (
+      ) : mode === 'finance' ? (
+        <div className="hidden lg:block absolute bottom-32 left-6 z-30">
+          <GlassCard className="w-80 p-4">
+            <div className="flex items-center gap-2 mb-3 text-xs font-medium text-white/70">
+              <Landmark className="w-4 h-4 text-amber-400" />
+              <span>Finance Simulation</span>
+            </div>
+            <p className="text-[10px] text-white/50 mb-3">
+              Run a live simulation to generate a Green Bond Term Sheet for the selected location.
+            </p>
+            <Button
+              variant="ghost"
+              onClick={handleFinanceSimulate}
+              disabled={!canSimulate || isFinanceSimulating}
+              className="w-full h-11 text-sm font-semibold text-white transition-all duration-200 rounded-xl hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-amber-600 to-yellow-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_0_30px_rgba(245,158,11,0.6)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              {isFinanceSimulating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Calculating...
+                </>
+              ) : (
+                <>
+                  <Zap className="w-4 h-4 mr-2" />
+                  Run Simulation
+                </>
+              )}
+            </Button>
+            {!canSimulate && (
+              <p className="text-[10px] text-white/40 text-center mt-2">Select a location on the map first</p>
+            )}
+          </GlassCard>
+        </div>
+      ) : (
         <div className="hidden lg:block absolute bottom-32 left-6 z-30">
           <SimulationPanel
             mode={mode}
@@ -1165,6 +1237,7 @@ const Index = () => {
           <DealTicketCard
             financialData={atlasFinancialData}
             locationName={atlasLocationName}
+            isLoading={isFinanceSimulating}
           />
         </div>
       ) : (
