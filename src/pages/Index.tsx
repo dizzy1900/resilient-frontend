@@ -112,6 +112,7 @@ const Index = () => {
   const [atlasFinancialData, setAtlasFinancialData] = useState<any>(null);
   const [atlasLocationName, setAtlasLocationName] = useState<string | null>(null);
   const [atlasMonteCarloData, setAtlasMonteCarloData] = useState<any>(null);
+  const [atlasExecutiveSummary, setAtlasExecutiveSummary] = useState<string | null>(null);
   const [viewState, setViewState] = useState<ViewState>({
     longitude: 37.9062,
     latitude: -0.0236,
@@ -707,6 +708,7 @@ const Index = () => {
     setAtlasFinancialData(item.financial_analysis ?? null);
     setAtlasLocationName(item.target?.name ?? null);
     setAtlasMonteCarloData(item.monte_carlo_analysis ?? null);
+    setAtlasExecutiveSummary(item.executive_summary ?? null);
 
     // 2. Switch mode
     const modeMap: Record<string, DashboardMode> = {
@@ -1237,6 +1239,14 @@ const Index = () => {
         </div>
       ) : mode === 'finance' ? (
         <div className="absolute top-16 right-4 sm:right-6 lg:right-20 z-30 sm:w-80 lg:w-96 space-y-3 max-h-[calc(100vh-6rem)] overflow-y-auto">
+          {atlasExecutiveSummary && (
+            <GlassCard className="p-4">
+              <h3 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Executive Summary</h3>
+              <p className={`text-sm italic leading-relaxed ${atlasExecutiveSummary.includes('CRITICAL WARNING') ? 'text-red-400' : 'text-white/50'}`}>
+                {atlasExecutiveSummary}
+              </p>
+            </GlassCard>
+          )}
           <DealTicketCard
             financialData={atlasFinancialData}
             locationName={atlasLocationName}
