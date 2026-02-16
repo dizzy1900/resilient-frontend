@@ -80,7 +80,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Andhra Pradesh India shows solid fundamentals with NPV of $732,468. Minor yield sensitivity of 0.3% under projected climate conditions. Transition to resilient rice cultivars for long-term production security.",
+      "CRITICAL WARNING: Andhra Pradesh India faces severe climate risk. Projected monsoon variability could reduce rice yields by 40% by 2050. Immediate intervention required — current NPV of $732,468 is at risk of turning negative without resilient cultivar adoption.",
   },
   {
     project_type: "agriculture",
