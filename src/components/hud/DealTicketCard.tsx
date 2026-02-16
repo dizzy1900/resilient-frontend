@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Landmark, Download, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
+import { getDefaultProbability } from './RiskStressTestCard';
 import { GlassCard } from './GlassCard';
 import { Button } from '@/components/ui/button';
 import { structureGreenBond, GreenBondDeal } from '@/utils/structureGreenBond';
@@ -9,6 +10,7 @@ interface DealTicketCardProps {
   financialData: any | null;
   locationName: string | null;
   isLoading?: boolean;
+  monteCarloData?: any | null;
 }
 
 const formatCurrency = (value: number) => {
@@ -17,15 +19,22 @@ const formatCurrency = (value: number) => {
   return `$${value.toFixed(0)}`;
 };
 
-export const DealTicketCard = ({ financialData, locationName, isLoading }: DealTicketCardProps) => {
+export const DealTicketCard = ({ financialData, locationName, isLoading, monteCarloData }: DealTicketCardProps) => {
   const deal: GreenBondDeal | null = useMemo(() => {
     if (!financialData) return null;
     return structureGreenBond(financialData);
   }, [financialData]);
 
-  const isBankable = deal
-    ? deal.rating.startsWith('AAA') || deal.rating.startsWith('BBB')
-    : false;
+  const isBankable = useMemo(() => {
+    if (monteCarloData) {
+      const defaultProb = getDefaultProbability(monteCarloData);
+      return defaultProb < 2;
+    }
+    // Fallback: old logic
+    return deal
+      ? deal.rating.startsWith('AAA') || deal.rating.startsWith('BBB')
+      : false;
+  }, [deal, monteCarloData]);
 
   const handleExport = () => {
     if (!deal) return;

@@ -26,6 +26,7 @@ import { DefensiveInfrastructureModal, DefensiveProjectParams } from '@/componen
 import { toast } from '@/hooks/use-toast';
 import { Columns2, X, Landmark, Loader2, Zap } from 'lucide-react';
 import { DealTicketCard } from '@/components/hud/DealTicketCard';
+import { RiskStressTestCard } from '@/components/hud/RiskStressTestCard';
 import { GlassCard } from '@/components/hud/GlassCard';
 import { Button } from '@/components/ui/button';
 import { Polygon } from '@/utils/polygonMath';
@@ -110,6 +111,7 @@ const Index = () => {
   // Finance mode: track current atlas item's financial data
   const [atlasFinancialData, setAtlasFinancialData] = useState<any>(null);
   const [atlasLocationName, setAtlasLocationName] = useState<string | null>(null);
+  const [atlasMonteCarloData, setAtlasMonteCarloData] = useState<any>(null);
   const [viewState, setViewState] = useState<ViewState>({
     longitude: 37.9062,
     latitude: -0.0236,
@@ -704,6 +706,7 @@ const Index = () => {
     // Store financial data for Finance mode
     setAtlasFinancialData(item.financial_analysis ?? null);
     setAtlasLocationName(item.target?.name ?? null);
+    setAtlasMonteCarloData(item.monte_carlo_analysis ?? null);
 
     // 2. Switch mode
     const modeMap: Record<string, DashboardMode> = {
@@ -1233,12 +1236,14 @@ const Index = () => {
           />
         </div>
       ) : mode === 'finance' ? (
-        <div className="absolute top-16 right-4 sm:right-6 lg:right-20 z-30 sm:w-80 lg:w-96">
+        <div className="absolute top-16 right-4 sm:right-6 lg:right-20 z-30 sm:w-80 lg:w-96 space-y-3 max-h-[calc(100vh-6rem)] overflow-y-auto">
           <DealTicketCard
             financialData={atlasFinancialData}
             locationName={atlasLocationName}
             isLoading={isFinanceSimulating}
+            monteCarloData={atlasMonteCarloData}
           />
+          <RiskStressTestCard monteCarloData={atlasMonteCarloData} />
         </div>
       ) : (
         <div className="absolute bottom-28 sm:bottom-24 lg:bottom-32 right-4 sm:right-6 lg:right-20 left-4 sm:left-auto z-30 flex flex-col gap-2 sm:gap-3 max-w-full sm:max-w-none sm:w-80 lg:w-80">
