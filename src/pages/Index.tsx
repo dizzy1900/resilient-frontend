@@ -27,6 +27,7 @@ import { toast } from '@/hooks/use-toast';
 import { Columns2, X, Landmark, Loader2, Zap } from 'lucide-react';
 import { DealTicketCard } from '@/components/hud/DealTicketCard';
 import { RiskStressTestCard } from '@/components/hud/RiskStressTestCard';
+import { SolutionEngineCard } from '@/components/hud/SolutionEngineCard';
 import { GlassCard } from '@/components/hud/GlassCard';
 import { Button } from '@/components/ui/button';
 import { Polygon } from '@/utils/polygonMath';
@@ -114,6 +115,7 @@ const Index = () => {
   const [atlasMonteCarloData, setAtlasMonteCarloData] = useState<any>(null);
   const [atlasExecutiveSummary, setAtlasExecutiveSummary] = useState<string | null>(null);
   const [atlasSensitivityData, setAtlasSensitivityData] = useState<{ primary_driver: string; driver_impact_pct: number } | null>(null);
+  const [atlasAdaptationStrategy, setAtlasAdaptationStrategy] = useState<any>(null);
   const [viewState, setViewState] = useState<ViewState>({
     longitude: 37.9062,
     latitude: -0.0236,
@@ -711,6 +713,7 @@ const Index = () => {
     setAtlasMonteCarloData(item.monte_carlo_analysis ?? null);
     setAtlasExecutiveSummary(item.executive_summary ?? null);
     setAtlasSensitivityData(item.sensitivity_analysis ?? null);
+    setAtlasAdaptationStrategy(item.adaptation_strategy ?? null);
 
     // 2. Switch mode
     const modeMap: Record<string, DashboardMode> = {
@@ -1256,6 +1259,7 @@ const Index = () => {
             monteCarloData={atlasMonteCarloData}
           />
           <RiskStressTestCard monteCarloData={atlasMonteCarloData} sensitivityData={atlasSensitivityData} />
+          <SolutionEngineCard strategy={atlasAdaptationStrategy} />
         </div>
       ) : (
         <div className="absolute bottom-28 sm:bottom-24 lg:bottom-32 right-4 sm:right-6 lg:right-20 left-4 sm:left-auto z-30 flex flex-col gap-2 sm:gap-3 max-w-full sm:max-w-none sm:w-80 lg:w-80">
