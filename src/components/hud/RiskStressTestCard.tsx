@@ -1,6 +1,8 @@
-import { ShieldAlert, TrendingDown, TrendingUp } from 'lucide-react';
+import { ShieldAlert, TrendingDown, TrendingUp, AlertTriangle } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface MonteCarloData {
   metrics?: {
@@ -13,8 +15,14 @@ interface MonteCarloData {
   };
 }
 
+interface SensitivityData {
+  primary_driver: string;
+  driver_impact_pct: number;
+}
+
 interface RiskStressTestCardProps {
   monteCarloData: MonteCarloData | null;
+  sensitivityData?: SensitivityData | null;
 }
 
 /** Derive VaR (95%) from NPV p5 percentile */
@@ -47,7 +55,7 @@ const getDefaultProbColor = (prob: number) => {
   return { bar: 'bg-red-500', text: 'text-red-400', label: 'High Risk' };
 };
 
-export const RiskStressTestCard = ({ monteCarloData }: RiskStressTestCardProps) => {
+export const RiskStressTestCard = ({ monteCarloData, sensitivityData }: RiskStressTestCardProps) => {
   if (!monteCarloData) return null;
 
   const var95 = getVaR95(monteCarloData);
@@ -62,6 +70,29 @@ export const RiskStressTestCard = ({ monteCarloData }: RiskStressTestCardProps) 
         <ShieldAlert className="w-4 h-4 text-orange-400" />
         <h3 className="text-sm font-semibold text-white">Risk Stress Test</h3>
       </div>
+
+      {/* Primary Risk Driver */}
+      {sensitivityData && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2 cursor-help">
+                <AlertTriangle className="w-3.5 h-3.5 text-red-400 shrink-0" />
+                <span className="text-[10px] text-white/50 uppercase tracking-wider shrink-0">Primary Risk Driver</span>
+                <Badge className="bg-red-500/20 text-red-400 border-red-500/30 text-[10px] px-1.5 py-0 ml-auto shrink-0">
+                  {sensitivityData.primary_driver}
+                </Badge>
+                <span className="text-xs font-semibold text-red-400 tabular-nums shrink-0">
+                  Impact: {sensitivityData.driver_impact_pct}%
+                </span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="left" className="max-w-[220px]">
+              <p className="text-xs">This factor causes the largest financial loss in our stress tests.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
 
       {/* VaR (95%) */}
       <div className="p-3 rounded-xl bg-white/5 border border-white/10">

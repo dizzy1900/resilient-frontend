@@ -79,6 +79,10 @@ export const GLOBAL_ATLAS_DATA = [
         capex_overrun_range: "+/- 5%",
       },
     },
+    sensitivity_analysis: {
+      primary_driver: "Water Stress (-20%)",
+      driver_impact_pct: -45,
+    },
     executive_summary:
       "CRITICAL WARNING: Andhra Pradesh India faces severe climate risk. Projected monsoon variability could reduce rice yields by 40% by 2050. Immediate intervention required — current NPV of $732,468 is at risk of turning negative without resilient cultivar adoption.",
   },
@@ -147,6 +151,10 @@ export const GLOBAL_ATLAS_DATA = [
         "rice",
         "--use-mock-data",
       ],
+    },
+    sensitivity_analysis: {
+      primary_driver: "Rainfall Deficit (-15%)",
+      driver_impact_pct: -32,
     },
     monte_carlo_analysis: {
       mean_npv: 132.67,
@@ -229,6 +237,10 @@ export const GLOBAL_ATLAS_DATA = [
         "rice",
         "--use-mock-data",
       ],
+    },
+    sensitivity_analysis: {
+      primary_driver: "Heat Stress (+2.5°C)",
+      driver_impact_pct: -18,
     },
     monte_carlo_analysis: {
       mean_npv: 2647.95,
