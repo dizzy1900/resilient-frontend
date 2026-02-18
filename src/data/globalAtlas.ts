@@ -115,6 +115,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000209,
       satellite_id: "S2B_44PLC_20250328_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 47,
+        by_roi: 47,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 6.0,
+        roi: 6.0,
+        risk: 30.0,
+        composite: 13.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732468.22,
+        roi_pct: 36623.41,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #47 of 50 | 6th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -232,6 +269,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.001964,
       satellite_id: "S2A_50SNA_20251009_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "B",
+      credit_grade: "Highly Speculative",
+      investment_grade: false,
+      sector_rank: {
+        by_npv: 26,
+        by_roi: 26,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 48.0,
+        roi: 48.0,
+        risk: 2.0,
+        composite: 34.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 840053.01,
+        roi_pct: 42002.65,
+        default_probability_pct: 4400.0,
+      },
+      benchmark_summary: "Rank #26 of 50 | 48th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -347,6 +421,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-03T17:04:00.160000Z",
       cloud_cover: 0.00065,
       satellite_id: "S2B_15SWU_20251103_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 32,
+        by_roi: 32,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 30.0,
+        composite: 14.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #32 of 50 | 8th Percentile",
     },
   },
   {
@@ -464,6 +575,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000259,
       satellite_id: "S2C_46QGD_20260109_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 33,
+        by_roi: 33,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 30.0,
+        composite: 14.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #33 of 50 | 8th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -580,6 +728,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000409,
       satellite_id: "S2B_20HQE_20260105_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 10,
+        by_roi: 10,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 80.0,
+        roi: 80.0,
+        risk: 30.0,
+        composite: 65.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 924734.67,
+        roi_pct: 46236.73,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #10 of 50 | 80th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -695,6 +880,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-03-24T19:03:54.491000Z",
       cloud_cover: 0.000299,
       satellite_id: "S2B_10SFH_20250324_1_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AA",
+      credit_grade: "High Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 34,
+        by_roi: 34,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 18.0,
+        composite: 11.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 200.0,
+      },
+      benchmark_summary: "Rank #34 of 50 | 8th Percentile",
     },
   },
   {
@@ -813,6 +1035,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 8.1e-5,
       satellite_id: "S2C_14QMG_20250405_1_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 6,
+        by_roi: 6,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 88.0,
+        roi: 88.0,
+        risk: 30.0,
+        composite: 70.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 946617.69,
+        roi_pct: 47330.88,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #6 of 50 | 88th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -928,6 +1187,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-12-01T03:54:19.563000Z",
       cloud_cover: 0.00044,
       satellite_id: "S2C_47PPS_20251201_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 35,
+        by_roi: 35,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 30.0,
+        composite: 14.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #35 of 50 | 8th Percentile",
     },
   },
   {
@@ -1045,6 +1341,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000263,
       satellite_id: "S2B_36UVV_20250903_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 15,
+        by_roi: 15,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 50.0,
+        roi: 50.0,
+        risk: 30.0,
+        composite: 44.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880206.22,
+        roi_pct: 44010.31,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #15 of 50 | 50th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -1160,6 +1493,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-01-06T14:31:28.902000Z",
       cloud_cover: 0.000164,
       satellite_id: "S2C_20JLL_20260106_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 7,
+        by_roi: 7,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 86.0,
+        roi: 86.0,
+        risk: 30.0,
+        composite: 69.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 937793.11,
+        roi_pct: 46889.66,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #7 of 50 | 86th Percentile",
     },
   },
   {
@@ -1277,6 +1647,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000118,
       satellite_id: "S2B_35JMJ_20250912_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 16,
+        by_roi: 16,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 50.0,
+        roi: 50.0,
+        risk: 30.0,
+        composite: 44.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880206.22,
+        roi_pct: 44010.31,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #16 of 50 | 50th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -1392,6 +1799,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-08T04:42:14.393000Z",
       cloud_cover: 0.000707,
       satellite_id: "S2A_45QZG_20251108_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 36,
+        by_roi: 36,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 30.0,
+        composite: 14.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #36 of 50 | 8th Percentile",
     },
   },
   {
@@ -1510,6 +1954,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000365,
       satellite_id: "S2C_22LFH_20250903_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 4,
+        by_roi: 4,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 92.0,
+        roi: 92.0,
+        risk: 30.0,
+        composite: 73.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 1073016.84,
+        roi_pct: 53650.84,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #4 of 50 | 92th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -1625,6 +2106,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-25T03:31:37.478000Z",
       cloud_cover: 0.001662,
       satellite_id: "S2C_48QZM_20251125_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AA",
+      credit_grade: "High Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 30,
+        by_roi: 30,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 40.0,
+        roi: 40.0,
+        risk: 14.0,
+        composite: 32.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 741400.45,
+        roi_pct: 37070.02,
+        default_probability_pct: 400.0,
+      },
+      benchmark_summary: "Rank #30 of 50 | 40th Percentile",
     },
   },
   {
@@ -1742,6 +2260,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000213,
       satellite_id: "S2B_52TCS_20250929_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AA",
+      credit_grade: "High Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 9,
+        by_roi: 9,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 82.0,
+        roi: 82.0,
+        risk: 18.0,
+        composite: 62.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 924933.76,
+        roi_pct: 46246.69,
+        default_probability_pct: 200.0,
+      },
+      benchmark_summary: "Rank #9 of 50 | 82th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -1858,6 +2413,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.012409,
       satellite_id: "S2C_50SKD_20251102_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 17,
+        by_roi: 17,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 50.0,
+        roi: 50.0,
+        risk: 30.0,
+        composite: 44.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880206.22,
+        roi_pct: 44010.31,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #17 of 50 | 50th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -1973,6 +2565,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-12-17T03:19:19.705000Z",
       cloud_cover: 0.003626,
       satellite_id: "S2B_49RFQ_20251217_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AA",
+      credit_grade: "High Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 37,
+        by_roi: 37,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 18.0,
+        composite: 11.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 200.0,
+      },
+      benchmark_summary: "Rank #37 of 50 | 8th Percentile",
     },
   },
   {
@@ -2091,6 +2720,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000335,
       satellite_id: "S2C_49REL_20260111_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "A",
+      credit_grade: "Upper Medium",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 29,
+        by_roi: 29,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 42.0,
+        roi: 42.0,
+        risk: 12.0,
+        composite: 33.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 748151.79,
+        roi_pct: 37407.59,
+        default_probability_pct: 600.0,
+      },
+      benchmark_summary: "Rank #29 of 50 | 42th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -2206,6 +2872,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-23T17:02:08.719000Z",
       cloud_cover: 0.000783,
       satellite_id: "S2B_16TBL_20251123_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 18,
+        by_roi: 18,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 50.0,
+        roi: 50.0,
+        risk: 30.0,
+        composite: 44.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880206.22,
+        roi_pct: 44010.31,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #18 of 50 | 50th Percentile",
     },
   },
   {
@@ -2323,6 +3026,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00078,
       satellite_id: "S2A_15TVG_20251123_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 19,
+        by_roi: 19,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 50.0,
+        roi: 50.0,
+        risk: 30.0,
+        composite: 44.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880206.22,
+        roi_pct: 44010.31,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #19 of 50 | 50th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -2438,6 +3178,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-12-03T03:43:56.404000Z",
       cloud_cover: 0.000727,
       satellite_id: "S2B_48PVB_20251203_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 38,
+        by_roi: 38,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 30.0,
+        composite: 14.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #38 of 50 | 8th Percentile",
     },
   },
   {
@@ -2555,6 +3332,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00077,
       satellite_id: "S2C_13QFC_20250302_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "C",
+      credit_grade: "Junk",
+      investment_grade: false,
+      sector_rank: {
+        by_npv: 1,
+        by_roi: 1,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 98.0,
+        roi: 98.0,
+        risk: 0.0,
+        composite: 68.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 1444557.67,
+        roi_pct: 72227.88,
+        default_probability_pct: 8000.0,
+      },
+      benchmark_summary: "Rank #1 of 50 | 98th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -2670,6 +3484,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-07-21T02:59:55.387000Z",
       cloud_cover: 0.205482,
       satellite_id: "S2B_49MDN_20250721_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 39,
+        by_roi: 39,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 30.0,
+        composite: 14.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #39 of 50 | 8th Percentile",
     },
   },
   {
@@ -2787,6 +3638,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.004661,
       satellite_id: "S2B_50RLS_20251114_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 40,
+        by_roi: 40,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 30.0,
+        composite: 14.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #40 of 50 | 8th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -2902,6 +3790,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-22T02:35:45.262000Z",
       cloud_cover: 0.003447,
       satellite_id: "S2A_52TCP_20251122_1_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 20,
+        by_roi: 20,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 50.0,
+        roi: 50.0,
+        risk: 30.0,
+        composite: 44.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880206.22,
+        roi_pct: 44010.31,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #20 of 50 | 50th Percentile",
     },
   },
   {
@@ -3020,6 +3945,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0,
       satellite_id: "S2C_43PES_20250224_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "BBB",
+      credit_grade: "Investment Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 3,
+        by_roi: 3,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 94.0,
+        roi: 94.0,
+        risk: 8.0,
+        composite: 68.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 1403360.56,
+        roi_pct: 70168.03,
+        default_probability_pct: 1200.0,
+      },
+      benchmark_summary: "Rank #3 of 50 | 94th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -3135,6 +4097,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-03T06:09:56.197000Z",
       cloud_cover: 4e-5,
       satellite_id: "S2C_42SYC_20251103_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AA",
+      credit_grade: "High Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 41,
+        by_roi: 41,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 18.0,
+        composite: 11.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 200.0,
+      },
+      benchmark_summary: "Rank #41 of 50 | 8th Percentile",
     },
   },
   {
@@ -3252,6 +4251,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.001193,
       satellite_id: "S2C_15RWQ_20251016_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 42,
+        by_roi: 42,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 30.0,
+        composite: 14.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #42 of 50 | 8th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -3367,6 +4403,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-04-21T02:33:45.777000Z",
       cloud_cover: 3.633508,
       satellite_id: "S2C_50PRC_20250421_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 48,
+        by_roi: 48,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 4.0,
+        roi: 4.0,
+        risk: 30.0,
+        composite: 11.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732205.72,
+        roi_pct: 36610.29,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #48 of 50 | 4th Percentile",
     },
   },
   {
@@ -3485,6 +4558,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000239,
       satellite_id: "S2C_43QGF_20260209_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 5,
+        by_roi: 5,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 90.0,
+        roi: 90.0,
+        risk: 30.0,
+        composite: 72.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 964461.51,
+        roi_pct: 48223.08,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #5 of 50 | 90th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -3601,6 +4711,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-07-14T14:06:26.505000Z",
       cloud_cover: 0.000383,
       satellite_id: "S2C_21LVG_20250714_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "BBB",
+      credit_grade: "Investment Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 2,
+        by_roi: 2,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 96.0,
+        roi: 96.0,
+        risk: 6.0,
+        composite: 69.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 1434978.05,
+        roi_pct: 71748.9,
+        default_probability_pct: 1600.0,
+      },
+      benchmark_summary: "Rank #2 of 50 | 96th Percentile",
     },
   },
   {
@@ -3719,6 +4866,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 1.59737,
       satellite_id: "S2C_48PWS_20250228_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AA",
+      credit_grade: "High Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 50,
+        by_roi: 50,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 0.0,
+        roi: 0.0,
+        risk: 18.0,
+        composite: 5.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 728932.88,
+        roi_pct: 36446.64,
+        default_probability_pct: 200.0,
+      },
+      benchmark_summary: "Rank #50 of 50 | 0th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -3834,6 +5018,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-06-01T08:07:19.936000Z",
       cloud_cover: 0,
       satellite_id: "S2B_35JRM_20250601_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 21,
+        by_roi: 21,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 50.0,
+        roi: 50.0,
+        risk: 30.0,
+        composite: 44.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880206.22,
+        roi_pct: 44010.31,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #21 of 50 | 50th Percentile",
     },
   },
   {
@@ -3951,6 +5172,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000272,
       satellite_id: "S2B_14TNL_20251102_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 11,
+        by_roi: 11,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 78.0,
+        roi: 78.0,
+        risk: 30.0,
+        composite: 63.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 905224.44,
+        roi_pct: 45261.22,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #11 of 50 | 78th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -4066,6 +5324,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-08-12T10:57:33.059000Z",
       cloud_cover: 0.001198,
       satellite_id: "S2C_31UDR_20250812_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 13,
+        by_roi: 13,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 74.0,
+        roi: 74.0,
+        risk: 30.0,
+        composite: 60.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 900380.06,
+        roi_pct: 45019.0,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #13 of 50 | 74th Percentile",
     },
   },
   {
@@ -4183,6 +5478,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.001559,
       satellite_id: "S2C_22KDU_20250814_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 22,
+        by_roi: 22,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 50.0,
+        roi: 50.0,
+        risk: 30.0,
+        composite: 44.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880206.22,
+        roi_pct: 44010.31,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #22 of 50 | 50th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -4298,6 +5630,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-09-12T08:46:33.378000Z",
       cloud_cover: 3e-6,
       satellite_id: "S2C_36UXA_20250912_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 8,
+        by_roi: 8,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 84.0,
+        roi: 84.0,
+        risk: 30.0,
+        composite: 67.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 937542.41,
+        roi_pct: 46877.12,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #8 of 50 | 84th Percentile",
     },
   },
   {
@@ -4416,6 +5785,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000452,
       satellite_id: "S2B_43RFQ_20251109_1_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 12,
+        by_roi: 12,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 76.0,
+        roi: 76.0,
+        risk: 30.0,
+        composite: 62.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 904765.81,
+        roi_pct: 45238.29,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #12 of 50 | 76th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -4532,6 +5938,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000146,
       satellite_id: "S2C_43REQ_20260215_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 43,
+        by_roi: 43,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 30.0,
+        composite: 14.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #43 of 50 | 8th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -4647,6 +6090,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-01-09T03:32:14.639000Z",
       cloud_cover: 0.42046,
       satellite_id: "S2B_48QXJ_20260109_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AA",
+      credit_grade: "High Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 44,
+        by_roi: 44,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 18.0,
+        composite: 11.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 200.0,
+      },
+      benchmark_summary: "Rank #44 of 50 | 8th Percentile",
     },
   },
   {
@@ -4765,6 +6245,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000148,
       satellite_id: "S2C_36MZE_20260115_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 14,
+        by_roi: 14,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 72.0,
+        roi: 72.0,
+        risk: 30.0,
+        composite: 59.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880790.2,
+        roi_pct: 44039.51,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #14 of 50 | 72th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -4880,6 +6397,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-12-03T14:11:41.471000Z",
       cloud_cover: 0.000194,
       satellite_id: "S2A_20JQL_20251203_1_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 23,
+        by_roi: 23,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 50.0,
+        roi: 50.0,
+        risk: 30.0,
+        composite: 44.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880206.22,
+        roi_pct: 44010.31,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #23 of 50 | 50th Percentile",
     },
   },
   {
@@ -4997,6 +6551,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00504,
       satellite_id: "S2C_50SNF_20251119_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 24,
+        by_roi: 24,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 50.0,
+        roi: 50.0,
+        risk: 30.0,
+        composite: 44.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880206.22,
+        roi_pct: 44010.31,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #24 of 50 | 50th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -5112,6 +6703,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-12-18T17:57:09.910000Z",
       cloud_cover: 0.000501,
       satellite_id: "S2B_13RBH_20251218_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 25,
+        by_roi: 25,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 50.0,
+        roi: 50.0,
+        risk: 30.0,
+        composite: 44.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 880206.22,
+        roi_pct: 44010.31,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #25 of 50 | 50th Percentile",
     },
   },
   {
@@ -5230,6 +6858,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00216,
       satellite_id: "S2B_42RVP_20250402_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AA",
+      credit_grade: "High Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 31,
+        by_roi: 31,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 38.0,
+        roi: 38.0,
+        risk: 14.0,
+        composite: 30.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 738673.8,
+        roi_pct: 36933.69,
+        default_probability_pct: 400.0,
+      },
+      benchmark_summary: "Rank #31 of 50 | 38th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -5347,6 +7012,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 4.470132,
       satellite_id: "S2B_51MUU_20260118_1_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 49,
+        by_roi: 49,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 2.0,
+        roi: 2.0,
+        risk: 30.0,
+        composite: 10.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 729001.7,
+        roi_pct: 36450.08,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #49 of 50 | 2th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -5462,6 +7164,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-12-18T04:41:55.585000Z",
       cloud_cover: 0.000232,
       satellite_id: "S2A_46RCN_20251218_1_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "B",
+      credit_grade: "Highly Speculative",
+      investment_grade: false,
+      sector_rank: {
+        by_npv: 27,
+        by_roi: 27,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 46.0,
+        roi: 46.0,
+        risk: 4.0,
+        composite: 33.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 759864.88,
+        roi_pct: 37993.24,
+        default_probability_pct: 3600.0,
+      },
+      benchmark_summary: "Rank #27 of 50 | 46th Percentile",
     },
   },
   {
@@ -5579,6 +7318,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.273227,
       satellite_id: "S2C_44PKT_20250820_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 45,
+        by_roi: 45,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 30.0,
+        composite: 14.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #45 of 50 | 8th Percentile",
+    },
   },
   {
     project_type: "agriculture",
@@ -5694,6 +7470,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-02-11T05:21:24.354000Z",
       cloud_cover: 0.000313,
       satellite_id: "S2B_44RMQ_20260211_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "BBB",
+      credit_grade: "Investment Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 28,
+        by_roi: 28,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 44.0,
+        roi: 44.0,
+        risk: 8.0,
+        composite: 33.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 748159.48,
+        roi_pct: 37407.97,
+        default_probability_pct: 1200.0,
+      },
+      benchmark_summary: "Rank #28 of 50 | 44th Percentile",
     },
   },
   {
@@ -5811,6 +7624,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000126,
       satellite_id: "S2C_45QWF_20260128_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 46,
+        by_roi: 46,
+        total_in_sector: 50,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 8.0,
+        risk: 30.0,
+        composite: 14.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 855107.7256,
+          std_dev: 171149.81945958978,
+        },
+        roi_pct: {
+          mean: 42755.38628,
+          std_dev: 8557.490972979487,
+        },
+        default_probability: {
+          mean: 4.52,
+          std_dev: 13.736945565495546,
+        },
+        count: 50,
+      },
+      metrics_used: {
+        npv_usd: 732736.61,
+        roi_pct: 36636.83,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #46 of 50 | 8th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -5910,6 +7760,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-08-12T10:57:14.778000Z",
       cloud_cover: 0.015763,
       satellite_id: "S2C_31UES_20250812_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 17,
+        by_roi: 12,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 32.0,
+        roi: 52.0,
+        risk: 0.0,
+        composite: 28.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4461.49,
+        roi_pct: 95.09,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #17 of 25 | 32th Percentile",
     },
   },
   {
@@ -6011,6 +7898,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.222279,
       satellite_id: "S2A_52SDD_20250729_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 10,
+        by_roi: 4,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 60.0,
+        roi: 84.0,
+        risk: 0.0,
+        composite: 49.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4644.75,
+        roi_pct: 142.67,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #10 of 25 | 60th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -6110,6 +8034,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-01-29T05:16:52.536000Z",
       cloud_cover: 0.713511,
       satellite_id: "S2B_44NLN_20260129_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 6,
+        by_roi: 25,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 76.0,
+        roi: 0.0,
+        risk: 0.0,
+        composite: 30.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4773.84,
+        roi_pct: 51.22,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #6 of 25 | 76th Percentile",
     },
   },
   {
@@ -6211,6 +8172,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.010456,
       satellite_id: "S2C_51SUD_20251027_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 21,
+        by_roi: 2,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 16.0,
+        roi: 92.0,
+        risk: 0.0,
+        composite: 34.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4341.61,
+        roi_pct: 165.48,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #21 of 25 | 16th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -6310,6 +8308,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-06-11T07:02:46.816000Z",
       cloud_cover: 0.00707,
       satellite_id: "S2C_40RCP_20250611_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 9,
+        by_roi: 8,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 64.0,
+        roi: 68.0,
+        risk: 0.0,
+        composite: 46.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4648.16,
+        roi_pct: 111.59,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #9 of 25 | 64th Percentile",
     },
   },
   {
@@ -6411,6 +8446,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.004569,
       satellite_id: "S2C_30UYC_20250407_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 3,
+        by_roi: 18,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 88.0,
+        roi: 28.0,
+        risk: 0.0,
+        composite: 43.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4811.85,
+        roi_pct: 77.04,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #3 of 25 | 88th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -6510,6 +8582,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-03-24T03:11:56.183000Z",
       cloud_cover: 0.003295,
       satellite_id: "S2C_49QGF_20250324_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 5,
+        by_roi: 10,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 80.0,
+        roi: 60.0,
+        risk: 0.0,
+        composite: 50.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4790.17,
+        roi_pct: 96.7,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #5 of 25 | 80th Percentile",
     },
   },
   {
@@ -6611,6 +8720,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00064,
       satellite_id: "S2A_32UNE_20250321_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 23,
+        by_roi: 11,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 56.0,
+        risk: 0.0,
+        composite: 20.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4328.9,
+        roi_pct: 95.48,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #23 of 25 | 8th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -6710,6 +8856,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-03-24T03:12:06.317000Z",
       cloud_cover: 0.00596,
       satellite_id: "S2C_50QKK_20250324_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 12,
+        by_roi: 19,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 52.0,
+        roi: 24.0,
+        risk: 0.0,
+        composite: 28.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4583.88,
+        roi_pct: 76.5,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #12 of 25 | 52th Percentile",
     },
   },
   {
@@ -6811,6 +8994,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.018039,
       satellite_id: "S2B_40RCN_20250616_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 25,
+        by_roi: 3,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 0.0,
+        roi: 88.0,
+        risk: 0.0,
+        composite: 26.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4283.88,
+        roi_pct: 153.82,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #25 of 25 | 0th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -6910,6 +9130,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-03-25T02:41:45.452000Z",
       cloud_cover: 0.090872,
       satellite_id: "S2C_50QRL_20250325_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 24,
+        by_roi: 5,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 4.0,
+        roi: 80.0,
+        risk: 0.0,
+        composite: 25.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4284.4,
+        roi_pct: 132.51,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #24 of 25 | 4th Percentile",
     },
   },
   {
@@ -7011,6 +9268,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.005345,
       satellite_id: "S2A_47PPQ_20251203_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 7,
+        by_roi: 17,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 72.0,
+        roi: 32.0,
+        risk: 0.0,
+        composite: 38.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4710.96,
+        roi_pct: 85.17,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #7 of 25 | 72th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -7110,6 +9404,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-10-29T18:45:16.125000Z",
       cloud_cover: 0.003232,
       satellite_id: "S2C_11SLT_20251029_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 22,
+        by_roi: 7,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 12.0,
+        roi: 72.0,
+        risk: 0.0,
+        composite: 26.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4332.81,
+        roi_pct: 119.55,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #22 of 25 | 12th Percentile",
     },
   },
   {
@@ -7211,6 +9542,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.013454,
       satellite_id: "S2C_51RUP_20251220_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 1,
+        by_roi: 6,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 96.0,
+        roi: 76.0,
+        risk: 0.0,
+        composite: 61.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4924.86,
+        roi_pct: 125.21,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #1 of 25 | 96th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -7310,6 +9678,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-08-22T09:20:09.945000Z",
       cloud_cover: 0.003358,
       satellite_id: "S2C_35SKC_20250822_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 20,
+        by_roi: 21,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 20.0,
+        roi: 16.0,
+        risk: 0.0,
+        composite: 12.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4342.2,
+        roi_pct: 74.09,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #20 of 25 | 20th Percentile",
     },
   },
   {
@@ -7411,6 +9816,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 5.104131,
       satellite_id: "S2A_47NQD_20251031_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 8,
+        by_roi: 16,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 68.0,
+        roi: 36.0,
+        risk: 0.0,
+        composite: 38.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4685.82,
+        roi_pct: 89.08,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #8 of 25 | 68th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -7510,6 +9952,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-01T02:57:37.587000Z",
       cloud_cover: 0.002502,
       satellite_id: "S2B_50SQF_20251101_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 14,
+        by_roi: 24,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 44.0,
+        roi: 4.0,
+        risk: 0.0,
+        composite: 18.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4544.72,
+        roi_pct: 61.04,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #14 of 25 | 44th Percentile",
     },
   },
   {
@@ -7611,6 +10090,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.026709,
       satellite_id: "S2C_31UFT_20250404_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 2,
+        by_roi: 14,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 92.0,
+        roi: 44.0,
+        risk: 0.0,
+        composite: 50.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4822.19,
+        roi_pct: 94.07,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #2 of 25 | 92th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -7710,6 +10226,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-08-13T13:18:59.003000Z",
       cloud_cover: 0.01006,
       satellite_id: "S2B_23KLP_20250813_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 13,
+        by_roi: 22,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 48.0,
+        roi: 12.0,
+        risk: 0.0,
+        composite: 22.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4551.2,
+        roi_pct: 70.87,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #13 of 25 | 48th Percentile",
     },
   },
   {
@@ -7811,6 +10364,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.02484,
       satellite_id: "S2A_51RUQ_20250916_1_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 15,
+        by_roi: 9,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 40.0,
+        roi: 64.0,
+        risk: 0.0,
+        composite: 35.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4535.94,
+        roi_pct: 97.08,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #15 of 25 | 40th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -7910,6 +10500,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-12-05T03:37:54.380000Z",
       cloud_cover: 10.657708,
       satellite_id: "S2C_48NUG_20251205_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 18,
+        by_roi: 13,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 28.0,
+        roi: 48.0,
+        risk: 0.0,
+        composite: 25.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4380.98,
+        roi_pct: 94.64,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #18 of 25 | 28th Percentile",
     },
   },
   {
@@ -8011,6 +10638,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 10.657708,
       satellite_id: "S2C_48NUG_20251205_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 16,
+        by_roi: 23,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 36.0,
+        roi: 8.0,
+        risk: 0.0,
+        composite: 16.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4499.0,
+        roi_pct: 66.32,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #16 of 25 | 36th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -8110,6 +10774,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-14T03:06:55.408000Z",
       cloud_cover: 0.016291,
       satellite_id: "S2B_50SNJ_20251114_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 19,
+        by_roi: 1,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 24.0,
+        roi: 96.0,
+        risk: 0.0,
+        composite: 38.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4367.69,
+        roi_pct: 179.94,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #19 of 25 | 24th Percentile",
     },
   },
   {
@@ -8211,6 +10912,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00363,
       satellite_id: "S2B_30SYJ_20250628_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 11,
+        by_roi: 15,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 56.0,
+        roi: 40.0,
+        risk: 0.0,
+        composite: 34.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4610.86,
+        roi_pct: 92.66,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #11 of 25 | 56th Percentile",
+    },
   },
   {
     project_type: "coastal",
@@ -8310,6 +11048,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-03-23T02:51:02.395000Z",
       cloud_cover: 0.002154,
       satellite_id: "S2B_50RNN_20250323_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 4,
+        by_roi: 20,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 84.0,
+        roi: 20.0,
+        risk: 0.0,
+        composite: 39.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4562.574,
+          std_dev: 195.24768235927073,
+        },
+        roi_pct: {
+          mean: 100.96817667501705,
+          std_dev: 33.096981755796676,
+        },
+        default_probability: {
+          mean: 0.0,
+          std_dev: 0.0,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4802.19,
+        roi_pct: 76.38,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #4 of 25 | 84th Percentile",
     },
   },
   {
@@ -8430,6 +11205,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 13.038418,
       satellite_id: "S2A_30NUL_20250520_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 11,
+        by_roi: 17,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 56.0,
+        roi: 32.0,
+        risk: 8.0,
+        composite: 34.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4610.78,
+        roi_pct: 89.13,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #11 of 25 | 56th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -8548,6 +11360,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-08-18T08:51:40.046000Z",
       cloud_cover: 0.005036,
       satellite_id: "S2B_36RTV_20250818_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 13,
+        by_roi: 24,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 48.0,
+        roi: 4.0,
+        risk: 8.0,
+        composite: 22.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4548.03,
+        roi_pct: 67.48,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #13 of 25 | 48th Percentile",
     },
   },
   {
@@ -8668,6 +11517,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000886,
       satellite_id: "S2A_47PPR_20251203_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 1,
+        by_roi: 7,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 96.0,
+        roi: 72.0,
+        risk: 8.0,
+        composite: 62.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4989.98,
+        roi_pct: 130.67,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #1 of 25 | 96th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -8786,6 +11672,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-02-08T05:15:07.217000Z",
       cloud_cover: 0.711444,
       satellite_id: "S2B_44PMV_20260208_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 20,
+        by_roi: 12,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 20.0,
+        roi: 52.0,
+        risk: 8.0,
+        composite: 26.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4386.53,
+        roi_pct: 105.39,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #20 of 25 | 20th Percentile",
     },
   },
   {
@@ -8906,6 +11829,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000487,
       satellite_id: "S2A_46QCK_20251128_1_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 21,
+        by_roi: 14,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 16.0,
+        roi: 44.0,
+        risk: 8.0,
+        composite: 22.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4371.94,
+        roi_pct: 98.15,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #21 of 25 | 16th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -9024,6 +11984,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-08T04:42:14.393000Z",
       cloud_cover: 0.000707,
       satellite_id: "S2A_45QZG_20251108_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 19,
+        by_roi: 13,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 24.0,
+        roi: 48.0,
+        risk: 8.0,
+        composite: 26.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4421.4,
+        roi_pct: 100.63,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #19 of 25 | 24th Percentile",
     },
   },
   {
@@ -9144,6 +12141,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.003295,
       satellite_id: "S2C_49QGF_20250324_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 12,
+        by_roi: 3,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 52.0,
+        roi: 88.0,
+        risk: 8.0,
+        composite: 49.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4589.16,
+        roi_pct: 170.43,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #12 of 25 | 52th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -9262,6 +12296,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-01-09T03:32:14.639000Z",
       cloud_cover: 0.42046,
       satellite_id: "S2B_48QXJ_20260109_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 17,
+        by_roi: 8,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 32.0,
+        roi: 68.0,
+        risk: 8.0,
+        composite: 35.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4475.19,
+        roi_pct: 118.74,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #17 of 25 | 32th Percentile",
     },
   },
   {
@@ -9382,6 +12453,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.017494,
       satellite_id: "S2B_48PXT_20251130_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 4,
+        by_roi: 11,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 84.0,
+        roi: 56.0,
+        risk: 8.0,
+        composite: 52.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4860.71,
+        roi_pct: 112.97,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #4 of 25 | 84th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -9500,6 +12608,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-03T17:15:38.692000Z",
       cloud_cover: 0.00132,
       satellite_id: "S2A_15RTP_20251103_1_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AA",
+      credit_grade: "High Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 8,
+        by_roi: 5,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 68.0,
+        roi: 80.0,
+        risk: 0.0,
+        composite: 51.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4718.49,
+        roi_pct: 160.4,
+        default_probability_pct: 200.0,
+      },
+      benchmark_summary: "Rank #8 of 25 | 68th Percentile",
     },
   },
   {
@@ -9620,6 +12765,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.42467,
       satellite_id: "S2B_48MYU_20250826_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 6,
+        by_roi: 1,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 76.0,
+        roi: 96.0,
+        risk: 8.0,
+        composite: 61.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4753.54,
+        roi_pct: 179.53,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #6 of 25 | 76th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -9738,6 +12920,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-12-08T06:22:36.983000Z",
       cloud_cover: 0.001214,
       satellite_id: "S2A_41RRH_20251208_1_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AA",
+      credit_grade: "High Grade",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 25,
+        by_roi: 10,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 0.0,
+        roi: 60.0,
+        risk: 0.0,
+        composite: 18.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4125.39,
+        roi_pct: 114.49,
+        default_probability_pct: 200.0,
+      },
+      benchmark_summary: "Rank #25 of 25 | 0th Percentile",
     },
   },
   {
@@ -9858,6 +13077,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 3.7e-5,
       satellite_id: "S2B_45QXE_20260123_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 24,
+        by_roi: 2,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 4.0,
+        roi: 92.0,
+        risk: 8.0,
+        composite: 31.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4313.7,
+        roi_pct: 177.01,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #24 of 25 | 4th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -9976,6 +13232,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-01-24T10:19:05.146000Z",
       cloud_cover: 1.352086,
       satellite_id: "S2C_31NEH_20260124_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 18,
+        by_roi: 23,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 28.0,
+        roi: 8.0,
+        risk: 8.0,
+        composite: 16.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4424.25,
+        roi_pct: 72.56,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #18 of 25 | 28th Percentile",
     },
   },
   {
@@ -10096,6 +13389,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 5.243486,
       satellite_id: "S2B_51PTS_20250804_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 5,
+        by_roi: 19,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 80.0,
+        roi: 24.0,
+        risk: 8.0,
+        composite: 41.6,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4768.3,
+        roi_pct: 87.32,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #5 of 25 | 80th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -10214,6 +13544,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-03-20T16:06:16.321000Z",
       cloud_cover: 0.061894,
       satellite_id: "S2B_17RNJ_20250320_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 7,
+        by_roi: 6,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 72.0,
+        roi: 76.0,
+        risk: 8.0,
+        composite: 54.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4733.23,
+        roi_pct: 143.48,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #7 of 25 | 72th Percentile",
     },
   },
   {
@@ -10334,6 +13701,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000435,
       satellite_id: "S2B_42QZG_20251013_1_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 15,
+        by_roi: 18,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 40.0,
+        roi: 28.0,
+        risk: 8.0,
+        composite: 26.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4509.65,
+        roi_pct: 87.81,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #15 of 25 | 40th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -10452,6 +13856,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-02-08T16:55:07.317000Z",
       cloud_cover: 0.006926,
       satellite_id: "S2B_15RYP_20260208_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 9,
+        by_roi: 9,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 64.0,
+        roi: 64.0,
+        risk: 8.0,
+        composite: 47.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4712.4,
+        roi_pct: 118.61,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #9 of 25 | 64th Percentile",
     },
   },
   {
@@ -10572,6 +14013,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.013818,
       satellite_id: "S2C_53SNU_20250323_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 23,
+        by_roi: 16,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 8.0,
+        roi: 36.0,
+        risk: 8.0,
+        composite: 16.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4338.2,
+        roi_pct: 91.5,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #23 of 25 | 8th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -10690,6 +14168,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-09-16T02:49:18.129000Z",
       cloud_cover: 0.02484,
       satellite_id: "S2A_51RUQ_20250916_1_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 14,
+        by_roi: 15,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 44.0,
+        roi: 40.0,
+        risk: 8.0,
+        composite: 32.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4535.94,
+        roi_pct: 97.08,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #14 of 25 | 44th Percentile",
     },
   },
   {
@@ -10810,6 +14325,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.003318,
       satellite_id: "S2B_49QHF_20250319_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 16,
+        by_roi: 20,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 36.0,
+        roi: 20.0,
+        risk: 8.0,
+        composite: 22.8,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4490.7,
+        roi_pct: 85.38,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #16 of 25 | 36th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -10928,6 +14480,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-07-21T02:59:48.516000Z",
       cloud_cover: 0.092671,
       satellite_id: "S2B_49MFN_20250721_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 3,
+        by_roi: 21,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 88.0,
+        roi: 16.0,
+        risk: 8.0,
+        composite: 42.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4902.28,
+        roi_pct: 82.53,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #3 of 25 | 88th Percentile",
     },
   },
   {
@@ -11048,6 +14637,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.016291,
       satellite_id: "S2B_50SNJ_20251114_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 2,
+        by_roi: 25,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 92.0,
+        roi: 0.0,
+        risk: 8.0,
+        composite: 39.2,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4925.46,
+        roi_pct: 60.7,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #2 of 25 | 92th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -11167,6 +14793,43 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.036944,
       satellite_id: "S2B_54SUE_20250322_0_L2A",
     },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 22,
+        by_roi: 4,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 12.0,
+        roi: 84.0,
+        risk: 8.0,
+        composite: 32.4,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4355.5,
+        roi_pct: 164.91,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #22 of 25 | 12th Percentile",
+    },
   },
   {
     project_type: "flood",
@@ -11285,6 +14948,43 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-09-19T10:18:23.366000Z",
       cloud_cover: 0.003733,
       satellite_id: "S2C_32TQR_20250919_0_L2A",
+    },
+    market_intelligence: {
+      credit_rating: "AAA",
+      credit_grade: "Prime",
+      investment_grade: true,
+      sector_rank: {
+        by_npv: 10,
+        by_roi: 22,
+        total_in_sector: 25,
+      },
+      percentiles: {
+        npv: 60.0,
+        roi: 12.0,
+        risk: 8.0,
+        composite: 30.0,
+      },
+      sector_statistics: {
+        npv_usd: {
+          mean: 4581.954,
+          std_dev: 219.0822764396974,
+        },
+        roi_pct: {
+          mean: 111.61350311550075,
+          std_dev: 35.784829268146865,
+        },
+        default_probability: {
+          mean: 0.16,
+          std_dev: 0.5537749241945383,
+        },
+        count: 25,
+      },
+      metrics_used: {
+        npv_usd: 4688.1,
+        roi_pct: 73.44,
+        default_probability_pct: 0.0,
+      },
+      benchmark_summary: "Rank #10 of 25 | 60th Percentile",
     },
   },
 ];
