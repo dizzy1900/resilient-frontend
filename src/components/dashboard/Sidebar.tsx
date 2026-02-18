@@ -56,6 +56,12 @@ interface SidebarProps {
   sectorRank?: number | null;
   sectorTotal?: number | null;
   primaryDriver?: string | null;
+  baselineNpv?: number | null;
+  varAt95?: number | null;
+  defaultProbability?: number | null;
+  driverImpactPct?: number | null;
+  temporalHistory?: { year: number; npv: number; default_prob?: number }[] | null;
+  strandedAssetYear?: number | null;
 }
 
 export const Sidebar = ({
@@ -97,6 +103,12 @@ export const Sidebar = ({
   sectorRank,
   sectorTotal,
   primaryDriver,
+  baselineNpv,
+  varAt95,
+  defaultProbability,
+  driverImpactPct,
+  temporalHistory,
+  strandedAssetYear,
 }: SidebarProps) => {
   const [activeTab, setActiveTab] = useState<SidebarTab>('overview');
 
@@ -151,7 +163,16 @@ export const Sidebar = ({
           />
         )}
 
-        {activeTab === 'risk-finance' && <RiskFinanceTab />}
+        {activeTab === 'risk-finance' && (
+          <RiskFinanceTab
+            baselineNpv={baselineNpv}
+            varAt95={varAt95}
+            defaultProbability={defaultProbability}
+            driverImpactPct={driverImpactPct}
+            temporalHistory={temporalHistory}
+            strandedAssetYear={strandedAssetYear}
+          />
+        )}
 
         {activeTab === 'adaptation' && <AdaptationTab />}
       </div>
