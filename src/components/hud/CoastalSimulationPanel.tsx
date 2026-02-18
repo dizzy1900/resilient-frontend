@@ -118,7 +118,7 @@ export const CoastalSimulationPanel = ({
   };
 
   return (
-    <GlassCard className="w-full lg:w-80 p-2.5 sm:p-3 lg:p-4 max-h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+    <GlassCard className="w-full lg:w-80 p-2.5 sm:p-3 lg:p-4 max-h-[calc(100vh-560px)] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
       <div className="space-y-3 lg:space-y-4">
         {/* Asset at Risk - moved above Coastal Parameters */}
         <div className="space-y-2">
