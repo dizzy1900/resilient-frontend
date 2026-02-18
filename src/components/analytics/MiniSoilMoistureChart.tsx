@@ -19,20 +19,20 @@ export const MiniSoilMoistureChart = ({ data }: MiniSoilMoistureChartProps) => {
         <AreaChart data={data} margin={{ top: 4, right: 4, left: 4, bottom: 4 }}>
           <defs>
             <linearGradient id="miniMoistureGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#10b981" stopOpacity={0.5} />
-              <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+              <stop offset="5%" stopColor="#ebebeb" stopOpacity={0.15} />
+              <stop offset="95%" stopColor="#ebebeb" stopOpacity={0} />
             </linearGradient>
           </defs>
           <ReferenceLine
             y={stressThreshold}
-            stroke="#ef4444"
+            stroke="#eb796f"
             strokeDasharray="2 2"
             strokeOpacity={0.6}
           />
           <Area
             type="monotone"
             dataKey="moisture"
-            stroke="#10b981"
+            stroke="#ebebeb"
             strokeWidth={1.5}
             fill="url(#miniMoistureGradient)"
             isAnimationActive={false}

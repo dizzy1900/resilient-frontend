@@ -6,7 +6,6 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from 'recharts';
 
 interface StormSurgeChartProps {
@@ -20,47 +19,44 @@ export const StormSurgeChart = ({ data }: StormSurgeChartProps) => {
         <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
           <XAxis
             dataKey="year"
-            tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }}
-            axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+            tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: 'monospace' }}
+            axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }}
-            axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+            tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: 'monospace' }}
+            axisLine={false}
             tickLine={false}
             domain={[0, 'auto']}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              backgroundColor: 'rgba(13, 13, 13, 0.95)',
               border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '8px',
-              fontSize: '12px',
+              borderRadius: '0px',
+              fontSize: '10px',
+              fontFamily: 'monospace',
             }}
-            labelStyle={{ color: 'rgba(255,255,255,0.7)' }}
+            labelStyle={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.05em' }}
             formatter={(value: number) => [`${value}m`, '']}
-          />
-          <Legend
-            wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }}
-            formatter={(value) => (
-              <span style={{ color: 'rgba(255,255,255,0.7)' }}>{value}</span>
-            )}
           />
           <Line
             type="monotone"
             dataKey="baseline"
             name="Without Protection"
-            stroke="#ef4444"
-            strokeWidth={2}
-            dot={{ fill: '#ef4444', strokeWidth: 0, r: 3 }}
+            stroke="#eb796f"
+            strokeWidth={1.5}
+            dot={false}
+            activeDot={{ r: 3, fill: '#eb796f', stroke: '#eb796f', strokeWidth: 1 }}
           />
           <Line
             type="monotone"
             dataKey="withMangroves"
             name="With Mangroves"
-            stroke="#14b8a6"
-            strokeWidth={2}
-            dot={{ fill: '#14b8a6', strokeWidth: 0, r: 3 }}
+            stroke="#8b8b8b"
+            strokeWidth={1.5}
+            dot={false}
+            activeDot={{ r: 3, fill: '#8b8b8b', stroke: '#8b8b8b', strokeWidth: 1 }}
           />
         </LineChart>
       </ResponsiveContainer>

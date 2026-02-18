@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, ComposedChart } from 'recharts';
+import { Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, Area, ComposedChart } from 'recharts';
 
 interface CumulativeCashFlowChartProps {
   capex: number;
@@ -90,49 +90,51 @@ export const CumulativeCashFlowChart = ({
           <ComposedChart data={data} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
             <defs>
               <linearGradient id="cashFlowGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#10b981" stopOpacity={0.3} />
-                <stop offset="50%" stopColor="#10b981" stopOpacity={0} />
-                <stop offset="50%" stopColor="#ef4444" stopOpacity={0} />
-                <stop offset="100%" stopColor="#ef4444" stopOpacity={0.2} />
+                <stop offset="0%" stopColor="#8b8b8b" stopOpacity={0.15} />
+                <stop offset="50%" stopColor="#8b8b8b" stopOpacity={0} />
+                <stop offset="50%" stopColor="#eb796f" stopOpacity={0} />
+                <stop offset="100%" stopColor="#eb796f" stopOpacity={0.1} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
             <XAxis
               dataKey="year"
-              tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10 }}
-              axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+              tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: 'monospace' }}
+              axisLine={false}
               tickLine={false}
-              label={{ value: 'Year', position: 'insideBottom', offset: -2, fill: 'rgba(255,255,255,0.3)', fontSize: 9 }}
+              label={{ value: 'Year', position: 'insideBottom', offset: -2, fill: 'rgba(255,255,255,0.3)', fontSize: 9, fontFamily: 'monospace' }}
             />
             <YAxis
               domain={[yMin, yMax]}
-              tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9 }}
-              axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+              tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: 'monospace' }}
+              axisLine={false}
               tickLine={false}
               tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                backgroundColor: 'rgba(13, 13, 13, 0.95)',
                 border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '0px',
                 padding: '8px 12px',
+                fontFamily: 'monospace',
+                fontSize: '10px',
               }}
-              labelStyle={{ color: 'rgba(255,255,255,0.5)', fontSize: 11 }}
+              labelStyle={{ color: 'rgba(255,255,255,0.5)', fontSize: 9, fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.05em' }}
               formatter={(value: number) => [`$${value.toLocaleString()}`, 'Cumulative']}
               labelFormatter={(label) => `Year ${label}`}
             />
-            <ReferenceLine y={0} stroke="rgba(255,255,255,0.2)" strokeDasharray="4 4" />
+            <ReferenceLine y={0} stroke="rgba(255,255,255,0.1)" strokeDasharray="4 2" />
             {paybackYear !== null && (
               <ReferenceLine
                 x={Math.ceil(paybackYear)}
-                stroke="#f59e0b"
-                strokeDasharray="4 4"
+                stroke="#eb796f"
+                strokeDasharray="4 2"
                 label={{
                   value: 'Payback',
                   position: 'top',
-                  fill: '#f59e0b',
+                  fill: '#eb796f',
                   fontSize: 9,
+                  fontFamily: 'monospace',
                 }}
               />
             )}
@@ -145,10 +147,10 @@ export const CumulativeCashFlowChart = ({
             <Line
               type="monotone"
               dataKey="cumulative"
-              stroke="#10b981"
-              strokeWidth={2.5}
-              dot={{ fill: '#10b981', r: 3, strokeWidth: 0 }}
-              activeDot={{ r: 5, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
+              stroke="#ebebeb"
+              strokeWidth={1.5}
+              dot={false}
+              activeDot={{ r: 3, fill: '#ebebeb', stroke: '#ebebeb', strokeWidth: 1 }}
             />
           </ComposedChart>
         </ResponsiveContainer>

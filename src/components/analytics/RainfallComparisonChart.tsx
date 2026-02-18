@@ -6,7 +6,6 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  Legend,
   Cell,
 } from 'recharts';
 
@@ -21,13 +20,12 @@ interface RainfallComparisonChartProps {
   animateProjected?: boolean;
 }
 
-export const RainfallComparisonChart = ({ 
-  data, 
-  animateProjected = false 
+export const RainfallComparisonChart = ({
+  data,
+  animateProjected = false
 }: RainfallComparisonChartProps) => {
   const [animationProgress, setAnimationProgress] = useState(0);
 
-  // Reset and animate when animateProjected changes or data changes
   useEffect(() => {
     if (animateProjected) {
       setAnimationProgress(0);
@@ -36,7 +34,6 @@ export const RainfallComparisonChart = ({
     }
   }, [animateProjected, data]);
 
-  // Animated data for projected bars
   const animatedData = useMemo(() => {
     if (!animateProjected || animationProgress === 1) return data;
     return data.map(d => ({
@@ -51,57 +48,52 @@ export const RainfallComparisonChart = ({
         <BarChart data={animatedData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
           <XAxis
             dataKey="month"
-            tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }}
-            axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+            tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: 'monospace' }}
+            axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }}
-            axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+            tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: 'monospace' }}
+            axisLine={false}
             tickLine={false}
-            label={{ 
-              value: 'mm', 
-              angle: -90, 
+            label={{
+              value: 'mm',
+              angle: -90,
               position: 'insideLeft',
-              style: { fill: 'rgba(255,255,255,0.4)', fontSize: 10 }
+              style: { fill: 'rgba(255,255,255,0.3)', fontSize: 9, fontFamily: 'monospace' }
             }}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              backgroundColor: 'rgba(13, 13, 13, 0.95)',
               border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '8px',
-              fontSize: '12px',
+              borderRadius: '0px',
+              fontSize: '10px',
+              fontFamily: 'monospace',
             }}
-            labelStyle={{ color: 'rgba(255,255,255,0.7)' }}
+            labelStyle={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.05em' }}
             formatter={(value: number, name: string) => [
               `${Math.round(value)} mm`,
               name
             ]}
           />
-          <Legend
-            wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }}
-            formatter={(value) => (
-              <span style={{ color: 'rgba(255,255,255,0.7)' }}>{value}</span>
-            )}
-          />
           <Bar
             dataKey="historical"
             name="Historical"
-            fill="#3b82f6"
-            radius={[2, 2, 0, 0]}
+            fill="#8b8b8b"
+            radius={[0, 0, 0, 0]}
           />
           <Bar
             dataKey="projected"
             name="Projected"
-            radius={[2, 2, 0, 0]}
+            radius={[0, 0, 0, 0]}
             animationDuration={600}
             animationEasing="ease-out"
           >
-            {animatedData.map((entry, index) => (
-              <Cell 
-                key={`cell-${index}`} 
-                fill="#f59e0b"
+            {animatedData.map((_, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill="#eb796f"
                 style={{
                   transition: 'all 0.6s ease-out',
                 }}

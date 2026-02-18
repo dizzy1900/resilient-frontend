@@ -3,10 +3,8 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from 'recharts';
 
 export interface StormChartDataItem {
@@ -19,11 +17,9 @@ interface FloodFrequencyChartProps {
   data: StormChartDataItem[];
 }
 
-// Custom order for periods
 const periodOrder = ['1yr', '10yr', '50yr', '100yr'];
 
 export const FloodFrequencyChart = ({ data }: FloodFrequencyChartProps) => {
-  // Sort data by period order
   const sortedData = [...data].sort((a, b) => {
     const indexA = periodOrder.indexOf(a.period);
     const indexB = periodOrder.indexOf(b.period);
@@ -38,53 +34,45 @@ export const FloodFrequencyChart = ({ data }: FloodFrequencyChartProps) => {
           margin={{ top: 5, right: 5, left: -15, bottom: 0 }}
           barCategoryGap="20%"
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
           <XAxis
             dataKey="period"
-            tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 10 }}
-            axisLine={{ stroke: 'rgba(255,255,255,0.2)' }}
+            tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: 'monospace' }}
+            axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 10 }}
-            axisLine={{ stroke: 'rgba(255,255,255,0.2)' }}
+            tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: 'monospace' }}
+            axisLine={false}
             tickLine={false}
             tickFormatter={(value) => `${value}m`}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              backgroundColor: 'rgba(13, 13, 13, 0.95)',
               border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '8px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+              borderRadius: '0px',
+              fontSize: '10px',
+              fontFamily: 'monospace',
             }}
-            labelStyle={{ color: 'rgba(255,255,255,0.9)', fontWeight: 600 }}
-            itemStyle={{ color: 'rgba(255,255,255,0.8)' }}
+            labelStyle={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.05em' }}
             formatter={(value: number, name: string) => [
               `${value.toFixed(2)}m`,
-              name === 'current_depth' ? 'Current Surge Risk' : 'Future Surge (+SLR)',
+              name === 'current_depth' ? 'Current' : 'Future (+SLR)',
             ]}
-          />
-          <Legend
-            wrapperStyle={{ paddingTop: '4px', fontSize: '10px' }}
-            iconSize={8}
-            formatter={(value) =>
-              value === 'current_depth' ? 'Current Surge Risk' : 'Future Surge (+SLR)'
-            }
           />
           <Bar
             dataKey="current_depth"
-            fill="#3b82f6"
+            fill="#8b8b8b"
             name="current_depth"
-            radius={[4, 4, 0, 0]}
+            radius={[0, 0, 0, 0]}
             animationDuration={500}
             animationEasing="ease-out"
           />
           <Bar
             dataKey="future_depth"
-            fill="#f97316"
+            fill="#eb796f"
             name="future_depth"
-            radius={[4, 4, 0, 0]}
+            radius={[0, 0, 0, 0]}
             animationDuration={500}
             animationEasing="ease-out"
           />

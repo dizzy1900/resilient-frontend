@@ -10,10 +10,10 @@ export const RiskBreakdownChart = ({ data }: RiskBreakdownChartProps) => {
       {data.map((factor) => (
         <div key={factor.name} className="space-y-1.5">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-white/70">{factor.name}</span>
-            <span className="text-xs font-medium text-white/90">{factor.percentage}%</span>
+            <span className="font-mono text-[9px] uppercase tracking-widest text-white/50">{factor.name}</span>
+            <span className="font-mono text-[9px] tracking-widest text-white/70">{factor.percentage}%</span>
           </div>
-          <div className="h-1.5 bg-white/10 overflow-hidden">
+          <div className="h-1 bg-[#2d2d2d] overflow-hidden">
             <div
               className="h-full transition-all duration-500"
               style={{

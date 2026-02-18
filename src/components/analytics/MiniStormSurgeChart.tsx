@@ -17,7 +17,7 @@ export const MiniStormSurgeChart = ({ data }: MiniStormSurgeChartProps) => {
           <Line
             type="monotone"
             dataKey="baseline"
-            stroke="#ef4444"
+            stroke="#eb796f"
             strokeWidth={1.5}
             dot={false}
             isAnimationActive={false}
@@ -25,7 +25,7 @@ export const MiniStormSurgeChart = ({ data }: MiniStormSurgeChartProps) => {
           <Line
             type="monotone"
             dataKey="withMangroves"
-            stroke="#14b8a6"
+            stroke="#8b8b8b"
             strokeWidth={1.5}
             dot={false}
             isAnimationActive={false}

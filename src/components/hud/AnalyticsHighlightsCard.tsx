@@ -214,7 +214,7 @@ export const AnalyticsHighlightsCard = ({
       </div>
 
       <div className="pb-3">
-        <div className="h-[2px] bg-white/10 relative overflow-hidden">
+        <div className="h-1 bg-[#2d2d2d] relative overflow-hidden">
           <div
             className="h-full transition-all duration-500 ease-out"
             style={{
