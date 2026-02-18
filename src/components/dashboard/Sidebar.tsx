@@ -48,6 +48,14 @@ interface SidebarProps {
   isCoastalSimulating: boolean;
   onClose?: () => void;
   isMobile?: boolean;
+  locationName?: string | null;
+  projectType?: string | null;
+  thumbnailUrl?: string | null;
+  creditRating?: string | null;
+  executiveSummary?: string | null;
+  sectorRank?: number | null;
+  sectorTotal?: number | null;
+  primaryDriver?: string | null;
 }
 
 export const Sidebar = ({
@@ -81,12 +89,27 @@ export const Sidebar = ({
   isCoastalSimulating,
   onClose,
   isMobile,
+  locationName,
+  projectType,
+  thumbnailUrl,
+  creditRating,
+  executiveSummary,
+  sectorRank,
+  sectorTotal,
+  primaryDriver,
 }: SidebarProps) => {
   const [activeTab, setActiveTab] = useState<SidebarTab>('overview');
 
   return (
     <aside className="sidebar-width h-screen bg-sidebar flex flex-col border-r border-sidebar-border">
-      <LocationHeader isMobile={isMobile} onClose={onClose} />
+      <LocationHeader
+        isMobile={isMobile}
+        onClose={onClose}
+        locationName={locationName}
+        projectType={projectType}
+        thumbnailUrl={thumbnailUrl}
+        creditRating={creditRating}
+      />
 
       <SidebarTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
@@ -121,6 +144,10 @@ export const Sidebar = ({
             coastalResults={coastalResults}
             showCoastalResults={showCoastalResults}
             isCoastalSimulating={isCoastalSimulating}
+            executiveSummary={executiveSummary}
+            sectorRank={sectorRank}
+            sectorTotal={sectorTotal}
+            primaryDriver={primaryDriver}
           />
         )}
 

@@ -1,3 +1,4 @@
+import { BarChart2, AlertTriangle } from 'lucide-react';
 import { ModeSelector, DashboardMode } from '../ModeSelector';
 import { CoordinatesDisplay } from '../CoordinatesDisplay';
 import { CropSelector } from '../CropSelector';
@@ -49,6 +50,10 @@ interface OverviewTabProps {
   };
   showCoastalResults: boolean;
   isCoastalSimulating: boolean;
+  executiveSummary?: string | null;
+  sectorRank?: number | null;
+  sectorTotal?: number | null;
+  primaryDriver?: string | null;
 }
 
 export const OverviewTab = ({
@@ -80,13 +85,42 @@ export const OverviewTab = ({
   coastalResults,
   showCoastalResults,
   isCoastalSimulating,
+  executiveSummary,
+  sectorRank,
+  sectorTotal,
+  primaryDriver,
 }: OverviewTabProps) => {
   const canSimulate = latitude !== null && longitude !== null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <ModeSelector value={mode} onChange={onModeChange} />
       <CoordinatesDisplay latitude={latitude} longitude={longitude} />
+
+      {executiveSummary && (
+        <div className="rounded-xl border border-border bg-muted/30 p-3.5 space-y-3">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+            AI Risk Officer Summary
+          </p>
+          <p className="text-sm leading-relaxed text-foreground/90">
+            {executiveSummary}
+          </p>
+          <div className="flex flex-wrap gap-2 pt-0.5">
+            {sectorRank != null && sectorTotal != null && (
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full bg-secondary border border-border text-foreground/70">
+                <BarChart2 className="w-3 h-3" />
+                Sector Rank: #{sectorRank} of {sectorTotal}
+              </span>
+            )}
+            {primaryDriver && (
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-500">
+                <AlertTriangle className="w-3 h-3" />
+                {primaryDriver}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
 
       {mode === 'agriculture' ? (
         <>
