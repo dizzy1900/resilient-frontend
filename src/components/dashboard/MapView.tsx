@@ -83,6 +83,8 @@ const LazyMap = ({
   zoneData,
   portfolioAssets,
   onAtlasClick,
+  sectorFilter,
+  mapOverlay,
 }: MapViewProps) => {
   const [MapComponents, setMapComponents] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
