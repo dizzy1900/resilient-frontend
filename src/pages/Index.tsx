@@ -118,6 +118,7 @@ const Index = () => {
   const [atlasSensitivityData, setAtlasSensitivityData] = useState<{ primary_driver: string; driver_impact_pct: number } | null>(null);
   const [atlasAdaptationStrategy, setAtlasAdaptationStrategy] = useState<any>(null);
   const [atlasSatellitePreview, setAtlasSatellitePreview] = useState<any>(null);
+  const [atlasMarketIntelligence, setAtlasMarketIntelligence] = useState<any>(null);
   const [viewState, setViewState] = useState<ViewState>({
     longitude: 37.9062,
     latitude: -0.0236,
@@ -717,6 +718,7 @@ const Index = () => {
     setAtlasSensitivityData(item.sensitivity_analysis ?? null);
     setAtlasAdaptationStrategy(item.adaptation_strategy ?? null);
     setAtlasSatellitePreview(item.satellite_preview ?? null);
+    setAtlasMarketIntelligence(item.market_intelligence ?? null);
 
     // 2. Switch mode
     const modeMap: Record<string, DashboardMode> = {
@@ -1247,7 +1249,7 @@ const Index = () => {
         </div>
       ) : mode === 'finance' ? (
         <div className="absolute top-16 right-4 sm:right-6 lg:right-20 z-30 sm:w-80 lg:w-96 space-y-3 max-h-[calc(100vh-6rem)] overflow-y-auto">
-          <LiveSiteViewCard satellitePreview={atlasSatellitePreview} />
+          <LiveSiteViewCard satellitePreview={atlasSatellitePreview} marketIntelligence={atlasMarketIntelligence} />
           {atlasExecutiveSummary && (
             <GlassCard className="p-4">
               <h3 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Executive Summary</h3>
