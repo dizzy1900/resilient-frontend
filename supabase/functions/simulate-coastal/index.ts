@@ -1,84 +1,61 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
-
-// Validation schema for coastal simulation
-const requestSchema = z.object({
-  lat: z.number().min(-90, "Latitude must be >= -90").max(90, "Latitude must be <= 90"),
-  lon: z.number().min(-180, "Longitude must be >= -180").max(180, "Longitude must be <= 180"),
-  mangrove_width: z.number().min(0, "Mangrove width must be >= 0").max(1000, "Mangrove width must be <= 1000"),
-  sea_level_rise: z.number().min(0, "Sea level rise must be >= 0").max(5, "Sea level rise must be <= 5").optional(),
-  include_storm_surge: z.boolean().optional(),
-});
 
 const RAILWAY_API_URL = "https://web-production-8ff9e.up.railway.app/predict-coastal";
 
-serve(async (req) => {
-  // Handle CORS preflight requests
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   console.log("simulate-coastal: Request received");
 
   try {
-    // Parse and validate request body
-    let body;
+    let body: Record<string, unknown>;
     try {
       body = await req.json();
     } catch {
-      console.log("simulate-coastal: Invalid JSON body");
       return new Response(
         JSON.stringify({ error: "Invalid request", message: "Invalid JSON body" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const validationResult = requestSchema.safeParse(body);
-    if (!validationResult.success) {
-      console.log("simulate-coastal: Validation failed", validationResult.error.errors);
+    const lat = Number(body.lat);
+    const lon = Number(body.lon);
+    const mangrove_width = Number(body.mangrove_width ?? 0);
+    const sea_level_rise = Number(body.slr_projection ?? body.sea_level_rise ?? 0);
+    const include_storm_surge = Boolean(body.include_storm_surge ?? false);
+
+    if (isNaN(lat) || lat < -90 || lat > 90) {
       return new Response(
-        JSON.stringify({
-          error: "Validation failed",
-          message: "Invalid simulation parameters",
-          details: validationResult.error.errors.map((e) => ({
-            path: e.path.join("."),
-            message: e.message,
-          })),
-        }),
+        JSON.stringify({ error: "Validation failed", message: "lat must be between -90 and 90" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (isNaN(lon) || lon < -180 || lon > 180) {
+      return new Response(
+        JSON.stringify({ error: "Validation failed", message: "lon must be between -180 and 180" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const { lat, lon, mangrove_width, sea_level_rise, include_storm_surge } = validationResult.data;
-    console.log("simulate-coastal: Validated request", { lat, lon, mangrove_width, sea_level_rise, include_storm_surge });
+    console.log("simulate-coastal: Validated", { lat, lon, mangrove_width, sea_level_rise, include_storm_surge });
 
-    // Call Railway API
     const response = await fetch(RAILWAY_API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ 
-        lat, 
-        lon, 
-        mangrove_width,
-        sea_level_rise: sea_level_rise ?? 0,
-        include_storm_surge: include_storm_surge ?? false,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lat, lon, mangrove_width, sea_level_rise, include_storm_surge }),
     });
 
     if (!response.ok) {
-      console.error("simulate-coastal: Railway API error", {
-        status: response.status,
-        statusText: response.statusText,
-      });
       const errorText = await response.text();
+      console.error("simulate-coastal: Railway API error", response.status, errorText);
       return new Response(
         JSON.stringify({ error: "Simulation failed", message: `API error: ${response.status}`, details: errorText }),
         { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }

@@ -14,6 +14,7 @@ import { Polygon } from '@/utils/polygonMath';
 import { generateIrregularZone, ZoneMode } from '@/utils/zoneGeneration';
 import { calculateZoneAtTemperature } from '@/utils/zoneMorphing';
 import { supabase } from '@/integrations/supabase/clientSafe';
+import { findClosestAtlasItem } from '@/utils/atlasFallback';
 import { LeftPanel } from '@/components/layout/LeftPanel';
 import { RightPanel } from '@/components/layout/RightPanel';
 
@@ -267,13 +268,35 @@ const Index = () => {
       setAtlasLocationName(`${markerPosition.lat.toFixed(2)}, ${markerPosition.lng.toFixed(2)}`);
     } catch (error) {
       console.error('Finance simulation failed:', error);
-      toast({
-        title: 'Finance Simulation Failed',
-        description: error instanceof Error ? error.message : 'Unable to connect. Please try again.',
-        variant: 'destructive',
-      });
-      // Restore null so empty state shows
-      setAtlasFinancialData(null);
+      if (error instanceof Error) {
+        console.error('Finance error details:', error.message, error.stack);
+      }
+
+      const fallback = markerPosition ? findClosestAtlasItem(markerPosition.lat, markerPosition.lng, 'agriculture') : null;
+      if (fallback) {
+        const item = fallback as any;
+        setAtlasFinancialData(item.financial_analysis ?? null);
+        setAtlasLocationName(item.target?.name ?? `${markerPosition!.lat.toFixed(2)}, ${markerPosition!.lng.toFixed(2)}`);
+        setAtlasMonteCarloData(item.monte_carlo_analysis ?? null);
+        setAtlasExecutiveSummary(item.executive_summary ?? null);
+        setAtlasSensitivityData(item.sensitivity_analysis ?? null);
+        setAtlasAdaptationStrategy(item.adaptation_strategy ?? null);
+        setAtlasSatellitePreview(item.satellite_preview ?? null);
+        setAtlasMarketIntelligence(item.market_intelligence ?? null);
+        setAtlasTemporalAnalysis(item.temporal_analysis ?? null);
+        setAtlasAdaptationPortfolio(item.adaptation_portfolio ?? null);
+        toast({
+          title: 'Live API failed, falling back to cached Atlas data',
+          description: `Showing pre-calculated financial data from ${item.target?.name ?? 'nearest location'}.`,
+        });
+      } else {
+        setAtlasFinancialData(null);
+        toast({
+          title: 'Finance Simulation Failed',
+          description: error instanceof Error ? error.message : 'Unable to connect. Please try again.',
+          variant: 'destructive',
+        });
+      }
     } finally {
       setIsFinanceSimulating(false);
     }
@@ -398,15 +421,45 @@ const Index = () => {
       });
       setShowResults(true);
     } catch (error) {
-      console.error('Simulation failed:', error);
-      toast({
-        title: 'Simulation Failed',
-        description:
-          error instanceof Error
-            ? error.message
-            : 'Unable to connect to the simulation server. Please try again.',
-        variant: 'destructive',
-      });
+      console.error('Agriculture simulation failed:', error);
+      if (error instanceof Error) {
+        console.error('Error details:', error.message, error.stack);
+      }
+
+      const fallback = markerPosition ? findClosestAtlasItem(markerPosition.lat, markerPosition.lng, 'agriculture') : null;
+      if (fallback) {
+        const crop = (fallback as any).crop_analysis;
+        setResults({
+          avoidedLoss: crop?.avoided_loss_pct ?? 0,
+          riskReduction: Math.round((crop?.percentage_improvement ?? 0) * 100),
+          yieldBaseline: crop?.standard_yield_pct ?? 0,
+          yieldResilient: crop?.resilient_yield_pct ?? 0,
+          yieldPotential: crop?.resilient_yield_pct ?? null,
+          portfolioVolatilityPct: null,
+          monthlyData: mockMonthlyData,
+        });
+        if ((fallback as any).climate_conditions) {
+          const cc = (fallback as any).climate_conditions;
+          const baseRain = (cc.rainfall_mm ?? 1200) / 12;
+          const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          const sf = [0.6, 0.7, 0.9, 1.1, 1.3, 1.4, 1.3, 1.2, 1.0, 0.8, 0.7, 0.6];
+          setChartData({
+            rainfall: months.map((m, i) => ({ month: m, historical: Math.round(baseRain * sf[i]), projected: Math.round(baseRain * sf[i] * (1 + (cc.rain_pct_change ?? 0) / 100)) })),
+            soilMoisture: months.map((m, i) => ({ month: m, moisture: Math.round(40 + 20 * sf[i]) })),
+          });
+        }
+        setShowResults(true);
+        toast({
+          title: 'Live API failed, falling back to cached Atlas data',
+          description: `Showing pre-calculated results from ${(fallback as any).target?.name ?? 'nearest location'}.`,
+        });
+      } else {
+        toast({
+          title: 'Simulation Failed',
+          description: error instanceof Error ? error.message : 'Unable to connect to the simulation server.',
+          variant: 'destructive',
+        });
+      }
     } finally {
       setIsSimulating(false);
       setIsSpatialLoading(false);
@@ -485,7 +538,9 @@ const Index = () => {
         setShowCoastalResults(true);
       } catch (error) {
         console.error('Coastal simulation failed:', error);
-        // Fallback calculation
+        if (error instanceof Error) {
+          console.error('Coastal error details:', error.message, error.stack);
+        }
         const stormSurgeHeight = includeStormSurge ? 2.5 : 0;
         const totalWaterLevel = totalSLR + stormSurgeHeight;
         const isUnderwater = totalWaterLevel > 1.5;
@@ -508,9 +563,8 @@ const Index = () => {
         });
         setShowCoastalResults(true);
         toast({
-          title: 'Using Estimated Values',
-          description: 'Could not reach the coastal simulation API. Showing estimated values.',
-          variant: 'default',
+          title: 'Live API failed, falling back to cached Atlas data',
+          description: 'Showing estimated coastal values from local calculations.',
         });
       } finally {
         setIsCoastalSimulating(false);
@@ -602,6 +656,9 @@ const Index = () => {
       setShowFloodResults(true);
     } catch (error) {
       console.error('Flood simulation failed:', error);
+      if (error instanceof Error) {
+        console.error('Flood error details:', error.message, error.stack);
+      }
       const baseReduction = greenRoofsEnabled ? 8 : 0;
       const pavementReduction = permeablePavementEnabled ? 4 : 0;
       const totalReduction = baseReduction + pavementReduction;
@@ -633,9 +690,8 @@ const Index = () => {
       });
       setShowFloodResults(true);
       toast({
-        title: 'Using Estimated Values',
-        description: 'Could not reach the flood simulation API. Showing estimated values.',
-        variant: 'default',
+        title: 'Live API failed, falling back to cached Atlas data',
+        description: 'Showing estimated flood values from local calculations.',
       });
     } finally {
       setIsFloodSimulating(false);
@@ -892,7 +948,9 @@ const Index = () => {
       setShowHealthResults(true);
     } catch (error) {
       console.error('Health simulation failed:', error);
-      // Fallback
+      if (error instanceof Error) {
+        console.error('Health error details:', error.message, error.stack);
+      }
       const baseTemp = 28 + (Math.abs(markerPosition.lat) < 15 ? 4 : markerPosition.lat < 25 ? 2 : 0);
       const projTemp = baseTemp + (healthTempTarget - 1.4);
       const wbgt = projTemp * 0.7 + 8;
@@ -909,9 +967,8 @@ const Index = () => {
       });
       setShowHealthResults(true);
       toast({
-        title: 'Using Estimated Values',
-        description: 'Could not reach health API. Showing estimated values.',
-        variant: 'default',
+        title: 'Live API failed, falling back to cached Atlas data',
+        description: 'Showing estimated health values from local calculations.',
       });
     } finally {
       setIsHealthSimulating(false);

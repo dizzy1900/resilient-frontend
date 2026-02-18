@@ -1,90 +1,70 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
-
-// Validation schema for agriculture simulation
-const requestSchema = z.object({
-  lat: z.number().min(-90, "Latitude must be >= -90").max(90, "Latitude must be <= 90"),
-  lon: z.number().min(-180, "Longitude must be >= -180").max(180, "Longitude must be <= 180"),
-  crop: z.string().min(1, "Crop type is required").max(50, "Crop type must be 50 characters or less"),
-  temp_increase: z.number().optional(),
-  rain_change: z.number().optional(),
-  project_params: z.object({
-    capex: z.number().min(0).max(1000000),
-    opex: z.number().min(0).max(1000000),
-    yield_benefit: z.number().min(0).max(100),
-    crop_price: z.number().min(0).max(1000000),
-  }).optional(),
-});
 
 const RAILWAY_API_URL = "https://primary-production-679e.up.railway.app/webhook/simulate";
 
-serve(async (req) => {
-  // Handle CORS preflight requests
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   console.log("simulate-agriculture: Request received");
 
   try {
-    // Parse and validate request body
-    let body;
+    let body: Record<string, unknown>;
     try {
       body = await req.json();
     } catch {
-      console.log("simulate-agriculture: Invalid JSON body");
       return new Response(
         JSON.stringify({ error: "Invalid request", message: "Invalid JSON body" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const validationResult = requestSchema.safeParse(body);
-    if (!validationResult.success) {
-      console.log("simulate-agriculture: Validation failed", validationResult.error.errors);
+    const lat = Number(body.lat);
+    const lon = Number(body.lon);
+    const crop = String(body.crop ?? "");
+
+    if (isNaN(lat) || lat < -90 || lat > 90) {
       return new Response(
-        JSON.stringify({
-          error: "Validation failed",
-          message: "Invalid simulation parameters",
-          details: validationResult.error.errors.map((e) => ({
-            path: e.path.join("."),
-            message: e.message,
-          })),
-        }),
+        JSON.stringify({ error: "Validation failed", message: "lat must be between -90 and 90" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (isNaN(lon) || lon < -180 || lon > 180) {
+      return new Response(
+        JSON.stringify({ error: "Validation failed", message: "lon must be between -180 and 180" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (!crop || crop.length > 50) {
+      return new Response(
+        JSON.stringify({ error: "Validation failed", message: "crop is required and must be <= 50 chars" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const { lat, lon, crop, temp_increase, rain_change, project_params } = validationResult.data;
-    console.log("simulate-agriculture: Validated request", { lat, lon, crop, temp_increase, rain_change, project_params: !!project_params });
-
-    // Build payload for Railway API
     const payload: Record<string, unknown> = { lat, lon, crop };
-    if (temp_increase !== undefined) payload.temp_increase = temp_increase;
-    if (rain_change !== undefined) payload.rain_change = rain_change;
-    if (project_params) payload.project_params = project_params;
+    if (body.temp_increase !== undefined) payload.temp_increase = Number(body.temp_increase);
+    if (body.rain_change !== undefined) payload.rain_change = Number(body.rain_change);
+    if (body.project_params) payload.project_params = body.project_params;
 
-    // Call Railway API
+    console.log("simulate-agriculture: Validated", { lat, lon, crop, temp_increase: payload.temp_increase, rain_change: payload.rain_change });
+
     const response = await fetch(RAILWAY_API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
-      console.error("simulate-agriculture: Railway API error", {
-        status: response.status,
-        statusText: response.statusText,
-      });
       const errorText = await response.text();
+      console.error("simulate-agriculture: Railway API error", response.status, errorText);
       return new Response(
         JSON.stringify({ error: "Simulation failed", message: `API error: ${response.status}`, details: errorText }),
         { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }

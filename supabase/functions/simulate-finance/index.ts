@@ -1,29 +1,22 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
-
-const requestSchema = z.object({
-  lat: z.number().min(-90).max(90),
-  lon: z.number().min(-180).max(180),
-  crop: z.string().min(1).max(50),
-});
 
 const API_BASE_URL = "https://web-production-a1a6f3.up.railway.app";
 
-serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   console.log("simulate-finance: Request received");
 
   try {
-    let body;
+    let body: Record<string, unknown>;
     try {
       body = await req.json();
     } catch {
@@ -33,21 +26,29 @@ serve(async (req) => {
       );
     }
 
-    const validationResult = requestSchema.safeParse(body);
-    if (!validationResult.success) {
+    const lat = Number(body.lat);
+    const lon = Number(body.lon);
+    const crop = String(body.crop ?? "");
+
+    if (isNaN(lat) || lat < -90 || lat > 90) {
       return new Response(
-        JSON.stringify({
-          error: "Validation failed",
-          details: validationResult.error.errors.map((e) => ({
-            path: e.path.join("."),
-            message: e.message,
-          })),
-        }),
+        JSON.stringify({ error: "Validation failed", message: "lat must be between -90 and 90" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (isNaN(lon) || lon < -180 || lon > 180) {
+      return new Response(
+        JSON.stringify({ error: "Validation failed", message: "lon must be between -180 and 180" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (!crop || crop.length > 50) {
+      return new Response(
+        JSON.stringify({ error: "Validation failed", message: "crop is required and must be <= 50 chars" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const { lat, lon, crop } = validationResult.data;
     console.log("simulate-finance: Validated", { lat, lon, crop });
 
     const response = await fetch(`${API_BASE_URL}/simulate`, {
