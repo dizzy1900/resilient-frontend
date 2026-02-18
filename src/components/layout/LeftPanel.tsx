@@ -33,6 +33,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { toast as showToast } from '@/hooks/use-toast';
 import { FinancialSettingsModal } from '@/components/hud/FinancialSettingsModal';
 import { TimelinePlayer } from '@/components/TimelinePlayer';
+import { SegmentedControl } from '@/components/ui/SegmentedControl';
+import type { SectorFilter, MapOverlay } from '@/components/dashboard/AtlasMarkers';
 
 const MODE_ITEMS: {
   mode: DashboardMode;
@@ -94,6 +96,12 @@ interface LeftPanelProps {
   onPlayToggle: () => void;
   isFinanceSimulating: boolean;
   onFinanceSimulate: () => void;
+  sectorFilter: SectorFilter;
+  onSectorFilterChange: (value: SectorFilter) => void;
+  timeHorizon: string;
+  onTimeHorizonChange: (value: string) => void;
+  mapOverlay: MapOverlay;
+  onMapOverlayChange: (value: MapOverlay) => void;
 }
 
 export function LeftPanel({
@@ -137,6 +145,12 @@ export function LeftPanel({
   onPlayToggle,
   isFinanceSimulating,
   onFinanceSimulate,
+  sectorFilter,
+  onSectorFilterChange,
+  timeHorizon,
+  onTimeHorizonChange,
+  mapOverlay,
+  onMapOverlayChange,
 }: LeftPanelProps) {
   const [localMangroveWidth, setLocalMangroveWidth] = useState(mangroveWidth);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -296,6 +310,49 @@ export function LeftPanel({
                 Click map to select location
               </span>
             )}
+          </div>
+
+          {/* Map Controls — always visible */}
+          <div className="shrink-0 cb-divider">
+            <div className="px-4 pt-3 pb-2 space-y-3">
+              <div>
+                <div className="cb-label mb-1.5">Sector Filter</div>
+                <SegmentedControl
+                  options={[
+                    { value: 'ALL', label: 'ALL' },
+                    { value: 'AGRICULTURE', label: 'AGR' },
+                    { value: 'COASTAL', label: 'COASTAL' },
+                    { value: 'FLOOD', label: 'FLOOD' },
+                  ]}
+                  value={sectorFilter}
+                  onChange={(v) => onSectorFilterChange(v as SectorFilter)}
+                />
+              </div>
+              <div>
+                <div className="cb-label mb-1.5">Time Horizon</div>
+                <SegmentedControl
+                  options={[
+                    { value: '2030', label: '2030' },
+                    { value: '2040', label: '2040' },
+                    { value: '2050', label: '2050' },
+                  ]}
+                  value={timeHorizon}
+                  onChange={onTimeHorizonChange}
+                />
+              </div>
+              <div>
+                <div className="cb-label mb-1.5">Map Overlay</div>
+                <SegmentedControl
+                  options={[
+                    { value: 'NPV', label: 'NPV' },
+                    { value: 'RATING', label: 'RATING' },
+                    { value: 'WATER', label: 'WATER' },
+                  ]}
+                  value={mapOverlay}
+                  onChange={(v) => onMapOverlayChange(v as MapOverlay)}
+                />
+              </div>
+            </div>
           </div>
 
           {/* Mode-specific content — scrollable */}

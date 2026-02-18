@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { MapView, MapStyle, ViewState, ZoneData, PortfolioMapAsset } from '@/components/dashboard/MapView';
-import { AtlasClickData } from '@/components/dashboard/AtlasMarkers';
+import { AtlasClickData, SectorFilter, MapOverlay } from '@/components/dashboard/AtlasMarkers';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { HealthResults } from '@/components/hud/HealthResultsPanel';
 import { PortfolioPanel } from '@/components/portfolio/PortfolioPanel';
@@ -116,6 +116,9 @@ const Index = () => {
 
   const [selectedYear, setSelectedYear] = useState(2026);
   const [isTimelinePlaying, setIsTimelinePlaying] = useState(false);
+  const [sectorFilter, setSectorFilter] = useState<SectorFilter>('ALL');
+  const [timeHorizon, setTimeHorizon] = useState('2050');
+  const [mapOverlay, setMapOverlay] = useState<MapOverlay>('NPV');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   const [globalTempTarget, setGlobalTempTarget] = useState(1.4);
@@ -953,6 +956,8 @@ const Index = () => {
           zoneData={zoneData}
           portfolioAssets={portfolioMapAssets}
           onAtlasClick={handleAtlasClick}
+          sectorFilter={sectorFilter}
+          mapOverlay={mapOverlay}
         />
 
         {isSplitMode && (
@@ -1032,6 +1037,12 @@ const Index = () => {
         onPlayToggle={() => setIsTimelinePlaying((prev) => !prev)}
         isFinanceSimulating={isFinanceSimulating}
         onFinanceSimulate={handleFinanceSimulate}
+        sectorFilter={sectorFilter}
+        onSectorFilterChange={setSectorFilter}
+        timeHorizon={timeHorizon}
+        onTimeHorizonChange={setTimeHorizon}
+        mapOverlay={mapOverlay}
+        onMapOverlayChange={setMapOverlay}
       />
 
       {/* Desktop Right Panel — simulation results */}
