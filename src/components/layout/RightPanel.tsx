@@ -1,4 +1,4 @@
-import { X, MapPin, TriangleAlert as AlertTriangle, TrendingDown, TrendingUp, Shield, Droplets, Waves, HeartPulse, Bug, Thermometer, Landmark } from 'lucide-react';
+import { X, MapPin, Landmark } from 'lucide-react';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { HealthResults } from '@/components/hud/HealthResultsPanel';
 import { FloodFrequencyChart, StormChartDataItem } from '@/components/analytics/FloodFrequencyChart';
@@ -124,11 +124,11 @@ function MetricRow({ label, value, accent }: { label: string; value: React.React
   );
 }
 
-function SectionHeader({ title }: { title: string }) {
+function SectionDivider({ title }: { title: string }) {
   return (
     <div
-      className="px-4 pt-4 pb-2"
-      style={{ borderBottom: '1px solid var(--cb-border)' }}
+      className="border-t pt-6 mt-6 px-4"
+      style={{ borderColor: 'var(--cb-border)' }}
     >
       <span className="cb-section-heading">{title}</span>
     </div>
@@ -184,14 +184,15 @@ export function RightPanel({
 
   return (
     <div
-      className="hidden lg:flex absolute top-0 right-0 h-full z-30 flex-col border-l"
+      className="hidden lg:flex fixed top-0 right-0 h-full z-10 flex-col border-l"
       style={{
-        width: 360,
-        backgroundColor: 'var(--cb-bg)',
+        width: 400,
+        backgroundColor: 'color-mix(in srgb, var(--cb-bg) 95%, transparent)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
         borderColor: 'var(--cb-border)',
       }}
     >
-      {/* Header */}
       <div
         className="shrink-0 flex items-center justify-between px-4 border-b"
         style={{ height: 48, borderColor: 'var(--cb-border)' }}
@@ -223,7 +224,6 @@ export function RightPanel({
         </div>
       </div>
 
-      {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto min-h-0">
         {isLoading ? (
           <LoadingState />
@@ -376,7 +376,7 @@ function AgricultureContent({
 
   return (
     <div>
-      <SectionHeader title="Simulation Results" />
+      <SectionDivider title="Simulation Results" />
       <div className="px-4">
         <MetricRow
           label="Yield Potential"
@@ -404,8 +404,8 @@ function AgricultureContent({
 
       {(baselineZone || currentZone) && (
         <>
-          <SectionHeader title="Zone Analysis" />
-          <div className="px-4 pb-2">
+          <SectionDivider title="Zone Analysis" />
+          <div className="px-4 pt-3">
             <ZoneLegend
               baselineZone={baselineZone}
               currentZone={currentZone}
@@ -419,8 +419,8 @@ function AgricultureContent({
         </>
       )}
 
-      <SectionHeader title="Analytics" />
-      <div className="px-4 pb-4">
+      <SectionDivider title="Detailed Analytics" />
+      <div className="px-4 pt-3 pb-6">
         <AnalyticsHighlightsCard
           visible={true}
           mode={mode}
@@ -472,7 +472,7 @@ function CoastalContent({
 }) {
   return (
     <div>
-      <SectionHeader title="Simulation Results" />
+      <SectionDivider title="Simulation Results" />
       <div className="px-4">
         <MetricRow
           label="Status"
@@ -503,8 +503,8 @@ function CoastalContent({
 
       {results.stormChartData && results.stormChartData.length > 0 && (
         <>
-          <SectionHeader title="Storm Surge Frequency" />
-          <div className="px-4 pb-4 pt-2">
+          <SectionDivider title="Storm Surge Frequency" />
+          <div className="px-4 pt-3">
             <FloodFrequencyChart data={results.stormChartData} />
           </div>
         </>
@@ -512,8 +512,8 @@ function CoastalContent({
 
       {results.floodedUrbanKm2 != null && (
         <>
-          <SectionHeader title="Urban Inundation" />
-          <div className="px-4 pb-2">
+          <SectionDivider title="Urban Inundation" />
+          <div className="px-4 pt-3">
             <UrbanInundationCard
               visible={true}
               isLoading={false}
@@ -524,8 +524,8 @@ function CoastalContent({
         </>
       )}
 
-      <SectionHeader title="Analytics" />
-      <div className="px-4 pb-4">
+      <SectionDivider title="Detailed Analytics" />
+      <div className="px-4 pt-3 pb-6">
         <AnalyticsHighlightsCard
           visible={true}
           mode={mode}
@@ -580,7 +580,7 @@ function FloodContent({
 }) {
   return (
     <div>
-      <SectionHeader title="Simulation Results" />
+      <SectionDivider title="Simulation Results" />
       <div className="px-4">
         {results.riskIncreasePct != null && (
           <MetricRow
@@ -612,8 +612,8 @@ function FloodContent({
 
       {results.rainChartData && results.rainChartData.length > 0 && (
         <>
-          <SectionHeader title="Rainfall Shift" />
-          <div className="px-4 pb-4 pt-2">
+          <SectionDivider title="Rainfall Shift" />
+          <div className="px-4 pt-3">
             <RainfallComparisonChart data={results.rainChartData} />
           </div>
         </>
@@ -621,8 +621,8 @@ function FloodContent({
 
       {(baselineZone || currentZone) && (
         <>
-          <SectionHeader title="Zone Analysis" />
-          <div className="px-4 pb-2">
+          <SectionDivider title="Zone Analysis" />
+          <div className="px-4 pt-3">
             <ZoneLegend
               baselineZone={baselineZone}
               currentZone={currentZone}
@@ -636,8 +636,8 @@ function FloodContent({
 
       {results.futureFloodAreaKm2 != null && (
         <>
-          <SectionHeader title="Infrastructure Risk" />
-          <div className="px-4 pb-2">
+          <SectionDivider title="Infrastructure Risk" />
+          <div className="px-4 pt-3">
             <InfrastructureRiskCard
               visible={true}
               isLoading={false}
@@ -648,8 +648,8 @@ function FloodContent({
         </>
       )}
 
-      <SectionHeader title="Analytics" />
-      <div className="px-4 pb-4">
+      <SectionDivider title="Detailed Analytics" />
+      <div className="px-4 pt-3 pb-6">
         <AnalyticsHighlightsCard
           visible={true}
           mode={mode}
@@ -686,7 +686,7 @@ function HealthContent({ results, visible }: { results: HealthResults | null; vi
 
   return (
     <div>
-      <SectionHeader title="Heat Stress Results" />
+      <SectionDivider title="Heat Stress Results" />
       <div className="px-4">
         <MetricRow
           label="Productivity Loss"
@@ -702,7 +702,7 @@ function HealthContent({ results, visible }: { results: HealthResults | null; vi
         <MetricRow label="Projected Temp" value={`${projected_temp.toFixed(1)}°C`} />
       </div>
 
-      <SectionHeader title="Disease Risk" />
+      <SectionDivider title="Disease Risk" />
       <div className="px-4">
         <MetricRow
           label="Malaria Risk"
@@ -786,9 +786,9 @@ function FinanceContent({
   const sectorRank = atlasMarketIntelligence?.sector_rank;
 
   return (
-    <div className="space-y-0">
+    <div>
       {atlasSatellitePreview && (
-        <div style={{ borderBottom: '1px solid var(--cb-border)' }}>
+        <div className="border-b" style={{ borderColor: 'var(--cb-border)' }}>
           <LiveSiteViewCard
             satellitePreview={atlasSatellitePreview}
             marketIntelligence={atlasMarketIntelligence}
@@ -798,7 +798,7 @@ function FinanceContent({
       )}
 
       {locationName && (
-        <div className="px-4 pt-4 pb-4" style={{ borderBottom: '1px solid var(--cb-border)' }}>
+        <div className="px-4 pt-4 pb-4 border-b" style={{ borderColor: 'var(--cb-border)' }}>
           <h2 style={{ fontSize: 24, fontWeight: 300, letterSpacing: '-0.02em', color: 'var(--cb-text)', lineHeight: 1.2 }}>
             {locationName}
           </h2>
@@ -806,36 +806,34 @@ function FinanceContent({
       )}
 
       {(baselineNpv !== null || var95 !== null || primaryDriver || sectorRank) && (
-        <div style={{ borderBottom: '1px solid var(--cb-border)' }}>
-          <div className="px-4 pt-3 pb-2" style={{ borderBottom: '1px solid var(--cb-border)' }}>
-            <span className="cb-section-heading">FINANCIAL OVERVIEW</span>
-          </div>
+        <>
+          <SectionDivider title="Financial Overview" />
           <div className="px-4">
             {baselineNpv !== null && (
               <MetricRow
-                label="BASELINE NPV"
+                label="Baseline NPV"
                 value={formatCurrency(baselineNpv)}
                 accent={baselineNpv >= 0 ? '#10b981' : '#f43f5e'}
               />
             )}
             {var95 !== null && (
               <MetricRow
-                label="VALUE AT RISK"
+                label="Value at Risk"
                 value={formatCurrency(var95)}
                 accent={var95 < 0 ? '#f43f5e' : '#10b981'}
               />
             )}
             {primaryDriver && (
-              <MetricRow label="PRIMARY RISK DRIVER" value={primaryDriver} accent="#f43f5e" />
+              <MetricRow label="Primary Risk Driver" value={primaryDriver} accent="#f43f5e" />
             )}
             {sectorRank && (
               <MetricRow
-                label="SECTOR RANK"
+                label="Sector Rank"
                 value={`#${sectorRank.by_npv} / ${sectorRank.total_in_sector}`}
               />
             )}
           </div>
-        </div>
+        </>
       )}
 
       {atlasExecutiveSummary && (() => {
@@ -845,9 +843,12 @@ function FinanceContent({
           : confidence?.toLowerCase() === 'medium' ? '#f59e0b'
           : '#f43f5e';
         return (
-          <div style={{ borderBottom: '1px solid var(--cb-border)' }}>
-            <div className="px-4 pt-3 pb-2 flex items-center justify-between" style={{ borderBottom: '1px solid var(--cb-border)' }}>
-              <span className="cb-section-heading">AI ANALYSIS</span>
+          <>
+            <div
+              className="border-t pt-6 mt-6 px-4 flex items-center justify-between"
+              style={{ borderColor: 'var(--cb-border)' }}
+            >
+              <span className="cb-section-heading">AI Analysis</span>
               {confidence && (
                 <span
                   style={{
@@ -857,6 +858,7 @@ function FinanceContent({
                     border: `1px solid ${confidenceColor}`,
                     color: confidenceColor,
                     padding: '0px 5px',
+                    textTransform: 'uppercase',
                   }}
                 >
                   {confidence.toUpperCase()} CONFIDENCE
@@ -877,11 +879,11 @@ function FinanceContent({
                 {renderBoldSummary(atlasExecutiveSummary)}
               </p>
             </div>
-          </div>
+          </>
         );
       })()}
 
-      <div style={{ borderBottom: '1px solid var(--cb-border)' }}>
+      <div className="border-t" style={{ borderColor: 'var(--cb-border)' }}>
         <DealTicketCard
           financialData={atlasFinancialData}
           locationName={locationName}
@@ -890,11 +892,11 @@ function FinanceContent({
         />
       </div>
 
-      <div style={{ borderBottom: '1px solid var(--cb-border)' }}>
+      <div className="border-t" style={{ borderColor: 'var(--cb-border)' }}>
         <RiskStressTestCard monteCarloData={atlasMonteCarloData} sensitivityData={atlasSensitivityData} />
       </div>
 
-      <div>
+      <div className="border-t" style={{ borderColor: 'var(--cb-border)' }}>
         <SolutionEngineCard strategy={atlasAdaptationStrategy} portfolio={atlasAdaptationPortfolio} />
       </div>
     </div>
