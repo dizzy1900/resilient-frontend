@@ -80,7 +80,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Andhra Pradesh India shows solid fundamentals with NPV of $732,468. Primary risk is Market Price which accounts for 40.2% of variance. Minor yield sensitivity of 0.3% under projected climate conditions. Transition to resilient rice cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Andhra Pradesh India shows solid fundamentals with NPV of $732,468. Primary risk is Market Price which accounts for 40.2% of variance. Minor yield sensitivity of 0.3% under projected climate conditions. Transition to resilient rice cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 2745.94,
       primary_driver: "Market Price (-15%)",
@@ -179,6 +179,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [732736.61, 732736.61, 732736.61],
+    },
   },
   {
     project_type: "agriculture",
@@ -261,7 +266,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Anhui China demonstrates exceptional investment potential with NPV of $840,053. Primary risk is Water Stress which accounts for 586.7% of variance. Water stress vulnerability identified for rice production with 797mm annual rainfall. Deploy climate-resilient rice varieties immediately to capture 30.0% yield advantage.",
+      "**PORTFOLIO FIT: Excellent.** This asset provides a natural hedge against global climate trends, diversifying risk. STRONG BUY: Anhui China demonstrates exceptional investment potential with NPV of $840,053. Primary risk is Water Stress which accounts for 586.7% of variance. Water stress vulnerability identified for rice production with 797mm annual rainfall. Deploy climate-resilient rice varieties immediately to capture 30.0% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: 162.75,
       primary_driver: "Water Stress (-20%)",
@@ -360,6 +365,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: -0.9173,
+      classification: "Hedge",
+      return_vector: [806266.43, 738693.28, 671120.12],
+    },
   },
   {
     project_type: "agriculture",
@@ -441,7 +451,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Arkansas USA shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1380mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. INVESTABLE: Arkansas USA shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1380mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -540,6 +550,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9944,
+      classification: "Concentrator",
+      return_vector: [732736.61, 732736.61, 740110.09],
+    },
   },
   {
     project_type: "agriculture",
@@ -621,7 +636,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Ayeyarwady Myanmar shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1444mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. INVESTABLE: Ayeyarwady Myanmar shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1444mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -720,6 +735,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9946,
+      classification: "Concentrator",
+      return_vector: [732736.61, 732736.61, 736171.42],
+    },
   },
   {
     project_type: "agriculture",
@@ -801,7 +821,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Buenos Aires Province demonstrates exceptional investment potential with NPV of $924,735. Primary risk is Water Stress which accounts for 41.9% of variance. Moderate climate pressure with 16.8% expected yield reduction. Deploy climate-resilient maize varieties immediately to capture 6.0% yield advantage.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Buenos Aires Province demonstrates exceptional investment potential with NPV of $924,735. Primary risk is Water Stress which accounts for 41.9% of variance. Moderate climate pressure with 16.8% expected yield reduction. Deploy climate-resilient maize varieties immediately to capture 6.0% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: 3197.74,
       primary_driver: "Water Stress (-20%)",
@@ -900,6 +920,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.7302,
+      classification: "Neutral",
+      return_vector: [936225.81, 959208.03, 982190.31],
+    },
   },
   {
     project_type: "agriculture",
@@ -981,7 +1006,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: California Sacramento shows solid fundamentals with NPV of $732,737. Primary risk is Water Stress which accounts for 49.1% of variance. Water stress vulnerability identified for rice production with 1254mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: California Sacramento shows solid fundamentals with NPV of $732,737. Primary risk is Water Stress which accounts for 49.1% of variance. Water stress vulnerability identified for rice production with 1254mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Water Stress (-20%)",
@@ -1080,6 +1105,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.796,
+      classification: "Neutral",
+      return_vector: [732736.61, 740113.16, 747821.52],
+    },
   },
   {
     project_type: "agriculture",
@@ -1162,7 +1192,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Central Mexico demonstrates exceptional investment potential with NPV of $946,618. Primary risk is Market Price which accounts for 33.7% of variance. Moderate climate pressure with 10.2% expected yield reduction. Transition to resilient maize cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. STRONG BUY: Central Mexico demonstrates exceptional investment potential with NPV of $946,618. Primary risk is Market Price which accounts for 33.7% of variance. Moderate climate pressure with 10.2% expected yield reduction. Transition to resilient maize cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 3693.37,
       primary_driver: "Market Price (-15%)",
@@ -1261,6 +1291,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9697,
+      classification: "Concentrator",
+      return_vector: [927090.68, 932277.62, 983434.95],
+    },
   },
   {
     project_type: "agriculture",
@@ -1342,7 +1377,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Central Thailand shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Central Thailand shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -1441,6 +1476,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [732736.61, 732736.61, 732736.61],
+    },
   },
   {
     project_type: "agriculture",
@@ -1522,7 +1562,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Cherkasy Ukraine demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Cherkasy Ukraine demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 4236.74,
       primary_driver: "Market Price (-15%)",
@@ -1621,6 +1661,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [880206.22, 880206.22, 880206.22],
+    },
   },
   {
     project_type: "agriculture",
@@ -1702,7 +1747,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Cordoba Argentina demonstrates exceptional investment potential with NPV of $937,793. Primary risk is Market Price which accounts for 33.4% of variance. Minor yield sensitivity of 8.9% under projected climate conditions. Transition to resilient maize cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Excellent.** This asset provides a natural hedge against global climate trends, diversifying risk. STRONG BUY: Cordoba Argentina demonstrates exceptional investment potential with NPV of $937,793. Primary risk is Market Price which accounts for 33.4% of variance. Minor yield sensitivity of 8.9% under projected climate conditions. Transition to resilient maize cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 3765.57,
       primary_driver: "Market Price (-15%)",
@@ -1801,6 +1846,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: -0.5411,
+      classification: "Hedge",
+      return_vector: [918619.11, 880271.11, 880206.22],
+    },
   },
   {
     project_type: "agriculture",
@@ -1882,7 +1932,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Free State South Africa demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Free State South Africa demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 4236.74,
       primary_driver: "Market Price (-15%)",
@@ -1981,6 +2031,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [880206.22, 880206.22, 880206.22],
+    },
   },
   {
     project_type: "agriculture",
@@ -2062,7 +2117,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Ganges Basin Bangladesh shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1412mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. INVESTABLE: Ganges Basin Bangladesh shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1412mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -2161,6 +2216,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9945,
+      classification: "Concentrator",
+      return_vector: [732736.61, 732736.61, 738131.54],
+    },
   },
   {
     project_type: "agriculture",
@@ -2243,7 +2303,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Goias Brazil demonstrates exceptional investment potential with NPV of $1,073,017. Primary risk is Market Price which accounts for 41.0% of variance. Severe climate stress indicated by 29.7% baseline yield reduction. Deploy climate-resilient maize varieties immediately to capture 16.9% yield advantage.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Goias Brazil demonstrates exceptional investment potential with NPV of $1,073,017. Primary risk is Market Price which accounts for 41.0% of variance. Severe climate stress indicated by 29.7% baseline yield reduction. Deploy climate-resilient maize varieties immediately to capture 16.9% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: 2659.19,
       primary_driver: "Market Price (-15%)",
@@ -2342,6 +2402,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.7804,
+      classification: "Neutral",
+      return_vector: [1077927.82, 1087749.79, 1097571.7],
+    },
   },
   {
     project_type: "agriculture",
@@ -2423,7 +2488,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Guangxi China shows solid fundamentals with NPV of $741,400. Primary risk is Water Stress which accounts for 75.8% of variance. Water stress vulnerability identified for rice production with 1087mm annual rainfall. Transition to resilient rice cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Guangxi China shows solid fundamentals with NPV of $741,400. Primary risk is Water Stress which accounts for 75.8% of variance. Water stress vulnerability identified for rice production with 1087mm annual rainfall. Transition to resilient rice cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 1982.29,
       primary_driver: "Water Stress (-20%)",
@@ -2522,6 +2587,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.7906,
+      classification: "Neutral",
+      return_vector: [744740.64, 751421.01, 758101.38],
+    },
   },
   {
     project_type: "agriculture",
@@ -2603,7 +2673,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Heilongjiang China demonstrates exceptional investment potential with NPV of $924,934. Primary risk is Water Stress which accounts for 42.0% of variance. Moderate climate pressure with 16.8% expected yield reduction. Deploy climate-resilient maize varieties immediately to capture 6.1% yield advantage.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Heilongjiang China demonstrates exceptional investment potential with NPV of $924,934. Primary risk is Water Stress which accounts for 42.0% of variance. Moderate climate pressure with 16.8% expected yield reduction. Deploy climate-resilient maize varieties immediately to capture 6.1% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: 3193.09,
       primary_driver: "Water Stress (-20%)",
@@ -2702,6 +2772,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.7303,
+      classification: "Neutral",
+      return_vector: [936416.91, 959383.27, 982349.57],
+    },
   },
   {
     project_type: "agriculture",
@@ -2783,7 +2858,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Henan China demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Henan China demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 4236.74,
       primary_driver: "Market Price (-15%)",
@@ -2882,6 +2957,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [880206.22, 880206.22, 880206.22],
+    },
   },
   {
     project_type: "agriculture",
@@ -2963,7 +3043,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Hubei China shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1448mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. INVESTABLE: Hubei China shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1448mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -3062,6 +3142,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9946,
+      classification: "Concentrator",
+      return_vector: [732736.61, 732736.61, 735950.22],
+    },
   },
   {
     project_type: "agriculture",
@@ -3144,7 +3229,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Hunan China shows solid fundamentals with NPV of $748,152. Primary risk is Water Stress which accounts for 87.0% of variance. Water stress vulnerability identified for rice production with 999mm annual rainfall. Deploy climate-resilient rice varieties immediately to capture 8.4% yield advantage.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. INVESTABLE: Hunan China shows solid fundamentals with NPV of $748,152. Primary risk is Water Stress which accounts for 87.0% of variance. Water stress vulnerability identified for rice production with 999mm annual rainfall. Deploy climate-resilient rice varieties immediately to capture 8.4% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: 1374.67,
       primary_driver: "Water Stress (-20%)",
@@ -3243,6 +3328,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9629,
+      classification: "Concentrator",
+      return_vector: [751221.93, 757362.19, 842745.25],
+    },
   },
   {
     project_type: "agriculture",
@@ -3324,7 +3414,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Illinois Corn Belt demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Illinois Corn Belt demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 4236.74,
       primary_driver: "Market Price (-15%)",
@@ -3423,6 +3513,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [880206.22, 880206.22, 880206.22],
+    },
   },
   {
     project_type: "agriculture",
@@ -3504,7 +3599,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Iowa Corn Belt demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Iowa Corn Belt demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 4236.74,
       primary_driver: "Market Price (-15%)",
@@ -3603,6 +3698,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [880206.22, 880206.22, 880206.22],
+    },
   },
   {
     project_type: "agriculture",
@@ -3684,7 +3784,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Isan Thailand shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Isan Thailand shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -3783,6 +3883,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [732736.61, 732736.61, 732736.61],
+    },
   },
   {
     project_type: "agriculture",
@@ -3864,7 +3969,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Jalisco Mexico demonstrates exceptional investment potential with NPV of $1,444,558. Primary risk is Operational Costs which accounts for 181.7% of variance. Severe climate stress indicated by 87.0% baseline yield reduction. Deploy climate-resilient maize varieties immediately to capture 267.1% yield advantage.",
+      "**PORTFOLIO FIT: Excellent.** This asset provides a natural hedge against global climate trends, diversifying risk. STRONG BUY: Jalisco Mexico demonstrates exceptional investment potential with NPV of $1,444,558. Primary risk is Operational Costs which accounts for 181.7% of variance. Severe climate stress indicated by 87.0% baseline yield reduction. Deploy climate-resilient maize varieties immediately to capture 267.1% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: -380.69,
       primary_driver: "Operational Costs (+15%)",
@@ -3963,6 +4068,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: -0.9263,
+      classification: "Hedge",
+      return_vector: [1405113.12, 1326223.94, 1247334.77],
+    },
   },
   {
     project_type: "agriculture",
@@ -4044,7 +4154,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Java Indonesia shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Java Indonesia shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -4143,6 +4253,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [732736.61, 732736.61, 732736.61],
+    },
   },
   {
     project_type: "agriculture",
@@ -4224,7 +4339,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Jiangxi China shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1380mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. INVESTABLE: Jiangxi China shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1380mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -4323,6 +4438,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9944,
+      classification: "Concentrator",
+      return_vector: [732736.61, 732736.61, 740091.66],
+    },
   },
   {
     project_type: "agriculture",
@@ -4404,7 +4524,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Jilin China demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. STRONG BUY: Jilin China demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 4236.74,
       primary_driver: "Market Price (-15%)",
@@ -4503,6 +4623,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9711,
+      classification: "Concentrator",
+      return_vector: [880206.22, 883991.46, 913811.6],
+    },
   },
   {
     project_type: "agriculture",
@@ -4585,7 +4710,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Karnataka India demonstrates exceptional investment potential with NPV of $1,403,361. Primary risk is Market Price which accounts for 77.7% of variance. Severe climate stress indicated by 63.8% baseline yield reduction. Deploy climate-resilient maize varieties immediately to capture 78.3% yield advantage.",
+      "**PORTFOLIO FIT: Excellent.** This asset provides a natural hedge against global climate trends, diversifying risk. STRONG BUY: Karnataka India demonstrates exceptional investment potential with NPV of $1,403,361. Primary risk is Market Price which accounts for 77.7% of variance. Severe climate stress indicated by 63.8% baseline yield reduction. Deploy climate-resilient maize varieties immediately to capture 78.3% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: 1102.62,
       primary_driver: "Market Price (-15%)",
@@ -4684,6 +4809,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: -0.9849,
+      classification: "Hedge",
+      return_vector: [1400661.62, 1385678.22, 1303596.21],
+    },
   },
   {
     project_type: "agriculture",
@@ -4765,7 +4895,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Khyber Pakhtunkhwa Pakistan shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1324mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. INVESTABLE: Khyber Pakhtunkhwa Pakistan shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Water stress vulnerability identified for rice production with 1324mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -4864,6 +4994,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9358,
+      classification: "Concentrator",
+      return_vector: [732736.61, 735435.92, 743569.48],
+    },
   },
   {
     project_type: "agriculture",
@@ -4945,7 +5080,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Louisiana USA shows solid fundamentals with NPV of $732,737. Primary risk is Water Stress which accounts for 53.8% of variance. Water stress vulnerability identified for rice production with 1231mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Louisiana USA shows solid fundamentals with NPV of $732,737. Primary risk is Water Stress which accounts for 53.8% of variance. Water stress vulnerability identified for rice production with 1231mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Water Stress (-20%)",
@@ -5044,6 +5179,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.7878,
+      classification: "Neutral",
+      return_vector: [734130.2, 741694.78, 749259.35],
+    },
   },
   {
     project_type: "agriculture",
@@ -5125,7 +5265,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Luzon Philippines shows solid fundamentals with NPV of $732,206. Primary risk is Market Price which accounts for 40.3% of variance. Minor yield sensitivity of 0.5% under projected climate conditions. Transition to resilient rice cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. INVESTABLE: Luzon Philippines shows solid fundamentals with NPV of $732,206. Primary risk is Market Price which accounts for 40.3% of variance. Minor yield sensitivity of 0.5% under projected climate conditions. Transition to resilient rice cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 2730.19,
       primary_driver: "Market Price (-15%)",
@@ -5224,6 +5364,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9945,
+      classification: "Concentrator",
+      return_vector: [732736.61, 732736.61, 737652.27],
+    },
   },
   {
     project_type: "agriculture",
@@ -5306,7 +5451,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Madhya Pradesh India demonstrates exceptional investment potential with NPV of $964,462. Primary risk is Market Price which accounts for 34.5% of variance. Moderate climate pressure with 13.0% expected yield reduction. Deploy climate-resilient maize varieties immediately to capture 6.0% yield advantage.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Madhya Pradesh India demonstrates exceptional investment potential with NPV of $964,462. Primary risk is Market Price which accounts for 34.5% of variance. Moderate climate pressure with 13.0% expected yield reduction. Deploy climate-resilient maize varieties immediately to capture 6.0% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: 3547.37,
       primary_driver: "Market Price (-15%)",
@@ -5405,6 +5550,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.5227,
+      classification: "Neutral",
+      return_vector: [944220.75, 911112.78, 946567.55],
+    },
   },
   {
     project_type: "agriculture",
@@ -5487,7 +5637,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Mato Grosso Brazil demonstrates exceptional investment potential with NPV of $1,434,978. Primary risk is Market Price which accounts for 86.7% of variance. Severe climate stress indicated by 66.9% baseline yield reduction. Deploy climate-resilient maize varieties immediately to capture 90.3% yield advantage.",
+      "**PORTFOLIO FIT: Excellent.** This asset provides a natural hedge against global climate trends, diversifying risk. STRONG BUY: Mato Grosso Brazil demonstrates exceptional investment potential with NPV of $1,434,978. Primary risk is Market Price which accounts for 86.7% of variance. Severe climate stress indicated by 66.9% baseline yield reduction. Deploy climate-resilient maize varieties immediately to capture 90.3% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: 964.59,
       primary_driver: "Market Price (-15%)",
@@ -5586,6 +5736,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: -0.9643,
+      classification: "Hedge",
+      return_vector: [1431604.31, 1396100.21, 1312668.54],
+    },
   },
   {
     project_type: "agriculture",
@@ -5668,7 +5823,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Mekong Delta Vietnam shows solid fundamentals with NPV of $728,933. Primary risk is Market Price which accounts for 42.3% of variance. Minor yield sensitivity of 3.9% under projected climate conditions. Transition to resilient rice cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Mekong Delta Vietnam shows solid fundamentals with NPV of $728,933. Primary risk is Market Price which accounts for 42.3% of variance. Minor yield sensitivity of 3.9% under projected climate conditions. Transition to resilient rice cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 2533.82,
       primary_driver: "Market Price (-15%)",
@@ -5767,6 +5922,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.5224,
+      classification: "Neutral",
+      return_vector: [730068.15, 732338.69, 732736.61],
+    },
   },
   {
     project_type: "agriculture",
@@ -5848,7 +6008,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Mpumalanga South Africa demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Mpumalanga South Africa demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 4236.74,
       primary_driver: "Market Price (-15%)",
@@ -5947,6 +6107,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [880206.22, 880206.22, 880206.22],
+    },
   },
   {
     project_type: "agriculture",
@@ -6028,7 +6193,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Nebraska Corn Belt demonstrates exceptional investment potential with NPV of $905,224. Primary risk is Water Stress which accounts for 39.2% of variance. Minor yield sensitivity of 9.4% under projected climate conditions. Transition to resilient maize cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Nebraska Corn Belt demonstrates exceptional investment potential with NPV of $905,224. Primary risk is Water Stress which accounts for 39.2% of variance. Minor yield sensitivity of 9.4% under projected climate conditions. Transition to resilient maize cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 3652.98,
       primary_driver: "Water Stress (-20%)",
@@ -6127,6 +6292,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.7233,
+      classification: "Neutral",
+      return_vector: [917496.0, 942039.06, 966582.12],
+    },
   },
   {
     project_type: "agriculture",
@@ -6208,7 +6378,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Northern France demonstrates exceptional investment potential with NPV of $900,380. Primary risk is Water Stress which accounts for 38.6% of variance. Minor yield sensitivity of 7.6% under projected climate conditions. Transition to resilient maize cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Northern France demonstrates exceptional investment potential with NPV of $900,380. Primary risk is Water Stress which accounts for 38.6% of variance. Minor yield sensitivity of 7.6% under projected climate conditions. Transition to resilient maize cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 3766.01,
       primary_driver: "Water Stress (-20%)",
@@ -6307,6 +6477,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.7216,
+      classification: "Neutral",
+      return_vector: [912845.36, 937776.02, 962706.62],
+    },
   },
   {
     project_type: "agriculture",
@@ -6388,7 +6563,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Parana Brazil demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Parana Brazil demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 4236.74,
       primary_driver: "Market Price (-15%)",
@@ -6487,6 +6662,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [880206.22, 880206.22, 880206.22],
+    },
   },
   {
     project_type: "agriculture",
@@ -6568,7 +6748,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Poltava Ukraine demonstrates exceptional investment potential with NPV of $937,542. Primary risk is Water Stress which accounts for 44.2% of variance. Severe climate stress indicated by 21.6% baseline yield reduction. Deploy climate-resilient maize varieties immediately to capture 8.3% yield advantage.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Poltava Ukraine demonstrates exceptional investment potential with NPV of $937,542. Primary risk is Water Stress which accounts for 44.2% of variance. Severe climate stress indicated by 21.6% baseline yield reduction. Deploy climate-resilient maize varieties immediately to capture 8.3% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: 2898.89,
       primary_driver: "Water Stress (-20%)",
@@ -6667,6 +6847,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.7346,
+      classification: "Neutral",
+      return_vector: [948521.21, 970478.88, 992436.49],
+    },
   },
   {
     project_type: "agriculture",
@@ -6749,7 +6934,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Punjab India demonstrates exceptional investment potential with NPV of $904,766. Primary risk is Market Price which accounts for 32.1% of variance. Minor yield sensitivity of 3.8% under projected climate conditions. Transition to resilient maize cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Punjab India demonstrates exceptional investment potential with NPV of $904,766. Primary risk is Market Price which accounts for 32.1% of variance. Minor yield sensitivity of 3.8% under projected climate conditions. Transition to resilient maize cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 4035.79,
       primary_driver: "Market Price (-15%)",
@@ -6848,6 +7033,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.7849,
+      classification: "Neutral",
+      return_vector: [886912.89, 917073.62, 976061.47],
+    },
   },
   {
     project_type: "agriculture",
@@ -6929,7 +7119,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Punjab India Rice shows solid fundamentals with NPV of $732,737. Primary risk is Water Stress which accounts for 43.9% of variance. Water stress vulnerability identified for rice production with 1281mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. INVESTABLE: Punjab India Rice shows solid fundamentals with NPV of $732,737. Primary risk is Water Stress which accounts for 43.9% of variance. Water stress vulnerability identified for rice production with 1281mm annual rainfall. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Water Stress (-20%)",
@@ -7028,6 +7218,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.8484,
+      classification: "Concentrator",
+      return_vector: [732736.61, 738335.54, 746205.5],
+    },
   },
   {
     project_type: "agriculture",
@@ -7109,7 +7304,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Red River Delta Vietnam shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Red River Delta Vietnam shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -7208,6 +7403,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [732736.61, 732736.61, 732736.61],
+    },
   },
   {
     project_type: "agriculture",
@@ -7290,7 +7490,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Rift Valley Kenya demonstrates exceptional investment potential with NPV of $880,790. Primary risk is Market Price which accounts for 31.4% of variance. Minor yield sensitivity of 0.1% under projected climate conditions. Transition to resilient maize cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. STRONG BUY: Rift Valley Kenya demonstrates exceptional investment potential with NPV of $880,790. Primary risk is Market Price which accounts for 31.4% of variance. Minor yield sensitivity of 0.1% under projected climate conditions. Transition to resilient maize cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 4231.96,
       primary_driver: "Market Price (-15%)",
@@ -7389,6 +7589,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9909,
+      classification: "Concentrator",
+      return_vector: [880206.22, 880206.22, 931820.59],
+    },
   },
   {
     project_type: "agriculture",
@@ -7470,7 +7675,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Santa Fe Argentina demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Santa Fe Argentina demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 4236.74,
       primary_driver: "Market Price (-15%)",
@@ -7569,6 +7774,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [880206.22, 880206.22, 880206.22],
+    },
   },
   {
     project_type: "agriculture",
@@ -7650,7 +7860,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Shandong China demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. STRONG BUY: Shandong China demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 4236.74,
       primary_driver: "Market Price (-15%)",
@@ -7749,6 +7959,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [880206.22, 880206.22, 880206.22],
+    },
   },
   {
     project_type: "agriculture",
@@ -7830,7 +8045,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "STRONG BUY: Sinaloa Mexico demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. STRONG BUY: Sinaloa Mexico demonstrates exceptional investment potential with NPV of $880,206. Primary risk is Market Price which accounts for 31.3% of variance. Robust climate resilience with stable yields for maize cultivation. Maintain current maize operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 4236.74,
       primary_driver: "Market Price (-15%)",
@@ -7929,6 +8144,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9942,
+      classification: "Concentrator",
+      return_vector: [880206.22, 880206.22, 890293.14],
+    },
   },
   {
     project_type: "agriculture",
@@ -8011,7 +8231,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Sindh Pakistan shows solid fundamentals with NPV of $738,674. Primary risk is Water Stress which accounts for 69.7% of variance. Water stress vulnerability identified for rice production with 1123mm annual rainfall. Transition to resilient rice cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Sindh Pakistan shows solid fundamentals with NPV of $738,674. Primary risk is Water Stress which accounts for 69.7% of variance. Water stress vulnerability identified for rice production with 1123mm annual rainfall. Transition to resilient rice cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 2227.69,
       primary_driver: "Water Stress (-20%)",
@@ -8110,6 +8330,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.7899,
+      classification: "Neutral",
+      return_vector: [742123.05, 749021.56, 755920.06],
+    },
   },
   {
     project_type: "agriculture",
@@ -8192,7 +8417,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Sulawesi Indonesia shows solid fundamentals with NPV of $729,002. Primary risk is Market Price which accounts for 42.2% of variance. Minor yield sensitivity of 3.8% under projected climate conditions. Transition to resilient rice cultivars for long-term production security.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Sulawesi Indonesia shows solid fundamentals with NPV of $729,002. Primary risk is Market Price which accounts for 42.2% of variance. Minor yield sensitivity of 3.8% under projected climate conditions. Transition to resilient rice cultivars for long-term production security.",
     sensitivity_analysis: {
       baseline_npv: 2537.94,
       primary_driver: "Market Price (-15%)",
@@ -8291,6 +8516,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.506,
+      classification: "Neutral",
+      return_vector: [730134.2, 732399.27, 732736.61],
+    },
   },
   {
     project_type: "agriculture",
@@ -8372,7 +8602,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Sylhet Bangladesh shows solid fundamentals with NPV of $759,865. Primary risk is Water Stress which accounts for 272.5% of variance. Water stress vulnerability identified for rice production with 847mm annual rainfall. Deploy climate-resilient rice varieties immediately to capture 19.8% yield advantage.",
+      "**PORTFOLIO FIT: Excellent.** This asset provides a natural hedge against global climate trends, diversifying risk. INVESTABLE: Sylhet Bangladesh shows solid fundamentals with NPV of $759,865. Primary risk is Water Stress which accounts for 272.5% of variance. Water stress vulnerability identified for rice production with 847mm annual rainfall. Deploy climate-resilient rice varieties immediately to capture 19.8% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: 320.5,
       primary_driver: "Water Stress (-20%)",
@@ -8471,6 +8701,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: -0.9865,
+      classification: "Hedge",
+      return_vector: [762466.49, 785237.27, 713432.84],
+    },
   },
   {
     project_type: "agriculture",
@@ -8552,7 +8787,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Tamil Nadu India shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Tamil Nadu India shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -8651,6 +8886,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [732736.61, 732736.61, 732736.61],
+    },
   },
   {
     project_type: "agriculture",
@@ -8732,7 +8972,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Uttar Pradesh India shows solid fundamentals with NPV of $748,159. Primary risk is Water Stress which accounts for 87.1% of variance. Water stress vulnerability identified for rice production with 999mm annual rainfall. Deploy climate-resilient rice varieties immediately to capture 8.4% yield advantage.",
+      "**PORTFOLIO FIT: Caution.** Highly correlated with broader market risks; offers little diversification. INVESTABLE: Uttar Pradesh India shows solid fundamentals with NPV of $748,159. Primary risk is Water Stress which accounts for 87.1% of variance. Water stress vulnerability identified for rice production with 999mm annual rainfall. Deploy climate-resilient rice varieties immediately to capture 8.4% yield advantage.",
     sensitivity_analysis: {
       baseline_npv: 1373.98,
       primary_driver: "Water Stress (-20%)",
@@ -8831,6 +9071,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.9629,
+      classification: "Concentrator",
+      return_vector: [751229.3, 757368.95, 842660.46],
+    },
   },
   {
     project_type: "agriculture",
@@ -8912,7 +9157,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: West Bengal India shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: West Bengal India shows solid fundamentals with NPV of $732,737. Primary risk is Market Price which accounts for 40.0% of variance. Robust climate resilience with stable yields for rice cultivation. Maintain current rice operations while monitoring climate indicators for future adaptation triggers.",
     sensitivity_analysis: {
       baseline_npv: 2762.04,
       primary_driver: "Market Price (-15%)",
@@ -9011,6 +9256,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [732736.61, 732736.61, 732736.61],
+    },
   },
   {
     project_type: "coastal",
@@ -9076,7 +9326,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Antwerp Port demonstrates strong coastal resilience at 8m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 8m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Antwerp Port demonstrates strong coastal resilience at 8m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 8m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -9175,6 +9425,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -9240,7 +9495,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Busan Port demonstrates strong coastal resilience at 10m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Moderate elevation of 10m provides adequate but not unlimited protection against extreme events. Maintain current operations with standard insurance coverage and climate monitoring.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Busan Port demonstrates strong coastal resilience at 10m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Moderate elevation of 10m provides adequate but not unlimited protection against extreme events. Maintain current operations with standard insurance coverage and climate monitoring.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -9339,6 +9594,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -9404,7 +9664,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Colombo Port demonstrates strong coastal resilience at 26m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Strong natural elevation defense at 26m significantly reduces long-term coastal risk exposure. Maintain current operations with standard insurance coverage and climate monitoring.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Colombo Port demonstrates strong coastal resilience at 26m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Strong natural elevation defense at 26m significantly reduces long-term coastal risk exposure. Maintain current operations with standard insurance coverage and climate monitoring.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -9503,6 +9763,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -9568,7 +9833,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Dalian Port demonstrates strong coastal resilience at 29m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Strong natural elevation defense at 29m significantly reduces long-term coastal risk exposure. Maintain current operations with standard insurance coverage and climate monitoring.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Dalian Port demonstrates strong coastal resilience at 29m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Strong natural elevation defense at 29m significantly reduces long-term coastal risk exposure. Maintain current operations with standard insurance coverage and climate monitoring.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -9667,6 +9932,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -9732,7 +10002,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "CRITICAL WARNING: Dubai Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 2m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. CRITICAL WARNING: Dubai Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 2m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -9831,6 +10101,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -9896,7 +10171,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "CRITICAL WARNING: Felixstowe Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. CRITICAL WARNING: Felixstowe Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -9995,6 +10270,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -10060,7 +10340,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Guangzhou Port demonstrates strong coastal resilience at 14m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Moderate elevation of 14m provides adequate but not unlimited protection against extreme events. Maintain current operations with standard insurance coverage and climate monitoring.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Guangzhou Port demonstrates strong coastal resilience at 14m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Moderate elevation of 14m provides adequate but not unlimited protection against extreme events. Maintain current operations with standard insurance coverage and climate monitoring.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -10159,6 +10439,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -10224,7 +10509,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Hamburg Port demonstrates strong coastal resilience at 9m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 9m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Hamburg Port demonstrates strong coastal resilience at 9m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 9m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -10323,6 +10608,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -10388,7 +10678,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "CRITICAL WARNING: Hong Kong Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 2m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. CRITICAL WARNING: Hong Kong Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 2m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -10487,6 +10777,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -10552,7 +10847,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "CRITICAL WARNING: Jebel Ali Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. CRITICAL WARNING: Jebel Ali Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -10651,6 +10946,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -10716,7 +11016,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "CRITICAL WARNING: Kaohsiung Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. CRITICAL WARNING: Kaohsiung Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -10815,6 +11115,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -10880,7 +11185,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "CRITICAL WARNING: Laem Chabang Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at -1m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. CRITICAL WARNING: Laem Chabang Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at -1m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -10979,6 +11284,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -11044,7 +11354,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Los Angeles Port demonstrates strong coastal resilience at 4m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 4m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Los Angeles Port demonstrates strong coastal resilience at 4m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 4m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -11143,6 +11453,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -11208,7 +11523,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Ningbo-Zhoushan Port demonstrates strong coastal resilience at 7m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 7m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Ningbo-Zhoushan Port demonstrates strong coastal resilience at 7m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 7m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -11307,6 +11622,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -11372,7 +11692,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Piraeus Port demonstrates strong coastal resilience at 4m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 4m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Piraeus Port demonstrates strong coastal resilience at 4m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 4m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -11471,6 +11791,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -11536,7 +11861,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "CRITICAL WARNING: Port Klang faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. CRITICAL WARNING: Port Klang faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -11635,6 +11960,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -11700,7 +12030,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Qingdao Port demonstrates strong coastal resilience at 6m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 6m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Qingdao Port demonstrates strong coastal resilience at 6m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 6m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -11799,6 +12129,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -11864,7 +12199,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Rotterdam Port demonstrates strong coastal resilience at 4m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 4m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Rotterdam Port demonstrates strong coastal resilience at 4m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 4m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -11963,6 +12298,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -12028,7 +12368,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Santos Port demonstrates strong coastal resilience at 4m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 4m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Santos Port demonstrates strong coastal resilience at 4m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 4m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -12127,6 +12467,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -12192,7 +12537,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Shanghai Port demonstrates strong coastal resilience at 9m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 9m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Shanghai Port demonstrates strong coastal resilience at 9m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 9m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -12291,6 +12636,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -12356,7 +12706,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Singapore Port demonstrates strong coastal resilience at 4m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 4m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Singapore Port demonstrates strong coastal resilience at 4m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 4m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -12455,6 +12805,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -12520,7 +12875,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Tanjung Pelepas Port demonstrates strong coastal resilience at 5m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 5m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Tanjung Pelepas Port demonstrates strong coastal resilience at 5m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Marginal elevation buffer of 5m requires monitoring under combined SLR and surge scenarios totaling 3.5m. Implement nature-based solutions (mangrove restoration, living shorelines) to enhance natural protection.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -12619,6 +12974,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -12684,7 +13044,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "CRITICAL WARNING: Tianjin Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. CRITICAL WARNING: Tianjin Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -12783,6 +13143,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -12848,7 +13213,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "CRITICAL WARNING: Valencia Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. CRITICAL WARNING: Valencia Port faces existential threat from sea level rise\u2014asset stranding imminent. Primary risk is Water Stress which accounts for 100.2% of variance. Critical elevation vulnerability at 0m above sea level exposes infrastructure to 1.0m SLR scenario plus storm surge. Initiate managed retreat planning and asset divestment strategy within 5-year horizon.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -12947,6 +13312,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "coastal",
@@ -13012,7 +13382,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "INVESTABLE: Xiamen Port demonstrates strong coastal resilience at 10m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Moderate elevation of 10m provides adequate but not unlimited protection against extreme events. Maintain current operations with standard insurance coverage and climate monitoring.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. INVESTABLE: Xiamen Port demonstrates strong coastal resilience at 10m elevation. Primary risk is Water Stress which accounts for 100.2% of variance. Moderate elevation of 10m provides adequate but not unlimited protection against extreme events. Maintain current operations with standard insurance coverage and climate monitoring.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -13111,6 +13481,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -13195,7 +13570,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Abidjan shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Abidjan shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -13294,6 +13669,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -13378,7 +13758,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Alexandria shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Alexandria shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -13477,6 +13857,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -13561,7 +13946,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Bangkok shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Bangkok shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -13660,6 +14045,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -13744,7 +14134,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Chennai shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Chennai shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -13843,6 +14233,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -13927,7 +14322,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Chittagong shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Chittagong shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -14026,6 +14421,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -14110,7 +14510,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Dhaka shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Dhaka shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -14209,6 +14609,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -14293,7 +14698,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Guangzhou shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Guangzhou shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -14392,6 +14797,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -14476,7 +14886,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Hai Phong shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Hai Phong shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -14575,6 +14985,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -14659,7 +15074,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Ho Chi Minh City shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Ho Chi Minh City shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -14758,6 +15173,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -14842,7 +15262,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Houston shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Houston shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -14941,6 +15361,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -15025,7 +15450,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Jakarta shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Jakarta shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -15124,6 +15549,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -15208,7 +15638,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Karachi shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Karachi shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -15307,6 +15737,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -15391,7 +15826,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Kolkata shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Kolkata shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -15490,6 +15925,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -15574,7 +16014,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Lagos shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Lagos shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -15673,6 +16113,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -15757,7 +16202,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Manila shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Manila shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -15856,6 +16301,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -15940,7 +16390,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Miami shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Miami shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -16039,6 +16489,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -16123,7 +16578,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Mumbai shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Mumbai shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -16222,6 +16677,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -16306,7 +16766,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: New Orleans shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: New Orleans shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -16405,6 +16865,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -16489,7 +16954,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Osaka shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Osaka shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -16588,6 +17053,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -16672,7 +17142,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Shanghai shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Shanghai shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -16771,6 +17241,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -16855,7 +17330,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Shenzhen shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Shenzhen shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -16954,6 +17429,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -17038,7 +17518,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Surabaya shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Surabaya shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -17137,6 +17617,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -17221,7 +17706,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Tianjin shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Tianjin shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -17320,6 +17805,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -17404,7 +17894,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Tokyo shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Tokyo shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -17503,6 +17993,11 @@ export const GLOBAL_ATLAS_DATA = [
       ],
       stranded_asset_year: null,
     },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
+    },
   },
   {
     project_type: "flood",
@@ -17587,7 +18082,7 @@ export const GLOBAL_ATLAS_DATA = [
       },
     },
     executive_summary:
-      "MANAGEABLE RISK: Venice shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
+      "**PORTFOLIO FIT: Neutral.** Performance moves in line with the broader sector. MANAGEABLE RISK: Venice shows contained flood exposure under current projections. Primary risk is Water Stress which accounts for 100.2% of variance. Significant rainfall intensity growth of 25% overwhelms existing drainage infrastructure capacity. Enhance urban drainage maintenance and establish periodic capacity reassessment schedule.",
     sensitivity_analysis: {
       baseline_npv: 1379.51,
       primary_driver: "Water Stress (-20%)",
@@ -17685,6 +18180,11 @@ export const GLOBAL_ATLAS_DATA = [
         },
       ],
       stranded_asset_year: null,
+    },
+    portfolio_correlation: {
+      correlation_vs_global: 0.0,
+      classification: "Neutral",
+      return_vector: [0.0, 0.0, 0.0],
     },
   },
 ];
