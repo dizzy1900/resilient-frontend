@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { GlassCard } from './GlassCard';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Tooltip as UiTooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { MapPin, Landmark, AlertTriangle, TrendingUp } from 'lucide-react';
 import {
   LineChart,
   Line,
   XAxis,
   YAxis,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   ResponsiveContainer,
 } from 'recharts';
 
@@ -21,6 +22,7 @@ interface SatellitePreview {
 
 interface MarketIntelligence {
   credit_rating: string;
+  outlook?: string;
   sector_rank?: {
     by_npv: number;
     total_in_sector: number;
@@ -46,6 +48,13 @@ const getCreditRatingColor = (rating: string) => {
   if (first === 'A') return 'text-emerald-500';
   if (first === 'B') return 'text-orange-500';
   return 'text-red-500';
+};
+
+const getOutlookIndicator = (outlook?: string) => {
+  const normalized = (outlook ?? '').toLowerCase();
+  if (normalized === 'positive') return { symbol: '▲', color: 'text-emerald-500' };
+  if (normalized.includes('negative') || normalized.includes('watch')) return { symbol: '▼', color: 'text-red-500' };
+  return { symbol: '▬', color: 'text-white/50' };
 };
 
 export const LiveSiteViewCard = ({ satellitePreview, marketIntelligence, temporalAnalysis }: LiveSiteViewCardProps) => {
@@ -86,11 +95,25 @@ export const LiveSiteViewCard = ({ satellitePreview, marketIntelligence, tempora
             Live
           </Badge>
           {marketIntelligence?.credit_rating && (
-            <Badge className="absolute top-2 right-2 bg-white border-none text-[11px] px-2 py-0.5 font-bold shadow-lg">
-              <span className={getCreditRatingColor(marketIntelligence.credit_rating)}>
-                {marketIntelligence.credit_rating}
-              </span>
-            </Badge>
+            <TooltipProvider delayDuration={200}>
+              <UiTooltip>
+                <TooltipTrigger asChild>
+                  <Badge className="absolute top-2 right-2 bg-white border-none text-[11px] px-2 py-0.5 font-bold shadow-lg cursor-default">
+                    <span className={getCreditRatingColor(marketIntelligence.credit_rating)}>
+                      {marketIntelligence.credit_rating}
+                    </span>
+                    {marketIntelligence.outlook && (
+                      <span className={`ml-1 ${getOutlookIndicator(marketIntelligence.outlook).color}`}>
+                        {getOutlookIndicator(marketIntelligence.outlook).symbol}
+                      </span>
+                    )}
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="max-w-[200px] text-xs">
+                  Projected rating change based on 2030–2050 climate trajectory.
+                </TooltipContent>
+              </UiTooltip>
+            </TooltipProvider>
           )}
         </div>
         {satellitePreview && (
@@ -146,7 +169,7 @@ export const LiveSiteViewCard = ({ satellitePreview, marketIntelligence, tempora
                   tickLine={false}
                   tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
                 />
-                <Tooltip
+                <RechartsTooltip
                   contentStyle={{
                     backgroundColor: 'rgba(15, 23, 42, 0.95)',
                     border: '1px solid rgba(255,255,255,0.1)',
