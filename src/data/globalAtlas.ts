@@ -115,62 +115,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000209,
       satellite_id: "S2B_44PLC_20250328_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 47,
-        by_roi: 47,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 6.0,
-        roi: 6.0,
-        risk: 30.0,
-        composite: 13.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732468.22,
-        roi_pct: 36623.41,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #47 of 50 | 6th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 64.07,
+          benefit: 328.15,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 36.73,
+          benefit: 820.39,
         },
         {
-          year: 2050,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -21.35,
+          benefit: 1966.24,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.45,
+      analysis_timestamp: "2026-02-18T00:45:13.119077+00:00",
     },
   },
   {
@@ -289,62 +257,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.001964,
       satellite_id: "S2A_50SNA_20251009_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "B",
-      credit_grade: "Highly Speculative",
-      investment_grade: false,
-      sector_rank: {
-        by_npv: 26,
-        by_roi: 26,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 48.0,
-        roi: 48.0,
-        risk: 2.0,
-        composite: 34.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 840053.01,
-        roi_pct: 42002.65,
-        default_probability_pct: 4400.0,
-      },
-      benchmark_summary: "Rank #26 of 50 | 48th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 806266.43,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 72316.77,
+          benefit: 144833.54,
         },
         {
-          year: 2040,
-          npv: 738693.28,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 150768.27,
+          benefit: 905209.62,
         },
         {
-          year: 2050,
-          npv: 671120.12,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 277980.4,
+          benefit: 6952009.89,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Infrastructure",
+      stress_level: 100.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119101+00:00",
     },
   },
   {
@@ -462,62 +398,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00065,
       satellite_id: "S2B_15SWU_20251103_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 32,
-        by_roi: 32,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 30.0,
-        composite: 14.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #32 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 2636.35,
+          benefit: 5472.7,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 2241.61,
+          benefit: 14049.67,
         },
         {
-          year: 2050,
-          npv: 740110.09,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 1241.37,
+          benefit: 33534.17,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 7.21,
+      analysis_timestamp: "2026-02-18T00:45:13.119110+00:00",
     },
   },
   {
@@ -635,62 +539,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000259,
       satellite_id: "S2C_46QGD_20260109_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 33,
-        by_roi: 33,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 30.0,
-        composite: 14.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #33 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 1150.54,
+          benefit: 2501.08,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 951.09,
+          benefit: 6306.55,
         },
         {
-          year: 2050,
-          npv: 736171.42,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 501.24,
+          benefit: 15031.11,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 3.36,
+      analysis_timestamp: "2026-02-18T00:45:13.119117+00:00",
     },
   },
   {
@@ -808,62 +680,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000409,
       satellite_id: "S2B_20HQE_20260105_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 10,
-        by_roi: 10,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 80.0,
-        roi: 80.0,
-        risk: 30.0,
-        composite: 65.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 924734.67,
-        roi_pct: 46236.73,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #10 of 50 | 80th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 936225.81,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 16248.48,
+          benefit: 32696.97,
         },
         {
-          year: 2040,
-          npv: 959208.03,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 15873.95,
+          benefit: 95843.71,
         },
         {
-          year: 2050,
-          npv: 982190.31,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 10008.04,
+          benefit: 252701.02,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 29.36,
+      analysis_timestamp: "2026-02-18T00:45:13.119124+00:00",
     },
   },
   {
@@ -981,62 +821,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000299,
       satellite_id: "S2B_10SFH_20250324_1_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AA",
-      credit_grade: "High Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 34,
-        by_roi: 34,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 18.0,
-        composite: 11.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 200.0,
-      },
-      benchmark_summary: "Rank #34 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 5700.37,
+          benefit: 11600.74,
         },
         {
-          year: 2040,
-          npv: 740113.16,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 5080.71,
+          benefit: 31084.28,
         },
         {
-          year: 2050,
-          npv: 747821.52,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 2933.45,
+          benefit: 75836.35,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 14.74,
+      analysis_timestamp: "2026-02-18T00:45:13.119131+00:00",
     },
   },
   {
@@ -1155,62 +963,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 8.1e-5,
       satellite_id: "S2C_14QMG_20250405_1_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 6,
-        by_roi: 6,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 88.0,
-        roi: 88.0,
-        risk: 30.0,
-        composite: 70.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 946617.69,
-        roi_pct: 47330.88,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #6 of 50 | 88th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 927090.68,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 7338.09,
+          benefit: 14876.18,
         },
         {
-          year: 2040,
-          npv: 932277.62,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 6539.41,
+          benefit: 39836.44,
         },
         {
-          year: 2050,
-          npv: 983434.95,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 3785.94,
+          benefit: 97148.42,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 14.64,
+      analysis_timestamp: "2026-02-18T00:45:13.119137+00:00",
     },
   },
   {
@@ -1328,62 +1104,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00044,
       satellite_id: "S2C_47PPS_20251201_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 35,
-        by_roi: 35,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 30.0,
-        composite: 14.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #35 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119144+00:00",
     },
   },
   {
@@ -1501,62 +1245,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000263,
       satellite_id: "S2B_36UVV_20250903_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 15,
-        by_roi: 15,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 50.0,
-        roi: 50.0,
-        risk: 30.0,
-        composite: 44.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880206.22,
-        roi_pct: 44010.31,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #15 of 50 | 50th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119151+00:00",
     },
   },
   {
@@ -1674,62 +1386,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000164,
       satellite_id: "S2C_20JLL_20260106_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 7,
-        by_roi: 7,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 86.0,
-        roi: 86.0,
-        risk: 30.0,
-        composite: 69.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 937793.11,
-        roi_pct: 46889.66,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #7 of 50 | 86th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 918619.11,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 6197.73,
+          benefit: 12595.46,
         },
         {
-          year: 2040,
-          npv: 880271.11,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 5454.75,
+          benefit: 33328.52,
         },
         {
-          year: 2050,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 3126.32,
+          benefit: 80658.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 12.63,
+      analysis_timestamp: "2026-02-18T00:45:13.119157+00:00",
     },
   },
   {
@@ -1847,62 +1527,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000118,
       satellite_id: "S2B_35JMJ_20250912_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 16,
-        by_roi: 16,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 50.0,
-        roi: 50.0,
-        risk: 30.0,
-        composite: 44.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880206.22,
-        roi_pct: 44010.31,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #16 of 50 | 50th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119161+00:00",
     },
   },
   {
@@ -2020,62 +1668,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000707,
       satellite_id: "S2A_45QZG_20251108_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 36,
-        by_roi: 36,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 30.0,
-        composite: 14.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #36 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 1883.18,
+          benefit: 3966.36,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 1580.91,
+          benefit: 10085.45,
         },
         {
-          year: 2050,
-          npv: 738131.54,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 861.17,
+          benefit: 24029.22,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 5.27,
+      analysis_timestamp: "2026-02-18T00:45:13.119167+00:00",
     },
   },
   {
@@ -2194,62 +1810,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000365,
       satellite_id: "S2C_22LFH_20250903_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 4,
-        by_roi: 4,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 92.0,
-        roi: 92.0,
-        risk: 30.0,
-        composite: 73.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 1073016.84,
-        roi_pct: 53650.84,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #4 of 50 | 92th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 1077927.82,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 29613.66,
+          benefit: 59427.32,
         },
         {
-          year: 2040,
-          npv: 1087749.79,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 46601.44,
+          benefit: 280208.65,
         },
         {
-          year: 2050,
-          npv: 1097571.7,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 31662.25,
+          benefit: 794056.16,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Genetics",
+      stress_level: 41.07,
+      analysis_timestamp: "2026-02-18T00:45:13.119177+00:00",
     },
   },
   {
@@ -2367,62 +1951,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.001662,
       satellite_id: "S2C_48QZM_20251125_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AA",
-      credit_grade: "High Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 30,
-        by_roi: 30,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 40.0,
-        roi: 40.0,
-        risk: 14.0,
-        composite: 32.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 741400.45,
-        roi_pct: 37070.02,
-        default_probability_pct: 400.0,
-      },
-      benchmark_summary: "Rank #30 of 50 | 40th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 744740.64,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 16076.71,
+          benefit: 32353.41,
         },
         {
-          year: 2040,
-          npv: 751421.01,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 24704.58,
+          benefit: 148827.48,
         },
         {
-          year: 2050,
-          npv: 758101.38,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 16335.1,
+          benefit: 410877.62,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Genetics",
+      stress_level: 36.85,
+      analysis_timestamp: "2026-02-18T00:45:13.119184+00:00",
     },
   },
   {
@@ -2540,62 +2092,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000213,
       satellite_id: "S2B_52TCS_20250929_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AA",
-      credit_grade: "High Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 9,
-        by_roi: 9,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 82.0,
-        roi: 82.0,
-        risk: 18.0,
-        composite: 62.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 924933.76,
-        roi_pct: 46246.69,
-        default_probability_pct: 200.0,
-      },
-      benchmark_summary: "Rank #9 of 50 | 82th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 936416.91,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 16308.23,
+          benefit: 32816.46,
         },
         {
-          year: 2040,
-          npv: 959383.27,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 15940.37,
+          benefit: 96242.22,
         },
         {
-          year: 2050,
-          npv: 982349.57,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 10055.09,
+          benefit: 253877.23,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 29.44,
+      analysis_timestamp: "2026-02-18T00:45:13.119189+00:00",
     },
   },
   {
@@ -2713,62 +2233,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.012409,
       satellite_id: "S2C_50SKD_20251102_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 17,
-        by_roi: 17,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 50.0,
-        roi: 50.0,
-        risk: 30.0,
-        composite: 44.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880206.22,
-        roi_pct: 44010.31,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #17 of 50 | 50th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119195+00:00",
     },
   },
   {
@@ -2886,62 +2374,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.003626,
       satellite_id: "S2B_49RFQ_20251217_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AA",
-      credit_grade: "High Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 37,
-        by_roi: 37,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 18.0,
-        composite: 11.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 200.0,
-      },
-      benchmark_summary: "Rank #37 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 1068.84,
+          benefit: 2337.67,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 881.58,
+          benefit: 5889.5,
         },
         {
-          year: 2050,
-          npv: 735950.22,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 461.59,
+          benefit: 14039.77,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 3.14,
+      analysis_timestamp: "2026-02-18T00:45:13.119200+00:00",
     },
   },
   {
@@ -3060,62 +2516,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000335,
       satellite_id: "S2C_49REL_20260111_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "A",
-      credit_grade: "Upper Medium",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 29,
-        by_roi: 29,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 42.0,
-        roi: 42.0,
-        risk: 12.0,
-        composite: 33.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 748151.79,
-        roi_pct: 37407.59,
-        default_probability_pct: 600.0,
-      },
-      benchmark_summary: "Rank #29 of 50 | 42th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 751221.93,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 25467.08,
+          benefit: 51134.15,
         },
         {
-          year: 2040,
-          npv: 757362.19,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 42439.03,
+          benefit: 255234.19,
         },
         {
-          year: 2050,
-          npv: 842745.25,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 61432.7,
+          benefit: 1538317.38,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Infrastructure",
+      stress_level: 51.2,
+      analysis_timestamp: "2026-02-18T00:45:13.119206+00:00",
     },
   },
   {
@@ -3233,62 +2657,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000783,
       satellite_id: "S2B_16TBL_20251123_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 18,
-        by_roi: 18,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 50.0,
-        roi: 50.0,
-        risk: 30.0,
-        composite: 44.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880206.22,
-        roi_pct: 44010.31,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #18 of 50 | 50th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119212+00:00",
     },
   },
   {
@@ -3406,62 +2798,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00078,
       satellite_id: "S2A_15TVG_20251123_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 19,
-        by_roi: 19,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 50.0,
-        roi: 50.0,
-        risk: 30.0,
-        composite: 44.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880206.22,
-        roi_pct: 44010.31,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #19 of 50 | 50th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119218+00:00",
     },
   },
   {
@@ -3579,62 +2939,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000727,
       satellite_id: "S2B_48PVB_20251203_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 38,
-        by_roi: 38,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 30.0,
-        composite: 14.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #38 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119223+00:00",
     },
   },
   {
@@ -3752,62 +3080,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00077,
       satellite_id: "S2C_13QFC_20250302_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "C",
-      credit_grade: "Junk",
-      investment_grade: false,
-      sector_rank: {
-        by_npv: 1,
-        by_roi: 1,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 98.0,
-        roi: 98.0,
-        risk: 0.0,
-        composite: 68.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 1444557.67,
-        roi_pct: 72227.88,
-        default_probability_pct: 8000.0,
-      },
-      benchmark_summary: "Rank #1 of 50 | 98th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 1405113.12,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 145933.95,
+          benefit: 292067.89,
         },
         {
-          year: 2040,
-          npv: 1326223.94,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 304137.39,
+          benefit: 1825424.33,
         },
         {
-          year: 2050,
-          npv: 1247334.77,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 560670.35,
+          benefit: 14019258.84,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Infrastructure",
+      stress_level: 100.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119230+00:00",
     },
   },
   {
@@ -3925,62 +3221,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.205482,
       satellite_id: "S2B_49MDN_20250721_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 39,
-        by_roi: 39,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 30.0,
-        composite: 14.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #39 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119235+00:00",
     },
   },
   {
@@ -4098,62 +3362,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.004661,
       satellite_id: "S2B_50RLS_20251114_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 40,
-        by_roi: 40,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 30.0,
-        composite: 14.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #40 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 2629.28,
+          benefit: 5458.56,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 2235.34,
+          benefit: 14012.07,
         },
         {
-          year: 2050,
-          npv: 740091.66,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 1237.74,
+          benefit: 33443.57,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 7.19,
+      analysis_timestamp: "2026-02-18T00:45:13.119241+00:00",
     },
   },
   {
@@ -4271,62 +3503,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.003447,
       satellite_id: "S2A_52TCP_20251122_1_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 20,
-        by_roi: 20,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 50.0,
-        roi: 50.0,
-        risk: 30.0,
-        composite: 44.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880206.22,
-        roi_pct: 44010.31,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #20 of 50 | 50th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 2411.74,
+          benefit: 5023.49,
         },
         {
-          year: 2040,
-          npv: 883991.46,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 2031.73,
+          benefit: 12790.38,
         },
         {
-          year: 2050,
-          npv: 913811.6,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 1119.12,
+          benefit: 30477.98,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 5.55,
+      analysis_timestamp: "2026-02-18T00:45:13.119246+00:00",
     },
   },
   {
@@ -4445,62 +3645,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0,
       satellite_id: "S2C_43PES_20250224_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "BBB",
-      credit_grade: "Investment Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 3,
-        by_roi: 3,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 94.0,
-        roi: 94.0,
-        risk: 8.0,
-        composite: 68.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 1403360.56,
-        roi_pct: 70168.03,
-        default_probability_pct: 1200.0,
-      },
-      benchmark_summary: "Rank #3 of 50 | 94th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 1400661.62,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 134303.27,
+          benefit: 268806.55,
         },
         {
-          year: 2040,
-          npv: 1385678.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 279486.5,
+          benefit: 1677518.98,
         },
         {
-          year: 2050,
-          npv: 1303596.21,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 514423.39,
+          benefit: 12863084.87,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Infrastructure",
+      stress_level: 99.61,
+      analysis_timestamp: "2026-02-18T00:45:13.119252+00:00",
     },
   },
   {
@@ -4618,62 +3786,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 4e-5,
       satellite_id: "S2C_42SYC_20251103_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AA",
-      credit_grade: "High Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 41,
-        by_roi: 41,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 18.0,
-        composite: 11.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 200.0,
-      },
-      benchmark_summary: "Rank #41 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 3985.28,
+          benefit: 8170.56,
         },
         {
-          year: 2040,
-          npv: 735435.92,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 3460.99,
+          benefit: 21365.96,
         },
         {
-          year: 2050,
-          npv: 743569.48,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 1954.86,
+          benefit: 51371.58,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 10.59,
+      analysis_timestamp: "2026-02-18T00:45:13.119257+00:00",
     },
   },
   {
@@ -4791,62 +3927,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.001193,
       satellite_id: "S2C_15RWQ_20251016_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 42,
-        by_roi: 42,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 30.0,
-        composite: 14.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #42 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 734130.2,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 6295.48,
+          benefit: 12790.97,
         },
         {
-          year: 2040,
-          npv: 741694.78,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 5661.03,
+          benefit: 34566.16,
         },
         {
-          year: 2050,
-          npv: 749259.35,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 3293.59,
+          benefit: 84839.82,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 16.15,
+      analysis_timestamp: "2026-02-18T00:45:13.119262+00:00",
     },
   },
   {
@@ -4964,62 +4068,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 3.633508,
       satellite_id: "S2C_50PRC_20250421_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 48,
-        by_roi: 48,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 4.0,
-        roi: 4.0,
-        risk: 30.0,
-        composite: 11.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732205.72,
-        roi_pct: 36610.29,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #48 of 50 | 4th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 227.65,
+          benefit: 655.3,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 173.25,
+          benefit: 1639.47,
         },
         {
-          year: 2050,
-          npv: 737652.27,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 56.97,
+          benefit: 3924.25,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.89,
+      analysis_timestamp: "2026-02-18T00:45:13.119270+00:00",
     },
   },
   {
@@ -5138,62 +4210,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000239,
       satellite_id: "S2C_43QGF_20260209_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 5,
-        by_roi: 5,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 90.0,
-        roi: 90.0,
-        risk: 30.0,
-        composite: 72.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 964461.51,
-        roi_pct: 48223.08,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #5 of 50 | 90th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 944220.75,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 10338.31,
+          benefit: 20876.62,
         },
         {
-          year: 2040,
-          npv: 911112.78,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 9456.85,
+          benefit: 57341.09,
         },
         {
-          year: 2050,
-          npv: 946567.55,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 5600.44,
+          benefit: 142510.89,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 18.81,
+      analysis_timestamp: "2026-02-18T00:45:13.119276+00:00",
     },
   },
   {
@@ -5312,62 +4352,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000383,
       satellite_id: "S2C_21LVG_20250714_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "BBB",
-      credit_grade: "Investment Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 2,
-        by_roi: 2,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 96.0,
-        roi: 96.0,
-        risk: 6.0,
-        composite: 69.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 1434978.05,
-        roi_pct: 71748.9,
-        default_probability_pct: 1600.0,
-      },
-      benchmark_summary: "Rank #2 of 50 | 96th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 1431604.31,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 139702.73,
+          benefit: 279605.47,
         },
         {
-          year: 2040,
-          npv: 1396100.21,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 291155.7,
+          benefit: 1747534.21,
         },
         {
-          year: 2050,
-          npv: 1312668.54,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 536742.51,
+          benefit: 13421062.71,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Infrastructure",
+      stress_level: 100.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119282+00:00",
     },
   },
   {
@@ -5486,62 +4494,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 1.59737,
       satellite_id: "S2C_48PWS_20250228_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AA",
-      credit_grade: "High Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 50,
-        by_roi: 50,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 0.0,
-        roi: 0.0,
-        risk: 18.0,
-        composite: 5.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 728932.88,
-        roi_pct: 36446.64,
-        default_probability_pct: 200.0,
-      },
-      benchmark_summary: "Rank #50 of 50 | 0th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 730068.15,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 2374.37,
+          benefit: 4948.74,
         },
         {
-          year: 2040,
-          npv: 732338.69,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 2010.56,
+          benefit: 12663.36,
         },
         {
-          year: 2050,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 1108.04,
+          benefit: 30201.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 6.57,
+      analysis_timestamp: "2026-02-18T00:45:13.119288+00:00",
     },
   },
   {
@@ -5659,62 +4635,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0,
       satellite_id: "S2B_35JRM_20250601_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 21,
-        by_roi: 21,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 50.0,
-        roi: 50.0,
-        risk: 30.0,
-        composite: 44.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880206.22,
-        roi_pct: 44010.31,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #21 of 50 | 50th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119292+00:00",
     },
   },
   {
@@ -5832,62 +4776,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000272,
       satellite_id: "S2B_14TNL_20251102_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 11,
-        by_roi: 11,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 78.0,
-        roi: 78.0,
-        risk: 30.0,
-        composite: 63.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 905224.44,
-        roi_pct: 45261.22,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #11 of 50 | 78th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 917496.0,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 10499.88,
+          benefit: 21199.75,
         },
         {
-          year: 2040,
-          npv: 942039.06,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 9747.58,
+          benefit: 59085.49,
         },
         {
-          year: 2050,
-          npv: 966582.12,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 5845.87,
+          benefit: 148646.76,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 21.18,
+      analysis_timestamp: "2026-02-18T00:45:13.119297+00:00",
     },
   },
   {
@@ -6005,62 +4917,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.001198,
       satellite_id: "S2C_31UDR_20250812_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 13,
-        by_roi: 13,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 74.0,
-        roi: 74.0,
-        risk: 30.0,
-        composite: 60.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 900380.06,
-        roi_pct: 45019.0,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #13 of 50 | 74th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 912845.36,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 9365.92,
+          benefit: 18931.85,
         },
         {
-          year: 2040,
-          npv: 937776.02,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 8586.71,
+          benefit: 52120.26,
         },
         {
-          year: 2050,
-          npv: 962706.62,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 5091.17,
+          benefit: 129779.36,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 19.19,
+      analysis_timestamp: "2026-02-18T00:45:13.119302+00:00",
     },
   },
   {
@@ -6178,62 +5058,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.001559,
       satellite_id: "S2C_22KDU_20250814_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 22,
-        by_roi: 22,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 50.0,
-        roi: 50.0,
-        risk: 30.0,
-        composite: 44.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880206.22,
-        roi_pct: 44010.31,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #22 of 50 | 50th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119307+00:00",
     },
   },
   {
@@ -6351,62 +5199,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 3e-6,
       satellite_id: "S2C_36UXA_20250912_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 8,
-        by_roi: 8,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 84.0,
-        roi: 84.0,
-        risk: 30.0,
-        composite: 67.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 937542.41,
-        roi_pct: 46877.12,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #8 of 50 | 84th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 948521.21,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 20329.12,
+          benefit: 40858.23,
         },
         {
-          year: 2040,
-          npv: 970478.88,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 30855.05,
+          benefit: 185730.31,
         },
         {
-          year: 2050,
-          npv: 992436.49,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 20158.45,
+          benefit: 506461.2,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Genetics",
+      stress_level: 34.85,
+      analysis_timestamp: "2026-02-18T00:45:13.119315+00:00",
     },
   },
   {
@@ -6525,62 +5341,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000452,
       satellite_id: "S2B_43RFQ_20251109_1_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 12,
-        by_roi: 12,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 76.0,
-        roi: 76.0,
-        risk: 30.0,
-        composite: 62.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 904765.81,
-        roi_pct: 45238.29,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #12 of 50 | 76th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 886912.89,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 2348.78,
+          benefit: 4897.57,
         },
         {
-          year: 2040,
-          npv: 917073.62,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 1975.55,
+          benefit: 12453.27,
         },
         {
-          year: 2050,
-          npv: 976061.47,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 1086.83,
+          benefit: 29670.71,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 5.27,
+      analysis_timestamp: "2026-02-18T00:45:13.119320+00:00",
     },
   },
   {
@@ -6698,62 +5482,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000146,
       satellite_id: "S2C_43REQ_20260215_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 43,
-        by_roi: 43,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 30.0,
-        composite: 14.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #43 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 5041.56,
+          benefit: 10283.12,
         },
         {
-          year: 2040,
-          npv: 738335.54,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 4449.27,
+          benefit: 27295.64,
         },
         {
-          year: 2050,
-          npv: 746205.5,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 2547.4,
+          benefit: 66184.97,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 13.17,
+      analysis_timestamp: "2026-02-18T00:45:13.119325+00:00",
     },
   },
   {
@@ -6871,62 +5623,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.42046,
       satellite_id: "S2B_48QXJ_20260109_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AA",
-      credit_grade: "High Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 44,
-        by_roi: 44,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 18.0,
-        composite: 11.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 200.0,
-      },
-      benchmark_summary: "Rank #44 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119330+00:00",
     },
   },
   {
@@ -7045,62 +5765,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000148,
       satellite_id: "S2C_36MZE_20260115_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 14,
-        by_roi: 14,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 72.0,
-        roi: 72.0,
-        risk: 30.0,
-        composite: 59.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880790.2,
-        roi_pct: 44039.51,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #14 of 50 | 72th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -45.8,
+          benefit: 108.4,
         },
         {
-          year: 2040,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -54.84,
+          benefit: 270.97,
         },
         {
-          year: 2050,
-          npv: 931820.59,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -74.0,
+          benefit: 650.11,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.12,
+      analysis_timestamp: "2026-02-18T00:45:13.119337+00:00",
     },
   },
   {
@@ -7218,62 +5906,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000194,
       satellite_id: "S2A_20JQL_20251203_1_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 23,
-        by_roi: 23,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 50.0,
-        roi: 50.0,
-        risk: 30.0,
-        composite: 44.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880206.22,
-        roi_pct: 44010.31,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #23 of 50 | 50th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119341+00:00",
     },
   },
   {
@@ -7391,62 +6047,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00504,
       satellite_id: "S2C_50SNF_20251119_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 24,
-        by_roi: 24,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 50.0,
-        roi: 50.0,
-        risk: 30.0,
-        composite: 44.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880206.22,
-        roi_pct: 44010.31,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #24 of 50 | 50th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119346+00:00",
     },
   },
   {
@@ -7564,62 +6188,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000501,
       satellite_id: "S2B_13RBH_20251218_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 25,
-        by_roi: 25,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 50.0,
-        roi: 50.0,
-        risk: 30.0,
-        composite: 44.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 880206.22,
-        roi_pct: 44010.31,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #25 of 50 | 50th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 640.22,
+          benefit: 1480.43,
         },
         {
-          year: 2040,
-          npv: 880206.22,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 518.49,
+          benefit: 3710.96,
         },
         {
-          year: 2050,
-          npv: 890293.14,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 254.64,
+          benefit: 8866.03,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 1.67,
+      analysis_timestamp: "2026-02-18T00:45:13.119351+00:00",
     },
   },
   {
@@ -7738,62 +6330,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00216,
       satellite_id: "S2B_42RVP_20250402_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AA",
-      credit_grade: "High Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 31,
-        by_roi: 31,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 38.0,
-        roi: 38.0,
-        risk: 14.0,
-        composite: 30.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 738673.8,
-        roi_pct: 36933.69,
-        default_probability_pct: 400.0,
-      },
-      benchmark_summary: "Rank #31 of 50 | 38th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 742123.05,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 12913.51,
+          benefit: 26027.02,
         },
         {
-          year: 2040,
-          npv: 749021.56,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 19114.23,
+          benefit: 115285.39,
         },
         {
-          year: 2050,
-          npv: 755920.06,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 12147.7,
+          benefit: 306192.55,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Genetics",
+      stress_level: 30.56,
+      analysis_timestamp: "2026-02-18T00:45:13.119359+00:00",
     },
   },
   {
@@ -7912,62 +6472,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 4.470132,
       satellite_id: "S2B_51MUU_20260118_1_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 49,
-        by_roi: 49,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 2.0,
-        roi: 2.0,
-        risk: 30.0,
-        composite: 10.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 729001.7,
-        roi_pct: 36450.08,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #49 of 50 | 2th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 730134.2,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 2326.47,
+          benefit: 4852.93,
         },
         {
-          year: 2040,
-          npv: 732399.27,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 1968.41,
+          benefit: 12410.45,
         },
         {
-          year: 2050,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 1083.76,
+          benefit: 29593.89,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 6.45,
+      analysis_timestamp: "2026-02-18T00:45:13.119364+00:00",
     },
   },
   {
@@ -8085,62 +6613,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000232,
       satellite_id: "S2A_46RCN_20251218_1_L2A",
     },
-    market_intelligence: {
-      credit_rating: "B",
-      credit_grade: "Highly Speculative",
-      investment_grade: false,
-      sector_rank: {
-        by_npv: 27,
-        by_roi: 27,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 46.0,
-        roi: 46.0,
-        risk: 4.0,
-        composite: 33.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 759864.88,
-        roi_pct: 37993.24,
-        default_probability_pct: 3600.0,
-      },
-      benchmark_summary: "Rank #27 of 50 | 46th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 762466.49,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 63181.54,
+          benefit: 126563.09,
         },
         {
-          year: 2040,
-          npv: 785237.27,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 131736.56,
+          benefit: 791019.34,
         },
         {
-          year: 2050,
-          npv: 713432.84,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 242901.14,
+          benefit: 6075028.53,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Infrastructure",
+      stress_level: 100.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119369+00:00",
     },
   },
   {
@@ -8258,62 +6754,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.273227,
       satellite_id: "S2C_44PKT_20250820_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 45,
-        by_roi: 45,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 30.0,
-        composite: 14.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #45 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119374+00:00",
     },
   },
   {
@@ -8431,62 +6895,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000313,
       satellite_id: "S2B_44RMQ_20260211_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "BBB",
-      credit_grade: "Investment Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 28,
-        by_roi: 28,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 44.0,
-        roi: 44.0,
-        risk: 8.0,
-        composite: 33.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 748159.48,
-        roi_pct: 37407.97,
-        default_probability_pct: 1200.0,
-      },
-      benchmark_summary: "Rank #28 of 50 | 44th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 751229.3,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: 25481.17,
+          benefit: 51162.33,
         },
         {
-          year: 2040,
-          npv: 757368.95,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: 42466.87,
+          benefit: 255401.24,
         },
         {
-          year: 2050,
-          npv: 842660.46,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: 61479.9,
+          benefit: 1539497.41,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Infrastructure",
+      stress_level: 51.22,
+      analysis_timestamp: "2026-02-18T00:45:13.119379+00:00",
     },
   },
   {
@@ -8604,62 +7036,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000126,
       satellite_id: "S2C_45QWF_20260128_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 46,
-        by_roi: 46,
-        total_in_sector: 50,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 8.0,
-        risk: 30.0,
-        composite: 14.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 855107.7256,
-          std_dev: 171149.81945958978,
-        },
-        roi_pct: {
-          mean: 42755.38628,
-          std_dev: 8557.490972979487,
-        },
-        default_probability: {
-          mean: 4.52,
-          std_dev: 13.736945565495546,
-        },
-        count: 50,
-      },
-      metrics_used: {
-        npv_usd: 732736.61,
-        roi_pct: 36636.83,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #46 of 50 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Regenerative",
+          cost: 200,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2040,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Genetics",
+          cost: 600,
+          roi: -100.0,
+          benefit: 0.0,
         },
         {
-          year: 2050,
-          npv: 732736.61,
-          default_prob: 0.0,
+          tier: "Infrastructure",
+          cost: 2500,
+          roi: -100.0,
+          benefit: 0.0,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Regenerative",
+      stress_level: 0.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119384+00:00",
     },
   },
   {
@@ -8761,62 +7161,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.015763,
       satellite_id: "S2C_31UES_20250812_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 17,
-        by_roi: 12,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 32.0,
-        roi: 52.0,
-        risk: 0.0,
-        composite: 28.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4461.49,
-        roi_pct: 95.09,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #17 of 25 | 32th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.99,
+          benefit: 125.72,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.99,
+          benefit: 430.66,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.99,
+          benefit: 1229.95,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Nature-Based",
+      stress_level: 25.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119409+00:00",
     },
   },
   {
@@ -8918,62 +7286,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.222279,
       satellite_id: "S2A_52SDD_20250729_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 10,
-        by_roi: 4,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 60.0,
-        roi: 84.0,
-        risk: 0.0,
-        composite: 49.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4644.75,
-        roi_pct: 142.67,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #10 of 25 | 60th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.99,
+          benefit: 102.43,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.99,
+          benefit: 340.19,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -100.0,
+          benefit: 945.3,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Nature-Based",
+      stress_level: 20.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119417+00:00",
     },
   },
   {
@@ -9075,62 +7411,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.713511,
       satellite_id: "S2B_44NLN_20260129_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 6,
-        by_roi: 25,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 76.0,
-        roi: 0.0,
-        risk: 0.0,
-        composite: 30.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4773.84,
-        roi_pct: 51.22,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #6 of 25 | 76th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.99,
+          benefit: 105.28,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.99,
+          benefit: 349.64,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -100.0,
+          benefit: 971.58,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Nature-Based",
+      stress_level: 20.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119426+00:00",
     },
   },
   {
@@ -9232,62 +7536,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.010456,
       satellite_id: "S2C_51SUD_20251027_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 21,
-        by_roi: 2,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 16.0,
-        roi: 92.0,
-        risk: 0.0,
-        composite: 34.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4341.61,
-        roi_pct: 165.48,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #21 of 25 | 16th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.99,
+          benefit: 95.74,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.99,
+          benefit: 317.98,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -100.0,
+          benefit: 883.61,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Nature-Based",
+      stress_level: 20.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119432+00:00",
     },
   },
   {
@@ -9389,62 +7661,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00707,
       satellite_id: "S2C_40RCP_20250611_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 9,
-        by_roi: 8,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 64.0,
-        roi: 68.0,
-        risk: 0.0,
-        composite: 46.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4648.16,
-        roi_pct: 111.59,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #9 of 25 | 64th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.94,
+          benefit: 563.39,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.92,
+          benefit: 3975.69,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.84,
+          benefit: 31808.62,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 85.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119439+00:00",
     },
   },
   {
@@ -9546,62 +7786,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.004569,
       satellite_id: "S2C_30UYC_20250407_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 3,
-        by_roi: 18,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 88.0,
-        roi: 28.0,
-        risk: 0.0,
-        composite: 43.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4811.85,
-        roi_pct: 77.04,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #3 of 25 | 88th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.93,
+          benefit: 721.78,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.89,
+          benefit: 5413.33,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.77,
+          benefit: 46193.76,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 100.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119445+00:00",
     },
   },
   {
@@ -9703,62 +7911,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.003295,
       satellite_id: "S2C_49QGF_20250324_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 5,
-        by_roi: 10,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 80.0,
-        roi: 60.0,
-        risk: 0.0,
-        composite: 50.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4790.17,
-        roi_pct: 96.7,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #5 of 25 | 80th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.99,
+          benefit: 105.64,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.99,
+          benefit: 350.84,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -100.0,
+          benefit: 974.9,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Nature-Based",
+      stress_level: 20.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119451+00:00",
     },
   },
   {
@@ -9860,62 +8036,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00064,
       satellite_id: "S2A_32UNE_20250321_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 23,
-        by_roi: 11,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 56.0,
-        risk: 0.0,
-        composite: 20.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4328.9,
-        roi_pct: 95.48,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #23 of 25 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.99,
+          benefit: 95.46,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.99,
+          benefit: 317.05,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -100.0,
+          benefit: 881.02,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Nature-Based",
+      stress_level: 20.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119456+00:00",
     },
   },
   {
@@ -10017,62 +8161,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00596,
       satellite_id: "S2C_50QKK_20250324_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 12,
-        by_roi: 19,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 52.0,
-        roi: 24.0,
-        risk: 0.0,
-        composite: 28.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4583.88,
-        roi_pct: 76.5,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #12 of 25 | 52th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.94,
+          benefit: 555.6,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.92,
+          benefit: 3920.71,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.84,
+          benefit: 31368.74,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 85.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119463+00:00",
     },
   },
   {
@@ -10174,62 +8286,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.018039,
       satellite_id: "S2B_40RCN_20250616_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 25,
-        by_roi: 3,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 0.0,
-        roi: 88.0,
-        risk: 0.0,
-        composite: 26.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4283.88,
-        roi_pct: 153.82,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #25 of 25 | 0th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.94,
+          benefit: 642.58,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.9,
+          benefit: 4819.36,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.79,
+          benefit: 41125.25,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 100.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119469+00:00",
     },
   },
   {
@@ -10331,62 +8411,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.090872,
       satellite_id: "S2C_50QRL_20250325_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 24,
-        by_roi: 5,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 4.0,
-        roi: 80.0,
-        risk: 0.0,
-        composite: 25.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4284.4,
-        roi_pct: 132.51,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #24 of 25 | 4th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.94,
+          benefit: 642.66,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.9,
+          benefit: 4819.95,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.79,
+          benefit: 41130.24,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 100.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119478+00:00",
     },
   },
   {
@@ -10488,62 +8536,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.005345,
       satellite_id: "S2A_47PPQ_20251203_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 7,
-        by_roi: 17,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 72.0,
-        roi: 32.0,
-        risk: 0.0,
-        composite: 38.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4710.96,
-        roi_pct: 85.17,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #7 of 25 | 72th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.93,
+          benefit: 706.64,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.89,
+          benefit: 5299.83,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.77,
+          benefit: 45225.22,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 100.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119485+00:00",
     },
   },
   {
@@ -10645,62 +8661,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.003232,
       satellite_id: "S2C_11SLT_20251029_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 22,
-        by_roi: 7,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 12.0,
-        roi: 72.0,
-        risk: 0.0,
-        composite: 26.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4332.81,
-        roi_pct: 119.55,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #22 of 25 | 12th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.96,
+          benefit: 373.48,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.95,
+          benefit: 2403.55,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.91,
+          benefit: 17408.14,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 65.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119491+00:00",
     },
   },
   {
@@ -10802,62 +8786,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.013454,
       satellite_id: "S2C_51RUP_20251220_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 1,
-        by_roi: 6,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 96.0,
-        roi: 76.0,
-        risk: 0.0,
-        composite: 61.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4924.86,
-        roi_pct: 125.21,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #1 of 25 | 96th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.98,
+          benefit: 202.83,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.98,
+          benefit: 1107.66,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.98,
+          benefit: 3359.98,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Nature-Based",
+      stress_level: 35.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119496+00:00",
     },
   },
   {
@@ -10959,62 +8911,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.003358,
       satellite_id: "S2C_35SKC_20250822_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 20,
-        by_roi: 21,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 20.0,
-        roi: 16.0,
-        risk: 0.0,
-        composite: 12.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4342.2,
-        roi_pct: 74.09,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #20 of 25 | 20th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.96,
+          benefit: 374.29,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.95,
+          benefit: 2408.76,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.91,
+          benefit: 17445.86,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 65.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119502+00:00",
     },
   },
   {
@@ -11116,62 +9036,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 5.104131,
       satellite_id: "S2A_47NQD_20251031_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 8,
-        by_roi: 16,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 68.0,
-        roi: 36.0,
-        risk: 0.0,
-        composite: 38.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4685.82,
-        roi_pct: 89.08,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #8 of 25 | 68th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.93,
+          benefit: 702.87,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.89,
+          benefit: 5271.55,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.78,
+          benefit: 44983.87,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 100.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119508+00:00",
     },
   },
   {
@@ -11273,62 +9161,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.002502,
       satellite_id: "S2B_50SQF_20251101_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 14,
-        by_roi: 24,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 44.0,
-        roi: 4.0,
-        risk: 0.0,
-        composite: 18.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4544.72,
-        roi_pct: 61.04,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #14 of 25 | 44th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.97,
+          benefit: 250.82,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.97,
+          benefit: 1451.86,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.98,
+          benefit: 4684.48,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Nature-Based",
+      stress_level: 45.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119514+00:00",
     },
   },
   {
@@ -11430,62 +9286,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.026709,
       satellite_id: "S2C_31UFT_20250404_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 2,
-        by_roi: 14,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 92.0,
-        roi: 44.0,
-        risk: 0.0,
-        composite: 50.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4822.19,
-        roi_pct: 94.07,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #2 of 25 | 92th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.96,
+          benefit: 415.66,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.95,
+          benefit: 2675.03,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.9,
+          benefit: 19374.34,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 65.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119519+00:00",
     },
   },
   {
@@ -11587,62 +9411,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.01006,
       satellite_id: "S2B_23KLP_20250813_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 13,
-        by_roi: 22,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 48.0,
-        roi: 12.0,
-        risk: 0.0,
-        composite: 22.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4551.2,
-        roi_pct: 70.87,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #13 of 25 | 48th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.96,
+          benefit: 392.3,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.95,
+          benefit: 2524.7,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.91,
+          benefit: 18285.57,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 65.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119527+00:00",
     },
   },
   {
@@ -11744,62 +9536,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.02484,
       satellite_id: "S2A_51RUQ_20250916_1_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 15,
-        by_roi: 9,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 40.0,
-        roi: 64.0,
-        risk: 0.0,
-        composite: 35.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4535.94,
-        roi_pct: 97.08,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #15 of 25 | 40th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.99,
+          benefit: 100.03,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.99,
+          benefit: 332.22,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -100.0,
+          benefit: 923.16,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Nature-Based",
+      stress_level: 20.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119532+00:00",
     },
   },
   {
@@ -11901,62 +9661,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 10.657708,
       satellite_id: "S2C_48NUG_20251205_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 18,
-        by_roi: 13,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 28.0,
-        roi: 48.0,
-        risk: 0.0,
-        composite: 25.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4380.98,
-        roi_pct: 94.64,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #18 of 25 | 28th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.96,
+          benefit: 377.63,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.95,
+          benefit: 2430.28,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.91,
+          benefit: 17601.67,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 65.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119538+00:00",
     },
   },
   {
@@ -12058,62 +9786,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 10.657708,
       satellite_id: "S2C_48NUG_20251205_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 16,
-        by_roi: 23,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 36.0,
-        roi: 8.0,
-        risk: 0.0,
-        composite: 16.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4499.0,
-        roi_pct: 66.32,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #16 of 25 | 36th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.97,
+          benefit: 315.8,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.96,
+          benefit: 1930.94,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.93,
+          benefit: 13224.97,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 55.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119549+00:00",
     },
   },
   {
@@ -12215,62 +9911,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.016291,
       satellite_id: "S2B_50SNJ_20251114_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 19,
-        by_roi: 1,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 24.0,
-        roi: 96.0,
-        risk: 0.0,
-        composite: 38.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4367.69,
-        roi_pct: 179.94,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #19 of 25 | 24th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.93,
+          benefit: 655.15,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.9,
+          benefit: 4913.65,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.79,
+          benefit: 41929.82,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 100.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119555+00:00",
     },
   },
   {
@@ -12372,62 +10036,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.00363,
       satellite_id: "S2B_30SYJ_20250628_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 11,
-        by_roi: 15,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 56.0,
-        roi: 40.0,
-        risk: 0.0,
-        composite: 34.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4610.86,
-        roi_pct: 92.66,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #11 of 25 | 56th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.93,
+          benefit: 691.63,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.9,
+          benefit: 5187.22,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -99.78,
+          benefit: 44264.26,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Hard Wall",
+      stress_level: 100.0,
+      analysis_timestamp: "2026-02-18T00:45:13.119561+00:00",
     },
   },
   {
@@ -12529,62 +10161,30 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.002154,
       satellite_id: "S2B_50RNN_20250323_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 4,
-        by_roi: 20,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 84.0,
-        roi: 20.0,
-        risk: 0.0,
-        composite: 39.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4562.574,
-          std_dev: 195.24768235927073,
-        },
-        roi_pct: {
-          mean: 100.96817667501705,
-          std_dev: 33.096981755796676,
-        },
-        default_probability: {
-          mean: 0.0,
-          std_dev: 0.0,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4802.19,
-        roi_pct: 76.38,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #4 of 25 | 84th Percentile",
-    },
-    temporal_analysis: {
-      history: [
+    adaptation_portfolio: {
+      options: [
         {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Nature-Based",
+          cost: 1000000,
+          roi: -99.99,
+          benefit: 105.9,
         },
         {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hybrid",
+          cost: 5000000,
+          roi: -99.99,
+          benefit: 351.72,
         },
         {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
+          tier: "Hard Wall",
+          cost: 20000000,
+          roi: -100.0,
+          benefit: 977.35,
         },
       ],
-      stranded_asset_year: null,
+      recommended_strategy: "Nature-Based",
+      stress_level: 20.04,
+      analysis_timestamp: "2026-02-18T00:45:13.119567+00:00",
     },
   },
   {
@@ -12705,63 +10305,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 13.038418,
       satellite_id: "S2A_30NUL_20250520_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 11,
-        by_roi: 17,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 56.0,
-        roi: 32.0,
-        risk: 8.0,
-        composite: 34.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4610.78,
-        roi_pct: 89.13,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #11 of 25 | 56th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -12880,63 +10423,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-08-18T08:51:40.046000Z",
       cloud_cover: 0.005036,
       satellite_id: "S2B_36RTV_20250818_0_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 13,
-        by_roi: 24,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 48.0,
-        roi: 4.0,
-        risk: 8.0,
-        composite: 22.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4548.03,
-        roi_pct: 67.48,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #13 of 25 | 48th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
   {
@@ -13057,63 +10543,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000886,
       satellite_id: "S2A_47PPR_20251203_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 1,
-        by_roi: 7,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 96.0,
-        roi: 72.0,
-        risk: 8.0,
-        composite: 62.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4989.98,
-        roi_pct: 130.67,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #1 of 25 | 96th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -13232,63 +10661,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-02-08T05:15:07.217000Z",
       cloud_cover: 0.711444,
       satellite_id: "S2B_44PMV_20260208_0_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 20,
-        by_roi: 12,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 20.0,
-        roi: 52.0,
-        risk: 8.0,
-        composite: 26.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4386.53,
-        roi_pct: 105.39,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #20 of 25 | 20th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
   {
@@ -13409,63 +10781,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000487,
       satellite_id: "S2A_46QCK_20251128_1_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 21,
-        by_roi: 14,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 16.0,
-        roi: 44.0,
-        risk: 8.0,
-        composite: 22.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4371.94,
-        roi_pct: 98.15,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #21 of 25 | 16th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -13584,63 +10899,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-08T04:42:14.393000Z",
       cloud_cover: 0.000707,
       satellite_id: "S2A_45QZG_20251108_0_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 19,
-        by_roi: 13,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 24.0,
-        roi: 48.0,
-        risk: 8.0,
-        composite: 26.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4421.4,
-        roi_pct: 100.63,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #19 of 25 | 24th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
   {
@@ -13761,63 +11019,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.003295,
       satellite_id: "S2C_49QGF_20250324_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 12,
-        by_roi: 3,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 52.0,
-        roi: 88.0,
-        risk: 8.0,
-        composite: 49.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4589.16,
-        roi_pct: 170.43,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #12 of 25 | 52th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -13936,63 +11137,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-01-09T03:32:14.639000Z",
       cloud_cover: 0.42046,
       satellite_id: "S2B_48QXJ_20260109_0_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 17,
-        by_roi: 8,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 32.0,
-        roi: 68.0,
-        risk: 8.0,
-        composite: 35.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4475.19,
-        roi_pct: 118.74,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #17 of 25 | 32th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
   {
@@ -14113,63 +11257,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.017494,
       satellite_id: "S2B_48PXT_20251130_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 4,
-        by_roi: 11,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 84.0,
-        roi: 56.0,
-        risk: 8.0,
-        composite: 52.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4860.71,
-        roi_pct: 112.97,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #4 of 25 | 84th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -14288,63 +11375,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-11-03T17:15:38.692000Z",
       cloud_cover: 0.00132,
       satellite_id: "S2A_15RTP_20251103_1_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AA",
-      credit_grade: "High Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 8,
-        by_roi: 5,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 68.0,
-        roi: 80.0,
-        risk: 0.0,
-        composite: 51.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4718.49,
-        roi_pct: 160.4,
-        default_probability_pct: 200.0,
-      },
-      benchmark_summary: "Rank #8 of 25 | 68th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
   {
@@ -14465,63 +11495,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.42467,
       satellite_id: "S2B_48MYU_20250826_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 6,
-        by_roi: 1,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 76.0,
-        roi: 96.0,
-        risk: 8.0,
-        composite: 61.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4753.54,
-        roi_pct: 179.53,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #6 of 25 | 76th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -14640,63 +11613,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-12-08T06:22:36.983000Z",
       cloud_cover: 0.001214,
       satellite_id: "S2A_41RRH_20251208_1_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AA",
-      credit_grade: "High Grade",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 25,
-        by_roi: 10,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 0.0,
-        roi: 60.0,
-        risk: 0.0,
-        composite: 18.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4125.39,
-        roi_pct: 114.49,
-        default_probability_pct: 200.0,
-      },
-      benchmark_summary: "Rank #25 of 25 | 0th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
   {
@@ -14817,63 +11733,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 3.7e-5,
       satellite_id: "S2B_45QXE_20260123_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 24,
-        by_roi: 2,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 4.0,
-        roi: 92.0,
-        risk: 8.0,
-        composite: 31.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4313.7,
-        roi_pct: 177.01,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #24 of 25 | 4th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -14992,63 +11851,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-01-24T10:19:05.146000Z",
       cloud_cover: 1.352086,
       satellite_id: "S2C_31NEH_20260124_0_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 18,
-        by_roi: 23,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 28.0,
-        roi: 8.0,
-        risk: 8.0,
-        composite: 16.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4424.25,
-        roi_pct: 72.56,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #18 of 25 | 28th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
   {
@@ -15169,63 +11971,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 5.243486,
       satellite_id: "S2B_51PTS_20250804_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 5,
-        by_roi: 19,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 80.0,
-        roi: 24.0,
-        risk: 8.0,
-        composite: 41.6,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4768.3,
-        roi_pct: 87.32,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #5 of 25 | 80th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -15344,63 +12089,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-03-20T16:06:16.321000Z",
       cloud_cover: 0.061894,
       satellite_id: "S2B_17RNJ_20250320_0_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 7,
-        by_roi: 6,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 72.0,
-        roi: 76.0,
-        risk: 8.0,
-        composite: 54.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4733.23,
-        roi_pct: 143.48,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #7 of 25 | 72th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
   {
@@ -15521,63 +12209,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.000435,
       satellite_id: "S2B_42QZG_20251013_1_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 15,
-        by_roi: 18,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 40.0,
-        roi: 28.0,
-        risk: 8.0,
-        composite: 26.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4509.65,
-        roi_pct: 87.81,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #15 of 25 | 40th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -15696,63 +12327,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2026-02-08T16:55:07.317000Z",
       cloud_cover: 0.006926,
       satellite_id: "S2B_15RYP_20260208_0_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 9,
-        by_roi: 9,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 64.0,
-        roi: 64.0,
-        risk: 8.0,
-        composite: 47.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4712.4,
-        roi_pct: 118.61,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #9 of 25 | 64th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
   {
@@ -15873,63 +12447,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.013818,
       satellite_id: "S2C_53SNU_20250323_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 23,
-        by_roi: 16,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 8.0,
-        roi: 36.0,
-        risk: 8.0,
-        composite: 16.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4338.2,
-        roi_pct: 91.5,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #23 of 25 | 8th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -16048,63 +12565,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-09-16T02:49:18.129000Z",
       cloud_cover: 0.02484,
       satellite_id: "S2A_51RUQ_20250916_1_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 14,
-        by_roi: 15,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 44.0,
-        roi: 40.0,
-        risk: 8.0,
-        composite: 32.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4535.94,
-        roi_pct: 97.08,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #14 of 25 | 44th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
   {
@@ -16225,63 +12685,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.003318,
       satellite_id: "S2B_49QHF_20250319_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 16,
-        by_roi: 20,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 36.0,
-        roi: 20.0,
-        risk: 8.0,
-        composite: 22.8,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4490.7,
-        roi_pct: 85.38,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #16 of 25 | 36th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -16400,63 +12803,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-07-21T02:59:48.516000Z",
       cloud_cover: 0.092671,
       satellite_id: "S2B_49MFN_20250721_0_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 3,
-        by_roi: 21,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 88.0,
-        roi: 16.0,
-        risk: 8.0,
-        composite: 42.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4902.28,
-        roi_pct: 82.53,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #3 of 25 | 88th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
   {
@@ -16577,63 +12923,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.016291,
       satellite_id: "S2B_50SNJ_20251114_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 2,
-        by_roi: 25,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 92.0,
-        roi: 0.0,
-        risk: 8.0,
-        composite: 39.2,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4925.46,
-        roi_pct: 60.7,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #2 of 25 | 92th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -16753,63 +13042,6 @@ export const GLOBAL_ATLAS_DATA = [
       cloud_cover: 0.036944,
       satellite_id: "S2B_54SUE_20250322_0_L2A",
     },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 22,
-        by_roi: 4,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 12.0,
-        roi: 84.0,
-        risk: 8.0,
-        composite: 32.4,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4355.5,
-        roi_pct: 164.91,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #22 of 25 | 12th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
-    },
   },
   {
     project_type: "flood",
@@ -16928,63 +13160,6 @@ export const GLOBAL_ATLAS_DATA = [
       capture_date: "2025-09-19T10:18:23.366000Z",
       cloud_cover: 0.003733,
       satellite_id: "S2C_32TQR_20250919_0_L2A",
-    },
-    market_intelligence: {
-      credit_rating: "AAA",
-      credit_grade: "Prime",
-      investment_grade: true,
-      sector_rank: {
-        by_npv: 10,
-        by_roi: 22,
-        total_in_sector: 25,
-      },
-      percentiles: {
-        npv: 60.0,
-        roi: 12.0,
-        risk: 8.0,
-        composite: 30.0,
-      },
-      sector_statistics: {
-        npv_usd: {
-          mean: 4581.954,
-          std_dev: 219.0822764396974,
-        },
-        roi_pct: {
-          mean: 111.61350311550075,
-          std_dev: 35.784829268146865,
-        },
-        default_probability: {
-          mean: 0.16,
-          std_dev: 0.5537749241945383,
-        },
-        count: 25,
-      },
-      metrics_used: {
-        npv_usd: 4688.1,
-        roi_pct: 73.44,
-        default_probability_pct: 0.0,
-      },
-      benchmark_summary: "Rank #10 of 25 | 60th Percentile",
-    },
-    temporal_analysis: {
-      history: [
-        {
-          year: 2030,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2040,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-        {
-          year: 2050,
-          npv: 0.0,
-          default_prob: 0.0,
-        },
-      ],
-      stranded_asset_year: null,
     },
   },
 ];
