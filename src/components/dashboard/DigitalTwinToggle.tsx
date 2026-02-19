@@ -25,7 +25,7 @@ export function DigitalTwinToggle({ isSplitMode, onToggle }: DigitalTwinTogglePr
             borderRight: "1px solid var(--cb-border)",
           }}
         >
-          Baseline View
+          Single View
         </span>
         <span
           className="px-5 py-2.5 transition-colors duration-150"
