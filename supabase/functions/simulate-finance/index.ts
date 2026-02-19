@@ -28,7 +28,7 @@ Deno.serve(async (req: Request) => {
 
     const lat = Number(body.lat);
     const lon = Number(body.lon);
-    const crop = String(body.crop ?? "");
+    const crop = String(body.crop ?? body.crop_type ?? "");
 
     if (isNaN(lat) || lat < -90 || lat > 90) {
       return new Response(
@@ -54,7 +54,7 @@ Deno.serve(async (req: Request) => {
     const response = await fetch(`${API_BASE_URL}/simulate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lat, lon, crop }),
+      body: JSON.stringify({ lat, lon, crop_type: crop }),
     });
 
     if (!response.ok) {

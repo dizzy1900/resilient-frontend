@@ -272,6 +272,7 @@ const Index = () => {
       
       setAtlasFinancialData(financialAnalysis);
       setAtlasLocationName(`${markerPosition.lat.toFixed(2)}, ${markerPosition.lng.toFixed(2)}`);
+      setIsPanelOpen(true);
     } catch (error) {
       console.error('Finance simulation failed:', error);
       if (error instanceof Error) {
@@ -291,6 +292,7 @@ const Index = () => {
         setAtlasMarketIntelligence(item.market_intelligence ?? null);
         setAtlasTemporalAnalysis(item.temporal_analysis ?? null);
         setAtlasAdaptationPortfolio(item.adaptation_portfolio ?? null);
+        setIsPanelOpen(true);
         toast({
           title: 'Live API failed, falling back to cached Atlas data',
           description: `Showing pre-calculated financial data from ${item.target?.name ?? 'nearest location'}.`,
@@ -426,6 +428,7 @@ const Index = () => {
         monthlyData: mockMonthlyData,
       });
       setShowResults(true);
+      setIsPanelOpen(true);
     } catch (error) {
       console.error('Agriculture simulation failed:', error);
       if (error instanceof Error) {
@@ -455,6 +458,7 @@ const Index = () => {
           });
         }
         setShowResults(true);
+        setIsPanelOpen(true);
         toast({
           title: 'Live API failed, falling back to cached Atlas data',
           description: `Showing pre-calculated results from ${(fallback as any).target?.name ?? 'nearest location'}.`,
@@ -542,6 +546,7 @@ const Index = () => {
           urbanImpactPct,
         });
         setShowCoastalResults(true);
+        setIsPanelOpen(true);
       } catch (error) {
         console.error('Coastal simulation failed:', error);
         if (error instanceof Error) {
@@ -568,6 +573,7 @@ const Index = () => {
           urbanImpactPct,
         });
         setShowCoastalResults(true);
+        setIsPanelOpen(true);
         toast({
           title: 'Live API failed, falling back to cached Atlas data',
           description: 'Showing estimated coastal values from local calculations.',
@@ -660,6 +666,7 @@ const Index = () => {
         baseline100yr,
       });
       setShowFloodResults(true);
+      setIsPanelOpen(true);
     } catch (error) {
       console.error('Flood simulation failed:', error);
       if (error instanceof Error) {
@@ -695,6 +702,7 @@ const Index = () => {
         baseline100yr: fallbackBaseline100yr,
       });
       setShowFloodResults(true);
+      setIsPanelOpen(true);
       toast({
         title: 'Live API failed, falling back to cached Atlas data',
         description: 'Showing estimated flood values from local calculations.',
