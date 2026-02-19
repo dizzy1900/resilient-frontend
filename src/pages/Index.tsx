@@ -17,6 +17,8 @@ import { supabase } from '@/integrations/supabase/clientSafe';
 import { findClosestAtlasItem } from '@/utils/atlasFallback';
 import { LeftPanel } from '@/components/layout/LeftPanel';
 import { RightPanel } from '@/components/layout/RightPanel';
+import { DigitalTwinOverlay } from '@/components/dashboard/DigitalTwinOverlay';
+import { DigitalTwinToggle } from '@/components/dashboard/DigitalTwinToggle';
 
 const mockMonthlyData = [
   { month: 'Jan', value: 45 },
@@ -999,41 +1001,53 @@ const Index = () => {
 
   return (
     <div className="relative h-screen w-full overflow-hidden" style={{ backgroundColor: 'var(--cb-bg)' }}>
-      {/* Map canvas — full bleed background */}
-      <div className={`absolute inset-0 ${isSplitMode ? 'grid lg:grid-cols-2 grid-rows-2 lg:grid-rows-1' : ''}`}>
-        <MapView
-          onLocationSelect={handleLocationSelect}
-          markerPosition={markerPosition}
-          mapStyle={mapStyle}
-          showFloodOverlay={showFloodOverlay}
-          viewState={isSplitMode ? viewState : undefined}
-          onViewStateChange={isSplitMode ? handleViewStateChange : undefined}
-          scenarioLabel={isSplitMode ? 'Current Forecast' : undefined}
-          zoneData={zoneData}
-          portfolioAssets={portfolioMapAssets}
-          onAtlasClick={handleAtlasClick}
-        atlasOverlay={atlasOverlay}
-        />
-
-        {isSplitMode && (
-          <>
-            <MapView
-              onLocationSelect={handleLocationSelect}
-              markerPosition={markerPosition}
-              mapStyle={mapStyle}
-              showFloodOverlay={showFloodOverlay}
-              viewState={viewState}
-              onViewStateChange={handleViewStateChange}
-              scenarioLabel="With Adaptation"
-              isAdaptationScenario={true}
-              zoneData={zoneData}
-            />
-            <div className="absolute lg:left-1/2 lg:top-0 lg:bottom-0 top-1/2 left-0 right-0 -translate-y-1/2 lg:translate-y-0 z-20 pointer-events-none">
-              <div className="lg:w-px lg:h-full h-px w-full bg-white/20" />
-            </div>
-          </>
+      <div className="absolute inset-0">
+        {isSplitMode ? (
+          <DigitalTwinOverlay
+            leftMap={
+              <MapView
+                onLocationSelect={handleLocationSelect}
+                markerPosition={markerPosition}
+                mapStyle={mapStyle}
+                showFloodOverlay={showFloodOverlay}
+                viewState={viewState}
+                onViewStateChange={handleViewStateChange}
+                scenarioLabel="Baseline"
+                zoneData={zoneData}
+                portfolioAssets={portfolioMapAssets}
+                onAtlasClick={handleAtlasClick}
+                atlasOverlay={atlasOverlay}
+              />
+            }
+            rightMap={
+              <MapView
+                onLocationSelect={handleLocationSelect}
+                markerPosition={markerPosition}
+                mapStyle={mapStyle}
+                showFloodOverlay={showFloodOverlay}
+                viewState={viewState}
+                onViewStateChange={handleViewStateChange}
+                scenarioLabel="With Adaptation"
+                isAdaptationScenario={true}
+                zoneData={zoneData}
+              />
+            }
+          />
+        ) : (
+          <MapView
+            onLocationSelect={handleLocationSelect}
+            markerPosition={markerPosition}
+            mapStyle={mapStyle}
+            showFloodOverlay={showFloodOverlay}
+            zoneData={zoneData}
+            portfolioAssets={portfolioMapAssets}
+            onAtlasClick={handleAtlasClick}
+            atlasOverlay={atlasOverlay}
+          />
         )}
       </div>
+
+      <DigitalTwinToggle isSplitMode={isSplitMode} onToggle={() => setIsSplitMode(!isSplitMode)} />
 
       {/* Desktop Left Panel */}
       <LeftPanel

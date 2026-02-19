@@ -357,8 +357,19 @@ const LazyMap = ({
       <ScaleControl position="bottom-right" />
 
       {scenarioLabel && (
-        <div className="absolute top-3 sm:top-4 left-1/2 -translate-x-1/2 z-30 max-w-[calc(100%-120px)] sm:max-w-none">
-          <div className="bg-black/60 backdrop-blur-md text-white text-[11px] sm:text-xs lg:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-white/20 shadow-lg whitespace-nowrap overflow-hidden text-ellipsis">
+        <div className="absolute bottom-12 left-4 z-30">
+          <div
+            style={{
+              backgroundColor: isAdaptationScenario ? 'rgba(16, 185, 129, 0.12)' : 'var(--cb-bg)',
+              color: isAdaptationScenario ? '#10b981' : 'var(--cb-secondary)',
+              fontFamily: "'Inter', monospace",
+              fontSize: 10,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              padding: '5px 12px',
+              border: `1px solid ${isAdaptationScenario ? '#10b981' : 'var(--cb-border)'}`,
+            }}
+          >
             {scenarioLabel}
           </div>
         </div>
