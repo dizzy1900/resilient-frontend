@@ -63,6 +63,7 @@ const MODE_ITEMS: {
 const CROPS = [
   { value: "maize", label: "Maize (Corn)" },
   { value: "cocoa", label: "Cocoa" },
+  { value: "coffee", label: "Coffee (Arabica)" },
 ];
 
 const CLIMATE_ANCHORS = [
@@ -667,21 +668,32 @@ export function ModeContent(props: ModeContentProps) {
         <SectionRow label="Crop Commodity">
           <Select value={cropType} onValueChange={onCropChange}>
             <SelectTrigger
-              className="w-full h-8 border-0 bg-transparent px-0 text-xs focus:ring-0 focus:ring-offset-0"
-              style={{ color: "var(--cb-text)", fontSize: 12 }}
+              className="w-full h-8 bg-transparent rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0"
+              style={{
+                border: "1px solid var(--cb-border)",
+                color: "var(--cb-text)",
+                fontFamily: "monospace",
+                fontSize: 12,
+                paddingLeft: 8,
+              }}
             >
               <SelectValue />
             </SelectTrigger>
             <SelectContent
-              className="border"
+              className="rounded-none shadow-none"
               style={{
                 backgroundColor: "var(--cb-bg)",
-                borderColor: "var(--cb-border)",
+                border: "1px solid var(--cb-border)",
                 color: "var(--cb-text)",
               }}
             >
               {CROPS.map((c) => (
-                <SelectItem key={c.value} value={c.value} style={{ fontSize: 12, color: "var(--cb-text)" }}>
+                <SelectItem
+                  key={c.value}
+                  value={c.value}
+                  className="rounded-none"
+                  style={{ fontFamily: "monospace", fontSize: 12, color: "var(--cb-text)" }}
+                >
                   {c.label}
                 </SelectItem>
               ))}
