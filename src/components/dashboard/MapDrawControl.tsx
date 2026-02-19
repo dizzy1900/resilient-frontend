@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 
 export interface DrawnPolygon {
   type: 'Polygon';
@@ -10,6 +10,7 @@ interface MapDrawControlProps {
   enabled: boolean;
   onPolygonCreated: (polygon: DrawnPolygon) => void;
   onPolygonDeleted: () => void;
+  onDrawModeChange?: (isDrawing: boolean) => void;
 }
 
 const DRAW_STYLES = [
@@ -97,41 +98,25 @@ const DRAW_STYLES = [
   },
 ];
 
-export function MapDrawControl({ map, enabled, onPolygonCreated, onPolygonDeleted }: MapDrawControlProps) {
+export function MapDrawControl({ map, enabled, onPolygonCreated, onPolygonDeleted, onDrawModeChange }: MapDrawControlProps) {
   const drawRef = useRef<any>(null);
-  const mountedRef = useRef(false);
+  const callbacksRef = useRef({ onPolygonCreated, onPolygonDeleted, onDrawModeChange });
 
-  const handleCreate = useCallback((e: any) => {
-    const features = e.features;
-    if (features && features.length > 0) {
-      const feature = features[0];
-      if (feature.geometry?.type === 'Polygon') {
-        onPolygonCreated(feature.geometry as DrawnPolygon);
-      }
-    }
-  }, [onPolygonCreated]);
-
-  const handleUpdate = useCallback((e: any) => {
-    const features = e.features;
-    if (features && features.length > 0) {
-      const feature = features[0];
-      if (feature.geometry?.type === 'Polygon') {
-        onPolygonCreated(feature.geometry as DrawnPolygon);
-      }
-    }
-  }, [onPolygonCreated]);
-
-  const handleDelete = useCallback(() => {
-    onPolygonDeleted();
-  }, [onPolygonDeleted]);
+  callbacksRef.current = { onPolygonCreated, onPolygonDeleted, onDrawModeChange };
 
   useEffect(() => {
-    if (!map || mountedRef.current) return;
+    if (!map) return;
+    if (drawRef.current) return;
+
+    let cancelled = false;
 
     const init = async () => {
       try {
         await import('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');
-        const MapboxDraw = (await import('@mapbox/mapbox-gl-draw')).default;
+        const mod = await import('@mapbox/mapbox-gl-draw');
+        const MapboxDraw = mod.default ?? mod;
+
+        if (cancelled) return;
 
         const draw = new MapboxDraw({
           displayControlsDefault: false,
@@ -145,11 +130,37 @@ export function MapDrawControl({ map, enabled, onPolygonCreated, onPolygonDelete
 
         map.addControl(draw, 'top-right');
         drawRef.current = draw;
-        mountedRef.current = true;
 
-        map.on('draw.create', handleCreate);
-        map.on('draw.update', handleUpdate);
-        map.on('draw.delete', handleDelete);
+        const onCreate = (e: any) => {
+          const feature = e.features?.[0];
+          if (feature?.geometry?.type === 'Polygon') {
+            callbacksRef.current.onPolygonCreated(feature.geometry as DrawnPolygon);
+          }
+        };
+
+        const onUpdate = (e: any) => {
+          const feature = e.features?.[0];
+          if (feature?.geometry?.type === 'Polygon') {
+            callbacksRef.current.onPolygonCreated(feature.geometry as DrawnPolygon);
+          }
+        };
+
+        const onDelete = () => {
+          callbacksRef.current.onPolygonDeleted();
+        };
+
+        const onModeChange = (e: any) => {
+          const mode = e.mode;
+          const isDrawing = mode === 'draw_polygon' || mode === 'draw_line_string' || mode === 'draw_point';
+          callbacksRef.current.onDrawModeChange?.(isDrawing);
+        };
+
+        map.on('draw.create', onCreate);
+        map.on('draw.update', onUpdate);
+        map.on('draw.delete', onDelete);
+        map.on('draw.modechange', onModeChange);
+
+        (draw as any).__listeners = { onCreate, onUpdate, onDelete, onModeChange };
       } catch (err) {
         console.error('Failed to load MapboxDraw:', err);
       }
@@ -158,20 +169,25 @@ export function MapDrawControl({ map, enabled, onPolygonCreated, onPolygonDelete
     init();
 
     return () => {
-      if (drawRef.current && map) {
-        map.off('draw.create', handleCreate);
-        map.off('draw.update', handleUpdate);
-        map.off('draw.delete', handleDelete);
+      cancelled = true;
+      const draw = drawRef.current;
+      if (draw && map) {
+        const listeners = (draw as any).__listeners;
+        if (listeners) {
+          map.off('draw.create', listeners.onCreate);
+          map.off('draw.update', listeners.onUpdate);
+          map.off('draw.delete', listeners.onDelete);
+          map.off('draw.modechange', listeners.onModeChange);
+        }
         try {
-          map.removeControl(drawRef.current);
+          map.removeControl(draw);
         } catch {
-          // map may already be removed
+          // map may already be destroyed
         }
         drawRef.current = null;
-        mountedRef.current = false;
       }
     };
-  }, [map, handleCreate, handleUpdate, handleDelete]);
+  }, [map]);
 
   useEffect(() => {
     if (!drawRef.current) return;

@@ -95,6 +95,7 @@ const LazyMap = ({
   const [error, setError] = useState<string | null>(null);
   const [internalViewState, setInternalViewState] = useState<ViewState>(DEFAULT_VIEW_STATE);
   const [rawMap, setRawMap] = useState<any>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
   const mapRef = useRef<any>(null);
   const layersAdded = useRef(false);
 
@@ -312,7 +313,22 @@ const LazyMap = ({
     }
   }, [zoneData, updateZoneLayers, portfolioAssets, updatePortfolioLayers]);
 
+  const isDrawingRef = useRef(false);
+  const drawCooldownRef = useRef(false);
+
+  const handleDrawModeChange = useCallback((drawing: boolean) => {
+    setIsDrawing(drawing);
+    isDrawingRef.current = drawing;
+    if (!drawing) {
+      drawCooldownRef.current = true;
+      setTimeout(() => { drawCooldownRef.current = false; }, 300);
+    }
+  }, []);
+
   const handleClick = useCallback((event: any) => {
+    if (isDrawingRef.current || drawCooldownRef.current) return;
+    const target = event.originalEvent?.target as HTMLElement | undefined;
+    if (target?.closest?.('.mapbox-gl-draw_ctrl-draw-btn') || target?.closest?.('.mapboxgl-ctrl-group')) return;
     const { lng, lat } = event.lngLat;
     onLocationSelect(lat, lng);
   }, [onLocationSelect]);
@@ -433,6 +449,7 @@ const LazyMap = ({
           enabled={drawEnabled}
           onPolygonCreated={onPolygonCreated}
           onPolygonDeleted={onPolygonDeleted}
+          onDrawModeChange={handleDrawModeChange}
         />
       )}
     </Map>
