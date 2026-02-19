@@ -49,12 +49,23 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    console.log("simulate-finance: Validated", { lat, lon, crop });
+    const financialOverrides: Record<string, unknown> = {};
+    if (body.capex_budget != null) financialOverrides.capex_budget = Number(body.capex_budget);
+    if (body.opex_annual != null) financialOverrides.opex_annual = Number(body.opex_annual);
+    if (body.discount_rate_pct != null) financialOverrides.discount_rate_pct = Number(body.discount_rate_pct);
+    if (body.asset_lifespan_years != null) financialOverrides.asset_lifespan_years = Number(body.asset_lifespan_years);
+
+    console.log("simulate-finance: Validated", { lat, lon, crop, overrides: financialOverrides });
+
+    const apiPayload: Record<string, unknown> = { lat, lon, crop_type: crop };
+    if (Object.keys(financialOverrides).length > 0) {
+      Object.assign(apiPayload, financialOverrides);
+    }
 
     const response = await fetch(`${API_BASE_URL}/simulate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lat, lon, crop_type: crop }),
+      body: JSON.stringify(apiPayload),
     });
 
     if (!response.ok) {

@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react';
 import { X, MapPin, Landmark } from 'lucide-react';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { HealthResults } from '@/components/hud/HealthResultsPanel';
@@ -11,6 +12,7 @@ import { ZoneLegend } from '@/components/dashboard/ZoneLegend';
 import { UrbanInundationCard } from '@/components/dashboard/UrbanInundationCard';
 import { InfrastructureRiskCard } from '@/components/dashboard/InfrastructureRiskCard';
 import { PortfolioResultsPanel } from '@/components/portfolio/PortfolioResultsPanel';
+import { ScenarioSandbox } from '@/components/hud/ScenarioSandbox';
 import { PortfolioAsset } from '@/components/portfolio/PortfolioCSVUpload';
 import { Polygon } from '@/utils/polygonMath';
 import { ZoneMode } from '@/utils/zoneGeneration';
@@ -372,6 +374,9 @@ export function RightPanelContent({
           atlasTemporalAnalysis={atlasTemporalAnalysis}
           locationName={locationName}
           isLoading={isFinanceSimulating ?? false}
+          latitude={latitude}
+          longitude={longitude}
+          cropType={cropType}
         />
       )}
 
@@ -874,6 +879,9 @@ function FinanceContent({
   atlasTemporalAnalysis,
   locationName,
   isLoading,
+  latitude,
+  longitude,
+  cropType,
 }: {
   atlasFinancialData: any;
   atlasMonteCarloData: any;
@@ -886,8 +894,54 @@ function FinanceContent({
   atlasTemporalAnalysis?: any;
   locationName: string | null;
   isLoading: boolean;
+  latitude?: number | null;
+  longitude?: number | null;
+  cropType?: string;
 }) {
-  if (!atlasFinancialData && !isLoading) {
+  const [localFinancialData, setLocalFinancialData] = useState<any>(null);
+  const [localMonteCarloData, setLocalMonteCarloData] = useState<any>(null);
+  const [localExecutiveSummary, setLocalExecutiveSummary] = useState<string | null>(null);
+  const [localSensitivityData, setLocalSensitivityData] = useState<any>(null);
+  const [localAdaptationStrategy, setLocalAdaptationStrategy] = useState<any>(null);
+  const [localAdaptationPortfolio, setLocalAdaptationPortfolio] = useState<any>(null);
+  const [localSatellitePreview, setLocalSatellitePreview] = useState<any>(null);
+  const [localMarketIntelligence, setLocalMarketIntelligence] = useState<any>(null);
+  const [localTemporalAnalysis, setLocalTemporalAnalysis] = useState<any>(null);
+
+  const activeFinancialData = localFinancialData ?? atlasFinancialData;
+  const activeMonteCarloData = localMonteCarloData ?? atlasMonteCarloData;
+  const activeExecutiveSummary = localExecutiveSummary ?? atlasExecutiveSummary;
+  const activeSensitivityData = localSensitivityData ?? atlasSensitivityData;
+  const activeAdaptationStrategy = localAdaptationStrategy ?? atlasAdaptationStrategy;
+  const activeAdaptationPortfolio = localAdaptationPortfolio ?? atlasAdaptationPortfolio;
+  const activeSatellitePreview = localSatellitePreview ?? atlasSatellitePreview;
+  const activeMarketIntelligence = localMarketIntelligence ?? atlasMarketIntelligence;
+  const activeTemporalAnalysis = localTemporalAnalysis ?? atlasTemporalAnalysis;
+
+  const handleRecalculated = useCallback((data: {
+    financialData: any;
+    monteCarloData: any;
+    executiveSummary: string | null;
+    sensitivityData: any;
+    adaptationStrategy: any;
+    adaptationPortfolio: any;
+    satellitePreview: any;
+    marketIntelligence: any;
+    temporalAnalysis: any;
+  }) => {
+    setLocalFinancialData(data.financialData);
+    setLocalMonteCarloData(data.monteCarloData);
+    setLocalExecutiveSummary(data.executiveSummary);
+    setLocalSensitivityData(data.sensitivityData);
+    setLocalAdaptationStrategy(data.adaptationStrategy);
+    setLocalAdaptationPortfolio(data.adaptationPortfolio);
+    setLocalSatellitePreview(data.satellitePreview);
+    setLocalMarketIntelligence(data.marketIntelligence);
+    setLocalTemporalAnalysis(data.temporalAnalysis);
+  }, []);
+
+  const initialAssumptions = activeFinancialData?.assumptions ?? {};
+  if (!activeFinancialData && !isLoading) {
     return (
       <div className="px-4 py-6 text-center">
         <Landmark style={{ width: 20, height: 20, color: 'var(--cb-secondary)', margin: '0 auto 8px' }} />
@@ -899,23 +953,23 @@ function FinanceContent({
   }
 
   const baselineNpv: number | null =
-    atlasSensitivityData?.baseline_npv ??
-    atlasFinancialData?.npv ??
-    atlasFinancialData?.metrics?.npv_usd?.mean ??
+    activeSensitivityData?.baseline_npv ??
+    activeFinancialData?.npv ??
+    activeFinancialData?.metrics?.npv_usd?.mean ??
     null;
 
-  const var95: number | null = atlasMonteCarloData?.VaR_95 ?? atlasMonteCarloData?.metrics?.npv_usd?.p5 ?? null;
-  const primaryDriver: string | null = atlasSensitivityData?.primary_driver ?? null;
-  const sectorRank = atlasMarketIntelligence?.sector_rank;
+  const var95: number | null = activeMonteCarloData?.VaR_95 ?? activeMonteCarloData?.metrics?.npv_usd?.p5 ?? null;
+  const primaryDriver: string | null = activeSensitivityData?.primary_driver ?? null;
+  const sectorRank = activeMarketIntelligence?.sector_rank;
 
   return (
     <div>
-      {atlasSatellitePreview && (
+      {activeSatellitePreview && (
         <div className="border-b" style={{ borderColor: 'var(--cb-border)' }}>
           <LiveSiteViewCard
-            satellitePreview={atlasSatellitePreview}
-            marketIntelligence={atlasMarketIntelligence}
-            temporalAnalysis={atlasTemporalAnalysis}
+            satellitePreview={activeSatellitePreview}
+            marketIntelligence={activeMarketIntelligence}
+            temporalAnalysis={activeTemporalAnalysis}
           />
         </div>
       )}
@@ -959,9 +1013,9 @@ function FinanceContent({
         </>
       )}
 
-      {atlasExecutiveSummary && (() => {
-        const isCritical = atlasExecutiveSummary.includes('CRITICAL WARNING');
-        const confidence = extractConfidence(atlasExecutiveSummary, atlasMarketIntelligence?.confidence_score);
+      {activeExecutiveSummary && (() => {
+        const isCritical = activeExecutiveSummary.includes('CRITICAL WARNING');
+        const confidence = extractConfidence(activeExecutiveSummary, activeMarketIntelligence?.confidence_score);
         const confidenceColor = confidence?.toLowerCase() === 'high' ? '#10b981'
           : confidence?.toLowerCase() === 'medium' ? '#f59e0b'
           : '#f43f5e';
@@ -999,7 +1053,7 @@ function FinanceContent({
                   margin: 0,
                 }}
               >
-                {renderBoldSummary(atlasExecutiveSummary)}
+                {renderBoldSummary(activeExecutiveSummary)}
               </p>
             </div>
           </>
@@ -1008,20 +1062,30 @@ function FinanceContent({
 
       <div className="border-t" style={{ borderColor: 'var(--cb-border)' }}>
         <DealTicketCard
-          financialData={atlasFinancialData}
+          financialData={activeFinancialData}
           locationName={locationName}
           isLoading={isLoading}
-          monteCarloData={atlasMonteCarloData}
+          monteCarloData={activeMonteCarloData}
         />
       </div>
 
       <div className="border-t" style={{ borderColor: 'var(--cb-border)' }}>
-        <RiskStressTestCard monteCarloData={atlasMonteCarloData} sensitivityData={atlasSensitivityData} />
+        <RiskStressTestCard monteCarloData={activeMonteCarloData} sensitivityData={activeSensitivityData} />
       </div>
 
       <div className="border-t" style={{ borderColor: 'var(--cb-border)' }}>
-        <SolutionEngineCard strategy={atlasAdaptationStrategy} portfolio={atlasAdaptationPortfolio} />
+        <SolutionEngineCard strategy={activeAdaptationStrategy} portfolio={activeAdaptationPortfolio} />
       </div>
+
+      <ScenarioSandbox
+        latitude={latitude ?? null}
+        longitude={longitude ?? null}
+        cropType={cropType ?? ''}
+        initialAssumptions={initialAssumptions}
+        onRecalculated={handleRecalculated}
+      />
+
+      <div style={{ height: 24 }} />
     </div>
   );
 }
