@@ -106,15 +106,13 @@ export function MobileBottomSheet({
   return (
     <div
       ref={sheetRef}
-      className="md:hidden fixed bottom-0 left-0 w-full z-50"
+      className="md:hidden fixed bottom-0 left-0 w-full z-50 flex flex-col"
       style={{
         height: sheetHeight,
         backgroundColor: 'var(--cb-bg)',
         borderTop: '1px solid var(--cb-border)',
         borderRadius: '12px 12px 0 0',
         transition: dragging.current ? 'none' : 'height 0.3s ease',
-        display: 'flex',
-        flexDirection: 'column',
         overflow: 'hidden',
       }}
     >
