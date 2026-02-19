@@ -19,6 +19,7 @@ import { LeftPanel } from '@/components/layout/LeftPanel';
 import { RightPanel } from '@/components/layout/RightPanel';
 import { DigitalTwinOverlay } from '@/components/dashboard/DigitalTwinOverlay';
 import { DigitalTwinToggle } from '@/components/dashboard/DigitalTwinToggle';
+import { DrawnPolygon } from '@/components/dashboard/MapDrawControl';
 
 const mockMonthlyData = [
   { month: 'Jan', value: 45 },
@@ -194,6 +195,8 @@ const Index = () => {
   } | null>(null);
   const [isSpatialLoading, setIsSpatialLoading] = useState(false);
   const [portfolioAssets, setPortfolioAssets] = useState<PortfolioAsset[]>([]);
+  const [selectedPolygon, setSelectedPolygon] = useState<DrawnPolygon | null>(null);
+  const [polygonExposurePct, setPolygonExposurePct] = useState<number | null>(null);
 
   const mapStyle: MapStyle = mode === 'coastal' ? 'satellite' : mode === 'flood' ? 'flood' : 'dark';
   const showFloodOverlay = mode === 'flood' && markerPosition !== null;
@@ -249,6 +252,28 @@ const Index = () => {
     setMobileTab('data');
   }, []);
 
+  const handlePolygonCreated = useCallback((polygon: DrawnPolygon) => {
+    setSelectedPolygon(polygon);
+    setPolygonExposurePct(null);
+    const coords = polygon.coordinates[0];
+    if (coords.length > 0) {
+      let sumLng = 0, sumLat = 0;
+      for (const c of coords) {
+        sumLng += c[0];
+        sumLat += c[1];
+      }
+      const centroidLat = sumLat / coords.length;
+      const centroidLng = sumLng / coords.length;
+      setMarkerPosition({ lat: centroidLat, lng: centroidLng });
+      setIsPanelOpen(true);
+    }
+  }, []);
+
+  const handlePolygonDeleted = useCallback(() => {
+    setSelectedPolygon(null);
+    setPolygonExposurePct(null);
+  }, []);
+
   // Finance simulation handler
   const handleFinanceSimulate = useCallback(async () => {
     if (!markerPosition) return;
@@ -256,6 +281,17 @@ const Index = () => {
     setAtlasFinancialData(null); // Clear to show loading
 
     try {
+      let polygonPromise: Promise<any> | null = null;
+      if (selectedPolygon) {
+        polygonPromise = supabase.functions.invoke('simulate-polygon', {
+          body: {
+            geometry: selectedPolygon,
+            mode: 'finance',
+            crop: cropType,
+          },
+        });
+      }
+
       const { data: responseData, error } = await supabase.functions.invoke('simulate-finance', {
         body: {
           lat: markerPosition.lat,
@@ -264,12 +300,19 @@ const Index = () => {
         },
       });
 
+      if (polygonPromise) {
+        try {
+          const { data: polyData } = await polygonPromise;
+          const exposure = polyData?.fractional_exposure_pct ?? polyData?.data?.fractional_exposure_pct;
+          if (exposure != null) setPolygonExposurePct(Math.round(exposure * 10) / 10);
+        } catch { /* polygon call is best-effort */ }
+      }
+
       if (error) throw new Error(error.message || 'Finance simulation failed');
 
-      // Extract financial_analysis from response (adapt to API response shape)
       const result = Array.isArray(responseData) ? responseData[0] : responseData;
       const financialAnalysis = result?.financial_analysis ?? result?.data?.financial_analysis ?? result;
-      
+
       setAtlasFinancialData(financialAnalysis);
       setAtlasLocationName(`${markerPosition.lat.toFixed(2)}, ${markerPosition.lng.toFixed(2)}`);
       setIsPanelOpen(true);
@@ -308,7 +351,7 @@ const Index = () => {
     } finally {
       setIsFinanceSimulating(false);
     }
-  }, [markerPosition, cropType]);
+  }, [markerPosition, cropType, selectedPolygon]);
 
   const handleGlobalTempTargetChange = useCallback((value: number) => {
     setGlobalTempTarget(value);
@@ -499,15 +542,35 @@ const Index = () => {
         const stormSurgeHeight = includeStormSurge ? 2.5 : 0;
         const totalWaterLevel = totalSLR + stormSurgeHeight;
 
+        let polygonPromise: Promise<any> | null = null;
+        if (selectedPolygon) {
+          polygonPromise = supabase.functions.invoke('simulate-polygon', {
+            body: {
+              geometry: selectedPolygon,
+              mode: 'coastal',
+              sea_level_rise: totalSLR,
+              mangrove_width: mangroveWidth,
+            },
+          });
+        }
+
         const { data: responseData, error } = await supabase.functions.invoke('simulate-coastal', {
           body: {
             lat: markerPosition.lat,
             lon: markerPosition.lng,
             mangrove_width: mangroveWidth,
-            slr_projection: totalSLR, // Send totalSLR directly (vs Year 2000 baseline)
+            slr_projection: totalSLR,
             include_storm_surge: includeStormSurge,
           },
         });
+
+        if (polygonPromise) {
+          try {
+            const { data: polyData } = await polygonPromise;
+            const exposure = polyData?.fractional_exposure_pct ?? polyData?.data?.fractional_exposure_pct;
+            if (exposure != null) setPolygonExposurePct(Math.round(exposure * 10) / 10);
+          } catch { /* polygon call is best-effort */ }
+        }
 
         if (error) {
           throw new Error(error.message || 'Coastal simulation failed');
@@ -582,7 +645,7 @@ const Index = () => {
         setIsCoastalSimulating(false);
       }
     },
-    [markerPosition, propertyValue, mangroveWidth, totalSLR, includeStormSurge]
+    [markerPosition, propertyValue, mangroveWidth, totalSLR, includeStormSurge, selectedPolygon]
   );
 
   const getInterventionType = useCallback(() => {
@@ -624,21 +687,41 @@ const Index = () => {
     try {
       const intervention_type = getInterventionType();
 
-      // New payload with lat, lon, and rain_intensity_pct from timeline
       const payload = {
-        rain_intensity: 100 + totalRainIntensity, // Base 100mm + % increase
+        rain_intensity: 100 + totalRainIntensity,
         current_imperviousness: 0.7,
         intervention_type,
         slope_pct: 2.0,
-        // Additional context for API
         lat: markerPosition.lat,
         lon: markerPosition.lng,
         rain_intensity_pct: totalRainIntensity,
       };
 
+      let polygonPromise: Promise<any> | null = null;
+      if (selectedPolygon) {
+        polygonPromise = supabase.functions.invoke('simulate-polygon', {
+          body: {
+            geometry: selectedPolygon,
+            mode: 'flood',
+            rain_intensity: payload.rain_intensity,
+            rain_intensity_pct: totalRainIntensity,
+            current_imperviousness: 0.7,
+            intervention_type,
+          },
+        });
+      }
+
       const { data: responseData, error } = await supabase.functions.invoke('simulate-flood', {
         body: payload,
       });
+
+      if (polygonPromise) {
+        try {
+          const { data: polyData } = await polygonPromise;
+          const exposure = polyData?.fractional_exposure_pct ?? polyData?.data?.fractional_exposure_pct;
+          if (exposure != null) setPolygonExposurePct(Math.round(exposure * 10) / 10);
+        } catch { /* polygon call is best-effort */ }
+      }
 
       if (error) {
         throw new Error(error.message || 'Flood simulation failed');
@@ -710,7 +793,7 @@ const Index = () => {
     } finally {
       setIsFloodSimulating(false);
     }
-  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled, getInterventionType, totalRainIntensity]);
+  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled, getInterventionType, totalRainIntensity, selectedPolygon]);
 
   const handleGreenRoofsChange = useCallback(
     (enabled: boolean) => {
@@ -1055,6 +1138,9 @@ const Index = () => {
             portfolioAssets={portfolioMapAssets}
             onAtlasClick={handleAtlasClick}
             atlasOverlay={atlasOverlay}
+            drawEnabled={true}
+            onPolygonCreated={handlePolygonCreated}
+            onPolygonDeleted={handlePolygonDeleted}
           />
         )}
       </div>
@@ -1067,6 +1153,7 @@ const Index = () => {
         onModeChange={handleModeChange}
         latitude={markerPosition?.lat ?? null}
         longitude={markerPosition?.lng ?? null}
+        hasPolygon={selectedPolygon !== null}
         cropType={cropType}
         onCropChange={setCropType}
         mangroveWidth={mangroveWidth}
@@ -1202,6 +1289,7 @@ const Index = () => {
         assetLifespan={assetLifespan}
         dailyRevenue={dailyRevenue}
         propertyValue={mode === 'coastal' ? propertyValue : buildingValue}
+        polygonExposurePct={polygonExposurePct}
       />
 
       {/* Portfolio left panel content (desktop) */}

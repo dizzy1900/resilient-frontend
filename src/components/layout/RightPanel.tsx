@@ -98,6 +98,7 @@ interface RightPanelProps {
   assetLifespan?: number;
   dailyRevenue?: number;
   propertyValue?: number;
+  polygonExposurePct?: number | null;
 }
 
 const MODE_ACCENT: Record<DashboardMode, string> = {
@@ -178,6 +179,7 @@ export function RightPanel({
   assetLifespan,
   dailyRevenue,
   propertyValue,
+  polygonExposurePct,
 }: RightPanelProps) {
   if (!visible) return null;
 
@@ -264,6 +266,7 @@ export function RightPanel({
           assetLifespan={assetLifespan}
           dailyRevenue={dailyRevenue}
           propertyValue={propertyValue}
+          polygonExposurePct={polygonExposurePct}
           latitude={latitude}
           longitude={longitude}
         />
@@ -311,6 +314,7 @@ export interface RightPanelContentProps {
   assetLifespan?: number;
   dailyRevenue?: number;
   propertyValue?: number;
+  polygonExposurePct?: number | null;
 }
 
 export function RightPanelContent({
@@ -352,6 +356,7 @@ export function RightPanelContent({
   assetLifespan,
   dailyRevenue,
   propertyValue,
+  polygonExposurePct,
 }: RightPanelContentProps) {
   if (isLoading) return <LoadingState />;
 
@@ -441,6 +446,10 @@ export function RightPanelContent({
         />
       )}
 
+      {polygonExposurePct != null && showResults && (
+        <AssetExposureRow exposurePct={polygonExposurePct} />
+      )}
+
       {!showResults && mode !== 'finance' && mode !== 'portfolio' && (
         <div className="px-4 py-8 text-center">
           <p style={{ fontSize: 11, color: 'var(--cb-secondary)', lineHeight: 1.6 }}>
@@ -449,6 +458,41 @@ export function RightPanelContent({
         </div>
       )}
     </>
+  );
+}
+
+function AssetExposureRow({ exposurePct }: { exposurePct: number }) {
+  const color = exposurePct >= 50 ? '#f43f5e' : exposurePct >= 25 ? '#f59e0b' : '#10b981';
+  return (
+    <div>
+      <SectionDivider title="Zone Analysis" />
+      <div className="px-4">
+        <div className="flex items-center justify-between py-3 cb-divider">
+          <span className="cb-label">Asset Exposure</span>
+          <span
+            style={{
+              fontFamily: 'monospace',
+              fontSize: 12,
+              fontWeight: 600,
+              color,
+            }}
+          >
+            {exposurePct}% of Asset Footprint Affected
+          </span>
+        </div>
+        <div className="py-2">
+          <div className="h-1.5 relative overflow-hidden" style={{ backgroundColor: 'var(--cb-border)' }}>
+            <div
+              className="h-full transition-all duration-500 ease-out"
+              style={{
+                width: `${Math.min(exposurePct, 100)}%`,
+                backgroundColor: color,
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

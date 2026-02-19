@@ -4,6 +4,7 @@ import { Polygon, polygonToGeoJSON, createRingDifferenceGeoJSON, calculatePolygo
 import { ZoneMode } from '@/utils/zoneGeneration';
 import { getZoneColors } from '@/utils/zoneMorphing';
 import { AtlasMarkers, AtlasClickData } from './AtlasMarkers';
+import { MapDrawControl, DrawnPolygon } from './MapDrawControl';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGF2aWRpemkiLCJhIjoiY21rd2dzeHN6MDFoYzNkcXYxOHZ0YXRuNCJ9.P_g5wstTHNzglNEQfHIoBg';
 
@@ -51,6 +52,9 @@ interface MapViewProps {
   portfolioAssets?: PortfolioMapAsset[];
   onAtlasClick?: (data: AtlasClickData) => void;
   atlasOverlay?: 'default' | 'credit_rating' | 'financial_risk';
+  drawEnabled?: boolean;
+  onPolygonCreated?: (polygon: DrawnPolygon) => void;
+  onPolygonDeleted?: () => void;
 }
 
 const DEFAULT_VIEW_STATE: ViewState = {
@@ -83,10 +87,14 @@ const LazyMap = ({
   portfolioAssets,
   onAtlasClick,
   atlasOverlay = 'default',
+  drawEnabled = false,
+  onPolygonCreated,
+  onPolygonDeleted,
 }: MapViewProps) => {
   const [MapComponents, setMapComponents] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [internalViewState, setInternalViewState] = useState<ViewState>(DEFAULT_VIEW_STATE);
+  const [rawMap, setRawMap] = useState<any>(null);
   const mapRef = useRef<any>(null);
   const layersAdded = useRef(false);
 
@@ -295,6 +303,7 @@ const LazyMap = ({
   const handleMapLoad = useCallback((event: any) => {
     const map = event.target;
     mapRef.current = { getMap: () => map };
+    setRawMap(map);
     if (zoneData) {
       updateZoneLayers(map);
     }
@@ -417,6 +426,15 @@ const LazyMap = ({
       )}
 
       {onAtlasClick && <AtlasMarkers Marker={Marker} onAtlasClick={onAtlasClick} overlayMode={atlasOverlay} />}
+
+      {rawMap && onPolygonCreated && onPolygonDeleted && (
+        <MapDrawControl
+          map={rawMap}
+          enabled={drawEnabled}
+          onPolygonCreated={onPolygonCreated}
+          onPolygonDeleted={onPolygonDeleted}
+        />
+      )}
     </Map>
   );
 };
@@ -434,6 +452,9 @@ export const MapView = ({
   portfolioAssets,
   onAtlasClick,
   atlasOverlay = 'default',
+  drawEnabled = false,
+  onPolygonCreated,
+  onPolygonDeleted,
 }: MapViewProps) => {
   return (
     <div className="relative w-full h-full">
@@ -450,6 +471,9 @@ export const MapView = ({
         portfolioAssets={portfolioAssets}
         onAtlasClick={onAtlasClick}
         atlasOverlay={atlasOverlay}
+        drawEnabled={drawEnabled}
+        onPolygonCreated={onPolygonCreated}
+        onPolygonDeleted={onPolygonDeleted}
       />
 
       <div className="absolute inset-0 pointer-events-none">

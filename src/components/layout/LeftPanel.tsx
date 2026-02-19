@@ -138,6 +138,7 @@ export interface LeftPanelProps {
   onModeChange: (mode: DashboardMode) => void;
   latitude: number | null;
   longitude: number | null;
+  hasPolygon?: boolean;
   cropType: string;
   onCropChange: (value: string) => void;
   mangroveWidth: number;
@@ -216,6 +217,7 @@ export function LeftPanel({
   onModeChange,
   latitude,
   longitude,
+  hasPolygon = false,
   cropType,
   onCropChange,
   mangroveWidth,
@@ -391,7 +393,11 @@ export function LeftPanel({
             <span className="cb-label">Location</span>
             {hasCoordinates && <MapPin style={{ width: 10, height: 10, color: activeItem?.accent ?? "#10b981" }} />}
           </div>
-          {hasCoordinates ? (
+          {hasPolygon ? (
+            <span style={{ fontSize: 11, fontFamily: "monospace", color: "#10b981", letterSpacing: "0.04em" }}>
+              CUSTOM POLYGON DEFINED
+            </span>
+          ) : hasCoordinates ? (
             <span className="cb-value font-mono" style={{ fontSize: 11 }}>
               {latitude?.toFixed(4)}, {longitude?.toFixed(4)}
             </span>
