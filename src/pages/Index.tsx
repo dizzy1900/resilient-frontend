@@ -269,7 +269,13 @@ const Index = () => {
     setIsPanelOpen(true);
     setMobileSheetOpen(true);
     setMobileTab('data');
-    setFlyToTarget({ longitude: lng, latitude: lat, zoom: 12, ts: Date.now() });
+    // Directly update controlled viewState for guaranteed camera movement
+    setViewState(prev => ({
+      ...prev,
+      longitude: lng,
+      latitude: lat,
+      zoom: 12,
+    }));
     setReverseLocationName(null);
     reverseGeocode(lat, lng).then((name) => {
       if (name) setReverseLocationName(name);
