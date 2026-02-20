@@ -1,0 +1,571 @@
+import { useCallback, useState, useEffect, useRef } from 'react';
+import { MapPin, Map as MapIcon, CircleAlert as AlertCircle } from 'lucide-react';
+import { Polygon, polygonToGeoJSON, createRingDifferenceGeoJSON, calculatePolygonArea } from '@/utils/polygonMath';
+import { ZoneMode } from '@/utils/zoneGeneration';
+import { getZoneColors } from '@/utils/zoneMorphing';
+import { AtlasMarkers, AtlasClickData } from './AtlasMarkers';
+import DrawControl, { DrawnPolygon } from './DrawControl';
+
+const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGF2aWRpemkiLCJhIjoiY21rd2dzeHN6MDFoYzNkcXYxOHZ0YXRuNCJ9.P_g5wstTHNzglNEQfHIoBg';
+
+export type MapStyle = 'dark' | 'satellite' | 'flood';
+
+export interface ViewState {
+  longitude: number;
+  latitude: number;
+  zoom: number;
+  pitch: number;
+  bearing: number;
+}
+
+const MAP_STYLES: Record<MapStyle, string> = {
+  dark: 'mapbox://styles/mapbox/dark-v11',
+  satellite: 'mapbox://styles/mapbox/satellite-v9',
+  flood: 'mapbox://styles/mapbox/dark-v11',
+};
+
+export interface ZoneData {
+  baselineZone: Polygon | null;
+  currentZone: Polygon | null;
+  temperature: number;
+  mode: ZoneMode;
+}
+
+export interface PortfolioMapAsset {
+  lat: number;
+  lng: number;
+  name: string;
+  value: number;
+  resilienceScore?: number; // 0-100, used for color
+}
+
+export interface FlyToTarget {
+  longitude: number;
+  latitude: number;
+  zoom?: number;
+  ts: number;
+}
+
+export type FitBoundsTarget = [[number, number], [number, number]]; // [sw, ne] as [lng, lat]
+
+interface MapViewProps {
+  onLocationSelect: (lat: number, lng: number) => void;
+  markerPosition: { lat: number; lng: number } | null;
+  mapStyle?: MapStyle;
+  showFloodOverlay?: boolean;
+  viewState?: ViewState;
+  onViewStateChange?: (viewState: ViewState) => void;
+  flyToTarget?: FlyToTarget | null;
+  scenarioLabel?: string;
+  isAdaptationScenario?: boolean;
+  zoneData?: ZoneData;
+  portfolioAssets?: PortfolioMapAsset[];
+  onAtlasClick?: (data: AtlasClickData) => void;
+  atlasOverlay?: 'default' | 'credit_rating' | 'financial_risk';
+  drawEnabled?: boolean;
+  onPolygonCreated?: (polygon: DrawnPolygon) => void;
+  onPolygonDeleted?: () => void;
+  fitBoundsTarget?: FitBoundsTarget | null;
+  usePortfolioAccentStyle?: boolean;
+}
+
+const DEFAULT_VIEW_STATE: ViewState = {
+  longitude: 37.9062,
+  latitude: -0.0236,
+  zoom: 5,
+  pitch: 0,
+  bearing: 0,
+};
+
+const ZONE_LAYERS = {
+  BASELINE_SOURCE: 'baseline-zone-source',
+  BASELINE_OUTLINE: 'baseline-zone-outline',
+  CURRENT_SOURCE: 'current-zone-source',
+  CURRENT_FILL: 'current-zone-fill',
+  LOSS_SOURCE: 'loss-zone-source',
+  LOSS_FILL: 'loss-zone-fill',
+};
+
+const LazyMap = ({
+  onLocationSelect,
+  markerPosition,
+  mapStyle = 'dark',
+  showFloodOverlay = false,
+  viewState: externalViewState,
+  onViewStateChange,
+  flyToTarget,
+  scenarioLabel,
+  isAdaptationScenario = false,
+  zoneData,
+  portfolioAssets,
+  onAtlasClick,
+  atlasOverlay = 'default',
+  drawEnabled = false,
+  onPolygonCreated,
+  onPolygonDeleted,
+  fitBoundsTarget,
+  usePortfolioAccentStyle = false,
+}: MapViewProps) => {
+  const [MapComponents, setMapComponents] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [internalViewState, setInternalViewState] = useState<ViewState>(DEFAULT_VIEW_STATE);
+  const [rawMap, setRawMap] = useState<any>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const mapRef = useRef<any>(null);
+  const layersAdded = useRef(false);
+
+  const viewState = externalViewState ?? internalViewState;
+
+  useEffect(() => {
+    const loadMap = async () => {
+      try {
+        await import('mapbox-gl/dist/mapbox-gl.css');
+        const reactMapGl = await import('react-map-gl');
+        setMapComponents({
+          Map: reactMapGl.Map,
+          Marker: reactMapGl.Marker,
+          NavigationControl: reactMapGl.NavigationControl,
+          ScaleControl: reactMapGl.ScaleControl,
+        });
+      } catch (err) {
+        console.error('Failed to load map:', err);
+        setError('Failed to load map components');
+      }
+    };
+    loadMap();
+  }, []);
+
+  const updateZoneLayers = useCallback((map: any) => {
+    if (!map || !zoneData) return;
+
+    const { baselineZone, currentZone, temperature, mode } = zoneData;
+    const colors = getZoneColors(mode, temperature);
+
+    if (!map.getSource(ZONE_LAYERS.BASELINE_SOURCE)) {
+      map.addSource(ZONE_LAYERS.BASELINE_SOURCE, {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+      });
+      map.addLayer({
+        id: ZONE_LAYERS.BASELINE_OUTLINE,
+        type: 'line',
+        source: ZONE_LAYERS.BASELINE_SOURCE,
+        paint: {
+          'line-color': colors.baselineOutlineColor,
+          'line-width': 2.5,
+          'line-dasharray': [4, 3],
+          'line-opacity': 0.85,
+        },
+      });
+    }
+
+    if (!map.getSource(ZONE_LAYERS.LOSS_SOURCE)) {
+      map.addSource(ZONE_LAYERS.LOSS_SOURCE, {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+      });
+      map.addLayer({
+        id: ZONE_LAYERS.LOSS_FILL,
+        type: 'fill',
+        source: ZONE_LAYERS.LOSS_SOURCE,
+        paint: {
+          'fill-color': colors.lossColor,
+          'fill-opacity': 0.55,
+        },
+      });
+    }
+
+    if (!map.getSource(ZONE_LAYERS.CURRENT_SOURCE)) {
+      map.addSource(ZONE_LAYERS.CURRENT_SOURCE, {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+      });
+      map.addLayer({
+        id: ZONE_LAYERS.CURRENT_FILL,
+        type: 'fill',
+        source: ZONE_LAYERS.CURRENT_SOURCE,
+        paint: {
+          'fill-color': colors.fillColor,
+          'fill-opacity': colors.fillOpacity,
+        },
+      });
+    }
+
+    layersAdded.current = true;
+
+    if (baselineZone) {
+      const baselineGeoJSON = polygonToGeoJSON(baselineZone);
+      map.getSource(ZONE_LAYERS.BASELINE_SOURCE)?.setData(baselineGeoJSON);
+      map.setPaintProperty(ZONE_LAYERS.BASELINE_OUTLINE, 'line-color', colors.baselineOutlineColor);
+    } else {
+      map.getSource(ZONE_LAYERS.BASELINE_SOURCE)?.setData({ type: 'FeatureCollection', features: [] });
+    }
+
+    if (currentZone) {
+      const currentGeoJSON = polygonToGeoJSON(currentZone);
+      map.getSource(ZONE_LAYERS.CURRENT_SOURCE)?.setData(currentGeoJSON);
+      map.setPaintProperty(ZONE_LAYERS.CURRENT_FILL, 'fill-color', colors.fillColor);
+      map.setPaintProperty(ZONE_LAYERS.CURRENT_FILL, 'fill-opacity', colors.fillOpacity);
+    } else {
+      map.getSource(ZONE_LAYERS.CURRENT_SOURCE)?.setData({ type: 'FeatureCollection', features: [] });
+    }
+
+    if (baselineZone && currentZone && temperature > 0) {
+      const baseArea = calculatePolygonArea(baselineZone);
+      const currentArea = calculatePolygonArea(currentZone);
+
+      let lossGeoJSON: GeoJSON.Feature<GeoJSON.Polygon> | null = null;
+
+      if (mode === 'flood') {
+        lossGeoJSON = createRingDifferenceGeoJSON(currentZone, baselineZone);
+      } else {
+        if (currentArea < baseArea) {
+          lossGeoJSON = createRingDifferenceGeoJSON(baselineZone, currentZone);
+        }
+      }
+
+      if (lossGeoJSON) {
+        map.getSource(ZONE_LAYERS.LOSS_SOURCE)?.setData(lossGeoJSON);
+        map.setPaintProperty(ZONE_LAYERS.LOSS_FILL, 'fill-color', colors.lossColor);
+      } else {
+        map.getSource(ZONE_LAYERS.LOSS_SOURCE)?.setData({ type: 'FeatureCollection', features: [] });
+      }
+    } else {
+      map.getSource(ZONE_LAYERS.LOSS_SOURCE)?.setData({ type: 'FeatureCollection', features: [] });
+    }
+  }, [zoneData]);
+
+  const updatePortfolioLayers = useCallback((map: any) => {
+    if (!map) return;
+
+    const PORTFOLIO_SOURCE = 'portfolio-assets-source';
+    const PORTFOLIO_HEATMAP = 'portfolio-heatmap-layer';
+    const PORTFOLIO_CIRCLES = 'portfolio-circles-layer';
+    const radius = usePortfolioAccentStyle ? 5 : 8;
+    const circleColor = usePortfolioAccentStyle
+      ? '#7eb36a'
+      : [
+          'interpolate', ['linear'], ['get', 'score'],
+          0, '#ef4444',
+          40, '#f59e0b',
+          70, '#22c55e',
+          100, '#10b981',
+        ];
+
+    const geojsonData: GeoJSON.FeatureCollection = {
+      type: 'FeatureCollection',
+      features: (portfolioAssets || []).map((a) => ({
+        type: 'Feature' as const,
+        geometry: { type: 'Point' as const, coordinates: [a.lng, a.lat] },
+        properties: { name: a.name, value: a.value, score: a.resilienceScore ?? 50 },
+      })),
+    };
+
+    if (!map.getSource(PORTFOLIO_SOURCE)) {
+      map.addSource(PORTFOLIO_SOURCE, { type: 'geojson', data: geojsonData });
+
+      map.addLayer({
+        id: PORTFOLIO_HEATMAP,
+        type: 'heatmap',
+        source: PORTFOLIO_SOURCE,
+        paint: {
+          'heatmap-weight': ['interpolate', ['linear'], ['get', 'value'], 0, 0.1, 200000, 1],
+          'heatmap-intensity': 0.6,
+          'heatmap-radius': 30,
+          'heatmap-opacity': 0.5,
+          'heatmap-color': [
+            'interpolate', ['linear'], ['heatmap-density'],
+            0, 'rgba(0,0,0,0)',
+            0.2, 'rgba(34,197,94,0.3)',
+            0.5, 'rgba(234,179,8,0.5)',
+            0.8, 'rgba(239,68,68,0.7)',
+            1, 'rgba(239,68,68,0.9)',
+          ],
+        },
+      });
+
+      map.addLayer({
+        id: PORTFOLIO_CIRCLES,
+        type: 'circle',
+        source: PORTFOLIO_SOURCE,
+        paint: {
+          'circle-radius': radius,
+          'circle-color': circleColor as any,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': 'rgba(255,255,255,0.8)',
+          'circle-opacity': 0.9,
+        },
+      });
+    } else {
+      map.getSource(PORTFOLIO_SOURCE)?.setData(geojsonData);
+      map.setPaintProperty(PORTFOLIO_CIRCLES, 'circle-radius', radius);
+      map.setPaintProperty(PORTFOLIO_CIRCLES, 'circle-color', circleColor as any);
+    }
+
+    // Toggle visibility
+    const visible = (portfolioAssets?.length ?? 0) > 0;
+    map.setLayoutProperty(PORTFOLIO_HEATMAP, 'visibility', visible ? 'visible' : 'none');
+    map.setLayoutProperty(PORTFOLIO_CIRCLES, 'visibility', visible ? 'visible' : 'none');
+  }, [portfolioAssets, usePortfolioAccentStyle]);
+
+  useEffect(() => {
+    const map = mapRef.current?.getMap?.();
+    if (map && map.isStyleLoaded()) {
+      updateZoneLayers(map);
+    }
+  }, [zoneData, updateZoneLayers]);
+
+  useEffect(() => {
+    const map = mapRef.current?.getMap?.();
+    if (map && map.isStyleLoaded()) {
+      updatePortfolioLayers(map);
+    }
+  }, [portfolioAssets, updatePortfolioLayers]);
+
+  const lastFlyTsRef = useRef(0);
+  useEffect(() => {
+    if (!flyToTarget || flyToTarget.ts === lastFlyTsRef.current) return;
+    lastFlyTsRef.current = flyToTarget.ts;
+    const map = mapRef.current?.getMap?.();
+    if (!map) return;
+    map.flyTo({
+      center: [flyToTarget.longitude, flyToTarget.latitude],
+      zoom: flyToTarget.zoom ?? 12,
+      duration: 2000,
+      essential: true,
+    });
+  }, [flyToTarget]);
+
+  const fitBoundsTsRef = useRef(0);
+  useEffect(() => {
+    if (!fitBoundsTarget?.length) return;
+    const map = mapRef.current?.getMap?.();
+    if (!map) return;
+    const [sw, ne] = fitBoundsTarget;
+    fitBoundsTsRef.current = Date.now();
+    map.fitBounds([sw, ne], { padding: 40, maxZoom: 12, duration: 1200 });
+  }, [fitBoundsTarget]);
+
+  const handleMapLoad = useCallback((event: any) => {
+    const map = event.target;
+    mapRef.current = { getMap: () => map };
+    setRawMap(map);
+    if (zoneData) {
+      updateZoneLayers(map);
+    }
+    if (portfolioAssets?.length) {
+      updatePortfolioLayers(map);
+    }
+  }, [zoneData, updateZoneLayers, portfolioAssets, updatePortfolioLayers]);
+
+  const isDrawingRef = useRef(false);
+  const drawCooldownRef = useRef(false);
+
+  const handleDrawModeChange = useCallback((drawing: boolean) => {
+    setIsDrawing(drawing);
+    isDrawingRef.current = drawing;
+    if (!drawing) {
+      drawCooldownRef.current = true;
+      setTimeout(() => { drawCooldownRef.current = false; }, 300);
+    }
+  }, []);
+
+  const handleClick = useCallback((event: any) => {
+    if (isDrawingRef.current || drawCooldownRef.current) return;
+    const target = event.originalEvent?.target as HTMLElement | undefined;
+    if (target?.closest?.('.mapbox-gl-draw_ctrl-draw-btn') || target?.closest?.('.mapboxgl-ctrl-group')) return;
+    const { lng, lat } = event.lngLat;
+    onLocationSelect(lat, lng);
+  }, [onLocationSelect]);
+
+  const handleMove = useCallback((evt: any) => {
+    const newViewState = evt.viewState as ViewState;
+    if (onViewStateChange) {
+      onViewStateChange(newViewState);
+    } else {
+      setInternalViewState(newViewState);
+    }
+  }, [onViewStateChange]);
+
+  if (error) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-secondary/50">
+        <div className="text-center space-y-3">
+          <AlertCircle className="w-12 h-12 text-risk mx-auto" />
+          <p className="text-muted-foreground">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!MapComponents) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-secondary/50">
+        <div className="text-center space-y-3 animate-pulse">
+          <MapIcon className="w-12 h-12 text-accent mx-auto" />
+          <p className="text-muted-foreground">Loading map...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const { Map, Marker, NavigationControl, ScaleControl } = MapComponents;
+
+  return (
+    <Map
+      {...viewState}
+      onMove={handleMove}
+      onClick={handleClick}
+      onLoad={handleMapLoad}
+      mapboxAccessToken={MAPBOX_TOKEN}
+      mapStyle={MAP_STYLES[mapStyle]}
+      style={{ width: '100%', height: '100%' }}
+      cursor="crosshair"
+      ref={mapRef}
+    >
+      <NavigationControl position="top-right" showCompass={true} />
+      <ScaleControl position="bottom-right" />
+
+      {scenarioLabel && (
+        <div className="absolute bottom-12 left-4 z-30">
+          <div
+            style={{
+              backgroundColor: isAdaptationScenario ? 'rgba(16, 185, 129, 0.12)' : 'var(--cb-bg)',
+              color: isAdaptationScenario ? '#10b981' : 'var(--cb-secondary)',
+              fontFamily: "'Inter', monospace",
+              fontSize: 10,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              padding: '5px 12px',
+              border: `1px solid ${isAdaptationScenario ? '#10b981' : 'var(--cb-border)'}`,
+            }}
+          >
+            {scenarioLabel}
+          </div>
+        </div>
+      )}
+
+      {markerPosition && (
+        <Marker
+          longitude={markerPosition.lng}
+          latitude={markerPosition.lat}
+          anchor="bottom"
+        >
+          <div className="relative animate-bounce">
+            <MapPin
+              className={`w-10 h-10 drop-shadow-lg ${
+                isAdaptationScenario
+                  ? "text-emerald-500"
+                  : "text-risk"
+              }`}
+              fill={isAdaptationScenario ? "hsl(142 76% 36%)" : "hsl(24 100% 58%)"}
+            />
+            <div className={`absolute inset-0 w-10 h-10 rounded-full blur-xl -z-10 ${
+              isAdaptationScenario
+                ? "bg-emerald-500/30"
+                : "bg-risk/30"
+            }`} />
+          </div>
+        </Marker>
+      )}
+
+      {showFloodOverlay && markerPosition && !zoneData?.baselineZone && (
+        <Marker
+          longitude={markerPosition.lng}
+          latitude={markerPosition.lat}
+          anchor="center"
+        >
+          <div
+            className="rounded-full pointer-events-none"
+            style={{
+              width: '300px',
+              height: '300px',
+              background: 'radial-gradient(circle, rgba(59, 130, 246, 0.5) 0%, rgba(59, 130, 246, 0.3) 40%, rgba(59, 130, 246, 0.1) 70%, transparent 100%)',
+            }}
+          />
+        </Marker>
+      )}
+
+      {onAtlasClick && <AtlasMarkers Marker={Marker} onAtlasClick={onAtlasClick} overlayMode={atlasOverlay} />}
+
+      {onPolygonCreated && onPolygonDeleted && (
+        <DrawControl
+          position="top-right"
+          displayControlsDefault={false}
+          controls={{ polygon: true, trash: true }}
+          onCreate={(e) => {
+            const feature = e.features?.[0];
+            if (feature?.geometry?.type === 'Polygon') {
+              onPolygonCreated(feature.geometry as DrawnPolygon);
+            }
+          }}
+          onUpdate={(e) => {
+            const feature = e.features?.[0];
+            if (feature?.geometry?.type === 'Polygon') {
+              onPolygonCreated(feature.geometry as DrawnPolygon);
+            }
+          }}
+          onDelete={() => {
+            onPolygonDeleted();
+          }}
+          onModeChange={(e) => {
+            const mode = e.mode;
+            const drawing = mode === 'draw_polygon' || mode === 'draw_line_string' || mode === 'draw_point';
+            handleDrawModeChange(drawing);
+          }}
+        />
+      )}
+    </Map>
+  );
+};
+
+export const MapView = ({
+  onLocationSelect,
+  markerPosition,
+  mapStyle = 'dark',
+  showFloodOverlay = false,
+  viewState,
+  onViewStateChange,
+  flyToTarget,
+  scenarioLabel,
+  isAdaptationScenario = false,
+  zoneData,
+  portfolioAssets,
+  onAtlasClick,
+  atlasOverlay = 'default',
+  drawEnabled = false,
+  onPolygonCreated,
+  onPolygonDeleted,
+  fitBoundsTarget,
+  usePortfolioAccentStyle = false,
+}: MapViewProps) => {
+  return (
+    <div className="relative w-full h-full">
+      <LazyMap
+        onLocationSelect={onLocationSelect}
+        markerPosition={markerPosition}
+        mapStyle={mapStyle}
+        showFloodOverlay={showFloodOverlay}
+        viewState={viewState}
+        onViewStateChange={onViewStateChange}
+        flyToTarget={flyToTarget}
+        scenarioLabel={scenarioLabel}
+        isAdaptationScenario={isAdaptationScenario}
+        zoneData={zoneData}
+        portfolioAssets={portfolioAssets}
+        onAtlasClick={onAtlasClick}
+        atlasOverlay={atlasOverlay}
+        drawEnabled={drawEnabled}
+        onPolygonCreated={onPolygonCreated}
+        onPolygonDeleted={onPolygonDeleted}
+        fitBoundsTarget={fitBoundsTarget}
+        usePortfolioAccentStyle={usePortfolioAccentStyle}
+      />
+
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-background/50 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background/30 to-transparent" />
+      </div>
+    </div>
+  );
+};

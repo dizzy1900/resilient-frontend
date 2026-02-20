@@ -1,0 +1,303 @@
+import { useState, useEffect, useCallback } from 'react';
+import { Briefcase, Play, Loader2, Download, CheckCircle2, AlertCircle, RefreshCw, LogIn, MapPinned } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { GlassCard } from '@/components/hud/GlassCard';
+import { Button } from '@/components/ui/button';
+import { PortfolioCSVUpload, PortfolioAsset } from './PortfolioCSVUpload';
+import { supabase } from '@/integrations/supabase/clientSafe';
+import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import confetti from 'canvas-confetti';
+
+const GHANA_COCOA_DEMO: PortfolioAsset[] = [
+  { Name: 'Kumasi Farm', Lat: 6.6885, Lon: -1.6244, Value: 120000 },
+  { Name: 'Takoradi Estate', Lat: 4.8986, Lon: -1.7550, Value: 95000 },
+  { Name: 'Sunyani Plot', Lat: 7.3349, Lon: -2.3266, Value: 80000 },
+  { Name: 'Ahafo Plantation', Lat: 7.0833, Lon: -2.3333, Value: 150000 },
+  { Name: 'Eastern Region Farm', Lat: 6.1000, Lon: -0.7500, Value: 110000 },
+];
+
+type JobStatus = 'idle' | 'pending' | 'processing' | 'completed' | 'failed';
+
+interface BatchJob {
+  id: string;
+  status: JobStatus;
+  total_assets: number;
+  processed_assets: number;
+  report_url: string | null;
+  error_message: string | null;
+}
+
+interface PortfolioPanelProps {
+  onAssetsChange?: (assets: PortfolioAsset[]) => void;
+}
+
+export const PortfolioPanel = ({ onAssetsChange }: PortfolioPanelProps) => {
+  const [parsedData, setParsedData] = useState<PortfolioAsset[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentJob, setCurrentJob] = useState<BatchJob | null>(null);
+  const { user, session, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+
+  // Subscribe to realtime updates for batch_jobs
+  useEffect(() => {
+    if (!currentJob?.id) return;
+
+    const channel = supabase
+      .channel(`batch_job_${currentJob.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'batch_jobs',
+          filter: `id=eq.${currentJob.id}`,
+        },
+        (payload) => {
+          const updated = payload.new as BatchJob;
+          setCurrentJob(updated);
+
+          if (updated.status === 'completed') {
+            // Trigger confetti celebration
+            confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 },
+              colors: ['#22c55e', '#14b8a6', '#3b82f6'],
+            });
+
+            toast({
+              title: 'Analysis Complete!',
+              description: `Successfully analyzed ${updated.total_assets} assets.`,
+            });
+          } else if (updated.status === 'failed') {
+            toast({
+              title: 'Analysis Failed',
+              description: updated.error_message || 'An error occurred during analysis.',
+              variant: 'destructive',
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [currentJob?.id]);
+
+  const handleDataParsed = useCallback((data: PortfolioAsset[]) => {
+    setParsedData(data);
+    setCurrentJob(null);
+    onAssetsChange?.(data);
+  }, [onAssetsChange]);
+
+  const handleClear = useCallback(() => {
+    setParsedData([]);
+    setCurrentJob(null);
+    onAssetsChange?.([]);
+  }, [onAssetsChange]);
+
+  const handleLoadDemo = useCallback(() => {
+    setParsedData(GHANA_COCOA_DEMO);
+    setCurrentJob(null);
+    onAssetsChange?.(GHANA_COCOA_DEMO);
+    toast({
+      title: 'Demo Portfolio Loaded',
+      description: '5 Ghana Cocoa farm locations loaded.',
+    });
+  }, [onAssetsChange]);
+
+  const handleAnalyzePortfolio = async () => {
+    if (parsedData.length === 0) return;
+
+    setIsSubmitting(true);
+
+    try {
+      if (user && session) {
+        // Authenticated path: use edge function
+        const assets = parsedData.map((asset) => ({
+          name: asset.Name,
+          lat: asset.Lat,
+          lon: asset.Lon,
+          value: asset.Value,
+        }));
+
+        const { data, error } = await supabase.functions.invoke('submit-portfolio', {
+          body: { assets },
+        });
+
+        if (error) throw new Error(error.message || 'Failed to submit portfolio');
+        if (!data?.success) {
+          throw new Error(data?.message || data?.details?.[0]?.message || 'Validation failed');
+        }
+
+        setCurrentJob({
+          id: data.job_id,
+          status: 'pending',
+          total_assets: data.assets_count,
+          processed_assets: 0,
+          report_url: null,
+          error_message: null,
+        });
+
+        toast({
+          title: 'Portfolio Analysis Started',
+          description: `Analyzing ${data.assets_count} assets...`,
+        });
+      } else {
+        // Anonymous path: generate mock resilience scores locally
+        const scoredAssets = parsedData.map((asset) => ({
+          ...asset,
+          score: Math.round(40 + Math.random() * 55), // 40-95 range
+        }));
+        onAssetsChange?.(scoredAssets);
+
+        setCurrentJob({
+          id: 'demo-' + Date.now(),
+          status: 'completed',
+          total_assets: parsedData.length,
+          processed_assets: parsedData.length,
+          report_url: null,
+          error_message: null,
+        });
+
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#22c55e', '#14b8a6', '#3b82f6'],
+        });
+
+        toast({
+          title: 'Demo Analysis Complete!',
+          description: `Generated resilience scores for ${parsedData.length} assets. Sign in to run full analysis.`,
+        });
+      }
+    } catch (error) {
+      console.error('Portfolio analysis failed:', error);
+      toast({
+        title: 'Failed to Start Analysis',
+        description: error instanceof Error ? error.message : 'An unexpected error occurred.',
+        variant: 'destructive',
+      });
+      setCurrentJob(null);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDownloadReport = () => {
+    if (currentJob?.report_url) {
+      window.open(currentJob.report_url, '_blank');
+    }
+  };
+
+  const getStatusDisplay = () => {
+    if (!currentJob) return null;
+
+    const statusConfig = {
+      pending: {
+        icon: <Loader2 className="w-4 h-4 animate-spin" />,
+        text: 'Queued for processing...',
+        color: 'text-amber-400',
+        bgColor: 'bg-amber-500/10 border-amber-500/20',
+      },
+      processing: {
+        icon: <RefreshCw className="w-4 h-4 animate-spin" />,
+        text: `Processing ${currentJob.processed_assets}/${currentJob.total_assets} assets...`,
+        color: 'text-blue-400',
+        bgColor: 'bg-blue-500/10 border-blue-500/20',
+      },
+      completed: {
+        icon: <CheckCircle2 className="w-4 h-4" />,
+        text: 'Analysis complete!',
+        color: 'text-emerald-400',
+        bgColor: 'bg-emerald-500/10 border-emerald-500/20',
+      },
+      failed: {
+        icon: <AlertCircle className="w-4 h-4" />,
+        text: currentJob.error_message || 'Analysis failed',
+        color: 'text-red-400',
+        bgColor: 'bg-red-500/10 border-red-500/20',
+      },
+    };
+
+    const config = statusConfig[currentJob.status as keyof typeof statusConfig];
+    if (!config) return null;
+
+    return (
+      <div className={`flex items-center gap-2 p-3 rounded-lg border ${config.bgColor}`}>
+        <span className={config.color}>{config.icon}</span>
+        <span className={`text-sm ${config.color}`}>{config.text}</span>
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-4">
+      <GlassCard className="p-4">
+        <div className="flex items-center gap-2 mb-4">
+          <Briefcase className="w-5 h-5 text-purple-400" />
+          <span className="text-sm font-semibold text-white">Portfolio Mode</span>
+        </div>
+        <p className="text-xs text-white/50 mb-4">
+          Upload a CSV file with your portfolio assets to run bulk climate risk analysis.
+        </p>
+      </GlassCard>
+
+      <PortfolioCSVUpload
+        onDataParsed={handleDataParsed}
+        parsedData={parsedData}
+        onClear={handleClear}
+      />
+
+      {parsedData.length === 0 && (
+        <Button
+          variant="outline"
+          onClick={handleLoadDemo}
+          className="w-full border-purple-500/30 text-purple-300 hover:bg-purple-500/10 hover:text-purple-200"
+        >
+          <MapPinned className="w-4 h-4 mr-2" />
+          Load Demo Portfolio (Ghana Cocoa)
+        </Button>
+      )}
+
+      {parsedData.length > 0 && (
+        <GlassCard className="p-4 space-y-4">
+          {getStatusDisplay()}
+
+          {currentJob?.status === 'completed' && currentJob.report_url && (
+            <Button
+              onClick={handleDownloadReport}
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:opacity-90"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Report
+            </Button>
+          )}
+
+          {(!currentJob || currentJob.status === 'failed') && (
+            <Button
+              onClick={handleAnalyzePortfolio}
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-purple-600 to-purple-400 text-white hover:opacity-90 shadow-[0_0_20px_rgba(147,51,234,0.4)] hover:shadow-[0_0_30px_rgba(147,51,234,0.6)] transition-all"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Starting Analysis...
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4 mr-2" />
+                  Analyze Portfolio
+                </>
+              )}
+            </Button>
+          )}
+        </GlassCard>
+      )}
+    </div>
+  );
+};
