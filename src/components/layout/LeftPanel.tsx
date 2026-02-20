@@ -666,6 +666,7 @@ export function ModeContent(props: ModeContentProps) {
 
   const handleFileUpload = useCallback(
     async (selectedFile: File) => {
+      console.log("1. File Selected:", selectedFile);
       if (!selectedFile || !selectedFile.name.toLowerCase().endsWith(".csv")) return;
       setIsUploading(true);
       onPortfolioResultsChange?.(null);
@@ -673,19 +674,26 @@ export function ModeContent(props: ModeContentProps) {
         const formData = new FormData();
         formData.append("file", selectedFile);
         const url = getAnalyzePortfolioUrl();
-        const res = await fetch(url, {
+        console.log("2. Fetching URL:", url);
+        const response = await fetch(url, {
           method: "POST",
           body: formData,
         });
-        if (!res.ok) {
-          const errText = await res.text();
-          throw new Error(errText || `HTTP ${res.status}`);
+        console.log("3. Raw Response Status:", response.status);
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(errText || `HTTP ${response.status}`);
         }
-        const data = await res.json();
-        console.log('Backend Response:', data);
-        onPortfolioResultsChange?.(data);
-      } catch (err) {
-        console.error("Portfolio analyze error:", err);
+        const data = await response.json();
+        console.log("4. Parsed Data:", data);
+        const hasSummary = data && typeof data === "object" && "portfolio_summary" in data && data.portfolio_summary != null;
+        if (hasSummary) {
+          onPortfolioResultsChange?.(data);
+        } else {
+          console.warn("Portfolio upload: response OK but missing portfolio_summary; not updating UI.", data);
+        }
+      } catch (error) {
+        console.error("FETCH ERROR:", error);
         setIsUploading(false);
         return;
       }
