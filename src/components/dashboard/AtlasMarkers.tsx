@@ -21,21 +21,21 @@ const getRiskCategory = (item: AtlasItem): string | null => {
 };
 
 const getMarkerColor = (item: AtlasItem, overlayMode: OverlayMode): string => {
-  if (overlayMode === 'financial_risk') return '#f59e0b';
+  if (overlayMode === 'financial_risk') return '#eb796f';
 
   if (overlayMode === 'credit_rating') {
     const rating: string = ('market_intelligence' in item ? (item.market_intelligence as any)?.credit_rating : null) ?? '';
-    if (/^(AAA|AA|A)/i.test(rating)) return '#4ADE80';
-    if (/^(BBB|BB|B)/i.test(rating)) return '#FACC15';
-    if (/^(CCC|CC|C|D)/i.test(rating)) return '#EF4444';
-    return '#4ADE80';
+    if (/^(AAA|AA|A)/i.test(rating)) return '#7eb36a';
+    if (/^(BBB|BB|B)/i.test(rating)) return '#eab308';
+    if (/^(CCC|CC|C|D)/i.test(rating)) return '#eb796f';
+    return '#7eb36a';
   }
 
   const npv = 'financial_analysis' in item ? (item.financial_analysis as any)?.npv_usd : null;
   const risk = getRiskCategory(item);
-  if ((npv !== null && npv < 0) || risk === 'High' || risk === 'Extreme') return '#EF4444';
-  if (risk === 'Moderate') return '#FACC15';
-  return '#4ADE80';
+  if ((npv !== null && npv < 0) || risk === 'High' || risk === 'Extreme') return '#eb796f';
+  if (risk === 'Moderate') return '#eab308';
+  return '#7eb36a';
 };
 
 const getVaR = (item: AtlasItem): number | null => {
