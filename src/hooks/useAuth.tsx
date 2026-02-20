@@ -69,7 +69,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider or NoAuthProvider');
   }
   return context;
+}
+
+/** No-op auth for prototyping: no login, no session, all pages public. */
+const NO_AUTH_VALUE: AuthContextType = {
+  user: null,
+  session: null,
+  loading: false,
+  signIn: async () => ({ error: null }),
+  signUp: async () => ({ error: null }),
+  signOut: async () => {},
+};
+
+export function NoAuthProvider({ children }: { children: ReactNode }) {
+  return (
+    <AuthContext.Provider value={NO_AUTH_VALUE}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
