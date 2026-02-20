@@ -14,3 +14,9 @@ verify_jwt = false
 
 [functions.predict-health]
 verify_jwt = false
+
+[functions.simulate-polygon]
+verify_jwt = false
+
+[functions.simulate-finance]
+verify_jwt = false
