@@ -6,7 +6,6 @@ import {
   Briefcase,
   HeartPulse,
   Landmark,
-  MapPin,
   TreePine,
   Building2,
   Shield,
@@ -46,6 +45,7 @@ import { toast as showToast } from "@/hooks/use-toast";
 import { FinancialSettingsModal } from "@/components/hud/FinancialSettingsModal";
 import { TimelinePlayer } from "@/components/TimelinePlayer";
 import { cn } from "@/lib/utils";
+import { LocationSearch } from "@/components/dashboard/LocationSearch";
 
 const MODE_ITEMS: {
   mode: DashboardMode;
@@ -140,6 +140,8 @@ export interface LeftPanelProps {
   latitude: number | null;
   longitude: number | null;
   hasPolygon?: boolean;
+  locationName: string | null;
+  onLocationSearch: (lat: number, lng: number) => void;
   cropType: string;
   onCropChange: (value: string) => void;
   mangroveWidth: number;
@@ -219,6 +221,8 @@ export function LeftPanel({
   latitude,
   longitude,
   hasPolygon = false,
+  locationName,
+  onLocationSearch,
   cropType,
   onCropChange,
   mangroveWidth,
@@ -311,7 +315,6 @@ export function LeftPanel({
   };
 
   const activeItem = MODE_ITEMS.find((m) => m.mode === mode);
-  const hasCoordinates = latitude !== null && longitude !== null;
 
   return (
     <div className="hidden md:flex absolute top-0 left-0 h-full z-30 pointer-events-none">
@@ -388,24 +391,15 @@ export function LeftPanel({
           ))}
         </div>
 
-        {/* Location row */}
-        <div className="shrink-0 px-4 py-3 cb-divider">
-          <div className="flex items-center justify-between mb-1">
-            <span className="cb-label">Location</span>
-            {hasCoordinates && <MapPin style={{ width: 10, height: 10, color: activeItem?.accent ?? "#10b981" }} />}
-          </div>
-          {hasPolygon ? (
-            <span style={{ fontSize: 11, fontFamily: "monospace", color: "#10b981", letterSpacing: "0.04em" }}>
-              CUSTOM POLYGON DEFINED
-            </span>
-          ) : hasCoordinates ? (
-            <span className="cb-value font-mono" style={{ fontSize: 11 }}>
-              {latitude?.toFixed(4)}, {longitude?.toFixed(4)}
-            </span>
-          ) : (
-            <span style={{ fontSize: 11, color: "var(--cb-secondary)" }}>Click map to select location</span>
-          )}
-        </div>
+        {/* Location search + coordinates */}
+        <LocationSearch
+          latitude={latitude}
+          longitude={longitude}
+          hasPolygon={hasPolygon}
+          locationName={locationName}
+          accentColor={activeItem?.accent ?? "#10b981"}
+          onSelectLocation={onLocationSearch}
+        />
 
         {/* Map overlay selector */}
         <div className="shrink-0 px-4 py-2.5 cb-divider">

@@ -20,6 +20,7 @@ import { RightPanel } from '@/components/layout/RightPanel';
 import { DigitalTwinOverlay } from '@/components/dashboard/DigitalTwinOverlay';
 import { DigitalTwinToggle } from '@/components/dashboard/DigitalTwinToggle';
 import { DrawnPolygon } from '@/components/dashboard/MapDrawControl';
+import { useMapboxGeocoder } from '@/hooks/useMapboxGeocoder';
 
 const mockMonthlyData = [
   { month: 'Jan', value: 45 },
@@ -197,6 +198,8 @@ const Index = () => {
   const [portfolioAssets, setPortfolioAssets] = useState<PortfolioAsset[]>([]);
   const [selectedPolygon, setSelectedPolygon] = useState<DrawnPolygon | null>(null);
   const [polygonExposurePct, setPolygonExposurePct] = useState<number | null>(null);
+  const [reverseLocationName, setReverseLocationName] = useState<string | null>(null);
+  const { reverseGeocode } = useMapboxGeocoder();
 
   const mapStyle: MapStyle = mode === 'coastal' ? 'satellite' : mode === 'flood' ? 'flood' : 'dark';
   const showFloodOverlay = mode === 'flood' && markerPosition !== null;
@@ -250,7 +253,32 @@ const Index = () => {
     setIsPanelOpen(true);
     setMobileSheetOpen(true);
     setMobileTab('data');
-  }, []);
+    setReverseLocationName(null);
+    reverseGeocode(lat, lng).then((name) => {
+      if (name) setReverseLocationName(name);
+    });
+  }, [reverseGeocode]);
+
+  const handleLocationSearch = useCallback((lat: number, lng: number) => {
+    setMarkerPosition({ lat, lng });
+    setShowResults(false);
+    setShowCoastalResults(false);
+    setShowFloodResults(false);
+    setShowHealthResults(false);
+    setIsPanelOpen(true);
+    setMobileSheetOpen(true);
+    setMobileTab('data');
+    setViewState((prev) => ({
+      ...prev,
+      longitude: lng,
+      latitude: lat,
+      zoom: 10,
+    }));
+    setReverseLocationName(null);
+    reverseGeocode(lat, lng).then((name) => {
+      if (name) setReverseLocationName(name);
+    });
+  }, [reverseGeocode]);
 
   const handlePolygonCreated = useCallback((polygon: DrawnPolygon) => {
     setSelectedPolygon(polygon);
@@ -1154,6 +1182,8 @@ const Index = () => {
         latitude={markerPosition?.lat ?? null}
         longitude={markerPosition?.lng ?? null}
         hasPolygon={selectedPolygon !== null}
+        locationName={reverseLocationName}
+        onLocationSearch={handleLocationSearch}
         cropType={cropType}
         onCropChange={setCropType}
         mangroveWidth={mangroveWidth}
