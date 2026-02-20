@@ -33,9 +33,25 @@ export const PortfolioCSVUpload = ({
   const { CSVReader } = useCSVReader();
   const [error, setError] = useState<string | null>(null);
 
+  /** Normalize header cell: trim and lowercase; blank columns become "". */
+  const norm = (h: string) => (h ?? '').trim().toLowerCase();
+
+  /** Find the first row in the first 5–10 rows that contains both 'lat' and 'lon' (case-insensitive, ignoring blank columns). */
+  const findHeaderRowIndex = (rows: string[][]): number => {
+    const maxScan = Math.min(10, rows.length);
+    for (let r = 0; r < maxScan; r++) {
+      const row = rows[r];
+      if (!row || !Array.isArray(row)) continue;
+      const hasLat = row.some((c) => norm(c) === 'lat');
+      const hasLon = row.some((c) => norm(c) === 'lon');
+      if (hasLat && hasLon) return r;
+    }
+    return -1;
+  };
+
   const handleUploadAccepted = (results: { data: string[][] }) => {
     setError(null);
-    
+
     try {
       const rows = results.data;
       if (rows.length < 2) {
@@ -43,11 +59,17 @@ export const PortfolioCSVUpload = ({
         return;
       }
 
-      const headers = rows[0].map((h) => h.trim().toLowerCase());
-      const nameIdx = headers.findIndex((h) => h === 'name' || h === 'farm_id');
-      const latIdx = headers.findIndex((h) => h === 'lat');
-      const lonIdx = headers.findIndex((h) => h === 'lon');
-      const valueIdx = headers.findIndex((h) => h === 'value');
+      const headerRowIndex = findHeaderRowIndex(rows);
+      if (headerRowIndex === -1) {
+        setError('CSV must have at least columns: Lat, Lon (optional: Name/farm_id, Value)');
+        return;
+      }
+
+      const headerRow = rows[headerRowIndex];
+      const nameIdx = headerRow.findIndex((h) => ['name', 'farm_id'].includes(norm(h)));
+      const latIdx = headerRow.findIndex((h) => norm(h) === 'lat');
+      const lonIdx = headerRow.findIndex((h) => norm(h) === 'lon');
+      const valueIdx = headerRow.findIndex((h) => norm(h) === 'value');
 
       if (latIdx === -1 || lonIdx === -1) {
         setError('CSV must have at least columns: Lat, Lon (optional: Name/farm_id, Value)');
@@ -55,7 +77,8 @@ export const PortfolioCSVUpload = ({
       }
 
       // Check for maximum rows (10,000 limit enforced server-side)
-      if (rows.length > 10001) {
+      const dataRowCount = rows.length - (headerRowIndex + 1);
+      if (dataRowCount > 10000) {
         setError('Maximum 10,000 assets allowed per upload');
         return;
       }
@@ -63,7 +86,7 @@ export const PortfolioCSVUpload = ({
       const assets: PortfolioAsset[] = [];
       const validationErrors: string[] = [];
 
-      for (let i = 1; i < rows.length; i++) {
+      for (let i = headerRowIndex + 1; i < rows.length; i++) {
         const row = rows[i];
         if (row.length < 2 || row.every((cell) => !cell.trim())) continue;
 
