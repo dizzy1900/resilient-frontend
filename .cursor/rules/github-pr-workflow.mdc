@@ -1,0 +1,18 @@
+---
+description: Push updates to GitHub via pull request, not by merging into main
+alwaysApply: true
+---
+
+# GitHub: Use Pull Requests for Updates
+
+When pushing updates to GitHub:
+
+1. **Do not** merge branches into `main` locally and push `main`. Do not checkout `main`, merge, and push.
+2. **Do** push updates on a **topic branch** (e.g. `fix/env-gitignore`, `feature/xyz`). Commit on that branch and run `git push origin <branch-name>`.
+3. **Open a pull request** so the change is applied via a PR on GitHub:
+   - If GitHub CLI is installed and authenticated: run `gh pr create --base main` (or the target branch) and share the PR URL.
+   - If not: after pushing the branch, give the user the "Compare & pull request" link:  
+     `https://github.com/<owner>/<repo>/compare/main...<branch-name>?expand=1`  
+     so they can open the PR in the browser.
+
+The fix or feature should land on `main` (or the default branch) only after a pull request is merged on GitHub, not by local merge + push.
