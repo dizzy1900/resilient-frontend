@@ -172,10 +172,11 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
 
         const url = getAnalyzePortfolioUrl();
         const response = await fetch(url, { method: 'POST', body: formData });
-        const data: PortfolioAnalysisResult = await response.json().catch(() => ({}));
+        const payload = await response.json().catch(() => ({}));
+        const resultData: PortfolioAnalysisResult = payload?.data != null ? payload.data : payload;
 
-        if (response.ok && data && typeof data === 'object' && data.portfolio_summary != null) {
-          onPortfolioResultsChange?.(data);
+        if (response.ok && resultData && typeof resultData === 'object' && resultData.portfolio_summary != null) {
+          onPortfolioResultsChange?.(resultData);
           confetti({
             particleCount: 100,
             spread: 70,
@@ -187,7 +188,7 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
             description: `Analyzed ${parsedData.length} assets.`,
           });
         } else {
-          throw new Error(data?.message ?? `HTTP ${response.status}`);
+          throw new Error((payload as { message?: string })?.message ?? `HTTP ${response.status}`);
         }
       }
     } catch (error) {
