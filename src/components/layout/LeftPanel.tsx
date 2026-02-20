@@ -685,8 +685,16 @@ export function ModeContent(props: ModeContentProps) {
           throw new Error(errText || `HTTP ${response.status}`);
         }
         const data = await response.json();
-        console.log("4. Parsed Data:", data);
-        const hasSummary = data && typeof data === "object" && "portfolio_summary" in data && data.portfolio_summary != null;
+        console.log("RAW BACKEND PAYLOAD:", data);
+        const isObject = data != null && typeof data === "object";
+        if (isObject && data.detail) {
+          console.error("FastAPI Error Returned as 200:", data.detail);
+        }
+        if (!isObject || !data.portfolio_summary) {
+          console.error("DATA MISMATCH: Expected 'portfolio_summary' but got:", isObject ? Object.keys(data) : typeof data);
+          // Do not throw here yet, let the console logs print.
+        }
+        const hasSummary = isObject && "portfolio_summary" in data && data.portfolio_summary != null;
         if (hasSummary) {
           onPortfolioResultsChange?.(data);
         } else {
