@@ -114,11 +114,11 @@ export function MapDrawControl({ map, enabled, onPolygonCreated, onPolygonDelete
       try {
         await import('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');
         const mod = await import('@mapbox/mapbox-gl-draw');
-        const MapboxDraw = mod.default ?? mod;
+        const MapboxDraw = (mod as any).default?.default ?? (mod as any).default ?? mod;
 
         if (cancelled) return;
 
-        const draw = new MapboxDraw({
+        const draw = new (MapboxDraw as any)({
           displayControlsDefault: false,
           controls: {
             polygon: true,
