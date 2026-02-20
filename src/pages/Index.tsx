@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { MapView, MapStyle, ViewState, ZoneData, PortfolioMapAsset } from '@/components/dashboard/MapView';
+import { MapView, MapStyle, ViewState, ZoneData, PortfolioMapAsset, FlyToTarget } from '@/components/dashboard/MapView';
 import { AtlasClickData } from '@/components/dashboard/AtlasMarkers';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { HealthResults } from '@/components/hud/HealthResultsPanel';
@@ -199,6 +199,7 @@ const Index = () => {
   const [selectedPolygon, setSelectedPolygon] = useState<DrawnPolygon | null>(null);
   const [polygonExposurePct, setPolygonExposurePct] = useState<number | null>(null);
   const [reverseLocationName, setReverseLocationName] = useState<string | null>(null);
+  const [flyToTarget, setFlyToTarget] = useState<FlyToTarget | null>(null);
   const { reverseGeocode } = useMapboxGeocoder();
 
   const mapStyle: MapStyle = mode === 'coastal' ? 'satellite' : mode === 'flood' ? 'flood' : 'dark';
@@ -268,12 +269,7 @@ const Index = () => {
     setIsPanelOpen(true);
     setMobileSheetOpen(true);
     setMobileTab('data');
-    setViewState((prev) => ({
-      ...prev,
-      longitude: lng,
-      latitude: lat,
-      zoom: 10,
-    }));
+    setFlyToTarget({ longitude: lng, latitude: lat, zoom: 12, ts: Date.now() });
     setReverseLocationName(null);
     reverseGeocode(lat, lng).then((name) => {
       if (name) setReverseLocationName(name);
@@ -1135,6 +1131,7 @@ const Index = () => {
                 showFloodOverlay={showFloodOverlay}
                 viewState={viewState}
                 onViewStateChange={handleViewStateChange}
+                flyToTarget={flyToTarget}
                 scenarioLabel="Baseline"
                 zoneData={zoneData}
                 portfolioAssets={portfolioMapAssets}
@@ -1150,6 +1147,7 @@ const Index = () => {
                 showFloodOverlay={showFloodOverlay}
                 viewState={viewState}
                 onViewStateChange={handleViewStateChange}
+                flyToTarget={flyToTarget}
                 scenarioLabel="With Adaptation"
                 isAdaptationScenario={true}
                 zoneData={zoneData}
@@ -1162,6 +1160,9 @@ const Index = () => {
             markerPosition={markerPosition}
             mapStyle={mapStyle}
             showFloodOverlay={showFloodOverlay}
+            viewState={viewState}
+            onViewStateChange={handleViewStateChange}
+            flyToTarget={flyToTarget}
             zoneData={zoneData}
             portfolioAssets={portfolioMapAssets}
             onAtlasClick={handleAtlasClick}

@@ -39,6 +39,13 @@ export interface PortfolioMapAsset {
   resilienceScore?: number; // 0-100, used for color
 }
 
+export interface FlyToTarget {
+  longitude: number;
+  latitude: number;
+  zoom?: number;
+  ts: number;
+}
+
 interface MapViewProps {
   onLocationSelect: (lat: number, lng: number) => void;
   markerPosition: { lat: number; lng: number } | null;
@@ -46,6 +53,7 @@ interface MapViewProps {
   showFloodOverlay?: boolean;
   viewState?: ViewState;
   onViewStateChange?: (viewState: ViewState) => void;
+  flyToTarget?: FlyToTarget | null;
   scenarioLabel?: string;
   isAdaptationScenario?: boolean;
   zoneData?: ZoneData;
@@ -81,6 +89,7 @@ const LazyMap = ({
   showFloodOverlay = false,
   viewState: externalViewState,
   onViewStateChange,
+  flyToTarget,
   scenarioLabel,
   isAdaptationScenario = false,
   zoneData,
@@ -300,6 +309,20 @@ const LazyMap = ({
       updatePortfolioLayers(map);
     }
   }, [portfolioAssets, updatePortfolioLayers]);
+
+  const lastFlyTsRef = useRef(0);
+  useEffect(() => {
+    if (!flyToTarget || flyToTarget.ts === lastFlyTsRef.current) return;
+    lastFlyTsRef.current = flyToTarget.ts;
+    const map = mapRef.current?.getMap?.();
+    if (!map) return;
+    map.flyTo({
+      center: [flyToTarget.longitude, flyToTarget.latitude],
+      zoom: flyToTarget.zoom ?? 12,
+      duration: 2000,
+      essential: true,
+    });
+  }, [flyToTarget]);
 
   const handleMapLoad = useCallback((event: any) => {
     const map = event.target;
