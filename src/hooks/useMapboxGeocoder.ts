@@ -31,7 +31,7 @@ export function useMapboxGeocoder() {
       setIsSearching(true);
 
       try {
-        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${MAPBOX_TOKEN}&limit=5&types=place,locality,address,poi,neighborhood,district,region,country`;
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${MAPBOX_TOKEN}&limit=5&types=poi,address,place,neighborhood,locality&autocomplete=true`;
         const res = await fetch(url, { signal: controller.signal });
         if (!res.ok) throw new Error("Geocoding request failed");
         const data = await res.json();
