@@ -13,6 +13,7 @@ interface TimelinePlayerProps {
 
 const MIN_YEAR = 2026;
 const MAX_YEAR = 2050;
+const MID_YEAR = Math.round((MIN_YEAR + MAX_YEAR) / 2); // 2038
 const INTERVAL_MS = 800;
 
 export function TimelinePlayer({
@@ -92,7 +93,7 @@ export function TimelinePlayer({
             />
             <div className="flex justify-between items-center" style={{ fontSize: 10, color: 'var(--cb-secondary)' }}>
               <span>{MIN_YEAR}</span>
-              <span className="font-medium tabular-nums" style={{ color: 'var(--cb-text)' }}>{selectedYear}</span>
+              <span className="font-medium tabular-nums" style={{ color: 'var(--cb-text)' }}>{MID_YEAR}</span>
               <span>{MAX_YEAR}</span>
             </div>
           </div>
@@ -136,7 +137,7 @@ export function TimelinePlayer({
               />
               <div className="flex justify-between text-white/50 text-[10px]">
                 <span>{MIN_YEAR}</span>
-                <span className="hidden sm:inline text-white/35">Climate Timeline</span>
+                <span className="hidden sm:inline text-white/35">{MID_YEAR}</span>
                 <span>{MAX_YEAR}</span>
               </div>
             </div>

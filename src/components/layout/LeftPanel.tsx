@@ -33,16 +33,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { Settings, User, LogOut } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast as showToast } from "@/hooks/use-toast";
 import { FinancialSettingsModal } from "@/components/hud/FinancialSettingsModal";
 import { TimelinePlayer } from "@/components/TimelinePlayer";
 import { cn } from "@/lib/utils";
@@ -692,6 +682,7 @@ export function ModeContent(props: ModeContentProps) {
           throw new Error(errText || `HTTP ${res.status}`);
         }
         const data = await res.json();
+        console.log('Backend Response:', data);
         onPortfolioResultsChange?.(data);
       } catch (err) {
         console.error("Portfolio analyze error:", err);
@@ -1895,49 +1886,9 @@ function NoLocationHint() {
 
 // ─── Auth helpers ─────────────────────────────────────────────────────────────
 
+/** Auth UI hidden for prototyping; all pages are public. */
 function CompactUserMenu() {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    await signOut();
-    showToast({ title: "Signed out", description: "You have been signed out successfully." });
-    navigate("/");
-  };
-
-  if (!user) {
-    return (
-      <button onClick={() => navigate("/auth")} className="cb-icon-btn" title="Sign In">
-        <User style={{ width: 14, height: 14 }} />
-      </button>
-    );
-  }
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="cb-icon-btn" title={user.email ?? "User"}>
-          <User style={{ width: 14, height: 14 }} />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        side="right"
-        align="end"
-        className="border"
-        style={{
-          backgroundColor: "var(--cb-bg)",
-          borderColor: "var(--cb-border)",
-          color: "var(--cb-text)",
-          minWidth: 160,
-        }}
-      >
-        <DropdownMenuItem onClick={handleSignOut} style={{ fontSize: 12, color: "var(--cb-text)", cursor: "pointer" }}>
-          <LogOut style={{ width: 12, height: 12, marginRight: 8 }} />
-          Sign Out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
+  return null;
 }
 
 function CompactSettingsButton() {
