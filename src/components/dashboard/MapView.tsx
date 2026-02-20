@@ -4,7 +4,7 @@ import { Polygon, polygonToGeoJSON, createRingDifferenceGeoJSON, calculatePolygo
 import { ZoneMode } from '@/utils/zoneGeneration';
 import { getZoneColors } from '@/utils/zoneMorphing';
 import { AtlasMarkers, AtlasClickData } from './AtlasMarkers';
-import { MapDrawControl, DrawnPolygon } from './MapDrawControl';
+import DrawControl, { DrawnPolygon } from './DrawControl';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGF2aWRpemkiLCJhIjoiY21rd2dzeHN6MDFoYzNkcXYxOHZ0YXRuNCJ9.P_g5wstTHNzglNEQfHIoBg';
 
@@ -466,13 +466,31 @@ const LazyMap = ({
 
       {onAtlasClick && <AtlasMarkers Marker={Marker} onAtlasClick={onAtlasClick} overlayMode={atlasOverlay} />}
 
-      {rawMap && onPolygonCreated && onPolygonDeleted && (
-        <MapDrawControl
-          map={rawMap}
-          enabled={drawEnabled}
-          onPolygonCreated={onPolygonCreated}
-          onPolygonDeleted={onPolygonDeleted}
-          onDrawModeChange={handleDrawModeChange}
+      {onPolygonCreated && onPolygonDeleted && (
+        <DrawControl
+          position="top-right"
+          displayControlsDefault={false}
+          controls={{ polygon: true, trash: true }}
+          onCreate={(e) => {
+            const feature = e.features?.[0];
+            if (feature?.geometry?.type === 'Polygon') {
+              onPolygonCreated(feature.geometry as DrawnPolygon);
+            }
+          }}
+          onUpdate={(e) => {
+            const feature = e.features?.[0];
+            if (feature?.geometry?.type === 'Polygon') {
+              onPolygonCreated(feature.geometry as DrawnPolygon);
+            }
+          }}
+          onDelete={() => {
+            onPolygonDeleted();
+          }}
+          onModeChange={(e) => {
+            const mode = e.mode;
+            const drawing = mode === 'draw_polygon' || mode === 'draw_line_string' || mode === 'draw_point';
+            handleDrawModeChange(drawing);
+          }}
         />
       )}
     </Map>

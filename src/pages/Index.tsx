@@ -19,7 +19,7 @@ import { LeftPanel } from '@/components/layout/LeftPanel';
 import { RightPanel } from '@/components/layout/RightPanel';
 import { DigitalTwinOverlay } from '@/components/dashboard/DigitalTwinOverlay';
 import { DigitalTwinToggle } from '@/components/dashboard/DigitalTwinToggle';
-import { DrawnPolygon } from '@/components/dashboard/MapDrawControl';
+import { DrawnPolygon } from '@/components/dashboard/DrawControl';
 import { useMapboxGeocoder } from '@/hooks/useMapboxGeocoder';
 
 const mockMonthlyData = [
