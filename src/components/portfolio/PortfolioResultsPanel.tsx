@@ -3,8 +3,11 @@ import { GlassCard } from '@/components/hud/GlassCard';
 import { Badge } from '@/components/ui/badge';
 import { PortfolioAsset } from './PortfolioCSVUpload';
 
+/** Asset may be UI shape (Value, score, Name) or backend snake_case (value, resilience_score, name) */
+type ScoredAsset = (PortfolioAsset & { score?: number }) | Record<string, unknown>;
+
 interface PortfolioResultsPanelProps {
-  assets: (PortfolioAsset & { score?: number })[];
+  assets: ScoredAsset[];
   visible: boolean;
 }
 
@@ -20,16 +23,32 @@ const formatCurrency = (value: number) => {
   return `$${value.toFixed(0)}`;
 };
 
+/** Read value from asset: backend snake_case (value) or UI (Value). */
+const getAssetValue = (a: ScoredAsset): number =>
+  Number((a as Record<string, unknown>).value ?? (a as PortfolioAsset).Value ?? 0);
+
+/** Read resilience score: backend snake_case (resilience_score) or UI (score). */
+const getAssetScore = (a: ScoredAsset): number | undefined => {
+  const s = (a as Record<string, unknown>).resilience_score ?? (a as { score?: number }).score;
+  return s != null ? Number(s) : undefined;
+};
+
+/** Read display name: backend (name) or UI (Name). */
+const getAssetName = (a: ScoredAsset): string =>
+  String((a as Record<string, unknown>).name ?? (a as PortfolioAsset).Name ?? 'Asset');
+
 export const PortfolioResultsPanel = ({ assets, visible }: PortfolioResultsPanelProps) => {
   if (!visible || assets.length === 0) return null;
 
-  const scoredAssets = assets.filter(a => a.score !== undefined);
+  const scoredAssets = assets.filter((a) => getAssetScore(a) !== undefined);
   if (scoredAssets.length === 0) return null;
 
-  const avgScore = Math.round(scoredAssets.reduce((sum, a) => sum + (a.score ?? 0), 0) / scoredAssets.length);
-  const totalValue = scoredAssets.reduce((sum, a) => sum + a.Value, 0);
-  const atRiskAssets = scoredAssets.filter(a => (a.score ?? 0) < 50);
-  const atRiskValue = atRiskAssets.reduce((sum, a) => sum + a.Value, 0);
+  const avgScore = Math.round(
+    scoredAssets.reduce((sum, a) => sum + (getAssetScore(a) ?? 0), 0) / scoredAssets.length
+  );
+  const totalValue = scoredAssets.reduce((sum, a) => sum + getAssetValue(a), 0);
+  const atRiskAssets = scoredAssets.filter((a) => (getAssetScore(a) ?? 0) < 50);
+  const atRiskValue = atRiskAssets.reduce((sum, a) => sum + getAssetValue(a), 0);
   const portfolioRisk = getRiskLevel(avgScore);
 
   return (
@@ -78,15 +97,16 @@ export const PortfolioResultsPanel = ({ assets, visible }: PortfolioResultsPanel
             </div>
             <div className="flex items-end gap-1 h-16">
               {scoredAssets.map((asset, i) => {
-                const height = ((asset.score ?? 0) / 100) * 100;
-                const risk = getRiskLevel(asset.score ?? 0);
+                const score = getAssetScore(asset) ?? 0;
+                const height = (score / 100) * 100;
+                const risk = getRiskLevel(score);
                 return (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-0.5" title={`${asset.Name}: ${asset.score}`}>
+                  <div key={i} className="flex-1 flex flex-col items-center gap-0.5" title={`${getAssetName(asset)}: ${score}`}>
                     <div
                       className={`w-full rounded-t transition-all duration-500 ${
-                        (asset.score ?? 0) >= 70
+                        score >= 70
                           ? 'bg-gradient-to-t from-emerald-500 to-emerald-500/40'
-                          : (asset.score ?? 0) >= 40
+                          : score >= 40
                           ? 'bg-gradient-to-t from-amber-500 to-amber-500/40'
                           : 'bg-gradient-to-t from-red-500 to-red-500/40'
                       }`}
@@ -108,17 +128,18 @@ export const PortfolioResultsPanel = ({ assets, visible }: PortfolioResultsPanel
             Asset Breakdown
           </div>
           {scoredAssets.map((asset, i) => {
-            const risk = getRiskLevel(asset.score ?? 0);
+            const score = getAssetScore(asset) ?? 0;
+            const risk = getRiskLevel(score);
             return (
               <div key={i} className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/10">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-white truncate">{asset.Name}</p>
-                  <p className="text-[10px] text-white/40">{formatCurrency(asset.Value)}</p>
+                  <p className="text-xs font-medium text-white truncate">{getAssetName(asset)}</p>
+                  <p className="text-[10px] text-white/40">{formatCurrency(getAssetValue(asset))}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${risk.bg} ${risk.color}`}>
-                    {(asset.score ?? 0) >= 50 ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
-                    {asset.score}
+                    {score >= 50 ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
+                    {score}
                   </div>
                 </div>
               </div>
