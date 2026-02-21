@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/clientSafe';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import confetti from 'canvas-confetti';
-import type { PortfolioAnalysisResult } from '@/types/portfolio';
+import { mapPortfolioAnalysisResult, type PortfolioAnalysisResult } from '@/types/portfolio';
 
 
 function escapeCsv(value: string): string {
@@ -170,7 +170,8 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
         const resultData: PortfolioAnalysisResult = payload?.data != null ? payload.data : payload;
 
         if (response.ok && resultData && typeof resultData === 'object' && resultData.portfolio_summary != null) {
-          onPortfolioResultsChange?.(resultData);
+          const mappedData = mapPortfolioAnalysisResult(resultData);
+          onPortfolioResultsChange?.(mappedData);
           confetti({
             particleCount: 100,
             spread: 70,
