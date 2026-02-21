@@ -10,13 +10,6 @@ import { useAuth } from '@/hooks/useAuth';
 import confetti from 'canvas-confetti';
 import type { PortfolioAnalysisResult } from '@/types/portfolio';
 
-function getAnalyzePortfolioUrl(): string {
-  const base = import.meta.env.VITE_API_BASE_URL;
-  if (base && typeof base === 'string') {
-    return `${base.replace(/\/+$/, '')}/api/v1/analyze-portfolio`;
-  }
-  return '/api/v1/analyze-portfolio';
-}
 
 function escapeCsv(value: string): string {
   if (/[",\n\r]/.test(value)) return `"${value.replace(/"/g, '""')}"`;
@@ -170,8 +163,9 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
         const formData = new FormData();
         formData.append('file', file);
 
-        const url = getAnalyzePortfolioUrl();
-        const response = await fetch(url, { method: 'POST', body: formData });
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+        const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/analyze-portfolio`;
+        const response = await fetch(endpoint, { method: 'POST', body: formData });
         const payload = await response.json().catch(() => ({}));
         const resultData: PortfolioAnalysisResult = payload?.data != null ? payload.data : payload;
 
