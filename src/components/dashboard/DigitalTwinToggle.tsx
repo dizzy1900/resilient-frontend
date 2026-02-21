@@ -9,7 +9,7 @@ export function DigitalTwinToggle({ isSplitMode, onToggle, hasSecondaryPanel = f
     <div
       className="hidden md:flex absolute top-4 z-30"
       style={{
-        left: hasSecondaryPanel ? 'calc(50% + 160px)' : '50%',
+        left: hasSecondaryPanel ? 'calc(50% + 240px)' : '50%',
         transform: 'translateX(-50%)',
         transition: 'left 0.15s ease',
       }}
