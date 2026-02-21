@@ -36,7 +36,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { FinancialSettingsModal } from "@/components/hud/FinancialSettingsModal";
 import { TimelinePlayer } from "@/components/TimelinePlayer";
 import { cn } from "@/lib/utils";
-import { mapPortfolioAnalysisResult } from "@/types/portfolio";
 import { LocationSearch } from "@/components/dashboard/LocationSearch";
 
 const MODE_ITEMS: {
@@ -692,7 +691,16 @@ export function ModeContent(props: ModeContentProps) {
         }
         const hasSummary = isObject && "portfolio_summary" in resultData && resultData.portfolio_summary != null;
         if (hasSummary) {
-          const mappedData = mapPortfolioAnalysisResult(resultData);
+          const ps = resultData.portfolio_summary;
+          const mappedData = {
+            ...resultData,
+            portfolio_summary: {
+              ...ps,
+              totalPortfolioValue: ps?.total_portfolio_value ?? ps?.totalPortfolioValue ?? 0,
+              totalValueAtRisk: ps?.total_value_at_risk ?? ps?.totalValueAtRisk ?? 0,
+              averageResilienceScore: ps?.average_resilience_score ?? ps?.averageResilienceScore ?? 0,
+            },
+          };
           onPortfolioResultsChange?.(mappedData);
         } else {
           throw new Error("Missing portfolio_summary. Backend actually sent: " + JSON.stringify(payload));

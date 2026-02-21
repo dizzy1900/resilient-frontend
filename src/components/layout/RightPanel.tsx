@@ -1158,17 +1158,17 @@ function FinanceContent({
   );
 }
 
-/** Read summary: prefer camelCase (mapped from API), then snake_case (raw FastAPI) */
+/** Aggregate Portfolio Analysis panel. Summary is guaranteed to have camelCase keys (totalPortfolioValue, etc.) from handleFileUpload mapping. */
 function AggregatePortfolioSummary({ summary }: { summary: PortfolioSummary }) {
   const s = summary as Record<string, unknown>;
   const totalValue = Number(
-    s?.totalPortfolioValue ?? s?.total_portfolio_value ?? summary.totalPortfolioValue ?? summary.total_portfolio_value ?? 0
+    summary.totalPortfolioValue ?? s?.total_portfolio_value ?? summary.total_portfolio_value ?? 0
   );
   const totalVaR = Number(
-    s?.totalValueAtRisk ?? s?.total_value_at_risk ?? summary.totalValueAtRisk ?? summary.total_value_at_risk ?? 0
+    summary.totalValueAtRisk ?? s?.total_value_at_risk ?? summary.total_value_at_risk ?? 0
   );
   const avgScore =
-    s?.averageResilienceScore ?? s?.average_resilience_score ?? summary.averageResilienceScore ?? summary.average_resilience_score ?? null;
+    summary.averageResilienceScore ?? s?.average_resilience_score ?? summary.average_resilience_score ?? null;
   const avgScoreNum = avgScore != null ? Number(avgScore) : null;
 
   return (
