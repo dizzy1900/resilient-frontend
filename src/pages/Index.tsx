@@ -1217,7 +1217,7 @@ const Index = () => {
         )}
       </div>
 
-      <DigitalTwinToggle isSplitMode={isSplitMode} onToggle={() => setIsSplitMode(!isSplitMode)} />
+      <DigitalTwinToggle isSplitMode={isSplitMode} onToggle={() => setIsSplitMode(!isSplitMode)} hasSecondaryPanel={mode === 'portfolio'} />
 
       {/* Desktop Left Panel */}
       <LeftPanel
