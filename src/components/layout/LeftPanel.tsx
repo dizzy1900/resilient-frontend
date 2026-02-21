@@ -587,14 +587,6 @@ function SimDivider() {
   return <div className="mx-4 mt-6 mb-0 border-t" style={{ borderColor: "var(--cb-border)" }} />;
 }
 
-function getAnalyzePortfolioUrl(): string {
-  const base = import.meta.env.VITE_API_BASE_URL;
-  if (base && typeof base === "string") {
-    const trimmed = base.replace(/\/+$/, "");
-    return `${trimmed}/api/v1/analyze-portfolio`;
-  }
-  return "/api/v1/analyze-portfolio";
-}
 
 export function ModeContent(props: ModeContentProps) {
   const {
@@ -673,9 +665,10 @@ export function ModeContent(props: ModeContentProps) {
       try {
         const formData = new FormData();
         formData.append("file", selectedFile);
-        const url = getAnalyzePortfolioUrl();
-        console.log("2. Fetching URL:", url);
-        const response = await fetch(url, {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || "";
+        const endpoint = `${baseUrl.replace(/\/+$/, "")}/api/v1/analyze-portfolio`;
+        console.log("2. Fetching URL:", endpoint);
+        const response = await fetch(endpoint, {
           method: "POST",
           body: formData,
         });
