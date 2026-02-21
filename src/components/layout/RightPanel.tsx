@@ -368,13 +368,26 @@ export function RightPanelContent({
 }: RightPanelContentProps) {
   if (isLoading) return <LoadingState />;
 
+  // In portfolio mode: display assets from API (asset_results) or CSV (portfolioAssets).
+  // Map backend snake_case (value, resilience_score, name, lat, lon) to UI shape (Value, score, Name, Lat, Lon).
+  const portfolioDisplayAssets: (PortfolioAsset & { score?: number })[] =
+    mode === 'portfolio' && portfolioResults?.asset_results?.length
+      ? portfolioResults.asset_results.map((a) => ({
+          Name: (a as Record<string, unknown>).name ?? a.name ?? 'Asset',
+          Lat: a.lat,
+          Lon: a.lon,
+          Value: Number((a as Record<string, unknown>).value ?? a.value ?? 0),
+          score: Number((a as Record<string, unknown>).resilience_score ?? a.resilience_score ?? undefined),
+        }))
+      : portfolioAssets ?? [];
+
   return (
     <>
       {mode === 'portfolio' && portfolioResults != null && portfolioResults.portfolio_summary != null && (
         <AggregatePortfolioSummary summary={portfolioResults.portfolio_summary} />
       )}
-      {mode === 'portfolio' && (portfolioResults == null || portfolioResults.portfolio_summary == null) && (
-        <PortfolioContent assets={portfolioAssets ?? []} />
+      {mode === 'portfolio' && (
+        <PortfolioContent assets={portfolioDisplayAssets} />
       )}
 
       {mode === 'finance' && (
@@ -1145,10 +1158,18 @@ function FinanceContent({
   );
 }
 
+/** Read summary fields from backend: prefer snake_case (FastAPI default), fallback to camelCase */
 function AggregatePortfolioSummary({ summary }: { summary: PortfolioSummary }) {
-  const totalValue = summary.total_portfolio_value ?? 0;
-  const totalVaR = summary.total_value_at_risk ?? 0;
-  const avgScore = summary.average_resilience_score ?? null;
+  const s = summary as Record<string, unknown>;
+  const totalValue = Number(
+    s?.total_portfolio_value ?? s?.totalPortfolioValue ?? summary.total_portfolio_value ?? 0
+  );
+  const totalVaR = Number(
+    s?.total_value_at_risk ?? s?.totalValueAtRisk ?? summary.total_value_at_risk ?? 0
+  );
+  const avgScore =
+    s?.average_resilience_score ?? s?.averageResilienceScore ?? summary.average_resilience_score ?? null;
+  const avgScoreNum = avgScore != null ? Number(avgScore) : null;
 
   return (
     <div>
@@ -1196,7 +1217,7 @@ function AggregatePortfolioSummary({ summary }: { summary: PortfolioSummary }) {
             {formatCurrency(totalVaR)}
           </p>
         </div>
-        {avgScore != null && (
+        {avgScoreNum != null && (
           <div>
             <p style={{ fontSize: 10, color: 'var(--cb-secondary)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
               Average Resilience Score
@@ -1206,11 +1227,11 @@ function AggregatePortfolioSummary({ summary }: { summary: PortfolioSummary }) {
                 fontSize: 28,
                 fontWeight: 300,
                 letterSpacing: '-0.02em',
-                color: avgScore >= 70 ? '#10b981' : avgScore >= 40 ? '#f59e0b' : '#f43f5e',
+                color: avgScoreNum >= 70 ? '#10b981' : avgScoreNum >= 40 ? '#f59e0b' : '#f43f5e',
                 fontFamily: 'monospace',
               }}
             >
-              {Number(avgScore).toFixed(0)}
+              {avgScoreNum.toFixed(0)}
               <span style={{ fontSize: 14, color: 'var(--cb-secondary)', fontWeight: 400 }}> / 100</span>
             </p>
           </div>
