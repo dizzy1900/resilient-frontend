@@ -162,7 +162,7 @@ export const FloatingControlPanel = ({
           </TabsTrigger>
           <TabsTrigger
             value="coastal"
-            className="rounded-lg text-[9px] lg:text-[10px] font-medium data-[state=active]:bg-teal-500/20 data-[state=active]:text-teal-400 data-[state=active]:border data-[state=active]:border-teal-500/30 text-white/60 transition-all px-1"
+            className="rounded-lg text-[9px] lg:text-[10px] font-medium data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400 data-[state=active]:border data-[state=active]:border-cyan-500/30 text-white/60 transition-all px-1"
           >
             Coastal
           </TabsTrigger>
@@ -249,10 +249,10 @@ export const FloatingControlPanel = ({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <TreePine className="w-4 h-4 text-teal-400" />
+                  <TreePine className="w-4 h-4 text-cyan-400" />
                   Mangrove Width
                 </label>
-                <span className="text-sm font-semibold text-teal-400 tabular-nums">{localMangroveWidth}m</span>
+                <span className="text-sm font-semibold text-cyan-400 tabular-nums">{localMangroveWidth}m</span>
               </div>
               <Slider
                 value={[localMangroveWidth]}
@@ -261,7 +261,7 @@ export const FloatingControlPanel = ({
                 max={500}
                 step={10}
                 disabled={!canSimulate}
-                className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-teal-500 [&_[data-radix-slider-thumb]]:border-teal-500 [&_[data-radix-slider-thumb]]:bg-white"
+                className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-cyan-500 [&_[data-radix-slider-thumb]]:border-cyan-500 [&_[data-radix-slider-thumb]]:bg-white"
               />
               <div className="flex justify-between text-xs text-white/40">
                 <span>0m</span>
@@ -271,14 +271,14 @@ export const FloatingControlPanel = ({
             </div>
 
             <div className="flex items-center gap-2 text-xs font-medium text-white/70">
-              <Shield className="w-4 h-4 text-teal-400" />
+              <Shield className="w-4 h-4 text-cyan-400" />
               <span>Defensive Infrastructure</span>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-teal-500" />
+                  <div className="w-2 h-2 rounded-full bg-cyan-500" />
                   <Label htmlFor="sea-wall" className="text-xs text-white/80 cursor-pointer">
                     Sea Wall
                   </Label>
