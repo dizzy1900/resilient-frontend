@@ -277,7 +277,7 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
         <Button
           variant="outline"
           onClick={handleLoadDemo}
-          className="w-full border-purple-500/30 text-purple-300 hover:bg-purple-500/10 hover:text-purple-200"
+          className="w-full rounded-none border border-white/20 text-white/60 uppercase text-xs tracking-widest hover:bg-white hover:text-black hover:border-white transition-none"
         >
           <MapPinned className="w-4 h-4 mr-2" />
           Load Demo Portfolio (Ghana Cocoa)

@@ -1,11 +1,19 @@
 interface DigitalTwinToggleProps {
   isSplitMode: boolean;
   onToggle: () => void;
+  hasSecondaryPanel?: boolean;
 }
 
-export function DigitalTwinToggle({ isSplitMode, onToggle }: DigitalTwinToggleProps) {
+export function DigitalTwinToggle({ isSplitMode, onToggle, hasSecondaryPanel = false }: DigitalTwinToggleProps) {
   return (
-    <div className="hidden md:flex absolute top-4 left-1/2 -translate-x-1/2 z-30">
+    <div
+      className="hidden md:flex absolute top-4 z-30"
+      style={{
+        left: hasSecondaryPanel ? 'calc(50% + 160px)' : '50%',
+        transform: 'translateX(-50%)',
+        transition: 'left 0.15s ease',
+      }}
+    >
       <button
         onClick={onToggle}
         className="flex items-stretch overflow-hidden select-none"
@@ -18,7 +26,7 @@ export function DigitalTwinToggle({ isSplitMode, onToggle }: DigitalTwinTogglePr
         }}
       >
         <span
-          className="px-5 py-2.5 transition-colors duration-150"
+          className="px-5 py-2.5"
           style={{
             backgroundColor: !isSplitMode ? "var(--cb-bg)" : "transparent",
             color: !isSplitMode ? "var(--cb-text)" : "var(--cb-secondary)",
@@ -28,7 +36,7 @@ export function DigitalTwinToggle({ isSplitMode, onToggle }: DigitalTwinTogglePr
           Single View
         </span>
         <span
-          className="px-5 py-2.5 transition-colors duration-150"
+          className="px-5 py-2.5"
           style={{
             backgroundColor: isSplitMode ? "rgba(16, 185, 129, 0.12)" : "transparent",
             color: isSplitMode ? "#10b981" : "var(--cb-secondary)",
