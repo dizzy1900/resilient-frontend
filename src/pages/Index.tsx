@@ -1375,7 +1375,7 @@ const Index = () => {
           style={{ width: 280, backgroundColor: 'var(--cb-bg)', borderColor: 'var(--cb-border)' }}
         >
           <PortfolioHeader onModeChange={handleModeChange} />
-          <PortfolioPanel onAssetsChange={setPortfolioAssets} />
+          <PortfolioPanel onAssetsChange={setPortfolioAssets} onPortfolioResultsChange={setPortfolioResults} />
         </div>
       )}
 

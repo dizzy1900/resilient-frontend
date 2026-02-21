@@ -8,6 +8,20 @@ import { supabase } from '@/integrations/supabase/clientSafe';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import confetti from 'canvas-confetti';
+import type { PortfolioAnalysisResult } from '@/types/portfolio';
+
+function getAnalyzePortfolioUrl(): string {
+  const base = import.meta.env.VITE_API_BASE_URL;
+  if (base && typeof base === 'string') {
+    return `${base.replace(/\/+$/, '')}/api/v1/analyze-portfolio`;
+  }
+  return '/api/v1/analyze-portfolio';
+}
+
+function escapeCsv(value: string): string {
+  if (/[",\n\r]/.test(value)) return `"${value.replace(/"/g, '""')}"`;
+  return value;
+}
 
 const GHANA_COCOA_DEMO: PortfolioAsset[] = [
   { Name: 'Kumasi Farm', Lat: 6.6885, Lon: -1.6244, Value: 120000 },
@@ -30,9 +44,10 @@ interface BatchJob {
 
 interface PortfolioPanelProps {
   onAssetsChange?: (assets: PortfolioAsset[]) => void;
+  onPortfolioResultsChange?: (data: PortfolioAnalysisResult | null) => void;
 }
 
-export const PortfolioPanel = ({ onAssetsChange }: PortfolioPanelProps) => {
+export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: PortfolioPanelProps) => {
   const [parsedData, setParsedData] = useState<PortfolioAsset[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentJob, setCurrentJob] = useState<BatchJob | null>(null);
@@ -146,33 +161,35 @@ export const PortfolioPanel = ({ onAssetsChange }: PortfolioPanelProps) => {
           description: `Analyzing ${data.assets_count} assets...`,
         });
       } else {
-        // Anonymous path: generate mock resilience scores locally
-        const scoredAssets = parsedData.map((asset) => ({
-          ...asset,
-          score: Math.round(40 + Math.random() * 55), // 40-95 range
-        }));
-        onAssetsChange?.(scoredAssets);
+        // Anonymous path: call FastAPI analyze-portfolio with CSV built from parsed data
+        const header = 'Name,Lat,Lon,Value';
+        const rows = parsedData.map((a) => `${escapeCsv(a.Name)},${a.Lat},${a.Lon},${a.Value}`).join('\n');
+        const csv = `${header}\n${rows}`;
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const file = new File([blob], 'portfolio.csv', { type: 'text/csv' });
+        const formData = new FormData();
+        formData.append('file', file);
 
-        setCurrentJob({
-          id: 'demo-' + Date.now(),
-          status: 'completed',
-          total_assets: parsedData.length,
-          processed_assets: parsedData.length,
-          report_url: null,
-          error_message: null,
-        });
+        const url = getAnalyzePortfolioUrl();
+        const response = await fetch(url, { method: 'POST', body: formData });
+        const payload = await response.json().catch(() => ({}));
+        const resultData: PortfolioAnalysisResult = payload?.data != null ? payload.data : payload;
 
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#22c55e', '#14b8a6', '#3b82f6'],
-        });
-
-        toast({
-          title: 'Demo Analysis Complete!',
-          description: `Generated resilience scores for ${parsedData.length} assets. Sign in to run full analysis.`,
-        });
+        if (response.ok && resultData && typeof resultData === 'object' && resultData.portfolio_summary != null) {
+          onPortfolioResultsChange?.(resultData);
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#22c55e', '#14b8a6', '#3b82f6'],
+          });
+          toast({
+            title: 'Analysis Complete!',
+            description: `Analyzed ${parsedData.length} assets.`,
+          });
+        } else {
+          throw new Error((payload as { message?: string })?.message ?? `HTTP ${response.status}`);
+        }
       }
     } catch (error) {
       console.error('Portfolio analysis failed:', error);

@@ -666,6 +666,7 @@ export function ModeContent(props: ModeContentProps) {
 
   const handleFileUpload = useCallback(
     async (selectedFile: File) => {
+      console.log("1. File Selected:", selectedFile);
       if (!selectedFile || !selectedFile.name.toLowerCase().endsWith(".csv")) return;
       setIsUploading(true);
       onPortfolioResultsChange?.(null);
@@ -673,29 +674,35 @@ export function ModeContent(props: ModeContentProps) {
         const formData = new FormData();
         formData.append("file", selectedFile);
         const url = getAnalyzePortfolioUrl();
-        const res = await fetch(url, {
+        console.log("2. Fetching URL:", url);
+        const response = await fetch(url, {
           method: "POST",
           body: formData,
         });
-        if (!res.ok) {
-          const errText = await res.text();
-          throw new Error(errText || `HTTP ${res.status}`);
+        console.log("3. Raw Response Status:", response.status);
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(errText || `HTTP ${response.status}`);
         }
-        const payload = await res.json();
+        const payload = await response.json();
         console.log("RAW BACKEND PAYLOAD:", payload);
-
-        if (payload.error) {
-          throw new Error("Python Error: " + payload.error);
+        const resultData = payload?.data != null ? payload.data : payload;
+        const isObject = resultData != null && typeof resultData === "object";
+        if (payload != null && typeof payload === "object" && payload.detail) {
+          console.error("FastAPI Error Returned as 200:", payload.detail);
         }
-        if (!payload.portfolio_summary) {
-          throw new Error("Missing portfolio_summary. Backend actually sent: " + JSON.stringify(payload));
+        if (!isObject || !resultData.portfolio_summary) {
+          console.error("DATA MISMATCH: Expected 'portfolio_summary' but got:", isObject ? Object.keys(resultData) : typeof resultData);
+          // Do not throw here yet, let the console logs print.
         }
-
-        onPortfolioResultsChange?.(payload);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.error("Portfolio analyze error:", err);
-        alert(message);
+        const hasSummary = isObject && "portfolio_summary" in resultData && resultData.portfolio_summary != null;
+        if (hasSummary) {
+          onPortfolioResultsChange?.(resultData);
+        } else {
+          console.warn("Portfolio upload: response OK but missing portfolio_summary; not updating UI.", resultData);
+        }
+      } catch (error) {
+        console.error("FETCH ERROR:", error);
         setIsUploading(false);
         return;
       }
