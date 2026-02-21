@@ -163,7 +163,7 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
         const formData = new FormData();
         formData.append('file', file);
 
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
         const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/analyze-portfolio`;
         const response = await fetch(endpoint, { method: 'POST', body: formData });
         const payload = await response.json().catch(() => ({}));
