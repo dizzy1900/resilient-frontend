@@ -686,20 +686,21 @@ export function ModeContent(props: ModeContentProps) {
         }
         const payload = await response.json();
         console.log("RAW BACKEND PAYLOAD:", payload);
+
+        if (payload?.error) {
+          throw new Error("Python Error: " + payload.error);
+        }
+
         const resultData = payload?.data != null ? payload.data : payload;
         const isObject = resultData != null && typeof resultData === "object";
         if (payload != null && typeof payload === "object" && payload.detail) {
           console.error("FastAPI Error Returned as 200:", payload.detail);
         }
-        if (!isObject || !resultData.portfolio_summary) {
-          console.error("DATA MISMATCH: Expected 'portfolio_summary' but got:", isObject ? Object.keys(resultData) : typeof resultData);
-          // Do not throw here yet, let the console logs print.
-        }
         const hasSummary = isObject && "portfolio_summary" in resultData && resultData.portfolio_summary != null;
         if (hasSummary) {
           onPortfolioResultsChange?.(resultData);
         } else {
-          console.warn("Portfolio upload: response OK but missing portfolio_summary; not updating UI.", resultData);
+          throw new Error("Missing portfolio_summary. Backend actually sent: " + JSON.stringify(payload));
         }
       } catch (error) {
         console.error("FETCH ERROR:", error);
