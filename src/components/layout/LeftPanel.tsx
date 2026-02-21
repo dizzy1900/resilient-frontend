@@ -681,11 +681,21 @@ export function ModeContent(props: ModeContentProps) {
           const errText = await res.text();
           throw new Error(errText || `HTTP ${res.status}`);
         }
-        const data = await res.json();
-        console.log('Backend Response:', data);
-        onPortfolioResultsChange?.(data);
+        const payload = await res.json();
+        console.log("RAW BACKEND PAYLOAD:", payload);
+
+        if (payload.error) {
+          throw new Error("Python Error: " + payload.error);
+        }
+        if (!payload.portfolio_summary) {
+          throw new Error("Missing portfolio_summary. Backend actually sent: " + JSON.stringify(payload));
+        }
+
+        onPortfolioResultsChange?.(payload);
       } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
         console.error("Portfolio analyze error:", err);
+        alert(message);
         setIsUploading(false);
         return;
       }
