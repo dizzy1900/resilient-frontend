@@ -138,10 +138,10 @@ export function ScenarioSandbox({
       const data = await response.json();
       console.log('4. Backend Data Received:', data);
 
-      if (data && data.time_series) {
-        setCbaTimeSeries(data.time_series);
-      } else {
-        console.error('Data missing time_series array:', data);
+      const series = data?.time_series;
+      setCbaTimeSeries(Array.isArray(series) ? series : []);
+      if (!Array.isArray(series) || series.length === 0) {
+        console.warn('CBA response missing or empty time_series:', data);
       }
     } catch (error) {
       console.error('5. Fetch Failed:', error);

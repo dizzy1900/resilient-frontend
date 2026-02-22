@@ -19,36 +19,24 @@ interface CBATimeSeriesChartProps {
   time_series: CBATimeSeriesPoint[];
 }
 
-function formatMillions(value: number): string {
-  const m = value / 1_000_000;
-  if (m >= 1) return `$${m.toFixed(1)}M`;
-  if (m >= 0.01) return `$${(m * 1000).toFixed(0)}K`;
-  return `$${value.toLocaleString()}`;
-}
-
-function CBAChartTooltip({ active, payload, label }: TooltipProps<number, number>) {
-  if (!active || !payload?.length || label == null) return null;
-  const baseline = payload.find((p) => p.dataKey === 'baseline_cost')?.value as number | undefined;
-  const intervention = payload.find((p) => p.dataKey === 'intervention_cost')?.value as number | undefined;
-  return (
-    <div
-      className="rounded-none border px-2 py-1.5 text-xs font-mono"
-      style={{
-        backgroundColor: 'black',
-        borderColor: 'rgba(255,255,255,0.2)',
-        color: 'var(--cb-text)',
-      }}
-    >
-      <div style={{ color: 'var(--cb-secondary)', marginBottom: 2 }}>Year {label}</div>
-      {baseline != null && (
-        <div style={{ color: '#ef4444' }}>Baseline: {formatMillions(baseline)}</div>
-      )}
-      {intervention != null && (
-        <div style={{ color: '#0ea5e9' }}>Intervention: {formatMillions(intervention)}</div>
-      )}
-    </div>
-  );
-}
+const CustomTooltip = ({ active, payload, label }: TooltipProps<number, number>) => {
+  if (active && payload && payload.length) {
+    const baseline = payload.find((p) => p.dataKey === 'baseline_cost')?.value as number | undefined;
+    const intervention = payload.find((p) => p.dataKey === 'intervention_cost')?.value as number | undefined;
+    return (
+      <div className="bg-black border border-white/20 p-3 rounded-none text-xs font-mono shadow-xl">
+        <p className="text-gray-400 mb-2">Year: {label}</p>
+        {baseline != null && (
+          <p className="text-red-500">Baseline: ${baseline.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+        )}
+        {intervention != null && (
+          <p className="text-sky-500">Intervention: ${intervention.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+        )}
+      </div>
+    );
+  }
+  return null;
+};
 
 const AXIS_STYLE = {
   fontSize: 10,
@@ -80,7 +68,7 @@ export function CBATimeSeriesChart({ time_series }: CBATimeSeriesChartProps) {
   const domainMax = domainMin === yMax ? domainMin + 1 : yMax + padding;
 
   return (
-    <div className="w-full h-64 mt-6">
+    <div className="h-[300px] w-full mt-6">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}
@@ -97,11 +85,16 @@ export function CBATimeSeriesChart({ time_series }: CBATimeSeriesChartProps) {
             tick={AXIS_STYLE}
             tickLine={{ stroke: 'rgba(255,255,255,0.1)' }}
             axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
-            tickFormatter={formatMillions}
+            tickFormatter={(v) => {
+              const n = Number(v);
+              if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+              if (n >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
+              return `$${n.toLocaleString()}`;
+            }}
             domain={[domainMin, domainMax]}
             width={48}
           />
-          <Tooltip content={<CBAChartTooltip />} />
+          <Tooltip content={<CustomTooltip />} />
           <Line
             type="monotone"
             dataKey="baseline_cost"
