@@ -983,6 +983,7 @@ function FinanceContent({
   const [localTemporalAnalysis, setLocalTemporalAnalysis] = useState<any>(null);
   const [cbaCapexBudget, setCbaCapexBudget] = useState<number | null>(null);
   const [cbaBondMetrics, setCbaBondMetrics] = useState<BondMetrics | null>(null);
+  const [annualCarbonRevenue, setAnnualCarbonRevenue] = useState<number>(0);
 
   const activeFinancialData = localFinancialData ?? atlasFinancialData;
   const activeMonteCarloData = localMonteCarloData ?? atlasMonteCarloData;
@@ -1019,6 +1020,10 @@ function FinanceContent({
   const handleCbaResult = useCallback((result: { bond_metrics: BondMetrics | null; capex_budget: number }) => {
     setCbaBondMetrics(result.bond_metrics);
     setCbaCapexBudget(result.capex_budget);
+  }, []);
+
+  const handleCarbonRevenue = useCallback((revenue: number) => {
+    setAnnualCarbonRevenue(revenue);
   }, []);
 
   const initialAssumptions = activeFinancialData?.assumptions ?? {};
@@ -1150,6 +1155,7 @@ function FinanceContent({
           monteCarloData={activeMonteCarloData}
           capexBudget={cbaCapexBudget}
           bondMetrics={cbaBondMetrics}
+          annualCarbonRevenue={annualCarbonRevenue}
         />
       </div>
 
@@ -1169,6 +1175,7 @@ function FinanceContent({
         assetValue={propertyValue ?? 5_000_000}
         onRecalculated={handleRecalculated}
         onCbaResult={handleCbaResult}
+        onCarbonRevenue={handleCarbonRevenue}
       />
 
       <div style={{ height: 24 }} />
