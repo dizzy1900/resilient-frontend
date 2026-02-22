@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/clientSafe';
+import { useProjectStore } from '@/store/useProjectStore';
 import { CBATimeSeriesChart, type CBATimeSeriesPoint } from '@/components/analytics/CBATimeSeriesChart';
 import { CVaRSection, type CVaRDistributionPoint } from '@/components/analytics/CVaRChart';
 
@@ -77,9 +78,23 @@ export function ScenarioSandbox({
   onCbaResult,
   onCarbonRevenue,
 }: ScenarioSandboxProps) {
+  const projectStore = useProjectStore();
+
   const [assumptions, setAssumptions] = useState<FinancialAssumptions>(
     () => extractAssumptions(initialAssumptions)
   );
+
+  // Sync from Zustand store when physical risk modules push data
+  useEffect(() => {
+    setAssumptions(prev => ({
+      ...prev,
+      capex_budget: projectStore.capex,
+      opex_annual: projectStore.opex,
+      insurance_premium_annual: projectStore.insurancePremium,
+      asset_lifespan_years: projectStore.lifespan,
+    }));
+    setCarbonCredits(projectStore.carbonCredits);
+  }, [projectStore.capex, projectStore.opex, projectStore.insurancePremium, projectStore.lifespan, projectStore.carbonCredits]);
   const [isCalculating, setIsCalculating] = useState(false);
   const [cbaTimeSeries, setCbaTimeSeries] = useState<CBATimeSeriesPoint[]>([]);
   const [bondMetrics, setBondMetrics] = useState<BondMetrics | null>(null);
@@ -293,10 +308,23 @@ export function ScenarioSandbox({
           textTransform: 'uppercase',
           color: 'var(--cb-secondary)',
           display: 'block',
-          marginBottom: 16,
+          marginBottom: 4,
         }}
       >
         SCENARIO ASSUMPTIONS
+      </span>
+      <span
+        style={{
+          fontFamily: 'monospace',
+          fontSize: 9,
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+          color: '#10b981',
+          display: 'block',
+          marginBottom: 16,
+        }}
+      >
+        CURRENT ASSET: {projectStore.interventionName.toUpperCase()}
       </span>
 
       <div className="grid grid-cols-2 gap-4">
