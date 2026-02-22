@@ -108,6 +108,34 @@ export function ScenarioSandbox({
     }
   }, []);
 
+  const fetchCBAData = useCallback(async () => {
+    if (!latitude || !longitude) return;
+    const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
+    const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cba-series`;
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lat: latitude,
+          lon: longitude,
+          crop: cropType,
+          capex_budget: assumptions.capex_budget,
+          opex_annual: assumptions.opex_annual,
+          discount_rate_pct: assumptions.discount_rate_pct,
+          asset_lifespan_years: assumptions.asset_lifespan_years,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      console.log('CBA Fetch Response:', data);
+      const series = data?.time_series ?? data?.data?.time_series ?? [];
+      setCbaTimeSeries(Array.isArray(series) ? series : []);
+    } catch (err) {
+      console.error('CBA fetch failed:', err);
+      setCbaTimeSeries([]);
+    }
+  }, [latitude, longitude, cropType, assumptions]);
+
   const handleRecalculate = useCallback(async () => {
     if (!latitude || !longitude) return;
     setIsCalculating(true);
@@ -233,7 +261,10 @@ export function ScenarioSandbox({
       </div>
 
       <button
-        onClick={handleRecalculate}
+        onClick={() => {
+          fetchCBAData();
+          handleRecalculate();
+        }}
         disabled={isCalculating || !latitude || !longitude}
         className="w-full mt-4 flex items-center justify-center gap-2"
         style={{
@@ -270,24 +301,22 @@ export function ScenarioSandbox({
         )}
       </button>
 
-      {cbaTimeSeries.length > 0 && (
-        <div className="mt-6">
-          <span
-            style={{
-              fontFamily: 'monospace',
-              fontSize: 10,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--cb-secondary)',
-              display: 'block',
-              marginBottom: 8,
-            }}
-          >
-            CBA Time Series
-          </span>
-          <CBATimeSeriesChart time_series={cbaTimeSeries} />
-        </div>
-      )}
+      <div className="mt-6">
+        <span
+          style={{
+            fontFamily: 'monospace',
+            fontSize: 10,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: 'var(--cb-secondary)',
+            display: 'block',
+            marginBottom: 8,
+          }}
+        >
+          CBA Time Series
+        </span>
+        <CBATimeSeriesChart time_series={cbaTimeSeries} />
+      </div>
     </div>
   );
 }

@@ -58,24 +58,21 @@ const AXIS_STYLE = {
 };
 
 export function CBATimeSeriesChart({ time_series }: CBATimeSeriesChartProps) {
-  if (!time_series?.length) {
+  if (!time_series || time_series.length === 0) {
     return (
-      <div
-        className="font-mono text-[10px] py-8 text-center"
-        style={{ color: 'var(--cb-secondary)' }}
-      >
-        No CBA time series data.
+      <div className="w-full h-64 mt-6 border border-white/20 flex items-center justify-center text-xs text-gray-500">
+        No CBA Data Loaded
       </div>
     );
   }
 
-  const data = time_series.map((p) => ({
+  const chartData = time_series.map((p) => ({
     year: p.year,
     baseline_cost: p.baseline_cost,
     intervention_cost: p.intervention_cost,
   }));
 
-  const allValues = data.flatMap((d) => [d.baseline_cost, d.intervention_cost]).filter(Number.isFinite);
+  const allValues = chartData.flatMap((d) => [d.baseline_cost, d.intervention_cost]).filter(Number.isFinite);
   const yMin = allValues.length ? Math.min(...allValues) : 0;
   const yMax = allValues.length ? Math.max(...allValues) : 1;
   const padding = (yMax - yMin) * 0.05 || 1;
@@ -83,10 +80,10 @@ export function CBATimeSeriesChart({ time_series }: CBATimeSeriesChartProps) {
   const domainMax = domainMin === yMax ? domainMin + 1 : yMax + padding;
 
   return (
-    <div className="w-full" style={{ background: 'transparent' }}>
-      <ResponsiveContainer width="100%" height={220}>
+    <div className="w-full h-64 mt-6">
+      <ResponsiveContainer width="100%" height="100%">
         <LineChart
-          data={data}
+          data={chartData}
           margin={{ top: 8, right: 8, left: 8, bottom: 8 }}
         >
           <XAxis
@@ -124,15 +121,15 @@ export function CBATimeSeriesChart({ time_series }: CBATimeSeriesChartProps) {
             connectNulls
           />
           <ReferenceDot
-            x={data[data.length - 1]?.year}
-            y={data[data.length - 1]?.baseline_cost}
+            x={chartData[chartData.length - 1]?.year}
+            y={chartData[chartData.length - 1]?.baseline_cost}
             r={3}
             fill="#ef4444"
             stroke="none"
           />
           <ReferenceDot
-            x={data[data.length - 1]?.year}
-            y={data[data.length - 1]?.intervention_cost}
+            x={chartData[chartData.length - 1]?.year}
+            y={chartData[chartData.length - 1]?.intervention_cost}
             r={3}
             fill="#0ea5e9"
             stroke="none"
