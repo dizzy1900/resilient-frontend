@@ -409,6 +409,7 @@ export function RightPanelContent({
           latitude={latitude}
           longitude={longitude}
           cropType={cropType}
+          propertyValue={propertyValue}
         />
       )}
 
@@ -953,6 +954,7 @@ function FinanceContent({
   latitude,
   longitude,
   cropType,
+  propertyValue,
 }: {
   atlasFinancialData: any;
   atlasMonteCarloData: any;
@@ -968,6 +970,7 @@ function FinanceContent({
   latitude?: number | null;
   longitude?: number | null;
   cropType?: string;
+  propertyValue?: number;
 }) {
   const [localFinancialData, setLocalFinancialData] = useState<any>(null);
   const [localMonteCarloData, setLocalMonteCarloData] = useState<any>(null);
@@ -1162,6 +1165,7 @@ function FinanceContent({
         longitude={longitude ?? null}
         cropType={cropType ?? ''}
         initialAssumptions={initialAssumptions}
+        assetValue={propertyValue ?? 5_000_000}
         onRecalculated={handleRecalculated}
         onCbaResult={handleCbaResult}
       />

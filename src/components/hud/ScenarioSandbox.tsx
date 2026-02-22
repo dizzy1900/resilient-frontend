@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/clientSafe';
 import { CBATimeSeriesChart, type CBATimeSeriesPoint } from '@/components/analytics/CBATimeSeriesChart';
+import { CVaRSection, type CVaRDistributionPoint } from '@/components/analytics/CVaRChart';
 
 interface FinancialAssumptions {
   capex_budget: number;
@@ -22,6 +23,7 @@ interface ScenarioSandboxProps {
   longitude: number | null;
   cropType: string;
   initialAssumptions?: Partial<FinancialAssumptions>;
+  assetValue?: number;
   onRecalculated: (data: {
     financialData: any;
     monteCarloData: any;
@@ -62,11 +64,14 @@ const INPUT_FIELDS: { key: keyof FinancialAssumptions; label: string; prefix?: s
   { key: 'asset_lifespan_years', label: 'ASSET LIFESPAN', suffix: 'yr', step: 1, min: 1, max: 100 },
 ];
 
+const DEFAULT_ASSET_VALUE = 5_000_000;
+
 export function ScenarioSandbox({
   latitude,
   longitude,
   cropType,
   initialAssumptions,
+  assetValue = DEFAULT_ASSET_VALUE,
   onRecalculated,
   onCbaResult,
 }: ScenarioSandboxProps) {
@@ -76,6 +81,11 @@ export function ScenarioSandbox({
   const [isCalculating, setIsCalculating] = useState(false);
   const [cbaTimeSeries, setCbaTimeSeries] = useState<CBATimeSeriesPoint[]>([]);
   const [bondMetrics, setBondMetrics] = useState<BondMetrics | null>(null);
+  const [cvarDistribution, setCvarDistribution] = useState<CVaRDistributionPoint[]>([]);
+  const [cvarExpectedAnnualLoss, setCvarExpectedAnnualLoss] = useState<number | null>(null);
+  const [cvar95, setCvar95] = useState<number | null>(null);
+  const [cvar99, setCvar99] = useState<number | null>(null);
+  const [isCvarLoading, setIsCvarLoading] = useState(false);
 
   useEffect(() => {
     if (!latitude || !longitude) {
@@ -205,6 +215,39 @@ export function ScenarioSandbox({
       setIsCalculating(false);
     }
   }, [latitude, longitude, cropType, assumptions, onRecalculated]);
+
+  const handleRunMonteCarlo = useCallback(async () => {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
+    const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cvar-simulation`;
+    setIsCvarLoading(true);
+    setCvarDistribution([]);
+    setCvarExpectedAnnualLoss(null);
+    setCvar95(null);
+    setCvar99(null);
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ asset_value: assetValue }),
+      });
+      if (!res.ok) {
+        return;
+      }
+      const json = await res.json();
+      const dist = json?.distribution ?? json?.data?.distribution ?? [];
+      setCvarDistribution(Array.isArray(dist) ? dist : []);
+      const eal = json?.expected_annual_loss ?? json?.data?.expected_annual_loss ?? null;
+      setCvarExpectedAnnualLoss(typeof eal === 'number' && Number.isFinite(eal) ? eal : null);
+      const v95 = json?.cvar_95 ?? json?.cvar_95th ?? json?.data?.cvar_95 ?? null;
+      setCvar95(typeof v95 === 'number' && Number.isFinite(v95) ? v95 : null);
+      const v99 = json?.cvar_99 ?? json?.cvar_99th ?? json?.data?.cvar_99 ?? null;
+      setCvar99(typeof v99 === 'number' && Number.isFinite(v99) ? v99 : null);
+    } catch {
+      // leave state empty on error
+    } finally {
+      setIsCvarLoading(false);
+    }
+  }, [assetValue]);
 
   return (
     <div
@@ -343,6 +386,67 @@ export function ScenarioSandbox({
           CBA Time Series
         </span>
         <CBATimeSeriesChart time_series={cbaTimeSeries} />
+      </div>
+
+      <div className="mt-8 border-t pt-6" style={{ borderColor: 'var(--cb-border)' }}>
+        <span
+          style={{
+            fontFamily: 'monospace',
+            fontSize: 10,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: 'var(--cb-secondary)',
+            display: 'block',
+            marginBottom: 8,
+          }}
+        >
+          Climate Value at Risk (CVaR)
+        </span>
+        <button
+          type="button"
+          onClick={handleRunMonteCarlo}
+          disabled={isCvarLoading}
+          className="w-full flex items-center justify-center gap-2"
+          style={{
+            border: '1px solid var(--cb-border)',
+            padding: '8px 12px',
+            fontFamily: 'monospace',
+            fontSize: 10,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            color: isCvarLoading ? 'var(--cb-secondary)' : 'var(--cb-text)',
+            backgroundColor: 'transparent',
+            cursor: isCvarLoading ? 'wait' : 'pointer',
+            transition: 'background-color 0.15s, color 0.15s, border-color 0.15s',
+          }}
+          onMouseEnter={(e) => {
+            if (!isCvarLoading) {
+              e.currentTarget.style.backgroundColor = 'var(--cb-text)';
+              e.currentTarget.style.color = 'var(--cb-bg)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = isCvarLoading ? 'var(--cb-secondary)' : 'var(--cb-text)';
+          }}
+        >
+          {isCvarLoading ? (
+            <>
+              <Loader2 style={{ width: 10, height: 10 }} className="animate-spin" />
+              RUNNING...
+            </>
+          ) : (
+            'RUN MONTE CARLO (10,000 SIMS)'
+          )}
+        </button>
+        <div className="mt-4">
+          <CVaRSection
+            distribution={cvarDistribution}
+            expectedAnnualLoss={cvarExpectedAnnualLoss}
+            cvar95={cvar95}
+            cvar99={cvar99}
+          />
+        </div>
       </div>
     </div>
   );
