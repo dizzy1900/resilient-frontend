@@ -13,6 +13,7 @@ interface DealTicketCardProps {
   monteCarloData?: any | null;
   capexBudget?: number | null;
   bondMetrics?: BondMetrics | null;
+  annualCarbonRevenue?: number | null;
 }
 
 const formatCurrency = (value: number) => {
@@ -32,7 +33,7 @@ function DataRow({ label, value, valueColor }: { label: string; value: React.Rea
   );
 }
 
-export const DealTicketCard = ({ financialData, locationName, isLoading, monteCarloData, capexBudget, bondMetrics }: DealTicketCardProps) => {
+export const DealTicketCard = ({ financialData, locationName, isLoading, monteCarloData, capexBudget, bondMetrics, annualCarbonRevenue }: DealTicketCardProps) => {
   const deal: GreenBondDeal | null = useMemo(() => {
     if (!financialData) return null;
     return structureGreenBond(financialData);
@@ -182,6 +183,18 @@ export const DealTicketCard = ({ financialData, locationName, isLoading, monteCa
           value={greeniumDisplay}
           valueColor={greeniumPositive ? '#22c55e' : undefined}
         />
+      </div>
+
+      <div className="px-4 py-3 border-t" style={{ borderColor: 'var(--cb-border)' }}>
+        <span className="cb-section-heading" style={{ fontSize: 9, letterSpacing: '0.1em', display: 'block', marginBottom: 8 }}>
+          VALUE STACKING
+        </span>
+        <div className="flex items-center justify-between py-2.5 cb-divider">
+          <span className="cb-label">CARBON REVENUE</span>
+          <span className={`cb-value ${(annualCarbonRevenue ?? 0) > 0 ? 'text-green-500' : ''}`}>
+            +${annualCarbonRevenue ?? 0}/yr
+          </span>
+        </div>
       </div>
 
       <div className="px-4 py-3" style={{ borderTop: '1px solid var(--cb-border)' }}>

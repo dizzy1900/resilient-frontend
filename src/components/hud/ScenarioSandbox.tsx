@@ -36,6 +36,7 @@ interface ScenarioSandboxProps {
     temporalAnalysis: any;
   }) => void;
   onCbaResult?: (result: { bond_metrics: BondMetrics | null; capex_budget: number }) => void;
+  onCarbonRevenue?: (annualCarbonRevenue: number) => void;
 }
 
 const DEFAULTS: FinancialAssumptions = {
@@ -74,6 +75,7 @@ export function ScenarioSandbox({
   assetValue = DEFAULT_ASSET_VALUE,
   onRecalculated,
   onCbaResult,
+  onCarbonRevenue,
 }: ScenarioSandboxProps) {
   const [assumptions, setAssumptions] = useState<FinancialAssumptions>(
     () => extractAssumptions(initialAssumptions)
@@ -89,6 +91,8 @@ export function ScenarioSandbox({
     [key: string]: unknown;
   } | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
+  const [carbonCredits, setCarbonCredits] = useState(0);
+  const [carbonPrice, setCarbonPrice] = useState(50);
   const [meanDamage, setMeanDamage] = useState(2); // 2%
   const [volatility, setVolatility] = useState(5); // 5%
   const cvarExpectedAnnualLoss = cvarMetrics?.expected_annual_loss ?? null;
@@ -133,6 +137,11 @@ export function ScenarioSandbox({
     return () => controller.abort();
   }, [latitude, longitude, cropType, assumptions.capex_budget, assumptions.opex_annual, assumptions.insurance_premium_annual, assumptions.discount_rate_pct]);
 
+  useEffect(() => {
+    const annualCarbonRevenue = carbonCredits * carbonPrice;
+    onCarbonRevenue?.(annualCarbonRevenue);
+  }, [carbonCredits, carbonPrice, onCarbonRevenue]);
+
   const handleChange = useCallback((key: keyof FinancialAssumptions, raw: string) => {
     const val = parseFloat(raw);
     if (!isNaN(val)) {
@@ -149,6 +158,8 @@ export function ScenarioSandbox({
       base_insurance_premium: Number(assumptions.insurance_premium_annual) ?? 50000,
       discount_rate: Number(assumptions.discount_rate_pct) / 100 || 0.08,
       lifespan_years: Number(assumptions.asset_lifespan_years) || 30,
+      annual_carbon_credits: Number(carbonCredits) || 0,
+      carbon_price_per_ton: Number(carbonPrice) || 50,
     };
 
     console.log('2. Sending Payload:', payload);
@@ -182,7 +193,7 @@ export function ScenarioSandbox({
     } catch (error) {
       console.error('5. Fetch Failed:', error);
     }
-  }, [assumptions.capex_budget, assumptions.opex_annual, assumptions.insurance_premium_annual, assumptions.discount_rate_pct, assumptions.asset_lifespan_years, onCbaResult]);
+  }, [assumptions.capex_budget, assumptions.opex_annual, assumptions.insurance_premium_annual, assumptions.discount_rate_pct, assumptions.asset_lifespan_years, carbonCredits, carbonPrice, onCbaResult]);
 
   const handleRecalculate = useCallback(async () => {
     if (!latitude || !longitude) return;
@@ -351,6 +362,95 @@ export function ScenarioSandbox({
             </div>
           </div>
         ))}
+        <div>
+          <label
+            style={{
+              fontFamily: 'monospace',
+              fontSize: 9,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              color: 'var(--cb-secondary)',
+              display: 'block',
+              marginBottom: 4,
+            }}
+          >
+            CARBON CREDITS (TONS/YR)
+          </label>
+          <input
+            type="number"
+            value={carbonCredits}
+            onChange={(e) => setCarbonCredits(parseFloat(e.target.value) || 0)}
+            step={1}
+            min={0}
+            max={100000}
+            className="w-full rounded-none"
+            style={{
+              backgroundColor: 'transparent',
+              border: '1px solid var(--cb-border)',
+              color: 'var(--cb-text)',
+              fontFamily: 'monospace',
+              fontSize: 12,
+              padding: '8px',
+              outline: 'none',
+              transition: 'border-color 0.15s',
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = '#10b981';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = 'var(--cb-border)';
+            }}
+          />
+        </div>
+        <div>
+          <label
+            style={{
+              fontFamily: 'monospace',
+              fontSize: 9,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              color: 'var(--cb-secondary)',
+              display: 'block',
+              marginBottom: 4,
+            }}
+          >
+            CARBON PRICE ($/TON)
+          </label>
+          <div className="relative">
+            <span
+              className="absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none"
+              style={{ fontFamily: 'monospace', fontSize: 12, color: 'var(--cb-secondary)' }}
+            >
+              $
+            </span>
+            <input
+              type="number"
+              value={carbonPrice}
+              onChange={(e) => setCarbonPrice(parseFloat(e.target.value) || 50)}
+              step={1}
+              min={0}
+              max={1000}
+              className="w-full rounded-none"
+              style={{
+                backgroundColor: 'transparent',
+                border: '1px solid var(--cb-border)',
+                color: 'var(--cb-text)',
+                fontFamily: 'monospace',
+                fontSize: 12,
+                padding: '8px',
+                paddingLeft: 18,
+                outline: 'none',
+                transition: 'border-color 0.15s',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = '#10b981';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--cb-border)';
+              }}
+            />
+          </div>
+        </div>
       </div>
 
       <button
