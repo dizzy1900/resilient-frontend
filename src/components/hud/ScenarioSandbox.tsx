@@ -6,8 +6,15 @@ import { CBATimeSeriesChart, type CBATimeSeriesPoint } from '@/components/analyt
 interface FinancialAssumptions {
   capex_budget: number;
   opex_annual: number;
+  insurance_premium_annual: number;
   discount_rate_pct: number;
   asset_lifespan_years: number;
+}
+
+export interface BondMetrics {
+  green_rate?: number;
+  total_greenium_savings?: number;
+  [key: string]: unknown;
 }
 
 interface ScenarioSandboxProps {
@@ -26,11 +33,13 @@ interface ScenarioSandboxProps {
     marketIntelligence: any;
     temporalAnalysis: any;
   }) => void;
+  onCbaResult?: (result: { bond_metrics: BondMetrics | null; capex_budget: number }) => void;
 }
 
 const DEFAULTS: FinancialAssumptions = {
   capex_budget: 500000,
   opex_annual: 25000,
+  insurance_premium_annual: 50000,
   discount_rate_pct: 8,
   asset_lifespan_years: 30,
 };
@@ -39,6 +48,7 @@ function extractAssumptions(initial?: Partial<FinancialAssumptions>): FinancialA
   return {
     capex_budget: initial?.capex_budget ?? DEFAULTS.capex_budget,
     opex_annual: initial?.opex_annual ?? DEFAULTS.opex_annual,
+    insurance_premium_annual: initial?.insurance_premium_annual ?? DEFAULTS.insurance_premium_annual,
     discount_rate_pct: initial?.discount_rate_pct ?? DEFAULTS.discount_rate_pct,
     asset_lifespan_years: initial?.asset_lifespan_years ?? DEFAULTS.asset_lifespan_years,
   };
@@ -47,6 +57,7 @@ function extractAssumptions(initial?: Partial<FinancialAssumptions>): FinancialA
 const INPUT_FIELDS: { key: keyof FinancialAssumptions; label: string; prefix?: string; suffix?: string; step: number; min: number; max: number }[] = [
   { key: 'capex_budget', label: 'CAPEX BUDGET', prefix: '$', step: 10000, min: 0, max: 100000000 },
   { key: 'opex_annual', label: 'OPEX / YEAR', prefix: '$', step: 1000, min: 0, max: 10000000 },
+  { key: 'insurance_premium_annual', label: 'INSURANCE PREMIUM / YR', prefix: '$', step: 1000, min: 0, max: 10000000 },
   { key: 'discount_rate_pct', label: 'DISCOUNT RATE', suffix: '%', step: 0.5, min: 0, max: 50 },
   { key: 'asset_lifespan_years', label: 'ASSET LIFESPAN', suffix: 'yr', step: 1, min: 1, max: 100 },
 ];
@@ -57,12 +68,14 @@ export function ScenarioSandbox({
   cropType,
   initialAssumptions,
   onRecalculated,
+  onCbaResult,
 }: ScenarioSandboxProps) {
   const [assumptions, setAssumptions] = useState<FinancialAssumptions>(
     () => extractAssumptions(initialAssumptions)
   );
   const [isCalculating, setIsCalculating] = useState(false);
   const [cbaTimeSeries, setCbaTimeSeries] = useState<CBATimeSeriesPoint[]>([]);
+  const [bondMetrics, setBondMetrics] = useState<BondMetrics | null>(null);
 
   useEffect(() => {
     if (!latitude || !longitude) {
@@ -83,6 +96,7 @@ export function ScenarioSandbox({
             crop: cropType,
             capex_budget: assumptions.capex_budget,
             opex_annual: assumptions.opex_annual,
+            base_insurance_premium: assumptions.insurance_premium_annual,
             discount_rate_pct: assumptions.discount_rate_pct,
           }),
           signal: controller.signal,
@@ -99,7 +113,7 @@ export function ScenarioSandbox({
       }
     })();
     return () => controller.abort();
-  }, [latitude, longitude, cropType, assumptions.capex_budget, assumptions.opex_annual, assumptions.discount_rate_pct]);
+  }, [latitude, longitude, cropType, assumptions.capex_budget, assumptions.opex_annual, assumptions.insurance_premium_annual, assumptions.discount_rate_pct]);
 
   const handleChange = useCallback((key: keyof FinancialAssumptions, raw: string) => {
     const val = parseFloat(raw);
@@ -114,6 +128,7 @@ export function ScenarioSandbox({
     const payload = {
       capex: Number(assumptions.capex_budget) || 500000,
       annual_opex: Number(assumptions.opex_annual) || 25000,
+      base_insurance_premium: Number(assumptions.insurance_premium_annual) ?? 50000,
       discount_rate: Number(assumptions.discount_rate_pct) / 100 || 0.08,
       lifespan_years: Number(assumptions.asset_lifespan_years) || 30,
     };
@@ -140,13 +155,16 @@ export function ScenarioSandbox({
 
       const series = data?.time_series;
       setCbaTimeSeries(Array.isArray(series) ? series : []);
+      const metrics = data?.bond_metrics ?? null;
+      setBondMetrics(metrics);
+      onCbaResult?.({ bond_metrics: metrics, capex_budget: assumptions.capex_budget });
       if (!Array.isArray(series) || series.length === 0) {
         console.warn('CBA response missing or empty time_series:', data);
       }
     } catch (error) {
       console.error('5. Fetch Failed:', error);
     }
-  }, [assumptions.capex_budget, assumptions.opex_annual, assumptions.discount_rate_pct, assumptions.asset_lifespan_years]);
+  }, [assumptions.capex_budget, assumptions.opex_annual, assumptions.insurance_premium_annual, assumptions.discount_rate_pct, assumptions.asset_lifespan_years, onCbaResult]);
 
   const handleRecalculate = useCallback(async () => {
     if (!latitude || !longitude) return;

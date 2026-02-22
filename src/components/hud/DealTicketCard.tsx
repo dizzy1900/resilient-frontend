@@ -2,12 +2,15 @@ import { useMemo } from 'react';
 import { Landmark, Download, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
 import { getDefaultProbability } from './RiskStressTestCard';
 import { structureGreenBond, GreenBondDeal } from '@/utils/structureGreenBond';
+import type { BondMetrics } from '@/components/hud/ScenarioSandbox';
 
 interface DealTicketCardProps {
   financialData: any | null;
   locationName: string | null;
   isLoading?: boolean;
   monteCarloData?: any | null;
+  capexBudget?: number | null;
+  bondMetrics?: BondMetrics | null;
 }
 
 const formatCurrency = (value: number) => {
@@ -27,11 +30,21 @@ function DataRow({ label, value, valueColor }: { label: string; value: React.Rea
   );
 }
 
-export const DealTicketCard = ({ financialData, locationName, isLoading, monteCarloData }: DealTicketCardProps) => {
+export const DealTicketCard = ({ financialData, locationName, isLoading, monteCarloData, capexBudget, bondMetrics }: DealTicketCardProps) => {
   const deal: GreenBondDeal | null = useMemo(() => {
     if (!financialData) return null;
     return structureGreenBond(financialData);
   }, [financialData]);
+
+  const principalDisplay = capexBudget != null ? formatCurrency(capexBudget) : (deal ? formatCurrency(deal.principal) : '—');
+  const couponDisplay = bondMetrics?.green_rate != null
+    ? `${Number(bondMetrics.green_rate).toFixed(2)}%`
+    : (deal ? `${deal.coupon.toFixed(2)}%` : '5.00%');
+  const greeniumValue = bondMetrics?.total_greenium_savings != null
+    ? Number(bondMetrics.total_greenium_savings)
+    : (deal?.greenium_savings ?? 0);
+  const greeniumDisplay = formatCurrency(greeniumValue);
+  const greeniumPositive = greeniumValue > 0;
 
   const isBankable = useMemo(() => {
     if (monteCarloData) {
@@ -128,11 +141,15 @@ export const DealTicketCard = ({ financialData, locationName, isLoading, monteCa
       </div>
 
       <div className="px-4">
-        <DataRow label="PRINCIPAL (CAPEX)" value={formatCurrency(deal.principal)} valueColor="#f59e0b" />
-        <DataRow label="COUPON RATE" value={`${deal.coupon.toFixed(2)}%`} />
+        <DataRow label="PRINCIPAL (CAPEX)" value={principalDisplay} valueColor="#f59e0b" />
+        <DataRow label="COUPON RATE" value={couponDisplay} />
         <DataRow label="TENOR" value={`${deal.tenor} yr`} />
         <DataRow label="CREDIT RATING" value={deal.rating.split(' ')[0]} />
-        <DataRow label="GREENIUM SAVINGS" value={formatCurrency(deal.greenium_savings)} valueColor="#10b981" />
+        <DataRow
+          label="GREENIUM SAVINGS"
+          value={greeniumDisplay}
+          valueColor={greeniumPositive ? '#22c55e' : undefined}
+        />
       </div>
 
       <div className="px-4 py-3" style={{ borderTop: '1px solid var(--cb-border)' }}>

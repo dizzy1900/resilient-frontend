@@ -12,7 +12,7 @@ import { ZoneLegend } from '@/components/dashboard/ZoneLegend';
 import { UrbanInundationCard } from '@/components/dashboard/UrbanInundationCard';
 import { InfrastructureRiskCard } from '@/components/dashboard/InfrastructureRiskCard';
 import { PortfolioResultsPanel } from '@/components/portfolio/PortfolioResultsPanel';
-import { ScenarioSandbox } from '@/components/hud/ScenarioSandbox';
+import { ScenarioSandbox, type BondMetrics } from '@/components/hud/ScenarioSandbox';
 import { PortfolioAsset } from '@/components/portfolio/PortfolioCSVUpload';
 import { Polygon } from '@/utils/polygonMath';
 import { ZoneMode } from '@/utils/zoneGeneration';
@@ -978,6 +978,8 @@ function FinanceContent({
   const [localSatellitePreview, setLocalSatellitePreview] = useState<any>(null);
   const [localMarketIntelligence, setLocalMarketIntelligence] = useState<any>(null);
   const [localTemporalAnalysis, setLocalTemporalAnalysis] = useState<any>(null);
+  const [cbaCapexBudget, setCbaCapexBudget] = useState<number | null>(null);
+  const [cbaBondMetrics, setCbaBondMetrics] = useState<BondMetrics | null>(null);
 
   const activeFinancialData = localFinancialData ?? atlasFinancialData;
   const activeMonteCarloData = localMonteCarloData ?? atlasMonteCarloData;
@@ -1009,6 +1011,11 @@ function FinanceContent({
     setLocalSatellitePreview(data.satellitePreview);
     setLocalMarketIntelligence(data.marketIntelligence);
     setLocalTemporalAnalysis(data.temporalAnalysis);
+  }, []);
+
+  const handleCbaResult = useCallback((result: { bond_metrics: BondMetrics | null; capex_budget: number }) => {
+    setCbaBondMetrics(result.bond_metrics);
+    setCbaCapexBudget(result.capex_budget);
   }, []);
 
   const initialAssumptions = activeFinancialData?.assumptions ?? {};
@@ -1137,6 +1144,8 @@ function FinanceContent({
           locationName={locationName}
           isLoading={isLoading}
           monteCarloData={activeMonteCarloData}
+          capexBudget={cbaCapexBudget}
+          bondMetrics={cbaBondMetrics}
         />
       </div>
 
@@ -1154,6 +1163,7 @@ function FinanceContent({
         cropType={cropType ?? ''}
         initialAssumptions={initialAssumptions}
         onRecalculated={handleRecalculated}
+        onCbaResult={handleCbaResult}
       />
 
       <div style={{ height: 24 }} />
