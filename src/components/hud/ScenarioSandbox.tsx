@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/clientSafe';
+import { CBATimeSeriesChart, type CBATimeSeriesPoint } from '@/components/analytics/CBATimeSeriesChart';
 
 interface FinancialAssumptions {
   capex_budget: number;
@@ -61,6 +62,44 @@ export function ScenarioSandbox({
     () => extractAssumptions(initialAssumptions)
   );
   const [isCalculating, setIsCalculating] = useState(false);
+  const [cbaTimeSeries, setCbaTimeSeries] = useState<CBATimeSeriesPoint[]>([]);
+
+  useEffect(() => {
+    if (!latitude || !longitude) {
+      setCbaTimeSeries([]);
+      return;
+    }
+    const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
+    const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cba-series`;
+    const controller = new AbortController();
+    (async () => {
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lat: latitude,
+            lon: longitude,
+            crop: cropType,
+            capex_budget: assumptions.capex_budget,
+            opex_annual: assumptions.opex_annual,
+            discount_rate_pct: assumptions.discount_rate_pct,
+          }),
+          signal: controller.signal,
+        });
+        if (!res.ok) {
+          setCbaTimeSeries([]);
+          return;
+        }
+        const json = await res.json();
+        const series = json?.time_series ?? json?.data?.time_series ?? [];
+        setCbaTimeSeries(Array.isArray(series) ? series : []);
+      } catch {
+        setCbaTimeSeries([]);
+      }
+    })();
+    return () => controller.abort();
+  }, [latitude, longitude, cropType, assumptions.capex_budget, assumptions.opex_annual, assumptions.discount_rate_pct]);
 
   const handleChange = useCallback((key: keyof FinancialAssumptions, raw: string) => {
     const val = parseFloat(raw);
@@ -230,6 +269,25 @@ export function ScenarioSandbox({
           'RE-CALCULATE ROI'
         )}
       </button>
+
+      {cbaTimeSeries.length > 0 && (
+        <div className="mt-6">
+          <span
+            style={{
+              fontFamily: 'monospace',
+              fontSize: 10,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'var(--cb-secondary)',
+              display: 'block',
+              marginBottom: 8,
+            }}
+          >
+            CBA Time Series
+          </span>
+          <CBATimeSeriesChart time_series={cbaTimeSeries} />
+        </div>
+      )}
     </div>
   );
 }
