@@ -26,6 +26,8 @@ import { Button } from "@/components/ui/button";
 import { DashboardMode } from "@/components/dashboard/ModeSelector";
 import { useState, useEffect, useRef } from "react";
 import { useFinancialSettings } from "@/contexts/FinancialContext";
+import { useProjectStore } from "@/store/useProjectStore";
+import { toast } from "sonner";
 
 interface FloatingControlPanelProps {
   mode: DashboardMode;
@@ -268,6 +270,24 @@ export const FloatingControlPanel = ({
                 <span>250m</span>
                 <span>500m</span>
               </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  useProjectStore.getState().setProjectData({
+                    interventionName: "Mangrove Belt",
+                    capex: 2500000,
+                    opex: 15000,
+                    insurancePremium: 30000,
+                    carbonCredits: 5000,
+                    lifespan: 40,
+                  });
+                  toast("Project data loaded. Open the Finance tab to calculate ROI.");
+                }}
+                className="w-full py-2 px-4 rounded-none border border-white/20 bg-transparent text-white/60 uppercase text-[10px] tracking-widest font-mono hover:bg-white hover:text-black transition-none"
+              >
+                [ SEND TO FINANCE ]
+              </button>
             </div>
 
             <div className="flex items-center gap-2 text-xs font-medium text-white/70">
@@ -312,6 +332,24 @@ export const FloatingControlPanel = ({
                 />
               </div>
             </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                useProjectStore.getState().setProjectData({
+                  interventionName: "Concrete Sea Wall",
+                  capex: 5000000,
+                  opex: 25000,
+                  insurancePremium: 50000,
+                  carbonCredits: 0,
+                  lifespan: 30,
+                });
+                toast("Project data loaded. Open the Finance tab to calculate ROI.");
+              }}
+              className="w-full py-2 px-4 rounded-none border border-white/20 bg-transparent text-white/60 uppercase text-[10px] tracking-widest font-mono hover:bg-white hover:text-black transition-none"
+            >
+              [ SEND TO FINANCE ]
+            </button>
           </>
         )}
 
