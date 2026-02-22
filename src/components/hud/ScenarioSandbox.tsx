@@ -89,6 +89,8 @@ export function ScenarioSandbox({
     [key: string]: unknown;
   } | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
+  const [meanDamage, setMeanDamage] = useState(2); // 2%
+  const [volatility, setVolatility] = useState(5); // 5%
   const cvarExpectedAnnualLoss = cvarMetrics?.expected_annual_loss ?? null;
   const cvar95 = cvarMetrics?.cvar_95 ?? null;
   const cvar99 = cvarMetrics?.cvar_99 ?? null;
@@ -230,8 +232,8 @@ export function ScenarioSandbox({
     const capexBudget = assumptions.capex_budget;
     const payload = {
       asset_value: Number(capexBudget) || 5_000_000,
-      mean_damage_pct: 0.02,
-      volatility_pct: 0.05,
+      mean_damage_pct: Number(meanDamage) / 100,
+      volatility_pct: Number(volatility) / 100,
       num_simulations: 10_000,
     };
     try {
@@ -265,7 +267,7 @@ export function ScenarioSandbox({
     } finally {
       setIsSimulating(false);
     }
-  }, [assumptions.capex_budget]);
+  }, [assumptions.capex_budget, meanDamage, volatility]);
 
   return (
     <div
@@ -420,11 +422,133 @@ export function ScenarioSandbox({
         >
           Climate Value at Risk (CVaR)
         </span>
+
+        <span
+          style={{
+            fontFamily: 'monospace',
+            fontSize: 10,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: 'var(--cb-secondary)',
+            display: 'block',
+            marginBottom: 12,
+            marginTop: 16,
+          }}
+        >
+          STRESS TEST PARAMETERS
+        </span>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              style={{
+                fontFamily: 'monospace',
+                fontSize: 9,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: 'var(--cb-secondary)',
+                display: 'block',
+                marginBottom: 4,
+              }}
+            >
+              EXPECTED DAMAGE (%)
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                value={meanDamage}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  if (!isNaN(val)) setMeanDamage(Math.min(20, Math.max(0, val)));
+                }}
+                step={0.5}
+                min={0}
+                max={20}
+                className="w-full rounded-none"
+                style={{
+                  backgroundColor: 'transparent',
+                  border: '1px solid var(--cb-border)',
+                  color: 'var(--cb-text)',
+                  fontFamily: 'monospace',
+                  fontSize: 12,
+                  padding: '8px',
+                  paddingRight: 28,
+                  outline: 'none',
+                  transition: 'border-color 0.15s',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = '#10b981';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--cb-border)';
+                }}
+              />
+              <span
+                className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"
+                style={{ fontFamily: 'monospace', fontSize: 10, color: 'var(--cb-secondary)' }}
+              >
+                %
+              </span>
+            </div>
+          </div>
+          <div>
+            <label
+              style={{
+                fontFamily: 'monospace',
+                fontSize: 9,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: 'var(--cb-secondary)',
+                display: 'block',
+                marginBottom: 4,
+              }}
+            >
+              VOLATILITY / VARIANCE (%)
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                value={volatility}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  if (!isNaN(val)) setVolatility(Math.min(20, Math.max(0, val)));
+                }}
+                step={0.5}
+                min={0}
+                max={20}
+                className="w-full rounded-none"
+                style={{
+                  backgroundColor: 'transparent',
+                  border: '1px solid var(--cb-border)',
+                  color: 'var(--cb-text)',
+                  fontFamily: 'monospace',
+                  fontSize: 12,
+                  padding: '8px',
+                  paddingRight: 28,
+                  outline: 'none',
+                  transition: 'border-color 0.15s',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = '#10b981';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--cb-border)';
+                }}
+              />
+              <span
+                className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"
+                style={{ fontFamily: 'monospace', fontSize: 10, color: 'var(--cb-secondary)' }}
+              >
+                %
+              </span>
+            </div>
+          </div>
+        </div>
+
         <button
           type="button"
           onClick={handleRunMonteCarlo}
           disabled={isSimulating}
-          className="w-full flex items-center justify-center gap-2"
+          className="w-full flex items-center justify-center gap-2 mt-4"
           style={{
             border: '1px solid var(--cb-border)',
             padding: '8px 12px',
