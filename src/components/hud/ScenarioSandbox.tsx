@@ -81,11 +81,17 @@ export function ScenarioSandbox({
   const [isCalculating, setIsCalculating] = useState(false);
   const [cbaTimeSeries, setCbaTimeSeries] = useState<CBATimeSeriesPoint[]>([]);
   const [bondMetrics, setBondMetrics] = useState<BondMetrics | null>(null);
-  const [cvarDistribution, setCvarDistribution] = useState<CVaRDistributionPoint[]>([]);
-  const [cvarExpectedAnnualLoss, setCvarExpectedAnnualLoss] = useState<number | null>(null);
-  const [cvar95, setCvar95] = useState<number | null>(null);
-  const [cvar99, setCvar99] = useState<number | null>(null);
-  const [isCvarLoading, setIsCvarLoading] = useState(false);
+  const [cvarDistribution, setCvarDistribution] = useState<CVaRDistributionPoint[] | null>(null);
+  const [cvarMetrics, setCvarMetrics] = useState<{
+    expected_annual_loss?: number;
+    cvar_95?: number;
+    cvar_99?: number;
+    [key: string]: unknown;
+  } | null>(null);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const cvarExpectedAnnualLoss = cvarMetrics?.expected_annual_loss ?? null;
+  const cvar95 = cvarMetrics?.cvar_95 ?? null;
+  const cvar99 = cvarMetrics?.cvar_99 ?? null;
 
   useEffect(() => {
     if (!latitude || !longitude) {
@@ -217,37 +223,49 @@ export function ScenarioSandbox({
   }, [latitude, longitude, cropType, assumptions, onRecalculated]);
 
   const handleRunMonteCarlo = useCallback(async () => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
+    console.log('1. Monte Carlo Button Clicked!');
+    setIsSimulating(true);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
     const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cvar-simulation`;
-    setIsCvarLoading(true);
-    setCvarDistribution([]);
-    setCvarExpectedAnnualLoss(null);
-    setCvar95(null);
-    setCvar99(null);
+    const capexBudget = assumptions.capex_budget;
+    const payload = {
+      asset_value: Number(capexBudget) || 5_000_000,
+      mean_damage_pct: 0.02,
+      volatility_pct: 0.05,
+      num_simulations: 10_000,
+    };
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ asset_value: assetValue }),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) {
-        return;
+        throw new Error(`CVaR simulation failed: ${res.status}`);
       }
-      const json = await res.json();
-      const dist = json?.distribution ?? json?.data?.distribution ?? [];
-      setCvarDistribution(Array.isArray(dist) ? dist : []);
-      const eal = json?.expected_annual_loss ?? json?.data?.expected_annual_loss ?? null;
-      setCvarExpectedAnnualLoss(typeof eal === 'number' && Number.isFinite(eal) ? eal : null);
-      const v95 = json?.cvar_95 ?? json?.cvar_95th ?? json?.data?.cvar_95 ?? null;
-      setCvar95(typeof v95 === 'number' && Number.isFinite(v95) ? v95 : null);
-      const v99 = json?.cvar_99 ?? json?.cvar_99th ?? json?.data?.cvar_99 ?? null;
-      setCvar99(typeof v99 === 'number' && Number.isFinite(v99) ? v99 : null);
-    } catch {
-      // leave state empty on error
+      const data = await res.json();
+      const dist = data?.distribution ?? data?.data?.distribution ?? [];
+      const metricsObj = data?.metrics ?? data?.data?.metrics ?? data;
+      const metrics =
+        metricsObj && typeof metricsObj === 'object'
+          ? {
+              expected_annual_loss:
+                metricsObj.expected_annual_loss ?? data?.expected_annual_loss ?? data?.data?.expected_annual_loss,
+              cvar_95: metricsObj.cvar_95 ?? metricsObj.cvar_95th ?? data?.cvar_95 ?? data?.cvar_95th ?? data?.data?.cvar_95,
+              cvar_99: metricsObj.cvar_99 ?? metricsObj.cvar_99th ?? data?.cvar_99 ?? data?.cvar_99th ?? data?.data?.cvar_99,
+            }
+          : null;
+      setCvarDistribution(Array.isArray(dist) ? dist : null);
+      setCvarMetrics(metrics);
+      console.log('2. CVaR Data Received:', data);
+    } catch (err) {
+      console.error('Monte Carlo simulation error:', err);
+      setCvarDistribution(null);
+      setCvarMetrics(null);
     } finally {
-      setIsCvarLoading(false);
+      setIsSimulating(false);
     }
-  }, [assetValue]);
+  }, [assumptions.capex_budget]);
 
   return (
     <div
@@ -405,7 +423,7 @@ export function ScenarioSandbox({
         <button
           type="button"
           onClick={handleRunMonteCarlo}
-          disabled={isCvarLoading}
+          disabled={isSimulating}
           className="w-full flex items-center justify-center gap-2"
           style={{
             border: '1px solid var(--cb-border)',
@@ -414,26 +432,26 @@ export function ScenarioSandbox({
             fontSize: 10,
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
-            color: isCvarLoading ? 'var(--cb-secondary)' : 'var(--cb-text)',
+            color: isSimulating ? 'var(--cb-secondary)' : 'var(--cb-text)',
             backgroundColor: 'transparent',
-            cursor: isCvarLoading ? 'wait' : 'pointer',
+            cursor: isSimulating ? 'wait' : 'pointer',
             transition: 'background-color 0.15s, color 0.15s, border-color 0.15s',
           }}
           onMouseEnter={(e) => {
-            if (!isCvarLoading) {
+            if (!isSimulating) {
               e.currentTarget.style.backgroundColor = 'var(--cb-text)';
               e.currentTarget.style.color = 'var(--cb-bg)';
             }
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = isCvarLoading ? 'var(--cb-secondary)' : 'var(--cb-text)';
+            e.currentTarget.style.color = isSimulating ? 'var(--cb-secondary)' : 'var(--cb-text)';
           }}
         >
-          {isCvarLoading ? (
+          {isSimulating ? (
             <>
               <Loader2 style={{ width: 10, height: 10 }} className="animate-spin" />
-              RUNNING...
+              SIMULATING...
             </>
           ) : (
             'RUN MONTE CARLO (10,000 SIMS)'
@@ -441,7 +459,7 @@ export function ScenarioSandbox({
         </button>
         <div className="mt-4">
           <CVaRSection
-            distribution={cvarDistribution}
+            distribution={cvarDistribution ?? []}
             expectedAnnualLoss={cvarExpectedAnnualLoss}
             cvar95={cvar95}
             cvar99={cvar99}
