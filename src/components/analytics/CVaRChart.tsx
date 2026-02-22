@@ -17,6 +17,7 @@ export interface CVaRDistributionPoint {
 export interface CVaRChartProps {
   distribution: CVaRDistributionPoint[];
   cvar95: number | null;
+  cvar99?: number | null;
 }
 
 const AXIS_STYLE = {
@@ -53,7 +54,7 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<number, number>)
   return null;
 };
 
-export function CVaRChart({ distribution, cvar95 }: CVaRChartProps) {
+export function CVaRChart({ distribution, cvar95, cvar99 = null }: CVaRChartProps) {
   if (!distribution?.length) {
     return (
       <div
@@ -79,7 +80,7 @@ export function CVaRChart({ distribution, cvar95 }: CVaRChartProps) {
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={chartData}
-          margin={{ top: 8, right: 8, left: 4, bottom: 8 }}
+          margin={{ top: 28, right: 8, left: 4, bottom: 8 }}
         >
           <XAxis
             dataKey="loss_amount"
@@ -89,6 +90,9 @@ export function CVaRChart({ distribution, cvar95 }: CVaRChartProps) {
             axisLine={{ stroke: 'rgba(255,255,255,0.15)' }}
             tickFormatter={(v) => formatCurrencyAxis(Number(v))}
             domain={['dataMin', 'dataMax']}
+            angle={-45}
+            textAnchor="end"
+            height={60}
           />
           <YAxis
             dataKey="frequency"
@@ -113,6 +117,20 @@ export function CVaRChart({ distribution, cvar95 }: CVaRChartProps) {
               strokeWidth={2}
               label={{
                 value: '95% CVaR',
+                position: 'top',
+                fill: '#ef4444',
+                fontSize: 9,
+                fontFamily: 'ui-monospace, monospace',
+              }}
+            />
+          )}
+          {cvar99 != null && Number.isFinite(cvar99) && (
+            <ReferenceLine
+              x={cvar99}
+              stroke="#ef4444"
+              strokeWidth={2}
+              label={{
+                value: '99% CVaR',
                 position: 'top',
                 fill: '#ef4444',
                 fontSize: 9,
@@ -205,7 +223,7 @@ export function CVaRSection({
         cvar95={cvar95}
         cvar99={cvar99}
       />
-      <CVaRChart distribution={distribution} cvar95={cvar95} />
+      <CVaRChart distribution={distribution} cvar95={cvar95} cvar99={cvar99} />
     </>
   );
 }

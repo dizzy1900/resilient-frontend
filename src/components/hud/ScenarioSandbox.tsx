@@ -439,108 +439,80 @@ export function ScenarioSandbox({
         </span>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label
-              style={{
-                fontFamily: 'monospace',
-                fontSize: 9,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: 'var(--cb-secondary)',
-                display: 'block',
-                marginBottom: 4,
-              }}
-            >
-              EXPECTED DAMAGE (%)
-            </label>
-            <div className="relative">
-              <input
-                type="number"
-                value={meanDamage}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  if (!isNaN(val)) setMeanDamage(Math.min(20, Math.max(0, val)));
-                }}
-                step={0.5}
-                min={0}
-                max={20}
-                className="w-full rounded-none"
+            <div className="flex items-center justify-between mb-2">
+              <label
                 style={{
-                  backgroundColor: 'transparent',
-                  border: '1px solid var(--cb-border)',
-                  color: 'var(--cb-text)',
                   fontFamily: 'monospace',
-                  fontSize: 12,
-                  padding: '8px',
-                  paddingRight: 28,
-                  outline: 'none',
-                  transition: 'border-color 0.15s',
+                  fontSize: 9,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'var(--cb-secondary)',
                 }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = '#10b981';
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--cb-border)';
-                }}
-              />
-              <span
-                className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"
-                style={{ fontFamily: 'monospace', fontSize: 10, color: 'var(--cb-secondary)' }}
               >
-                %
+                EXPECTED DAMAGE (%)
+              </label>
+              <span
+                style={{
+                  fontFamily: 'monospace',
+                  fontSize: 11,
+                  color: 'var(--cb-text)',
+                }}
+              >
+                {meanDamage}%
               </span>
             </div>
+            <input
+              type="range"
+              min={0}
+              max={25}
+              step={0.1}
+              value={meanDamage}
+              onChange={(e) => setMeanDamage(parseFloat(e.target.value))}
+              className="w-full h-1"
+              style={{
+                accentColor: 'var(--cb-text)',
+                background: 'var(--cb-border)',
+                cursor: 'pointer',
+              }}
+            />
           </div>
           <div>
-            <label
-              style={{
-                fontFamily: 'monospace',
-                fontSize: 9,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: 'var(--cb-secondary)',
-                display: 'block',
-                marginBottom: 4,
-              }}
-            >
-              VOLATILITY / VARIANCE (%)
-            </label>
-            <div className="relative">
-              <input
-                type="number"
-                value={volatility}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  if (!isNaN(val)) setVolatility(Math.min(20, Math.max(0, val)));
-                }}
-                step={0.5}
-                min={0}
-                max={20}
-                className="w-full rounded-none"
+            <div className="flex items-center justify-between mb-2">
+              <label
                 style={{
-                  backgroundColor: 'transparent',
-                  border: '1px solid var(--cb-border)',
-                  color: 'var(--cb-text)',
                   fontFamily: 'monospace',
-                  fontSize: 12,
-                  padding: '8px',
-                  paddingRight: 28,
-                  outline: 'none',
-                  transition: 'border-color 0.15s',
+                  fontSize: 9,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'var(--cb-secondary)',
                 }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = '#10b981';
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--cb-border)';
-                }}
-              />
-              <span
-                className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"
-                style={{ fontFamily: 'monospace', fontSize: 10, color: 'var(--cb-secondary)' }}
               >
-                %
+                VOLATILITY / VARIANCE (%)
+              </label>
+              <span
+                style={{
+                  fontFamily: 'monospace',
+                  fontSize: 11,
+                  color: 'var(--cb-text)',
+                }}
+              >
+                {volatility}%
               </span>
             </div>
+            <input
+              type="range"
+              min={0}
+              max={25}
+              step={0.1}
+              value={volatility}
+              onChange={(e) => setVolatility(parseFloat(e.target.value))}
+              className="w-full h-1"
+              style={{
+                accentColor: 'var(--cb-text)',
+                background: 'var(--cb-border)',
+                cursor: 'pointer',
+              }}
+            />
           </div>
         </div>
 
