@@ -108,33 +108,45 @@ export function ScenarioSandbox({
     }
   }, []);
 
-  const fetchCBAData = useCallback(async () => {
-    if (!latitude || !longitude) return;
-    const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
-    const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cba-series`;
+  const handleCalculateCBA = useCallback(async () => {
+    console.log('1. ROI Button Clicked!');
+
+    const payload = {
+      capex: Number(assumptions.capex_budget) || 500000,
+      annual_opex: Number(assumptions.opex_annual) || 25000,
+      discount_rate: Number(assumptions.discount_rate_pct) / 100 || 0.08,
+      lifespan_years: Number(assumptions.asset_lifespan_years) || 30,
+    };
+
+    console.log('2. Sending Payload:', payload);
+
     try {
-      const res = await fetch(endpoint, {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+      const url = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cba-series`;
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lat: latitude,
-          lon: longitude,
-          crop: cropType,
-          capex_budget: assumptions.capex_budget,
-          opex_annual: assumptions.opex_annual,
-          discount_rate_pct: assumptions.discount_rate_pct,
-          asset_lifespan_years: assumptions.asset_lifespan_years,
-        }),
+        body: JSON.stringify(payload),
       });
-      const data = await res.json().catch(() => ({}));
-      console.log('CBA Fetch Response:', data);
-      const series = data?.time_series ?? data?.data?.time_series ?? [];
-      setCbaTimeSeries(Array.isArray(series) ? series : []);
-    } catch (err) {
-      console.error('CBA fetch failed:', err);
-      setCbaTimeSeries([]);
+
+      console.log('3. Fetch status:', response.status);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('4. Backend Data Received:', data);
+
+      if (data && data.time_series) {
+        setCbaTimeSeries(data.time_series);
+      } else {
+        console.error('Data missing time_series array:', data);
+      }
+    } catch (error) {
+      console.error('5. Fetch Failed:', error);
     }
-  }, [latitude, longitude, cropType, assumptions]);
+  }, [assumptions.capex_budget, assumptions.opex_annual, assumptions.discount_rate_pct, assumptions.asset_lifespan_years]);
 
   const handleRecalculate = useCallback(async () => {
     if (!latitude || !longitude) return;
@@ -261,10 +273,7 @@ export function ScenarioSandbox({
       </div>
 
       <button
-        onClick={() => {
-          fetchCBAData();
-          handleRecalculate();
-        }}
+        onClick={handleCalculateCBA}
         disabled={isCalculating || !latitude || !longitude}
         className="w-full mt-4 flex items-center justify-center gap-2"
         style={{
