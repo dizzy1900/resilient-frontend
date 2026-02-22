@@ -122,8 +122,8 @@ export function ScenarioSandbox({
 
     try {
       const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
-      const url = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cba-series`;
-      const response = await fetch(url, {
+      const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cba-series`;
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
