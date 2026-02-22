@@ -1,5 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Landmark, Download, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { getDefaultProbability } from './RiskStressTestCard';
 import { structureGreenBond, GreenBondDeal } from '@/utils/structureGreenBond';
 import type { BondMetrics } from '@/components/hud/ScenarioSandbox';
@@ -46,6 +48,8 @@ export const DealTicketCard = ({ financialData, locationName, isLoading, monteCa
   const greeniumDisplay = formatCurrency(greeniumValue);
   const greeniumPositive = greeniumValue > 0;
 
+  const [isExporting, setIsExporting] = useState(false);
+
   const isBankable = useMemo(() => {
     if (monteCarloData) {
       const defaultProb = getDefaultProbability(monteCarloData);
@@ -55,6 +59,34 @@ export const DealTicketCard = ({ financialData, locationName, isLoading, monteCa
       ? deal.rating.startsWith('AAA') || deal.rating.startsWith('BBB')
       : false;
   }, [deal, monteCarloData]);
+
+  const handleExportPDF = async () => {
+    try {
+      setIsExporting(true);
+      const el = document.getElementById('finance-prospectus-printable');
+      if (!el) return;
+      const canvas = await html2canvas(el, {
+        useCORS: true,
+        scale: 2,
+        backgroundColor: '#0a0a0a',
+        logging: false,
+      });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const pxToMm = 25.4 / 96;
+      let wMm = canvas.width * pxToMm;
+      let hMm = canvas.height * pxToMm;
+      const ratio = Math.min(pageW / wMm, pageH / hMm, 1) * 0.95;
+      wMm *= ratio;
+      hMm *= ratio;
+      pdf.addImage(imgData, 'PNG', (pageW - wMm) / 2, (pageH - hMm) / 2, wMm, hMm);
+      pdf.save('Climate_Resilience_Prospectus.pdf');
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const handleExport = () => {
     if (!deal) return;
@@ -154,7 +186,9 @@ export const DealTicketCard = ({ financialData, locationName, isLoading, monteCa
 
       <div className="px-4 py-3" style={{ borderTop: '1px solid var(--cb-border)' }}>
         <button
-          onClick={handleExport}
+          type="button"
+          onClick={handleExportPDF}
+          disabled={isExporting}
           className="flex items-center gap-2 w-full justify-center"
           style={{
             border: '1px solid var(--cb-border)',
@@ -162,22 +196,34 @@ export const DealTicketCard = ({ financialData, locationName, isLoading, monteCa
             fontFamily: 'monospace',
             fontSize: 10,
             letterSpacing: '0.08em',
-            color: 'var(--cb-secondary)',
+            color: isExporting ? 'var(--cb-secondary)' : 'var(--cb-secondary)',
             backgroundColor: 'transparent',
-            cursor: 'pointer',
+            cursor: isExporting ? 'wait' : 'pointer',
             transition: 'color 0.15s, border-color 0.15s',
+            opacity: isExporting ? 0.7 : 1,
           }}
           onMouseEnter={e => {
-            (e.currentTarget as HTMLButtonElement).style.color = 'var(--cb-text)';
-            (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--cb-text)';
+            if (!isExporting) {
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--cb-text)';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--cb-text)';
+            }
           }}
           onMouseLeave={e => {
             (e.currentTarget as HTMLButtonElement).style.color = 'var(--cb-secondary)';
             (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--cb-border)';
           }}
         >
-          <Download style={{ width: 10, height: 10 }} />
-          EXPORT PROSPECTUS
+          {isExporting ? (
+            <>
+              <Loader2 style={{ width: 10, height: 10 }} className="animate-spin" />
+              GENERATING PDF...
+            </>
+          ) : (
+            <>
+              <Download style={{ width: 10, height: 10 }} />
+              EXPORT PROSPECTUS
+            </>
+          )}
         </button>
       </div>
     </div>

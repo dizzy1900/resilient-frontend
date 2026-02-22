@@ -1042,6 +1042,7 @@ function FinanceContent({
 
   return (
     <div>
+      <div id="finance-prospectus-printable">
       {activeSatellitePreview && (
         <div className="border-b" style={{ borderColor: 'var(--cb-border)' }}>
           <LiveSiteViewCard
@@ -1168,6 +1169,7 @@ function FinanceContent({
       />
 
       <div style={{ height: 24 }} />
+      </div>
     </div>
   );
 }
