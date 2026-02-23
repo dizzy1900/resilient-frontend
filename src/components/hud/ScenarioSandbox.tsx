@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/clientSafe';
+import { fetchWithRetry } from '@/utils/api';
 import { CBATimeSeriesChart, type CBATimeSeriesPoint } from '@/components/analytics/CBATimeSeriesChart';
 import { CVaRSection, type CVaRDistributionPoint } from '@/components/analytics/CVaRChart';
 
@@ -109,7 +110,7 @@ export function ScenarioSandbox({
     const controller = new AbortController();
     (async () => {
       try {
-        const res = await fetch(endpoint, {
+        const res = await fetchWithRetry(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -167,7 +168,7 @@ export function ScenarioSandbox({
     try {
       const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
       const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cba-series`;
-      const response = await fetch(endpoint, {
+      const response = await fetchWithRetry(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -248,7 +249,7 @@ export function ScenarioSandbox({
       num_simulations: 10_000,
     };
     try {
-      const res = await fetch(endpoint, {
+      const res = await fetchWithRetry(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

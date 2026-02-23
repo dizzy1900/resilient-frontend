@@ -5,6 +5,7 @@ import { GlassCard } from '@/components/hud/GlassCard';
 import { Button } from '@/components/ui/button';
 import { PortfolioCSVUpload, PortfolioAsset } from './PortfolioCSVUpload';
 import { supabase } from '@/integrations/supabase/clientSafe';
+import { fetchWithRetry } from '@/utils/api';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import confetti from 'canvas-confetti';
@@ -165,7 +166,7 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
 
         const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
         const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/analyze-portfolio`;
-        const response = await fetch(endpoint, { method: 'POST', body: formData });
+        const response = await fetchWithRetry(endpoint, { method: 'POST', body: formData });
         const payload = await response.json().catch(() => ({}));
         const resultData: PortfolioAnalysisResult = payload?.data != null ? payload.data : payload;
 
