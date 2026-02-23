@@ -40,6 +40,7 @@ interface CoastalResults {
   stormChartData?: StormChartDataItem[];
   floodedUrbanKm2?: number | null;
   urbanImpactPct?: number | null;
+  avoidedBusinessInterruption?: number | null;
 }
 
 interface FloodResults {
@@ -50,6 +51,7 @@ interface FloodResults {
   rainChartData?: RainfallChartData[] | null;
   future100yr?: number | null;
   baseline100yr?: number | null;
+  avoidedBusinessInterruption?: number | null;
 }
 
 interface SpatialAnalysis {
@@ -698,6 +700,13 @@ function CoastalContent({
           value={formatCurrency(results.avoidedLoss)}
           accent="#10b981"
         />
+        {results.avoidedBusinessInterruption != null && results.avoidedBusinessInterruption > 0 && (
+          <MetricRow
+            label="Avoided Downtime Cost"
+            value={formatCurrency(results.avoidedBusinessInterruption)}
+            accent="#14b8a6"
+          />
+        )}
         <MetricRow label="Mangrove Belt" value={`${mangroveWidth} m`} />
       </div>
 
@@ -799,6 +808,13 @@ function FloodContent({
           value={formatCurrency(results.valueProtected)}
           accent="#10b981"
         />
+        {results.avoidedBusinessInterruption != null && results.avoidedBusinessInterruption > 0 && (
+          <MetricRow
+            label="Avoided Downtime Cost"
+            value={formatCurrency(results.avoidedBusinessInterruption)}
+            accent="#3b82f6"
+          />
+        )}
         {results.futureFloodAreaKm2 != null && (
           <MetricRow label="Future Flood Area" value={`${results.futureFloodAreaKm2.toFixed(2)} km²`} accent="#3b82f6" />
         )}

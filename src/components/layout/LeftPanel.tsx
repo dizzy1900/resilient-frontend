@@ -155,6 +155,8 @@ export interface LeftPanelProps {
   onAssetLifespanChange: (value: number) => void;
   dailyRevenue: number;
   onDailyRevenueChange: (value: number) => void;
+  expectedDowntimeDays: number;
+  onExpectedDowntimeDaysChange: (value: number) => void;
   seaWallEnabled: boolean;
   onSeaWallChange: (enabled: boolean) => void;
   drainageEnabled: boolean;
@@ -237,6 +239,8 @@ export function LeftPanel({
   onAssetLifespanChange,
   dailyRevenue,
   onDailyRevenueChange,
+  expectedDowntimeDays,
+  onExpectedDowntimeDaysChange,
   seaWallEnabled,
   onSeaWallChange,
   drainageEnabled,
@@ -449,6 +453,8 @@ export function LeftPanel({
             onBuildingValueChange={onBuildingValueChange}
             dailyRevenue={dailyRevenue}
             onDailyRevenueChange={onDailyRevenueChange}
+            expectedDowntimeDays={expectedDowntimeDays}
+            onExpectedDowntimeDaysChange={onExpectedDowntimeDaysChange}
             assetLifespan={assetLifespan}
             onAssetLifespanChange={onAssetLifespanChange}
             greenRoofsEnabled={greenRoofsEnabled}
@@ -529,6 +535,8 @@ export interface ModeContentProps {
   onBuildingValueChange: (v: number) => void;
   dailyRevenue: number;
   onDailyRevenueChange: (v: number) => void;
+  expectedDowntimeDays: number;
+  onExpectedDowntimeDaysChange: (v: number) => void;
   assetLifespan: number;
   onAssetLifespanChange: (v: number) => void;
   greenRoofsEnabled: boolean;
@@ -608,6 +616,8 @@ export function ModeContent(props: ModeContentProps) {
     onBuildingValueChange,
     dailyRevenue,
     onDailyRevenueChange,
+    expectedDowntimeDays,
+    onExpectedDowntimeDaysChange,
     assetLifespan,
     onAssetLifespanChange,
     greenRoofsEnabled,
@@ -901,6 +911,8 @@ export function ModeContent(props: ModeContentProps) {
           onPropertyValueChange={onPropertyValueChange}
           dailyRevenue={dailyRevenue}
           onDailyRevenueChange={onDailyRevenueChange}
+          expectedDowntimeDays={expectedDowntimeDays}
+          onExpectedDowntimeDaysChange={onExpectedDowntimeDaysChange}
           assetLifespan={assetLifespan}
           onAssetLifespanChange={onAssetLifespanChange}
         />
@@ -965,6 +977,27 @@ export function ModeContent(props: ModeContentProps) {
                     borderBottomStyle: "solid",
                   }}
                 />
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Calendar style={{ width: 10, height: 10, color: "var(--cb-secondary)" }} />
+                  <span className="cb-label">Expected Downtime</span>
+                </div>
+                <span style={{ fontSize: 11, color: "#3b82f6", fontFamily: "monospace" }}>{expectedDowntimeDays} days</span>
+              </div>
+              <Slider
+                value={[expectedDowntimeDays]}
+                onValueChange={(v) => onExpectedDowntimeDaysChange(v[0])}
+                min={0}
+                max={30}
+                step={1}
+                className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-blue-500 [&_[data-radix-slider-thumb]]:border-blue-500 [&_[data-radix-slider-thumb]]:bg-white [&_[data-radix-slider-track]]:h-1"
+              />
+              <div className="flex justify-between mt-1" style={{ fontSize: 10, color: "var(--cb-secondary)" }}>
+                <span>0 days</span>
+                <span>30 days</span>
               </div>
             </div>
             <div>
@@ -1590,6 +1623,8 @@ interface CoastalSimPanelProps {
   onPropertyValueChange: (v: number) => void;
   dailyRevenue: number;
   onDailyRevenueChange: (v: number) => void;
+  expectedDowntimeDays: number;
+  onExpectedDowntimeDaysChange: (v: number) => void;
   assetLifespan: number;
   onAssetLifespanChange: (v: number) => void;
 }
@@ -1608,6 +1643,8 @@ function CoastalSimPanel({
   onPropertyValueChange,
   dailyRevenue,
   onDailyRevenueChange,
+  expectedDowntimeDays,
+  onExpectedDowntimeDaysChange,
   assetLifespan,
   onAssetLifespanChange,
 }: CoastalSimPanelProps) {
@@ -1687,6 +1724,27 @@ function CoastalSimPanel({
                 borderBottomStyle: "solid",
               }}
             />
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-1.5">
+              <Calendar style={{ width: 10, height: 10, color: "var(--cb-secondary)" }} />
+              <span className="cb-label">Expected Downtime</span>
+            </div>
+            <span style={{ fontSize: 10, color: "#14b8a6", fontFamily: "monospace" }}>{expectedDowntimeDays} days</span>
+          </div>
+          <Slider
+            value={[expectedDowntimeDays]}
+            onValueChange={(v) => onExpectedDowntimeDaysChange(v[0])}
+            min={0}
+            max={30}
+            step={1}
+            className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-teal-500 [&_[data-radix-slider-thumb]]:border-teal-500 [&_[data-radix-slider-thumb]]:bg-white [&_[data-radix-slider-track]]:h-1"
+          />
+          <div className="flex justify-between mt-1" style={{ fontSize: 10, color: "var(--cb-secondary)" }}>
+            <span>0 days</span>
+            <span>30 days</span>
           </div>
         </div>
         <div>

@@ -81,6 +81,7 @@ const Index = () => {
   // Asset valuation state
   const [assetLifespan, setAssetLifespan] = useState(30);
   const [dailyRevenue, setDailyRevenue] = useState(20000);
+  const [expectedDowntimeDays, setExpectedDowntimeDays] = useState(14);
 
   const [isCoastalSimulating, setIsCoastalSimulating] = useState(false);
   const [isFloodSimulating, setIsFloodSimulating] = useState(false);
@@ -160,6 +161,7 @@ const Index = () => {
     stormChartData?: Array<{ period: string; current_depth: number; future_depth: number }>;
     floodedUrbanKm2?: number | null;
     urbanImpactPct?: number | null;
+    avoidedBusinessInterruption?: number | null;
   }>({
     avoidedLoss: 0,
     slope: null,
@@ -168,6 +170,7 @@ const Index = () => {
     floodDepth: null,
     floodedUrbanKm2: null,
     urbanImpactPct: null,
+    avoidedBusinessInterruption: null,
   });
 
   // Coastal-specific state (calibrated to Year 2000 baseline)
@@ -188,6 +191,7 @@ const Index = () => {
     rainChartData: null as Array<{ month: string; historical: number; projected: number }> | null,
     future100yr: null as number | null,
     baseline100yr: null as number | null,
+    avoidedBusinessInterruption: null as number | null,
   });
 
   // Spatial analysis data from API (for Viable Growing Area card)
@@ -624,18 +628,20 @@ const Index = () => {
           });
         }
 
-        const { data: responseData, error } = await invokeWithRetry(
-          () =>
-            supabase.functions.invoke('simulate-coastal', {
-              body: {
-                lat: markerPosition.lat,
-                lon: markerPosition.lng,
-                mangrove_width: mangroveWidth,
-                slr_projection: totalSLR,
-                include_storm_surge: includeStormSurge,
-              },
-            })
-        );
+      const { data: responseData, error } = await invokeWithRetry(
+        () =>
+          supabase.functions.invoke('simulate-coastal', {
+            body: {
+              lat: markerPosition.lat,
+              lon: markerPosition.lng,
+              mangrove_width: mangroveWidth,
+              slr_projection: totalSLR,
+              include_storm_surge: includeStormSurge,
+              daily_revenue: dailyRevenue,
+              expected_downtime_days: expectedDowntimeDays,
+            },
+          })
+      );
 
         if (polygonPromise) {
           try {
@@ -658,6 +664,7 @@ const Index = () => {
         const rawStormChartData = data.storm_chart_data;
         const rawFloodedUrbanKm2 = data.flooded_urban_km2;
         const rawUrbanImpactPct = data.urban_impact_pct;
+        const rawAvoidedBI = data.avoided_business_interruption;
 
         // Generate fallback storm chart data if API doesn't provide it
         const stormChartData = rawStormChartData ?? generateFallbackStormChartData(totalSLR);
@@ -680,6 +687,7 @@ const Index = () => {
           stormChartData,
           floodedUrbanKm2,
           urbanImpactPct,
+          avoidedBusinessInterruption: rawAvoidedBI ?? (dailyRevenue * expectedDowntimeDays * (mangroveWidth / 500) * 0.3),
         });
         setShowCoastalResults(true);
         setIsPanelOpen(true);
@@ -707,6 +715,7 @@ const Index = () => {
           stormChartData: generateFallbackStormChartData(totalSLR),
           floodedUrbanKm2,
           urbanImpactPct,
+          avoidedBusinessInterruption: dailyRevenue * expectedDowntimeDays * (mangroveWidth / 500) * 0.3,
         });
         setShowCoastalResults(true);
         setIsPanelOpen(true);
@@ -718,7 +727,7 @@ const Index = () => {
         setIsCoastalSimulating(false);
       }
     },
-    [markerPosition, propertyValue, mangroveWidth, totalSLR, includeStormSurge, selectedPolygon]
+    [markerPosition, propertyValue, mangroveWidth, totalSLR, includeStormSurge, selectedPolygon, dailyRevenue, expectedDowntimeDays]
   );
 
   const getInterventionType = useCallback(() => {
@@ -768,6 +777,8 @@ const Index = () => {
         lat: markerPosition.lat,
         lon: markerPosition.lng,
         rain_intensity_pct: totalRainIntensity,
+        daily_revenue: dailyRevenue,
+        expected_downtime_days: expectedDowntimeDays,
       };
 
       let polygonPromise: Promise<any> | null = null;
@@ -812,6 +823,8 @@ const Index = () => {
       const future100yr = analytics?.future_100yr ?? null;
       const baseline100yr = analytics?.baseline_100yr ?? null;
 
+      const avoidedBI = analysis.avoided_business_interruption ?? (dailyRevenue * expectedDowntimeDays * (floodDepthReduction / 100) * 0.4);
+
       setFloodResults({
         floodDepthReduction: Math.round(floodDepthReduction * 10) / 10,
         valueProtected: Math.round(avoidedLoss * 100) / 100,
@@ -820,6 +833,7 @@ const Index = () => {
         rainChartData,
         future100yr,
         baseline100yr,
+        avoidedBusinessInterruption: avoidedBI,
       });
       setShowFloodResults(true);
       setIsPanelOpen(true);
@@ -856,6 +870,7 @@ const Index = () => {
         rainChartData: fallbackRainChart,
         future100yr: fallbackFuture100yr,
         baseline100yr: fallbackBaseline100yr,
+        avoidedBusinessInterruption: dailyRevenue * expectedDowntimeDays * (totalReduction / 100) * 0.4,
       });
       setShowFloodResults(true);
       setIsPanelOpen(true);
@@ -866,7 +881,7 @@ const Index = () => {
     } finally {
       setIsFloodSimulating(false);
     }
-  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled, getInterventionType, totalRainIntensity, selectedPolygon]);
+  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled, getInterventionType, totalRainIntensity, selectedPolygon, dailyRevenue, expectedDowntimeDays]);
 
   const handleGreenRoofsChange = useCallback(
     (enabled: boolean) => {
@@ -1048,6 +1063,7 @@ const Index = () => {
         rainChartData: null,
         future100yr: entry100yr?.future_mm ?? null,
         baseline100yr: entry100yr?.baseline_mm ?? null,
+        avoidedBusinessInterruption: null,
       });
       setShowFloodResults(true);
     }
@@ -1260,6 +1276,8 @@ const Index = () => {
         onAssetLifespanChange={setAssetLifespan}
         dailyRevenue={dailyRevenue}
         onDailyRevenueChange={setDailyRevenue}
+        expectedDowntimeDays={expectedDowntimeDays}
+        onExpectedDowntimeDaysChange={setExpectedDowntimeDays}
         seaWallEnabled={seaWallEnabled}
         onSeaWallChange={(enabled) => {
           setSeaWallEnabled(enabled);
@@ -1434,6 +1452,8 @@ const Index = () => {
           onBuildingValueChange: setBuildingValue,
           dailyRevenue,
           onDailyRevenueChange: setDailyRevenue,
+          expectedDowntimeDays,
+          onExpectedDowntimeDaysChange: setExpectedDowntimeDays,
           assetLifespan,
           onAssetLifespanChange: setAssetLifespan,
           greenRoofsEnabled,
