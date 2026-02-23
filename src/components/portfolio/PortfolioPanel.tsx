@@ -164,7 +164,7 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
         const formData = new FormData();
         formData.append('file', file);
 
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
         const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/analyze-portfolio`;
         const response = await fetchWithRetry(endpoint, { method: 'POST', body: formData });
         const payload = await response.json().catch(() => ({}));
@@ -278,7 +278,7 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
         <Button
           variant="outline"
           onClick={handleLoadDemo}
-          className="w-full border-purple-500/30 text-purple-300 hover:bg-purple-500/10 hover:text-purple-200"
+          className="w-full rounded-none border border-white/20 text-white/60 uppercase text-[10px] tracking-widest hover:bg-white hover:text-black hover:border-white transition-none py-2 px-4"
         >
           <MapPinned className="w-4 h-4 mr-2" />
           Load Demo Portfolio (Ghana Cocoa)

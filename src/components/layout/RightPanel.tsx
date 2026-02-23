@@ -372,13 +372,16 @@ export function RightPanelContent({
   // Map backend snake_case (value, resilience_score, name, lat, lon) to UI shape (Value, score, Name, Lat, Lon).
   const portfolioDisplayAssets: (PortfolioAsset & { score?: number })[] =
     mode === 'portfolio' && portfolioResults?.asset_results?.length
-      ? portfolioResults.asset_results.map((a) => ({
-          Name: (a as Record<string, unknown>).name ?? a.name ?? 'Asset',
-          Lat: a.lat,
-          Lon: a.lon,
-          Value: Number((a as Record<string, unknown>).value ?? a.value ?? 0),
-          score: Number((a as Record<string, unknown>).resilience_score ?? a.resilience_score ?? undefined),
-        }))
+      ? portfolioResults.asset_results.map((a) => {
+          const rec = a as unknown as Record<string, unknown>;
+          return {
+            Name: String(rec.name ?? a.name ?? 'Asset'),
+            Lat: a.lat,
+            Lon: a.lon,
+            Value: Number(rec.value ?? a.value ?? 0),
+            score: Number(rec.resilience_score ?? a.resilience_score ?? undefined),
+          };
+        })
       : portfolioAssets ?? [];
 
   return (

@@ -38,6 +38,8 @@ import { TimelinePlayer } from "@/components/TimelinePlayer";
 import { cn } from "@/lib/utils";
 import { LocationSearch } from "@/components/dashboard/LocationSearch";
 import { fetchWithRetry } from "@/utils/api";
+import { useProjectStore } from "@/store/useProjectStore";
+import { toast } from "sonner";
 
 const MODE_ITEMS: {
   mode: DashboardMode;
@@ -666,7 +668,7 @@ export function ModeContent(props: ModeContentProps) {
       try {
         const formData = new FormData();
         formData.append("file", selectedFile);
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || "";
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
         const endpoint = `${baseUrl.replace(/\/+$/, "")}/api/v1/analyze-portfolio`;
         console.log("2. Fetching URL:", endpoint);
         const response = await fetchWithRetry(endpoint, {
@@ -807,6 +809,25 @@ export function ModeContent(props: ModeContentProps) {
           </div>
         </SectionRow>
 
+        <div className="px-4 pb-2">
+          <button
+            onClick={() => {
+              useProjectStore.getState().setProjectData({
+                interventionName: "Mangrove Belt",
+                capex: 2500000,
+                opex: 15000,
+                insurancePremium: 30000,
+                carbonCredits: 5000,
+                lifespan: 40,
+              });
+              toast("Project data loaded. Open the Finance tab to calculate ROI.");
+            }}
+            className="w-full mt-2 bg-[#111] border border-[#333] text-[#4ade80] font-mono text-xs py-3 hover:bg-[#222] hover:border-[#4ade80] transition-all cursor-pointer"
+          >
+            [ SEND TO FINANCE ]
+          </button>
+        </div>
+
         <SectionRow label="Defensive Infrastructure">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -845,6 +866,25 @@ export function ModeContent(props: ModeContentProps) {
             </div>
           </div>
         </SectionRow>
+
+        <div className="px-4 pb-2">
+          <button
+            onClick={() => {
+              useProjectStore.getState().setProjectData({
+                interventionName: "Concrete Sea Wall",
+                capex: 5000000,
+                opex: 25000,
+                insurancePremium: 50000,
+                carbonCredits: 0,
+                lifespan: 30,
+              });
+              toast("Project data loaded. Open the Finance tab to calculate ROI.");
+            }}
+            className="w-full mt-2 bg-[#111] border border-[#333] text-[#4ade80] font-mono text-xs py-3 hover:bg-[#222] hover:border-[#4ade80] transition-all cursor-pointer"
+          >
+            [ SEND TO FINANCE ]
+          </button>
+        </div>
 
         <SimDivider />
         <CoastalSimPanel

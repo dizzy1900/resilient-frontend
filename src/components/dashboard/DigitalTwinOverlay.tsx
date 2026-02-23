@@ -67,8 +67,9 @@ export function DigitalTwinOverlay({ leftMap, rightMap }: DigitalTwinOverlayProp
       </div>
 
       <div
-        className="absolute top-0 right-0 z-20 pointer-events-none"
+        className="absolute top-0 z-20 pointer-events-none"
         style={{
+          right: 80,
           backgroundColor: 'rgba(16, 185, 129, 0.12)',
           color: '#10b981',
           fontFamily: "'Inter', monospace",

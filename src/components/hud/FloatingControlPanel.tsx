@@ -26,6 +26,8 @@ import { Button } from "@/components/ui/button";
 import { DashboardMode } from "@/components/dashboard/ModeSelector";
 import { useState, useEffect, useRef } from "react";
 import { useFinancialSettings } from "@/contexts/FinancialContext";
+import { useProjectStore } from "@/store/useProjectStore";
+import { toast } from "sonner";
 
 interface FloatingControlPanelProps {
   mode: DashboardMode;
@@ -162,7 +164,7 @@ export const FloatingControlPanel = ({
           </TabsTrigger>
           <TabsTrigger
             value="coastal"
-            className="rounded-lg text-[9px] lg:text-[10px] font-medium data-[state=active]:bg-teal-500/20 data-[state=active]:text-teal-400 data-[state=active]:border data-[state=active]:border-teal-500/30 text-white/60 transition-all px-1"
+            className="rounded-lg text-[9px] lg:text-[10px] font-medium data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400 data-[state=active]:border data-[state=active]:border-cyan-500/30 text-white/60 transition-all px-1"
           >
             Coastal
           </TabsTrigger>
@@ -249,10 +251,10 @@ export const FloatingControlPanel = ({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <TreePine className="w-4 h-4 text-teal-400" />
+                  <TreePine className="w-4 h-4 text-cyan-400" />
                   Mangrove Width
                 </label>
-                <span className="text-sm font-semibold text-teal-400 tabular-nums">{localMangroveWidth}m</span>
+                <span className="text-sm font-semibold text-cyan-400 tabular-nums">{localMangroveWidth}m</span>
               </div>
               <Slider
                 value={[localMangroveWidth]}
@@ -261,24 +263,42 @@ export const FloatingControlPanel = ({
                 max={500}
                 step={10}
                 disabled={!canSimulate}
-                className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-teal-500 [&_[data-radix-slider-thumb]]:border-teal-500 [&_[data-radix-slider-thumb]]:bg-white"
+                className="w-full [&_[data-radix-slider-track]]:bg-white/10 [&_[data-radix-slider-range]]:bg-cyan-500 [&_[data-radix-slider-thumb]]:border-cyan-500 [&_[data-radix-slider-thumb]]:bg-white"
               />
               <div className="flex justify-between text-xs text-white/40">
                 <span>0m</span>
                 <span>250m</span>
                 <span>500m</span>
               </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  useProjectStore.getState().setProjectData({
+                    interventionName: "Mangrove Belt",
+                    capex: 2500000,
+                    opex: 15000,
+                    insurancePremium: 30000,
+                    carbonCredits: 5000,
+                    lifespan: 40,
+                  });
+                  toast("Project data loaded. Open the Finance tab to calculate ROI.");
+                }}
+                className="w-full py-2 px-4 rounded-none border border-white/20 bg-transparent text-white/60 uppercase text-[10px] tracking-widest font-mono hover:bg-white hover:text-black transition-none"
+              >
+                [ SEND TO FINANCE ]
+              </button>
             </div>
 
             <div className="flex items-center gap-2 text-xs font-medium text-white/70">
-              <Shield className="w-4 h-4 text-teal-400" />
+              <Shield className="w-4 h-4 text-cyan-400" />
               <span>Defensive Infrastructure</span>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-teal-500" />
+                  <div className="w-2 h-2 rounded-full bg-cyan-500" />
                   <Label htmlFor="sea-wall" className="text-xs text-white/80 cursor-pointer">
                     Sea Wall
                   </Label>
@@ -312,6 +332,24 @@ export const FloatingControlPanel = ({
                 />
               </div>
             </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                useProjectStore.getState().setProjectData({
+                  interventionName: "Concrete Sea Wall",
+                  capex: 5000000,
+                  opex: 25000,
+                  insurancePremium: 50000,
+                  carbonCredits: 0,
+                  lifespan: 30,
+                });
+                toast("Project data loaded. Open the Finance tab to calculate ROI.");
+              }}
+              className="w-full py-2 px-4 rounded-none border border-white/20 bg-transparent text-white/60 uppercase text-[10px] tracking-widest font-mono hover:bg-white hover:text-black transition-none"
+            >
+              [ SEND TO FINANCE ]
+            </button>
           </>
         )}
 

@@ -9,7 +9,10 @@ import {
   CloudRain,
   Droplets,
   Info,
+  ArrowRight,
 } from 'lucide-react';
+import { useProjectStore } from '@/store/useProjectStore';
+import { toast } from 'sonner';
 import { GlassCard } from './GlassCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
@@ -414,6 +417,25 @@ export const ResultsPanel = ({
               <span>High protection</span>
             </div>
           </div>
+
+          {/* SEND TO FINANCE button */}
+          <button
+            onClick={() => {
+              useProjectStore.getState().setProjectData({
+                interventionName: 'Mangrove Belt',
+                capex: 2500000,
+                opex: 15000,
+                insurancePremium: 30000,
+                carbonCredits: 5000,
+                lifespan: 40,
+              });
+              toast.success('Project data loaded into Finance Module.');
+            }}
+            className="w-full flex items-center justify-center gap-2 py-2 px-4 border border-white/20 bg-transparent text-white/70 uppercase text-[10px] tracking-widest font-mono rounded-none transition-none hover:bg-white hover:text-black"
+          >
+            <ArrowRight className="w-3 h-3" />
+            SEND TO FINANCE
+          </button>
         </div>
       </GlassCard>
     );
@@ -554,8 +576,27 @@ export const ResultsPanel = ({
                   </span>
                 ))}
               </div>
-            </div>
+          </div>
           )}
+
+          {/* SEND TO FINANCE button */}
+          <button
+            onClick={() => {
+              useProjectStore.getState().setProjectData({
+                interventionName: 'Sponge City Retrofit',
+                capex: 1800000,
+                opex: 35000,
+                insurancePremium: 45000,
+                carbonCredits: 1200,
+                lifespan: 30,
+              });
+              toast.success('Project data loaded into Finance Module.');
+            }}
+            className="w-full flex items-center justify-center gap-2 py-2 px-4 border border-white/20 bg-transparent text-white/70 uppercase text-[10px] tracking-widest font-mono rounded-none transition-none hover:bg-white hover:text-black"
+          >
+            <ArrowRight className="w-3 h-3" />
+            SEND TO FINANCE
+          </button>
         </div>
       </GlassCard>
     );

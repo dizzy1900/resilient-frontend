@@ -41,7 +41,7 @@ export const FinancialSettingsModal = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="bg-black/30 backdrop-blur-xl border border-white/10 hover:bg-white/10 text-white rounded-xl shadow-lg h-9 w-9"
+          className="rounded-none bg-transparent border border-transparent hover:bg-white/10 hover:border-white/20 text-white/60 hover:text-white shadow-none h-9 w-9 transition-none"
         >
           <Settings className="h-4 w-4" />
         </Button>
