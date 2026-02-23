@@ -15,6 +15,7 @@ import { generateIrregularZone, ZoneMode } from '@/utils/zoneGeneration';
 import { calculateZoneAtTemperature } from '@/utils/zoneMorphing';
 import { supabase } from '@/integrations/supabase/clientSafe';
 import { findClosestAtlasItem } from '@/utils/atlasFallback';
+import { invokeWithRetry } from '@/utils/api';
 import { LeftPanel } from '@/components/layout/LeftPanel';
 import { RightPanel } from '@/components/layout/RightPanel';
 import { DigitalTwinOverlay } from '@/components/dashboard/DigitalTwinOverlay';
@@ -355,13 +356,18 @@ const Index = () => {
         });
       }
 
-      const { data: responseData, error } = await supabase.functions.invoke('simulate-finance', {
-        body: {
-          lat: markerPosition.lat,
-          lon: markerPosition.lng,
-          crop: cropType,
-        },
-      });
+      const { data: responseData, error } = await invokeWithRetry(
+        () =>
+          supabase.functions.invoke('simulate-finance', {
+            body: {
+              lat: markerPosition.lat,
+              lon: markerPosition.lng,
+              crop: cropType,
+            },
+          }),
+        3,
+        3000
+      );
 
       if (polygonPromise) {
         try {
@@ -371,7 +377,7 @@ const Index = () => {
         } catch { /* polygon call is best-effort */ }
       }
 
-      if (error) throw new Error(error.message || 'Finance simulation failed');
+      if (error) throw new Error((error as Error).message || 'Finance simulation failed');
 
       const result = Array.isArray(responseData) ? responseData[0] : responseData;
       const financialAnalysis = result?.financial_analysis ?? result?.data?.financial_analysis ?? result;
@@ -440,26 +446,31 @@ const Index = () => {
       // Calculate delta for API (backend expects relative increase)
       const tempDelta = globalTempTarget - 1.4;
 
-      const { data: responseData, error } = await supabase.functions.invoke('simulate-agriculture', {
-        body: {
-          lat: markerPosition.lat,
-          lon: markerPosition.lng,
-          crop: cropType,
-          temp_increase: Math.round(tempDelta * 10) / 10,
-          rain_change: rainChange,
-          ...(projectParams ? {
-            project_params: {
-              capex: projectParams.capex,
-              opex: projectParams.opex,
-              yield_benefit: projectParams.yieldBenefit,
-              crop_price: projectParams.cropPrice,
+      const { data: responseData, error } = await invokeWithRetry(
+        () =>
+          supabase.functions.invoke('simulate-agriculture', {
+            body: {
+              lat: markerPosition.lat,
+              lon: markerPosition.lng,
+              crop: cropType,
+              temp_increase: Math.round(tempDelta * 10) / 10,
+              rain_change: rainChange,
+              ...(projectParams ? {
+                project_params: {
+                  capex: projectParams.capex,
+                  opex: projectParams.opex,
+                  yield_benefit: projectParams.yieldBenefit,
+                  crop_price: projectParams.cropPrice,
+                },
+              } : {}),
             },
-          } : {}),
-        },
-      });
+          }),
+        3,
+        3000
+      );
 
       if (error) {
-        throw new Error(error.message || 'Agriculture simulation failed');
+        throw new Error((error as Error).message || 'Agriculture simulation failed');
       }
 
       const result = Array.isArray(responseData) ? responseData[0] : responseData;
@@ -617,15 +628,20 @@ const Index = () => {
           });
         }
 
-        const { data: responseData, error } = await supabase.functions.invoke('simulate-coastal', {
-          body: {
-            lat: markerPosition.lat,
-            lon: markerPosition.lng,
-            mangrove_width: mangroveWidth,
-            slr_projection: totalSLR,
-            include_storm_surge: includeStormSurge,
-          },
-        });
+        const { data: responseData, error } = await invokeWithRetry(
+          () =>
+            supabase.functions.invoke('simulate-coastal', {
+              body: {
+                lat: markerPosition.lat,
+                lon: markerPosition.lng,
+                mangrove_width: mangroveWidth,
+                slr_projection: totalSLR,
+                include_storm_surge: includeStormSurge,
+              },
+            }),
+          3,
+          3000
+        );
 
         if (polygonPromise) {
           try {
@@ -636,7 +652,7 @@ const Index = () => {
         }
 
         if (error) {
-          throw new Error(error.message || 'Coastal simulation failed');
+          throw new Error((error as Error).message || 'Coastal simulation failed');
         }
 
         const data = responseData.data;
@@ -774,9 +790,11 @@ const Index = () => {
         });
       }
 
-      const { data: responseData, error } = await supabase.functions.invoke('simulate-flood', {
-        body: payload,
-      });
+      const { data: responseData, error } = await invokeWithRetry(
+        () => supabase.functions.invoke('simulate-flood', { body: payload }),
+        3,
+        3000
+      );
 
       if (polygonPromise) {
         try {
@@ -787,7 +805,7 @@ const Index = () => {
       }
 
       if (error) {
-        throw new Error(error.message || 'Flood simulation failed');
+        throw new Error((error as Error).message || 'Flood simulation failed');
       }
 
       const analysis = responseData.data?.analysis || responseData.analysis || responseData;
@@ -1092,17 +1110,22 @@ const Index = () => {
 
     try {
       const tempDelta = healthTempTarget - 1.4;
-      const { data: responseData, error } = await supabase.functions.invoke('predict-health', {
-        body: {
-          lat: markerPosition.lat,
-          lon: markerPosition.lng,
-          workforce_size: workforceSize,
-          daily_wage: averageDailyWage,
-          temp_increase: tempDelta,
-        },
-      });
+      const { data: responseData, error } = await invokeWithRetry(
+        () =>
+          supabase.functions.invoke('predict-health', {
+            body: {
+              lat: markerPosition.lat,
+              lon: markerPosition.lng,
+              workforce_size: workforceSize,
+              daily_wage: averageDailyWage,
+              temp_increase: tempDelta,
+            },
+          }),
+        3,
+        3000
+      );
 
-      if (error) throw new Error(error.message || 'Health simulation failed');
+      if (error) throw new Error((error as Error).message || 'Health simulation failed');
 
       setHealthResults(responseData.data);
       setShowHealthResults(true);
