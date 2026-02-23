@@ -1039,41 +1039,43 @@ export function ModeContent(props: ModeContentProps) {
             </div>
           </div>
 
-          {/* Send Sponge City data to Finance */}
-          <button
-            onClick={() => {
-              useProjectStore.getState().setProjectData({
-                interventionName: "Sponge City Toolkit",
-                capex: 4500000,
-                opex: 35000,
-                insurancePremium: 25000,
-                carbonCredits: 12000,
-                lifespan: 50,
-              });
-              toast("Flood project data loaded into Finance Module.");
-            }}
-            className="w-full mt-3 bg-[#111] border border-[#333] text-[#4ade80] font-mono text-xs py-3 hover:bg-[#222] hover:border-[#4ade80] transition-all cursor-pointer"
-          >
-            [ SEND TO FINANCE ]
-          </button>
+          <div className="flex flex-row gap-2 w-full mt-4">
+            {/* Send Sponge City data to Finance */}
+            <button
+              onClick={() => {
+                useProjectStore.getState().setProjectData({
+                  interventionName: "Sponge City Toolkit",
+                  capex: 4500000,
+                  opex: 35000,
+                  insurancePremium: 25000,
+                  carbonCredits: 12000,
+                  lifespan: 50,
+                });
+                toast("Flood project data loaded into Finance Module.");
+              }}
+              className="flex-1 bg-[#111] border border-[#333] text-[#4ade80] font-mono text-xs py-3 hover:bg-[#222] hover:border-[#4ade80] transition-all cursor-pointer"
+            >
+              [ SEND SPONGE ]
+            </button>
 
-          {/* Send Drainage Upgrade data to Finance */}
-          <button
-            onClick={() => {
-              useProjectStore.getState().setProjectData({
-                interventionName: "Drainage Upgrade",
-                capex: 1200000,
-                opex: 8000,
-                insurancePremium: 40000,
-                carbonCredits: 0,
-                lifespan: 25,
-              });
-              toast("Flood project data loaded into Finance Module.");
-            }}
-            className="w-full mt-2 bg-[#111] border border-[#333] text-[#4ade80] font-mono text-xs py-3 hover:bg-[#222] hover:border-[#4ade80] transition-all cursor-pointer"
-          >
-            [ SEND DRAINAGE TO FINANCE ]
-          </button>
+            {/* Send Drainage Upgrade data to Finance */}
+            <button
+              onClick={() => {
+                useProjectStore.getState().setProjectData({
+                  interventionName: "Drainage Upgrade",
+                  capex: 1200000,
+                  opex: 8000,
+                  insurancePremium: 40000,
+                  carbonCredits: 0,
+                  lifespan: 25,
+                });
+                toast("Flood project data loaded into Finance Module.");
+              }}
+              className="flex-1 bg-[#111] border border-[#333] text-[#4ade80] font-mono text-xs py-3 hover:bg-[#222] hover:border-[#4ade80] transition-all cursor-pointer"
+            >
+              [ SEND DRAINAGE ]
+            </button>
+          </div>
         </SectionRow>
 
         <SimDivider />
