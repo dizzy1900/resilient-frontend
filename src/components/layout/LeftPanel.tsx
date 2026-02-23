@@ -37,6 +37,7 @@ import { FinancialSettingsModal } from "@/components/hud/FinancialSettingsModal"
 import { TimelinePlayer } from "@/components/TimelinePlayer";
 import { cn } from "@/lib/utils";
 import { LocationSearch } from "@/components/dashboard/LocationSearch";
+import { fetchWithRetry } from "@/utils/api";
 import { useProjectStore } from "@/store/useProjectStore";
 import { toast } from "sonner";
 
@@ -670,7 +671,7 @@ export function ModeContent(props: ModeContentProps) {
         const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
         const endpoint = `${baseUrl.replace(/\/+$/, "")}/api/v1/analyze-portfolio`;
         console.log("2. Fetching URL:", endpoint);
-        const response = await fetch(endpoint, {
+        const response = await fetchWithRetry(endpoint, {
           method: "POST",
           body: formData,
         });

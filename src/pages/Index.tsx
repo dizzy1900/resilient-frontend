@@ -364,9 +364,7 @@ const Index = () => {
               lon: markerPosition.lng,
               crop: cropType,
             },
-          }),
-        3,
-        3000
+          })
       );
 
       if (polygonPromise) {
@@ -464,9 +462,7 @@ const Index = () => {
                 },
               } : {}),
             },
-          }),
-        3,
-        3000
+          })
       );
 
       if (error) {
@@ -638,9 +634,7 @@ const Index = () => {
                 slr_projection: totalSLR,
                 include_storm_surge: includeStormSurge,
               },
-            }),
-          3,
-          3000
+            })
         );
 
         if (polygonPromise) {
@@ -791,9 +785,7 @@ const Index = () => {
       }
 
       const { data: responseData, error } = await invokeWithRetry(
-        () => supabase.functions.invoke('simulate-flood', { body: payload }),
-        3,
-        3000
+        () => supabase.functions.invoke('simulate-flood', { body: payload })
       );
 
       if (polygonPromise) {
@@ -1120,9 +1112,7 @@ const Index = () => {
               daily_wage: averageDailyWage,
               temp_increase: tempDelta,
             },
-          }),
-        3,
-        3000
+          })
       );
 
       if (error) throw new Error((error as Error).message || 'Health simulation failed');
