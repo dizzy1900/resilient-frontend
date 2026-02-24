@@ -642,13 +642,24 @@ const Index = () => {
       include_storm_surge: includeStormSurge,
     };
 
-    fetchWithRetry('/api/predict', {
+    const coastalBaseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
+    const coastalEndpoint = `${coastalBaseUrl.replace(/\/+$/, '')}/api/predict_coastal`;
+
+    fetchWithRetry(coastalEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
-      .then((res) => {
-        if (!res.ok) throw new Error('Network response was not ok');
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const textError = await res.text();
+          console.error('Received non-JSON response:', textError.substring(0, 100));
+          throw new TypeError('Oops, we haven\'t got JSON!');
+        }
         return res.json();
       })
       .then((data) => {
@@ -748,13 +759,24 @@ const Index = () => {
       slope_pct: 2,
     };
 
-    fetchWithRetry('/api/predict', {
+    const floodBaseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
+    const floodEndpoint = `${floodBaseUrl.replace(/\/+$/, '')}/api/predict_flood`;
+
+    fetchWithRetry(floodEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
-      .then((res) => {
-        if (!res.ok) throw new Error('Network response was not ok');
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const textError = await res.text();
+          console.error('Received non-JSON response:', textError.substring(0, 100));
+          throw new TypeError('Oops, we haven\'t got JSON!');
+        }
         return res.json();
       })
       .then((data) => {
