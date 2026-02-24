@@ -642,8 +642,8 @@ const Index = () => {
       include_storm_surge: includeStormSurge,
     };
 
-    const coastalBaseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
-    const coastalEndpoint = `${coastalBaseUrl.replace(/\/+$/, '')}/api/predict_coastal`;
+    const coastalBaseUrl = 'https://web-production-8ff9e.up.railway.app';
+    const coastalEndpoint = `${coastalBaseUrl.replace(/\/+$/, '')}/predict-coastal`;
 
     fetchWithRetry(coastalEndpoint, {
       method: 'POST',
@@ -759,8 +759,8 @@ const Index = () => {
       slope_pct: 2,
     };
 
-    const floodBaseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
-    const floodEndpoint = `${floodBaseUrl.replace(/\/+$/, '')}/api/predict_flood`;
+    const floodBaseUrl = 'https://web-production-8ff9e.up.railway.app';
+    const floodEndpoint = `${floodBaseUrl.replace(/\/+$/, '')}/predict-flood`;
 
     fetchWithRetry(floodEndpoint, {
       method: 'POST',
