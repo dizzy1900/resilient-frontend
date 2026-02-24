@@ -15,7 +15,7 @@ import { generateIrregularZone, ZoneMode } from '@/utils/zoneGeneration';
 import { calculateZoneAtTemperature } from '@/utils/zoneMorphing';
 import { supabase } from '@/integrations/supabase/clientSafe';
 import { findClosestAtlasItem } from '@/utils/atlasFallback';
-import { invokeWithRetry } from '@/utils/api';
+import { invokeWithRetry, fetchWithRetry } from '@/utils/api';
 import { LeftPanel } from '@/components/layout/LeftPanel';
 import { RightPanel } from '@/components/layout/RightPanel';
 import { DigitalTwinOverlay } from '@/components/dashboard/DigitalTwinOverlay';
@@ -616,165 +616,44 @@ const Index = () => {
     }
   }, [markerPosition, handleSimulate]);
 
-  const handleCoastalSimulate = useCallback(
-    async () => {
-      console.log('Simulation triggered. Preparing payload...');
-      if (!markerPosition) {
-        console.warn('Simulation aborted: no location selected (markerPosition is null). Please select a location on the map first.');
-        toast({
-          title: 'Location required',
-          description: 'Please select a location on the map first.',
-          variant: 'destructive',
-        });
-        return;
-      }
+  const handleCoastalSimulate = useCallback(async () => {
+    console.log('Simulation triggered. Preparing payload...');
+    if (!markerPosition) {
+      console.warn('Simulation aborted: no location selected (markerPosition is null). Please select a location on the map first.');
+      toast({
+        title: 'Location required',
+        description: 'Please select a location on the map first.',
+        variant: 'destructive',
+      });
+      return;
+    }
 
-      setIsCoastalSimulating(true);
+    setIsCoastalSimulating(true);
 
-      try {
-        // Sanitize numeric inputs (strip commas and ensure numbers)
-        const safeOpex = Number(String(baseAnnualOpex).replace(/,/g, '')) || 0;
-        const safeLifespan = Number(String(assetLifespan).replace(/,/g, '')) || 30;
+    const payload = {
+      lat: 25.1496,
+      lon: 55.2528,
+      base_annual_opex: 25000,
+      initial_lifespan_years: 30,
+    };
+    console.log('Hardcoded payload built:', payload);
 
-        // Calculate total water level for the API (totalSLR already includes 2000-2026 rise)
-        const stormSurgeHeight = includeStormSurge ? 2.5 : 0;
-        const totalWaterLevel = totalSLR + stormSurgeHeight;
-
-        let polygonPromise: Promise<any> | null = null;
-        if (selectedPolygon) {
-          polygonPromise = supabase.functions.invoke('simulate-polygon', {
-            body: {
-              geometry: selectedPolygon,
-              mode: 'coastal',
-              sea_level_rise: totalSLR,
-              mangrove_width: mangroveWidth,
-            },
-          });
-        }
-
-        let body: Record<string, unknown>;
-        try {
-          body = {
-            lat: markerPosition.lat,
-            lon: markerPosition.lng,
-            mangrove_width: mangroveWidth,
-            slr_projection: totalSLR,
-            include_storm_surge: includeStormSurge,
-            daily_revenue: dailyRevenue,
-            expected_downtime_days: expectedDowntimeDays,
-            property_value: propertyValue,
-            asset_lifespan: safeLifespan,
-            initial_lifespan_years: safeLifespan,
-            base_annual_opex: safeOpex,
-          };
-        } catch (payloadError) {
-          console.error('Coastal payload construction failed:', payloadError);
-          throw payloadError;
-        }
-
-        const { data: responseData, error } = await invokeWithRetry(
-          () =>
-            supabase.functions.invoke('simulate-coastal', {
-              body,
-            })
-        );
-
-        if (polygonPromise) {
-          try {
-            const { data: polyData } = await polygonPromise;
-            const exposure = polyData?.fractional_exposure_pct ?? polyData?.data?.fractional_exposure_pct;
-            if (exposure != null) setPolygonExposurePct(Math.round(exposure * 10) / 10);
-          } catch { /* polygon call is best-effort */ }
-        }
-
-        if (error) {
-          throw new Error((error as Error).message || 'Coastal simulation failed');
-        }
-
-        const data = responseData.data;
-        const rawSlope = data.slope;
-        const rawStormWave = data.storm_wave;
-        const rawAvoidedLoss = data.avoided_loss;
-        const rawIsUnderwater = data.is_underwater;
-        const rawFloodDepth = data.flood_depth;
-        const rawStormChartData = data.storm_chart_data;
-        const rawFloodedUrbanKm2 = data.flooded_urban_km2;
-        const rawUrbanImpactPct = data.urban_impact_pct;
-        const rawAvoidedBI = data.avoided_business_interruption;
-        const rawAdjustedOpex = data.adjusted_opex;
-        const rawOpexClimatePenalty = data.opex_climate_penalty;
-        const rawAdjustedLifespan = data.adjusted_lifespan;
-
-        // Generate fallback storm chart data if API doesn't provide it
-        const stormChartData = rawStormChartData ?? generateFallbackStormChartData(totalSLR);
-
-        // Generate fallback urban inundation data based on SLR if API doesn't provide it
-        const floodedUrbanKm2 = rawFloodedUrbanKm2 ?? (totalSLR > 0 ? totalSLR * 12.5 : 0);
-        const urbanImpactPct = rawUrbanImpactPct ?? (totalSLR > 0 ? Math.min(totalSLR * 15, 100) : 0);
-
-        setCoastalResults({
-          avoidedLoss:
-            rawAvoidedLoss !== null && Number.isFinite(rawAvoidedLoss)
-              ? Math.round(rawAvoidedLoss * 100) / 100
-              : 0,
-          slope: rawSlope !== null ? Math.round(rawSlope * 10) / 10 : null,
-          stormWave: rawStormWave !== null ? Math.round(rawStormWave * 10) / 10 : null,
-          isUnderwater: rawIsUnderwater ?? (totalWaterLevel > 1.5),
-          floodDepth: rawFloodDepth ?? (totalWaterLevel > 1.5 ? totalWaterLevel - 1.5 : null),
-          seaLevelRise: totalSLR,
-          includeStormSurge,
-          stormChartData,
-          floodedUrbanKm2,
-          urbanImpactPct,
-          avoidedBusinessInterruption: rawAvoidedBI ?? (dailyRevenue * expectedDowntimeDays * (mangroveWidth / 500) * 0.3),
-          adjustedOpex: rawAdjustedOpex != null && Number.isFinite(rawAdjustedOpex) ? rawAdjustedOpex : null,
-          opexClimatePenalty: rawOpexClimatePenalty != null && Number.isFinite(rawOpexClimatePenalty) ? rawOpexClimatePenalty : null,
-          adjustedLifespan: rawAdjustedLifespan != null && Number.isFinite(rawAdjustedLifespan) ? rawAdjustedLifespan : null,
-        });
-        setShowCoastalResults(true);
-        setIsPanelOpen(true);
-      } catch (error) {
-        console.error('Coastal simulation failed:', error);
-        if (error instanceof Error) {
-          console.error('Coastal error details:', error.message, error.stack);
-        }
-        const stormSurgeHeight = includeStormSurge ? 2.5 : 0;
-        const totalWaterLevel = totalSLR + stormSurgeHeight;
-        const isUnderwater = totalWaterLevel > 1.5;
-        
-        // Fallback urban inundation data
-        const floodedUrbanKm2 = totalSLR > 0 ? totalSLR * 12.5 : 0;
-        const urbanImpactPct = totalSLR > 0 ? Math.min(totalSLR * 15, 100) : 0;
-        
-        setCoastalResults({
-          avoidedLoss: Math.round(propertyValue * (mangroveWidth / 500) * 0.5),
-          slope: null,
-          stormWave: null,
-          isUnderwater,
-          floodDepth: isUnderwater ? totalWaterLevel - 1.5 : null,
-          seaLevelRise: totalSLR,
-          includeStormSurge,
-          stormChartData: generateFallbackStormChartData(totalSLR),
-          floodedUrbanKm2,
-          urbanImpactPct,
-          avoidedBusinessInterruption: dailyRevenue * expectedDowntimeDays * (mangroveWidth / 500) * 0.3,
-          adjusted_lifespan: assetLifespan,
-          lifespan_penalty: 0,
-          adjusted_opex: baseAnnualOpex,
-          opex_climate_penalty: 0,
-        });
-        setShowCoastalResults(true);
-        setIsPanelOpen(true);
-        toast({
-          title: 'Live API failed, falling back to cached Atlas data',
-          description: 'Showing estimated coastal values from local calculations.',
-        });
-      } finally {
+    console.log('Firing fetch...');
+    fetchWithRetry('/api/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => {
+        console.log('Fetch success!', res);
+      })
+      .catch((err) => {
+        console.error('FETCH FAILED CATASTROPHICALLY:', err);
+      })
+      .finally(() => {
         setIsCoastalSimulating(false);
-      }
-    },
-    [markerPosition, propertyValue, mangroveWidth, totalSLR, includeStormSurge, selectedPolygon, dailyRevenue, expectedDowntimeDays, assetLifespan, baseAnnualOpex]
-  );
+      });
+  }, [markerPosition]);
 
   const getInterventionType = useCallback(() => {
     const selectedToolkits: string[] = [
@@ -821,149 +700,30 @@ const Index = () => {
 
     setIsFloodSimulating(true);
 
-    try {
-      // Sanitize numeric inputs (strip commas and ensure numbers)
-      const safeOpex = Number(String(baseAnnualOpex).replace(/,/g, '')) || 0;
-      const safeLifespan = Number(String(assetLifespan).replace(/,/g, '')) || 30;
+    const payload = {
+      lat: 25.1496,
+      lon: 55.2528,
+      base_annual_opex: 25000,
+      initial_lifespan_years: 30,
+    };
+    console.log('Hardcoded payload built:', payload);
 
-      const intervention_type = getInterventionType();
-
-      let payload: Record<string, unknown>;
-      try {
-        payload = {
-          rain_intensity: 100 + totalRainIntensity,
-          current_imperviousness: 0.7,
-          intervention_type,
-          slope_pct: 2.0,
-          lat: markerPosition.lat,
-          lon: markerPosition.lng,
-          rain_intensity_pct: totalRainIntensity,
-          daily_revenue: dailyRevenue,
-          expected_downtime_days: expectedDowntimeDays,
-          building_value: buildingValue,
-          initial_lifespan_years: safeLifespan,
-          asset_lifespan: safeLifespan,
-          base_annual_opex: safeOpex,
-          green_roofs: greenRoofsEnabled,
-          permeable_pavement: permeablePavementEnabled,
-        };
-      } catch (payloadError) {
-        console.error('Flood payload construction failed:', payloadError);
-        throw payloadError;
-      }
-
-      let polygonPromise: Promise<any> | null = null;
-      if (selectedPolygon) {
-        polygonPromise = supabase.functions.invoke('simulate-polygon', {
-          body: {
-            geometry: selectedPolygon,
-            mode: 'flood',
-            rain_intensity: payload.rain_intensity,
-            rain_intensity_pct: totalRainIntensity,
-            current_imperviousness: 0.7,
-            intervention_type,
-          },
-        });
-      }
-
-      const { data: responseData, error } = await invokeWithRetry(
-        () => supabase.functions.invoke('simulate-flood', { body: payload })
-      );
-
-      if (polygonPromise) {
-        try {
-          const { data: polyData } = await polygonPromise;
-          const exposure = polyData?.fractional_exposure_pct ?? polyData?.data?.fractional_exposure_pct;
-          if (exposure != null) setPolygonExposurePct(Math.round(exposure * 10) / 10);
-        } catch { /* polygon call is best-effort */ }
-      }
-
-      if (error) {
-        throw new Error((error as Error).message || 'Flood simulation failed');
-      }
-
-      const analysis = responseData.data?.analysis || responseData.analysis || responseData;
-      const data = responseData.data ?? responseData;
-      const avoidedLoss = analysis.avoided_loss ?? 0;
-      const floodDepthReduction = analysis.avoided_depth_cm ?? 0;
-      const riskIncreasePct = analysis.risk_increase_pct ?? null;
-      const futureFloodAreaKm2 = analysis.future_flood_area_km2 ?? null;
-      const adjustedOpex = data.adjusted_opex ?? analysis.adjusted_opex;
-      const opexClimatePenalty = data.opex_climate_penalty ?? analysis.opex_climate_penalty;
-      const adjustedLifespan = data.adjusted_lifespan ?? analysis.adjusted_lifespan;
-
-      // Extract rain chart data from analytics
-      const analytics = responseData.data?.analytics || responseData.analytics;
-      const rainChartData = analytics?.rain_chart_data ?? null;
-      const future100yr = analytics?.future_100yr ?? null;
-      const baseline100yr = analytics?.baseline_100yr ?? null;
-
-      const avoidedBI = analysis.avoided_business_interruption ?? (dailyRevenue * expectedDowntimeDays * (floodDepthReduction / 100) * 0.4);
-
-      setFloodResults({
-        floodDepthReduction: Math.round(floodDepthReduction * 10) / 10,
-        valueProtected: Math.round(avoidedLoss * 100) / 100,
-        riskIncreasePct: riskIncreasePct !== null ? Math.round(riskIncreasePct * 10) / 10 : null,
-        futureFloodAreaKm2: futureFloodAreaKm2 !== null ? Math.round(futureFloodAreaKm2 * 100) / 100 : null,
-        rainChartData,
-        future100yr,
-        baseline100yr,
-        avoidedBusinessInterruption: avoidedBI,
-        adjustedOpex: adjustedOpex != null && Number.isFinite(adjustedOpex) ? adjustedOpex : null,
-        opexClimatePenalty: opexClimatePenalty != null && Number.isFinite(opexClimatePenalty) ? opexClimatePenalty : null,
-        adjustedLifespan: adjustedLifespan != null && Number.isFinite(adjustedLifespan) ? adjustedLifespan : null,
+    console.log('Firing fetch...');
+    fetchWithRetry('/api/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => {
+        console.log('Fetch success!', res);
+      })
+      .catch((err) => {
+        console.error('FETCH FAILED CATASTROPHICALLY:', err);
+      })
+      .finally(() => {
+        setIsFloodSimulating(false);
       });
-      setShowFloodResults(true);
-      setIsPanelOpen(true);
-    } catch (error) {
-      console.error('Flood simulation failed:', error);
-      if (error instanceof Error) {
-        console.error('Flood error details:', error.message, error.stack);
-      }
-      const baseReduction = greenRoofsEnabled ? 8 : 0;
-      const pavementReduction = permeablePavementEnabled ? 4 : 0;
-      const totalReduction = baseReduction + pavementReduction;
-      const protectedValue = buildingValue * (totalReduction / 100);
-
-      // Fallback calculations based on rain intensity
-      const riskIncreasePct = totalRainIntensity > 10 ? (totalRainIntensity - 10) * 3 : 0;
-      const futureFloodAreaKm2 = 2.5 + (totalRainIntensity / 100) * 5;
-
-      // Generate fallback rain chart data
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const baseRain = [45, 50, 80, 120, 95, 30, 15, 20, 55, 90, 110, 60];
-      const fallbackRainChart = months.map((month, i) => ({
-        month,
-        historical: baseRain[i],
-        projected: Math.round(baseRain[i] * (1 + totalRainIntensity / 100)),
-      }));
-      const fallbackBaseline100yr = 185;
-      const fallbackFuture100yr = Math.round(fallbackBaseline100yr * (1 + totalRainIntensity / 100));
-
-      setFloodResults({
-        floodDepthReduction: totalReduction,
-        valueProtected: Math.round(protectedValue),
-        riskIncreasePct,
-        futureFloodAreaKm2,
-        rainChartData: fallbackRainChart,
-        future100yr: fallbackFuture100yr,
-        baseline100yr: fallbackBaseline100yr,
-        avoidedBusinessInterruption: dailyRevenue * expectedDowntimeDays * (totalReduction / 100) * 0.4,
-        adjusted_lifespan: assetLifespan,
-        lifespan_penalty: 0,
-        adjusted_opex: baseAnnualOpex,
-        opex_climate_penalty: 0,
-      });
-      setShowFloodResults(true);
-      setIsPanelOpen(true);
-      toast({
-        title: 'Live API failed, falling back to cached Atlas data',
-        description: 'Showing estimated flood values from local calculations.',
-      });
-    } finally {
-      setIsFloodSimulating(false);
-    }
-  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled, getInterventionType, totalRainIntensity, selectedPolygon, dailyRevenue, expectedDowntimeDays, assetLifespan, baseAnnualOpex]);
+  }, [markerPosition]);
 
   const handleGreenRoofsChange = useCallback(
     (enabled: boolean) => {
