@@ -50,6 +50,8 @@ Deno.serve(async (req: Request) => {
     }
 
     const payload: Record<string, unknown> = { lat, lon, crop };
+    if (body.current_crop !== undefined) payload.current_crop = String(body.current_crop);
+    if (body.proposed_crop !== undefined) payload.proposed_crop = String(body.proposed_crop);
     if (body.temp_increase !== undefined) payload.temp_increase = Number(body.temp_increase);
     if (body.rain_change !== undefined) payload.rain_change = Number(body.rain_change);
     if (body.project_params) payload.project_params = body.project_params;

@@ -184,6 +184,12 @@ export interface LeftPanelProps {
   onAgricultureSimulate: () => void;
   isAgricultureSimulating: boolean;
   yieldPotential: number | null;
+  // Crop Transition Engine
+  currentCrop?: string;
+  onCurrentCropChange?: (v: string) => void;
+  proposedCrop?: string;
+  onProposedCropChange?: (v: string) => void;
+  transitionCapex?: number | null;
   // Flood simulation
   totalRainIntensity: number;
   onTotalRainIntensityChange: (v: number) => void;
@@ -273,6 +279,11 @@ export function LeftPanel({
   onAgricultureSimulate,
   isAgricultureSimulating,
   yieldPotential,
+  currentCrop = 'maize',
+  onCurrentCropChange,
+  proposedCrop = 'none',
+  onProposedCropChange,
+  transitionCapex,
   totalRainIntensity,
   onTotalRainIntensityChange,
   floodSelectedYear,
@@ -487,6 +498,11 @@ export function LeftPanel({
             onAgricultureSimulate={onAgricultureSimulate}
             isAgricultureSimulating={isAgricultureSimulating}
             yieldPotential={yieldPotential}
+            currentCrop={currentCrop}
+            onCurrentCropChange={onCurrentCropChange}
+            proposedCrop={proposedCrop}
+            onProposedCropChange={onProposedCropChange}
+            transitionCapex={transitionCapex}
             totalRainIntensity={totalRainIntensity}
             onTotalRainIntensityChange={onTotalRainIntensityChange}
             floodSelectedYear={floodSelectedYear}
@@ -575,6 +591,11 @@ export interface ModeContentProps {
   onAgricultureSimulate: () => void;
   isAgricultureSimulating: boolean;
   yieldPotential: number | null;
+  currentCrop?: string;
+  onCurrentCropChange?: (v: string) => void;
+  proposedCrop?: string;
+  onProposedCropChange?: (v: string) => void;
+  transitionCapex?: number | null;
   totalRainIntensity: number;
   onTotalRainIntensityChange: (v: number) => void;
   floodSelectedYear: number;
@@ -662,6 +683,11 @@ export function ModeContent(props: ModeContentProps) {
     onAgricultureSimulate,
     isAgricultureSimulating,
     yieldPotential,
+    currentCrop = 'maize',
+    onCurrentCropChange,
+    proposedCrop = 'none',
+    onProposedCropChange,
+    transitionCapex,
     totalRainIntensity,
     onTotalRainIntensityChange,
     floodSelectedYear,
@@ -808,6 +834,112 @@ export function ModeContent(props: ModeContentProps) {
             Define Intervention Wizard
           </Button>
         </SectionRow>
+
+        <SectionRow label="Crop Transition Engine">
+          <div className="space-y-3">
+            <div>
+              <div className="cb-label mb-1.5">CURRENT CROP</div>
+              <Select value={currentCrop} onValueChange={(v) => onCurrentCropChange?.(v)}>
+                <SelectTrigger
+                  className="w-full h-8 bg-transparent rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0"
+                  style={{
+                    border: "1px solid var(--cb-border)",
+                    color: "var(--cb-text)",
+                    fontFamily: "monospace",
+                    fontSize: 12,
+                    paddingLeft: 8,
+                  }}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent
+                  className="rounded-none shadow-none"
+                  style={{
+                    backgroundColor: "var(--cb-bg)",
+                    border: "1px solid var(--cb-border)",
+                    color: "var(--cb-text)",
+                  }}
+                >
+                  {[
+                    { value: "maize", label: "Maize" },
+                    { value: "wheat", label: "Wheat" },
+                    { value: "rice", label: "Rice" },
+                  ].map((c) => (
+                    <SelectItem
+                      key={c.value}
+                      value={c.value}
+                      className="rounded-none"
+                      style={{ fontFamily: "monospace", fontSize: 12, color: "var(--cb-text)" }}
+                    >
+                      {c.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <div className="cb-label mb-1.5">PROPOSED ADAPTATION</div>
+              <Select value={proposedCrop} onValueChange={(v) => onProposedCropChange?.(v)}>
+                <SelectTrigger
+                  className="w-full h-8 bg-transparent rounded-none shadow-none px-0 focus:ring-0 focus:ring-offset-0"
+                  style={{
+                    border: "1px solid var(--cb-border)",
+                    color: "var(--cb-text)",
+                    fontFamily: "monospace",
+                    fontSize: 12,
+                    paddingLeft: 8,
+                  }}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent
+                  className="rounded-none shadow-none"
+                  style={{
+                    backgroundColor: "var(--cb-bg)",
+                    border: "1px solid var(--cb-border)",
+                    color: "var(--cb-text)",
+                  }}
+                >
+                  {[
+                    { value: "none", label: "None" },
+                    { value: "drought_resistant_sorghum", label: "Drought-Resistant Sorghum" },
+                    { value: "heat_tolerant_wheat", label: "Heat-Tolerant Wheat" },
+                  ].map((c) => (
+                    <SelectItem
+                      key={c.value}
+                      value={c.value}
+                      className="rounded-none"
+                      style={{ fontFamily: "monospace", fontSize: 12, color: "var(--cb-text)" }}
+                    >
+                      {c.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </SectionRow>
+
+        <div className="px-4 pb-2">
+          <button
+            onClick={() => {
+              useProjectStore.getState().setProjectData({
+                interventionName: proposedCrop !== 'none'
+                  ? `Crop Switch: ${currentCrop} → ${proposedCrop}`
+                  : `Agriculture: ${currentCrop}`,
+                capex: transitionCapex ?? 250000,
+                opex: 15000,
+                insurancePremium: 20000,
+                carbonCredits: 3000,
+                lifespan: 20,
+              });
+              toast("Agri project data loaded into Finance Module.");
+            }}
+            className="w-full mt-2 bg-[#111] border border-[#333] text-[#4ade80] font-mono text-xs py-3 hover:bg-[#222] hover:border-[#4ade80] transition-all cursor-pointer"
+          >
+            [ SEND TO FINANCE ]
+          </button>
+        </div>
 
         <SimDivider />
         <AgricultureSimPanel
