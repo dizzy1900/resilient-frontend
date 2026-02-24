@@ -459,164 +459,165 @@ const Index = () => {
     setShowResults(false);
     setSpatialAnalysis(null);
 
-    try {
-      // Calculate delta for API (backend expects relative increase)
-      const tempDelta = globalTempTarget - 1.4;
+    const tempDelta = globalTempTarget - 1.4;
+    const agriBaseUrl = 'https://web-production-8ff9e.up.railway.app';
+    const agriEndpoint = `${agriBaseUrl.replace(/\/+$/, '')}/predict-agri`;
 
-      const { data: responseData, error } = await invokeWithRetry(
-        () =>
-          supabase.functions.invoke('simulate-agriculture', {
-            body: {
-              lat: markerPosition.lat,
-              lon: markerPosition.lng,
-              crop: cropType,
-              current_crop: currentCrop,
-              proposed_crop: proposedCrop,
-              temp_increase: Math.round(tempDelta * 10) / 10,
-              rain_change: rainChange,
-              ...(projectParams ? {
-                project_params: {
-                  capex: projectParams.capex,
-                  opex: projectParams.opex,
-                  yield_benefit: projectParams.yieldBenefit,
-                  crop_price: projectParams.cropPrice,
-                },
-              } : {}),
-            },
-          })
-      );
+    const payload = {
+      lat: markerPosition.lat,
+      lon: markerPosition.lng,
+      crop: cropType,
+      current_crop: currentCrop,
+      proposed_crop: proposedCrop,
+      baseline_yield_value: 500000,
+      temp_increase: Math.round(tempDelta * 10) / 10,
+      rain_change: rainChange,
+      ...(projectParams ? {
+        project_params: {
+          capex: projectParams.capex,
+          opex: projectParams.opex,
+          yield_benefit: projectParams.yieldBenefit,
+          crop_price: projectParams.cropPrice,
+        },
+      } : {}),
+    };
 
-      if (error) {
-        throw new Error((error as Error).message || 'Agriculture simulation failed');
-      }
+    fetchWithRetry(agriEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const textError = await res.text();
+          console.error('Received non-JSON response:', textError.substring(0, 100));
+          throw new TypeError('Oops, we haven\'t got JSON!');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        const raw = Array.isArray(data) ? data[0] : data;
+        const d = raw as Record<string, unknown>;
+        const result = d?.data ?? d;
+        const r = result as Record<string, unknown>;
 
-      const result = Array.isArray(responseData) ? responseData[0] : responseData;
-      const analysis = result?.data?.analysis;
-      const predictions = result?.data?.predictions;
-      const apiChartData = result?.data?.chart_data;
+        // Backend returns real dollar amounts and risk_reduction_pct at top level or under data
+        const transitionCapex = Number(r?.transition_capex ?? d?.transition_capex ?? 0);
+        const avoidedRevenueLoss = Number(r?.avoided_revenue_loss ?? d?.avoided_revenue_loss ?? r?.avoided_loss ?? d?.avoided_loss ?? 0);
+        const riskReductionPct = Number(r?.risk_reduction_pct ?? d?.risk_reduction_pct ?? r?.risk_reduction ?? r?.percentage_improvement ?? 0);
 
-      if (!analysis || !predictions) {
-        throw new Error('Invalid response format from simulation API');
-      }
+        const analysis = (r?.analysis ?? r?.data) as Record<string, unknown> | undefined;
+        const predictions = (r?.predictions ?? (r?.data as Record<string, unknown>)?.predictions) as Record<string, unknown> | undefined;
+        const apiChartData = (r?.chart_data ?? (r?.data as Record<string, unknown>)?.chart_data) as Record<string, unknown> | undefined;
 
-      const yieldBaseline = predictions.standard_seed?.predicted_yield ?? 0;
-      const yieldResilient = predictions.resilient_seed?.predicted_yield ?? 0;
-      const avoidedLoss = (analysis as Record<string, unknown>).avoided_revenue_loss ?? analysis.avoided_loss ?? 0;
-      const rawRiskReduction = (analysis as Record<string, unknown>).risk_reduction ?? analysis.percentage_improvement ?? 0;
-      const riskReductionPct = typeof rawRiskReduction === 'number' && rawRiskReduction <= 1 ? rawRiskReduction * 100 : Number(rawRiskReduction) || 0;
-      const transitionCapex = (analysis as Record<string, unknown>).transition_capex ?? (result?.data as Record<string, unknown>)?.transition_capex ?? 0;
-      
-      // Extract resilience_score from API - this is the single source of truth
-      // Look for resilience_score in multiple possible locations in the response
-      const resilienceScore = 
-        analysis.resilience_score ?? 
-        predictions.resilient_seed?.resilience_score ?? 
-        result?.data?.resilience_score ??
-        result?.resilience_score ??
-        null;
-      
-      // Use resilience_score as the unified yield potential (0-100 scale)
-      const yieldPotential = resilienceScore !== null 
-        ? Math.min(100, Math.max(0, resilienceScore)) 
-        : Math.min(100, Math.max(0, yieldResilient));
+        const yieldBaseline = analysis != null && predictions != null
+          ? Number((predictions?.standard_seed as Record<string, unknown>)?.predicted_yield ?? 0)
+          : 0;
+        const yieldResilient = analysis != null && predictions != null
+          ? Number((predictions?.resilient_seed as Record<string, unknown>)?.predicted_yield ?? 0)
+          : 0;
+        const resilienceScore =
+          analysis?.resilience_score ??
+          (predictions?.resilient_seed as Record<string, unknown>)?.resilience_score ??
+          r?.resilience_score ??
+          null;
+        const yieldPotential = resilienceScore !== null
+          ? Math.min(100, Math.max(0, Number(resilienceScore)))
+          : Math.min(100, Math.max(0, yieldResilient));
 
-      // Parse chart_data from API if available
-      if (apiChartData) {
-        const months = apiChartData.months || ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const rainfallBaseline = apiChartData.rainfall_baseline || [];
-        const rainfallProjected = apiChartData.rainfall_projected || [];
-        const soilMoistureBaseline = apiChartData.soil_moisture_baseline || [];
-
-        setChartData({
-          rainfall: months.map((month: string, i: number) => ({
-            month,
-            historical: rainfallBaseline[i] ?? 0,
-            projected: rainfallProjected[i] ?? 0,
-          })),
-          soilMoisture: months.map((month: string, i: number) => ({
-            month,
-            moisture: soilMoistureBaseline[i] ?? 0,
-          })),
-        });
-      }
-
-      // Parse spatial_analysis from API if available
-      const apiSpatialAnalysis = result?.data?.spatial_analysis;
-      if (apiSpatialAnalysis) {
-        setSpatialAnalysis({
-          baseline_sq_km: apiSpatialAnalysis.baseline_sq_km ?? 0,
-          future_sq_km: apiSpatialAnalysis.future_sq_km ?? 0,
-          loss_pct: apiSpatialAnalysis.loss_pct ?? 0,
-        });
-      }
-      setIsSpatialLoading(false);
-
-      // Extract portfolio_volatility_pct from API if available
-      const apiVolatility = analysis.portfolio_volatility_pct ?? result?.data?.portfolio_volatility_pct ?? null;
-
-      setResults({
-        avoidedLoss: Math.round(avoidedLoss * 100) / 100,
-        transitionCapex: Number(transitionCapex) || 0,
-        riskReduction: Math.round(riskReductionPct * 10) / 10,
-        yieldBaseline,
-        yieldResilient,
-        yieldPotential,
-        portfolioVolatilityPct: apiVolatility !== null ? apiVolatility : Math.round(15 + (globalTempTarget - 1.4) * 10),
-        transitionCapex: result?.data?.transition_capex ?? null,
-        avoidedRevenueLoss: result?.data?.avoided_revenue_loss ?? null,
-        monthlyData: mockMonthlyData,
-      });
-      setShowResults(true);
-      setIsPanelOpen(true);
-    } catch (error) {
-      console.error('Agriculture simulation failed:', error);
-      if (error instanceof Error) {
-        console.error('Error details:', error.message, error.stack);
-      }
-
-      const fallback = markerPosition ? findClosestAtlasItem(markerPosition.lat, markerPosition.lng, 'agriculture') : null;
-      if (fallback) {
-        const crop = (fallback as any).crop_analysis;
-        setResults({
-          avoidedLoss: crop?.avoided_loss_pct ?? 0,
-          transitionCapex: 0,
-          riskReduction: Math.round((crop?.percentage_improvement ?? 0) * 10) / 10,
-          yieldBaseline: crop?.standard_yield_pct ?? 0,
-          yieldResilient: crop?.resilient_yield_pct ?? 0,
-          yieldPotential: crop?.resilient_yield_pct ?? null,
-          portfolioVolatilityPct: null,
-          transitionCapex: null,
-          avoidedRevenueLoss: null,
-          monthlyData: mockMonthlyData,
-        });
-        if ((fallback as any).climate_conditions) {
-          const cc = (fallback as any).climate_conditions;
-          const baseRain = (cc.rainfall_mm ?? 1200) / 12;
-          const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          const sf = [0.6, 0.7, 0.9, 1.1, 1.3, 1.4, 1.3, 1.2, 1.0, 0.8, 0.7, 0.6];
+        if (apiChartData) {
+          const months = (apiChartData.months as string[]) || ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const rainfallBaseline = (apiChartData.rainfall_baseline as number[]) || [];
+          const rainfallProjected = (apiChartData.rainfall_projected as number[]) || [];
+          const soilMoistureBaseline = (apiChartData.soil_moisture_baseline as number[]) || [];
           setChartData({
-            rainfall: months.map((m, i) => ({ month: m, historical: Math.round(baseRain * sf[i]), projected: Math.round(baseRain * sf[i] * (1 + (cc.rain_pct_change ?? 0) / 100)) })),
-            soilMoisture: months.map((m, i) => ({ month: m, moisture: Math.round(40 + 20 * sf[i]) })),
+            rainfall: months.map((month: string, i: number) => ({
+              month,
+              historical: rainfallBaseline[i] ?? 0,
+              projected: rainfallProjected[i] ?? 0,
+            })),
+            soilMoisture: months.map((month: string, i: number) => ({
+              month,
+              moisture: soilMoistureBaseline[i] ?? 0,
+            })),
           });
         }
+
+        const apiSpatialAnalysis = r?.spatial_analysis as Record<string, unknown> | undefined;
+        if (apiSpatialAnalysis) {
+          setSpatialAnalysis({
+            baseline_sq_km: Number(apiSpatialAnalysis.baseline_sq_km ?? 0),
+            future_sq_km: Number(apiSpatialAnalysis.future_sq_km ?? 0),
+            loss_pct: Number(apiSpatialAnalysis.loss_pct ?? 0),
+          });
+        }
+        setIsSpatialLoading(false);
+
+        const apiVolatility = analysis?.portfolio_volatility_pct ?? r?.portfolio_volatility_pct ?? null;
+        setResults({
+          avoidedLoss: Math.round(avoidedRevenueLoss * 100) / 100,
+          transitionCapex,
+          riskReduction: Math.round(riskReductionPct * 10) / 10,
+          yieldBaseline,
+          yieldResilient,
+          yieldPotential,
+          portfolioVolatilityPct: apiVolatility != null ? Number(apiVolatility) : Math.round(15 + (globalTempTarget - 1.4) * 10),
+          monthlyData: mockMonthlyData,
+        });
         setShowResults(true);
         setIsPanelOpen(true);
-        toast({
-          title: 'Live API failed, falling back to cached Atlas data',
-          description: `Showing pre-calculated results from ${(fallback as any).target?.name ?? 'nearest location'}.`,
-        });
-      } else {
-        toast({
-          title: 'Simulation Failed',
-          description: error instanceof Error ? error.message : 'Unable to connect to the simulation server.',
-          variant: 'destructive',
-        });
-      }
-    } finally {
-      setIsSimulating(false);
-      setIsSpatialLoading(false);
-    }
-  }, [markerPosition, cropType, globalTempTarget, rainChange, projectParams]);
+      })
+      .catch((error) => {
+        console.error('Agriculture simulation failed:', error);
+        if (error instanceof Error) {
+          console.error('Error details:', error.message, error.stack);
+        }
+        const fallback = markerPosition ? findClosestAtlasItem(markerPosition.lat, markerPosition.lng, 'agriculture') : null;
+        if (fallback) {
+          const crop = (fallback as any).crop_analysis;
+          setResults({
+            avoidedLoss: crop?.avoided_loss_pct ?? 0,
+            transitionCapex: 0,
+            riskReduction: Math.round((crop?.percentage_improvement ?? 0) * 10) / 10,
+            yieldBaseline: crop?.standard_yield_pct ?? 0,
+            yieldResilient: crop?.resilient_yield_pct ?? 0,
+            yieldPotential: crop?.resilient_yield_pct ?? null,
+            portfolioVolatilityPct: null,
+            monthlyData: mockMonthlyData,
+          });
+          if ((fallback as any).climate_conditions) {
+            const cc = (fallback as any).climate_conditions;
+            const baseRain = (cc.rainfall_mm ?? 1200) / 12;
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const sf = [0.6, 0.7, 0.9, 1.1, 1.3, 1.4, 1.3, 1.2, 1.0, 0.8, 0.7, 0.6];
+            setChartData({
+              rainfall: months.map((m, i) => ({ month: m, historical: Math.round(baseRain * sf[i]), projected: Math.round(baseRain * sf[i] * (1 + (cc.rain_pct_change ?? 0) / 100)) })),
+              soilMoisture: months.map((m, i) => ({ month: m, moisture: Math.round(40 + 20 * sf[i]) })),
+            });
+          }
+          setShowResults(true);
+          setIsPanelOpen(true);
+          toast({
+            title: 'Live API failed, falling back to cached Atlas data',
+            description: `Showing pre-calculated results from ${(fallback as any).target?.name ?? 'nearest location'}.`,
+          });
+        } else {
+          toast({
+            title: 'Simulation Failed',
+            description: error instanceof Error ? error.message : 'Unable to connect to the simulation server.',
+            variant: 'destructive',
+          });
+        }
+      })
+      .finally(() => {
+        setIsSimulating(false);
+        setIsSpatialLoading(false);
+      });
+  }, [markerPosition, cropType, currentCrop, proposedCrop, globalTempTarget, rainChange, projectParams]);
 
   const handleWizardRunAnalysis = useCallback((params: ProjectParams) => {
     setProjectParams(params);
