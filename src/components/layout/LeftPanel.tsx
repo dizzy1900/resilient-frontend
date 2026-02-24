@@ -515,6 +515,10 @@ export function LeftPanel({
             selectedYear={selectedYear}
             coastalAdjustedLifespan={coastalAdjustedLifespan}
             floodAdjustedLifespan={floodAdjustedLifespan}
+            baseAnnualOpex={baseAnnualOpex}
+            onBaseAnnualOpexChange={onBaseAnnualOpexChange ?? (() => {})}
+            coastalAdjustedOpex={coastalAdjustedOpex}
+            floodAdjustedOpex={floodAdjustedOpex}
           />
         </div>
 
@@ -599,6 +603,10 @@ export interface ModeContentProps {
   selectedYear: number;
   coastalAdjustedLifespan?: number | null;
   floodAdjustedLifespan?: number | null;
+  baseAnnualOpex?: number;
+  onBaseAnnualOpexChange?: (v: number) => void;
+  coastalAdjustedOpex?: number | null;
+  floodAdjustedOpex?: number | null;
 }
 
 function SectionRow({ label, children }: { label: string; children: React.ReactNode }) {
@@ -682,6 +690,10 @@ export function ModeContent(props: ModeContentProps) {
     selectedYear,
     coastalAdjustedLifespan,
     floodAdjustedLifespan,
+    baseAnnualOpex = 25000,
+    onBaseAnnualOpexChange,
+    coastalAdjustedOpex,
+    floodAdjustedOpex,
   } = props;
 
   const [isUploading, setIsUploading] = useState(false);
