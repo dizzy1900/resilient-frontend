@@ -81,6 +81,7 @@ const Index = () => {
   // Asset valuation state
   const [assetLifespan, setAssetLifespan] = useState(30);
   const [dailyRevenue, setDailyRevenue] = useState(20000);
+  const [baseAnnualOpex, setBaseAnnualOpex] = useState(25000);
   const [expectedDowntimeDays, setExpectedDowntimeDays] = useState(14);
 
   const [isCoastalSimulating, setIsCoastalSimulating] = useState(false);
@@ -164,6 +165,8 @@ const Index = () => {
     avoidedBusinessInterruption?: number | null;
     adjusted_lifespan?: number | null;
     lifespan_penalty?: number | null;
+    adjusted_opex?: number | null;
+    opex_climate_penalty?: number | null;
   }>({
     avoidedLoss: 0,
     slope: null,
@@ -175,6 +178,8 @@ const Index = () => {
     avoidedBusinessInterruption: null,
     adjusted_lifespan: null,
     lifespan_penalty: null,
+    adjusted_opex: null,
+    opex_climate_penalty: null,
   });
 
   // Coastal-specific state (calibrated to Year 2000 baseline)
@@ -198,6 +203,8 @@ const Index = () => {
     avoidedBusinessInterruption: null as number | null,
     adjusted_lifespan: null as number | null,
     lifespan_penalty: null as number | null,
+    adjusted_opex: null as number | null,
+    opex_climate_penalty: null as number | null,
   });
 
   // Spatial analysis data from API (for Viable Growing Area card)
@@ -646,6 +653,7 @@ const Index = () => {
               daily_revenue: dailyRevenue,
               expected_downtime_days: expectedDowntimeDays,
               initial_lifespan_years: assetLifespan,
+              base_annual_opex: baseAnnualOpex,
             },
           })
       );
@@ -674,6 +682,8 @@ const Index = () => {
         const rawAvoidedBI = data.avoided_business_interruption;
         const rawAdjustedLifespan = data.adjusted_lifespan;
         const rawLifespanPenalty = data.lifespan_penalty;
+        const rawAdjustedOpex = data.adjusted_opex;
+        const rawOpexClimatePenalty = data.opex_climate_penalty;
 
         // Generate fallback storm chart data if API doesn't provide it
         const stormChartData = rawStormChartData ?? generateFallbackStormChartData(totalSLR);
@@ -699,6 +709,8 @@ const Index = () => {
           avoidedBusinessInterruption: rawAvoidedBI ?? (dailyRevenue * expectedDowntimeDays * (mangroveWidth / 500) * 0.3),
           adjusted_lifespan: rawAdjustedLifespan != null && Number.isFinite(rawAdjustedLifespan) ? Math.round(rawAdjustedLifespan) : null,
           lifespan_penalty: rawLifespanPenalty != null && Number.isFinite(rawLifespanPenalty) ? Math.round(rawLifespanPenalty) : null,
+          adjusted_opex: rawAdjustedOpex != null && Number.isFinite(rawAdjustedOpex) ? Math.round(rawAdjustedOpex) : null,
+          opex_climate_penalty: rawOpexClimatePenalty != null && Number.isFinite(rawOpexClimatePenalty) ? Math.round(rawOpexClimatePenalty) : null,
         });
         setShowCoastalResults(true);
         setIsPanelOpen(true);
@@ -729,6 +741,8 @@ const Index = () => {
           avoidedBusinessInterruption: dailyRevenue * expectedDowntimeDays * (mangroveWidth / 500) * 0.3,
           adjusted_lifespan: assetLifespan,
           lifespan_penalty: 0,
+          adjusted_opex: baseAnnualOpex,
+          opex_climate_penalty: 0,
         });
         setShowCoastalResults(true);
         setIsPanelOpen(true);
@@ -740,7 +754,7 @@ const Index = () => {
         setIsCoastalSimulating(false);
       }
     },
-    [markerPosition, propertyValue, mangroveWidth, totalSLR, includeStormSurge, selectedPolygon, dailyRevenue, expectedDowntimeDays, assetLifespan]
+    [markerPosition, propertyValue, mangroveWidth, totalSLR, includeStormSurge, selectedPolygon, dailyRevenue, expectedDowntimeDays, assetLifespan, baseAnnualOpex]
   );
 
   const getInterventionType = useCallback(() => {
@@ -793,6 +807,7 @@ const Index = () => {
         daily_revenue: dailyRevenue,
         expected_downtime_days: expectedDowntimeDays,
         initial_lifespan_years: assetLifespan,
+        base_annual_opex: baseAnnualOpex,
       };
 
       let polygonPromise: Promise<any> | null = null;
@@ -832,6 +847,8 @@ const Index = () => {
       const futureFloodAreaKm2 = analysis.future_flood_area_km2 ?? null;
       const adjustedLifespan = analysis.adjusted_lifespan != null && Number.isFinite(analysis.adjusted_lifespan) ? Math.round(analysis.adjusted_lifespan) : null;
       const lifespanPenalty = analysis.lifespan_penalty != null && Number.isFinite(analysis.lifespan_penalty) ? Math.round(analysis.lifespan_penalty) : null;
+      const adjustedOpex = analysis.adjusted_opex != null && Number.isFinite(analysis.adjusted_opex) ? Math.round(analysis.adjusted_opex) : null;
+      const opexClimatePenalty = analysis.opex_climate_penalty != null && Number.isFinite(analysis.opex_climate_penalty) ? Math.round(analysis.opex_climate_penalty) : null;
 
       // Extract rain chart data from analytics
       const analytics = responseData.data?.analytics || responseData.analytics;
@@ -852,6 +869,8 @@ const Index = () => {
         avoidedBusinessInterruption: avoidedBI,
         adjusted_lifespan: adjustedLifespan,
         lifespan_penalty: lifespanPenalty,
+        adjusted_opex: adjustedOpex,
+        opex_climate_penalty: opexClimatePenalty,
       });
       setShowFloodResults(true);
       setIsPanelOpen(true);
@@ -891,6 +910,8 @@ const Index = () => {
         avoidedBusinessInterruption: dailyRevenue * expectedDowntimeDays * (totalReduction / 100) * 0.4,
         adjusted_lifespan: assetLifespan,
         lifespan_penalty: 0,
+        adjusted_opex: baseAnnualOpex,
+        opex_climate_penalty: 0,
       });
       setShowFloodResults(true);
       setIsPanelOpen(true);
@@ -901,7 +922,7 @@ const Index = () => {
     } finally {
       setIsFloodSimulating(false);
     }
-  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled, getInterventionType, totalRainIntensity, selectedPolygon, dailyRevenue, expectedDowntimeDays, assetLifespan]);
+  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled, getInterventionType, totalRainIntensity, selectedPolygon, dailyRevenue, expectedDowntimeDays, assetLifespan, baseAnnualOpex]);
 
   const handleGreenRoofsChange = useCallback(
     (enabled: boolean) => {
@@ -1364,6 +1385,10 @@ const Index = () => {
         onPortfolioResultsChange={setPortfolioResults}
         coastalAdjustedLifespan={coastalResults.adjusted_lifespan ?? undefined}
         floodAdjustedLifespan={floodResults.adjusted_lifespan ?? undefined}
+        baseAnnualOpex={baseAnnualOpex}
+        onBaseAnnualOpexChange={setBaseAnnualOpex}
+        coastalAdjustedOpex={coastalResults.adjusted_opex ?? undefined}
+        floodAdjustedOpex={floodResults.adjusted_opex ?? undefined}
       />
 
       {/* Desktop Right Panel — simulation results */}

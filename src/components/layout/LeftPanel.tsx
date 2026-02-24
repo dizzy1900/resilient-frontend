@@ -212,6 +212,10 @@ export interface LeftPanelProps {
   onPortfolioResultsChange?: (data: import("@/types/portfolio").PortfolioAnalysisResult | null) => void;
   coastalAdjustedLifespan?: number | null;
   floodAdjustedLifespan?: number | null;
+  baseAnnualOpex?: number;
+  onBaseAnnualOpexChange?: (v: number) => void;
+  coastalAdjustedOpex?: number | null;
+  floodAdjustedOpex?: number | null;
 }
 
 export function LeftPanel({
@@ -294,6 +298,10 @@ export function LeftPanel({
   onPortfolioResultsChange,
   coastalAdjustedLifespan,
   floodAdjustedLifespan,
+  baseAnnualOpex = 25000,
+  onBaseAnnualOpexChange,
+  coastalAdjustedOpex,
+  floodAdjustedOpex,
 }: LeftPanelProps) {
   const [localMangroveWidth, setLocalMangroveWidth] = useState(mangroveWidth);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -835,7 +843,7 @@ export function ModeContent(props: ModeContentProps) {
               useProjectStore.getState().setProjectData({
                 interventionName: "Mangrove Belt",
                 capex: 2500000,
-                opex: 15000,
+                opex: coastalAdjustedOpex ?? baseAnnualOpex ?? 25000,
                 insurancePremium: 30000,
                 carbonCredits: 5000,
                 lifespan: coastalAdjustedLifespan ?? assetLifespan ?? 40,
@@ -893,7 +901,7 @@ export function ModeContent(props: ModeContentProps) {
               useProjectStore.getState().setProjectData({
                 interventionName: "Concrete Sea Wall",
                 capex: 5000000,
-                opex: 25000,
+                opex: coastalAdjustedOpex ?? baseAnnualOpex ?? 25000,
                 insurancePremium: 50000,
                 carbonCredits: 0,
                 lifespan: coastalAdjustedLifespan ?? assetLifespan ?? 30,
@@ -925,6 +933,8 @@ export function ModeContent(props: ModeContentProps) {
           onExpectedDowntimeDaysChange={onExpectedDowntimeDaysChange}
           assetLifespan={assetLifespan}
           onAssetLifespanChange={onAssetLifespanChange}
+          baseAnnualOpex={baseAnnualOpex}
+          onBaseAnnualOpexChange={onBaseAnnualOpexChange ?? (() => {})}
         />
       </div>
     );
@@ -977,6 +987,33 @@ export function ModeContent(props: ModeContentProps) {
                   onChange={(e) => {
                     const v = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
                     onDailyRevenueChange(v);
+                  }}
+                  disabled={!canSimulate}
+                  className="pl-3 h-7 border-0 border-b rounded-none bg-transparent text-xs focus-visible:ring-0"
+                  style={{
+                    color: "var(--cb-text)",
+                    borderColor: "var(--cb-border)",
+                    borderBottomWidth: 1,
+                    borderBottomStyle: "solid",
+                  }}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="cb-label mb-1.5">Annual Maintenance OPEX ($)</div>
+              <div className="relative">
+                <span
+                  className="absolute left-0 top-1/2 -translate-y-1/2"
+                  style={{ fontSize: 11, color: "var(--cb-secondary)" }}
+                >
+                  $
+                </span>
+                <Input
+                  type="text"
+                  value={baseAnnualOpex.toLocaleString()}
+                  onChange={(e) => {
+                    const v = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
+                    onBaseAnnualOpexChange?.(v);
                   }}
                   disabled={!canSimulate}
                   className="pl-3 h-7 border-0 border-b rounded-none bg-transparent text-xs focus-visible:ring-0"
@@ -1089,7 +1126,7 @@ export function ModeContent(props: ModeContentProps) {
                 useProjectStore.getState().setProjectData({
                   interventionName: "Sponge City Toolkit",
                   capex: 4500000,
-                  opex: 35000,
+                  opex: floodAdjustedOpex ?? baseAnnualOpex ?? 25000,
                   insurancePremium: 25000,
                   carbonCredits: 12000,
                   lifespan: floodAdjustedLifespan ?? assetLifespan ?? 50,
@@ -1107,7 +1144,7 @@ export function ModeContent(props: ModeContentProps) {
                 useProjectStore.getState().setProjectData({
                   interventionName: "Drainage Upgrade",
                   capex: 1200000,
-                  opex: 8000,
+                  opex: floodAdjustedOpex ?? baseAnnualOpex ?? 25000,
                   insurancePremium: 40000,
                   carbonCredits: 0,
                   lifespan: floodAdjustedLifespan ?? assetLifespan ?? 25,
@@ -1637,6 +1674,8 @@ interface CoastalSimPanelProps {
   onExpectedDowntimeDaysChange: (v: number) => void;
   assetLifespan: number;
   onAssetLifespanChange: (v: number) => void;
+  baseAnnualOpex: number;
+  onBaseAnnualOpexChange: (v: number) => void;
 }
 
 function CoastalSimPanel({
@@ -1657,6 +1696,8 @@ function CoastalSimPanel({
   onExpectedDowntimeDaysChange,
   assetLifespan,
   onAssetLifespanChange,
+  baseAnnualOpex,
+  onBaseAnnualOpexChange,
 }: CoastalSimPanelProps) {
   const totalWaterLevel = totalSLR + (includeStormSurge ? STORM_SURGE_HEIGHT : 0);
 
@@ -1724,6 +1765,33 @@ function CoastalSimPanel({
               onChange={(e) => {
                 const v = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
                 onDailyRevenueChange(v);
+              }}
+              disabled={!canSimulate}
+              className="pl-3 h-7 border-0 border-b rounded-none bg-transparent text-xs focus-visible:ring-0"
+              style={{
+                color: "var(--cb-text)",
+                borderColor: "var(--cb-border)",
+                borderBottomWidth: 1,
+                borderBottomStyle: "solid",
+              }}
+            />
+          </div>
+        </div>
+        <div>
+          <div className="cb-label mb-1">Annual Maintenance OPEX ($)</div>
+          <div className="relative">
+            <span
+              className="absolute left-0 top-1/2 -translate-y-1/2"
+              style={{ fontSize: 11, color: "var(--cb-secondary)" }}
+            >
+              $
+            </span>
+            <Input
+              type="text"
+              value={baseAnnualOpex.toLocaleString()}
+              onChange={(e) => {
+                const v = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
+                onBaseAnnualOpexChange(v);
               }}
               disabled={!canSimulate}
               className="pl-3 h-7 border-0 border-b rounded-none bg-transparent text-xs focus-visible:ring-0"
