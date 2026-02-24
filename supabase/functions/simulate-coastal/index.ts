@@ -31,6 +31,12 @@ Deno.serve(async (req: Request) => {
     const mangrove_width = Number(body.mangrove_width ?? 0);
     const sea_level_rise = Number(body.slr_projection ?? body.sea_level_rise ?? 0);
     const include_storm_surge = Boolean(body.include_storm_surge ?? false);
+    const daily_revenue = body.daily_revenue != null ? Number(body.daily_revenue) : undefined;
+    const expected_downtime_days = body.expected_downtime_days != null ? Number(body.expected_downtime_days) : undefined;
+    const property_value = body.property_value != null ? Number(body.property_value) : undefined;
+    const asset_lifespan = body.asset_lifespan != null ? Number(body.asset_lifespan) : undefined;
+    const initial_lifespan_years = body.initial_lifespan_years != null ? Number(body.initial_lifespan_years) : undefined;
+    const base_annual_opex = body.base_annual_opex != null ? Number(body.base_annual_opex) : undefined;
 
     if (isNaN(lat) || lat < -90 || lat > 90) {
       return new Response(
@@ -45,12 +51,20 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    console.log("simulate-coastal: Validated", { lat, lon, mangrove_width, sea_level_rise, include_storm_surge });
+    const railwayBody: Record<string, unknown> = { lat, lon, mangrove_width, sea_level_rise, include_storm_surge };
+    if (daily_revenue !== undefined) railwayBody.daily_revenue = daily_revenue;
+    if (expected_downtime_days !== undefined) railwayBody.expected_downtime_days = expected_downtime_days;
+    if (property_value !== undefined) railwayBody.property_value = property_value;
+    if (asset_lifespan !== undefined) railwayBody.asset_lifespan = asset_lifespan;
+    if (initial_lifespan_years !== undefined) railwayBody.initial_lifespan_years = initial_lifespan_years;
+    if (base_annual_opex !== undefined) railwayBody.base_annual_opex = base_annual_opex;
+
+    console.log("simulate-coastal: Validated", railwayBody);
 
     const response = await fetch(RAILWAY_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lat, lon, mangrove_width, sea_level_rise, include_storm_surge }),
+      body: JSON.stringify(railwayBody),
     });
 
     if (!response.ok) {

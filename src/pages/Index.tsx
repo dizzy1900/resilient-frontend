@@ -80,6 +80,7 @@ const Index = () => {
 
   // Asset valuation state
   const [assetLifespan, setAssetLifespan] = useState(30);
+  const [baseAnnualOpex, setBaseAnnualOpex] = useState(25000);
   const [dailyRevenue, setDailyRevenue] = useState(20000);
   const [baseAnnualOpex, setBaseAnnualOpex] = useState(25000);
   const [expectedDowntimeDays, setExpectedDowntimeDays] = useState(14);
@@ -163,10 +164,9 @@ const Index = () => {
     floodedUrbanKm2?: number | null;
     urbanImpactPct?: number | null;
     avoidedBusinessInterruption?: number | null;
-    adjusted_lifespan?: number | null;
-    lifespan_penalty?: number | null;
-    adjusted_opex?: number | null;
-    opex_climate_penalty?: number | null;
+    adjustedOpex?: number | null;
+    opexClimatePenalty?: number | null;
+    adjustedLifespan?: number | null;
   }>({
     avoidedLoss: 0,
     slope: null,
@@ -201,10 +201,9 @@ const Index = () => {
     future100yr: null as number | null,
     baseline100yr: null as number | null,
     avoidedBusinessInterruption: null as number | null,
-    adjusted_lifespan: null as number | null,
-    lifespan_penalty: null as number | null,
-    adjusted_opex: null as number | null,
-    opex_climate_penalty: null as number | null,
+    adjustedOpex: null as number | null,
+    opexClimatePenalty: null as number | null,
+    adjustedLifespan: null as number | null,
   });
 
   // Spatial analysis data from API (for Viable Growing Area card)
@@ -652,6 +651,8 @@ const Index = () => {
               include_storm_surge: includeStormSurge,
               daily_revenue: dailyRevenue,
               expected_downtime_days: expectedDowntimeDays,
+              property_value: propertyValue,
+              asset_lifespan: assetLifespan,
               initial_lifespan_years: assetLifespan,
               base_annual_opex: baseAnnualOpex,
             },
@@ -680,10 +681,9 @@ const Index = () => {
         const rawFloodedUrbanKm2 = data.flooded_urban_km2;
         const rawUrbanImpactPct = data.urban_impact_pct;
         const rawAvoidedBI = data.avoided_business_interruption;
-        const rawAdjustedLifespan = data.adjusted_lifespan;
-        const rawLifespanPenalty = data.lifespan_penalty;
         const rawAdjustedOpex = data.adjusted_opex;
         const rawOpexClimatePenalty = data.opex_climate_penalty;
+        const rawAdjustedLifespan = data.adjusted_lifespan;
 
         // Generate fallback storm chart data if API doesn't provide it
         const stormChartData = rawStormChartData ?? generateFallbackStormChartData(totalSLR);
@@ -707,10 +707,9 @@ const Index = () => {
           floodedUrbanKm2,
           urbanImpactPct,
           avoidedBusinessInterruption: rawAvoidedBI ?? (dailyRevenue * expectedDowntimeDays * (mangroveWidth / 500) * 0.3),
-          adjusted_lifespan: rawAdjustedLifespan != null && Number.isFinite(rawAdjustedLifespan) ? Math.round(rawAdjustedLifespan) : null,
-          lifespan_penalty: rawLifespanPenalty != null && Number.isFinite(rawLifespanPenalty) ? Math.round(rawLifespanPenalty) : null,
-          adjusted_opex: rawAdjustedOpex != null && Number.isFinite(rawAdjustedOpex) ? Math.round(rawAdjustedOpex) : null,
-          opex_climate_penalty: rawOpexClimatePenalty != null && Number.isFinite(rawOpexClimatePenalty) ? Math.round(rawOpexClimatePenalty) : null,
+          adjustedOpex: rawAdjustedOpex != null && Number.isFinite(rawAdjustedOpex) ? rawAdjustedOpex : null,
+          opexClimatePenalty: rawOpexClimatePenalty != null && Number.isFinite(rawOpexClimatePenalty) ? rawOpexClimatePenalty : null,
+          adjustedLifespan: rawAdjustedLifespan != null && Number.isFinite(rawAdjustedLifespan) ? rawAdjustedLifespan : null,
         });
         setShowCoastalResults(true);
         setIsPanelOpen(true);
@@ -806,8 +805,12 @@ const Index = () => {
         rain_intensity_pct: totalRainIntensity,
         daily_revenue: dailyRevenue,
         expected_downtime_days: expectedDowntimeDays,
+        building_value: buildingValue,
         initial_lifespan_years: assetLifespan,
+        asset_lifespan: assetLifespan,
         base_annual_opex: baseAnnualOpex,
+        green_roofs: greenRoofsEnabled,
+        permeable_pavement: permeablePavementEnabled,
       };
 
       let polygonPromise: Promise<any> | null = null;
@@ -841,14 +844,14 @@ const Index = () => {
       }
 
       const analysis = responseData.data?.analysis || responseData.analysis || responseData;
+      const data = responseData.data ?? responseData;
       const avoidedLoss = analysis.avoided_loss ?? 0;
       const floodDepthReduction = analysis.avoided_depth_cm ?? 0;
       const riskIncreasePct = analysis.risk_increase_pct ?? null;
       const futureFloodAreaKm2 = analysis.future_flood_area_km2 ?? null;
-      const adjustedLifespan = analysis.adjusted_lifespan != null && Number.isFinite(analysis.adjusted_lifespan) ? Math.round(analysis.adjusted_lifespan) : null;
-      const lifespanPenalty = analysis.lifespan_penalty != null && Number.isFinite(analysis.lifespan_penalty) ? Math.round(analysis.lifespan_penalty) : null;
-      const adjustedOpex = analysis.adjusted_opex != null && Number.isFinite(analysis.adjusted_opex) ? Math.round(analysis.adjusted_opex) : null;
-      const opexClimatePenalty = analysis.opex_climate_penalty != null && Number.isFinite(analysis.opex_climate_penalty) ? Math.round(analysis.opex_climate_penalty) : null;
+      const adjustedOpex = data.adjusted_opex ?? analysis.adjusted_opex;
+      const opexClimatePenalty = data.opex_climate_penalty ?? analysis.opex_climate_penalty;
+      const adjustedLifespan = data.adjusted_lifespan ?? analysis.adjusted_lifespan;
 
       // Extract rain chart data from analytics
       const analytics = responseData.data?.analytics || responseData.analytics;
@@ -867,10 +870,9 @@ const Index = () => {
         future100yr,
         baseline100yr,
         avoidedBusinessInterruption: avoidedBI,
-        adjusted_lifespan: adjustedLifespan,
-        lifespan_penalty: lifespanPenalty,
-        adjusted_opex: adjustedOpex,
-        opex_climate_penalty: opexClimatePenalty,
+        adjustedOpex: adjustedOpex != null && Number.isFinite(adjustedOpex) ? adjustedOpex : null,
+        opexClimatePenalty: opexClimatePenalty != null && Number.isFinite(opexClimatePenalty) ? opexClimatePenalty : null,
+        adjustedLifespan: adjustedLifespan != null && Number.isFinite(adjustedLifespan) ? adjustedLifespan : null,
       });
       setShowFloodResults(true);
       setIsPanelOpen(true);
