@@ -35,6 +35,14 @@ Deno.serve(async (req: Request) => {
     const lat = body.lat != null ? Number(body.lat) : undefined;
     const lon = body.lon != null ? Number(body.lon) : undefined;
     const rain_intensity_pct = body.rain_intensity_pct != null ? Number(body.rain_intensity_pct) : undefined;
+    const daily_revenue = body.daily_revenue != null ? Number(body.daily_revenue) : undefined;
+    const expected_downtime_days = body.expected_downtime_days != null ? Number(body.expected_downtime_days) : undefined;
+    const building_value = body.building_value != null ? Number(body.building_value) : undefined;
+    const initial_lifespan_years = body.initial_lifespan_years != null ? Number(body.initial_lifespan_years) : undefined;
+    const asset_lifespan = body.asset_lifespan != null ? Number(body.asset_lifespan) : undefined;
+    const base_annual_opex = body.base_annual_opex != null ? Number(body.base_annual_opex) : undefined;
+    const green_roofs = body.green_roofs != null ? Boolean(body.green_roofs) : undefined;
+    const permeable_pavement = body.permeable_pavement != null ? Boolean(body.permeable_pavement) : undefined;
 
     if (isNaN(rain_intensity) || rain_intensity < 0 || rain_intensity > 500) {
       return new Response(
@@ -64,6 +72,14 @@ Deno.serve(async (req: Request) => {
     if (lat !== undefined) payload.lat = lat;
     if (lon !== undefined) payload.lon = lon;
     if (rain_intensity_pct !== undefined) payload.rain_intensity_pct = rain_intensity_pct;
+    if (daily_revenue !== undefined) payload.daily_revenue = daily_revenue;
+    if (expected_downtime_days !== undefined) payload.expected_downtime_days = expected_downtime_days;
+    if (building_value !== undefined) payload.building_value = building_value;
+    if (initial_lifespan_years !== undefined) payload.initial_lifespan_years = initial_lifespan_years;
+    if (asset_lifespan !== undefined) payload.asset_lifespan = asset_lifespan;
+    if (base_annual_opex !== undefined) payload.base_annual_opex = base_annual_opex;
+    if (green_roofs !== undefined) payload.green_roofs = green_roofs;
+    if (permeable_pavement !== undefined) payload.permeable_pavement = permeable_pavement;
 
     console.log("simulate-flood: Validated", payload);
 
