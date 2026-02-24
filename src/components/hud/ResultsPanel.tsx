@@ -42,6 +42,10 @@ interface CoastalResults {
   seaLevelRise?: number;
   includeStormSurge?: boolean;
   stormChartData?: StormChartDataItem[];
+  adjusted_lifespan?: number | null;
+  lifespan_penalty?: number | null;
+  adjusted_opex?: number | null;
+  opex_climate_penalty?: number | null;
 }
 
 interface FloodResults {
@@ -52,6 +56,10 @@ interface FloodResults {
   rainChartData?: RainfallChartData[] | null;
   future100yr?: number | null;
   baseline100yr?: number | null;
+  adjusted_lifespan?: number | null;
+  lifespan_penalty?: number | null;
+  adjusted_opex?: number | null;
+  opex_climate_penalty?: number | null;
 }
 
 interface ResultsPanelProps {
@@ -424,10 +432,10 @@ export const ResultsPanel = ({
               useProjectStore.getState().setProjectData({
                 interventionName: 'Mangrove Belt',
                 capex: 2500000,
-                opex: 15000,
+                opex: coastalResults.adjusted_opex ?? 25000,
                 insurancePremium: 30000,
                 carbonCredits: 5000,
-                lifespan: 40,
+                lifespan: coastalResults.adjusted_lifespan ?? 40,
               });
               toast.success('Project data loaded into Finance Module.');
             }}
@@ -585,10 +593,10 @@ export const ResultsPanel = ({
               useProjectStore.getState().setProjectData({
                 interventionName: 'Sponge City Retrofit',
                 capex: 1800000,
-                opex: 35000,
+                opex: floodResults.adjusted_opex ?? 25000,
                 insurancePremium: 45000,
                 carbonCredits: 1200,
-                lifespan: 30,
+                lifespan: floodResults.adjusted_lifespan ?? 30,
               });
               toast.success('Project data loaded into Finance Module.');
             }}

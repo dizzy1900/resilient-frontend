@@ -82,6 +82,7 @@ const Index = () => {
   const [assetLifespan, setAssetLifespan] = useState(30);
   const [baseAnnualOpex, setBaseAnnualOpex] = useState(25000);
   const [dailyRevenue, setDailyRevenue] = useState(20000);
+  const [baseAnnualOpex, setBaseAnnualOpex] = useState(25000);
   const [expectedDowntimeDays, setExpectedDowntimeDays] = useState(14);
 
   const [isCoastalSimulating, setIsCoastalSimulating] = useState(false);
@@ -175,6 +176,10 @@ const Index = () => {
     floodedUrbanKm2: null,
     urbanImpactPct: null,
     avoidedBusinessInterruption: null,
+    adjusted_lifespan: null,
+    lifespan_penalty: null,
+    adjusted_opex: null,
+    opex_climate_penalty: null,
   });
 
   // Coastal-specific state (calibrated to Year 2000 baseline)
@@ -733,6 +738,10 @@ const Index = () => {
           floodedUrbanKm2,
           urbanImpactPct,
           avoidedBusinessInterruption: dailyRevenue * expectedDowntimeDays * (mangroveWidth / 500) * 0.3,
+          adjusted_lifespan: assetLifespan,
+          lifespan_penalty: 0,
+          adjusted_opex: baseAnnualOpex,
+          opex_climate_penalty: 0,
         });
         setShowCoastalResults(true);
         setIsPanelOpen(true);
@@ -901,6 +910,10 @@ const Index = () => {
         future100yr: fallbackFuture100yr,
         baseline100yr: fallbackBaseline100yr,
         avoidedBusinessInterruption: dailyRevenue * expectedDowntimeDays * (totalReduction / 100) * 0.4,
+        adjusted_lifespan: assetLifespan,
+        lifespan_penalty: 0,
+        adjusted_opex: baseAnnualOpex,
+        opex_climate_penalty: 0,
       });
       setShowFloodResults(true);
       setIsPanelOpen(true);
@@ -1372,6 +1385,12 @@ const Index = () => {
         onHealthSimulate={handleHealthSimulate}
         isHealthSimulating={isHealthSimulating}
         onPortfolioResultsChange={setPortfolioResults}
+        coastalAdjustedLifespan={coastalResults.adjusted_lifespan ?? undefined}
+        floodAdjustedLifespan={floodResults.adjusted_lifespan ?? undefined}
+        baseAnnualOpex={baseAnnualOpex}
+        onBaseAnnualOpexChange={setBaseAnnualOpex}
+        coastalAdjustedOpex={coastalResults.adjusted_opex ?? undefined}
+        floodAdjustedOpex={floodResults.adjusted_opex ?? undefined}
       />
 
       {/* Desktop Right Panel — simulation results */}
@@ -1530,6 +1549,12 @@ const Index = () => {
           propertyValue,
           onPropertyValueChange: setPropertyValue,
           selectedYear,
+          coastalAdjustedLifespan: coastalResults?.adjusted_lifespan ?? undefined,
+          floodAdjustedLifespan: floodResults?.adjusted_lifespan ?? undefined,
+          baseAnnualOpex,
+          onBaseAnnualOpexChange: setBaseAnnualOpex,
+          coastalAdjustedOpex: coastalResults?.adjusted_opex ?? undefined,
+          floodAdjustedOpex: floodResults?.adjusted_opex ?? undefined,
         }}
         rightPanelContentProps={{
           locationName: atlasLocationName,

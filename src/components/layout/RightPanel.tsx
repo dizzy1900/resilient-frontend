@@ -41,6 +41,10 @@ interface CoastalResults {
   floodedUrbanKm2?: number | null;
   urbanImpactPct?: number | null;
   avoidedBusinessInterruption?: number | null;
+  adjusted_lifespan?: number | null;
+  lifespan_penalty?: number | null;
+  adjusted_opex?: number | null;
+  opex_climate_penalty?: number | null;
 }
 
 interface FloodResults {
@@ -52,6 +56,10 @@ interface FloodResults {
   future100yr?: number | null;
   baseline100yr?: number | null;
   avoidedBusinessInterruption?: number | null;
+  adjusted_lifespan?: number | null;
+  lifespan_penalty?: number | null;
+  adjusted_opex?: number | null;
+  opex_climate_penalty?: number | null;
 }
 
 interface SpatialAnalysis {
@@ -700,6 +708,28 @@ function CoastalContent({
           value={formatCurrency(results.avoidedLoss)}
           accent="#10b981"
         />
+        <MetricRow
+          label="CLIMATE-ADJUSTED LIFESPAN"
+          value={
+            <>
+              {`${results.adjusted_lifespan ?? assetLifespan ?? 0} yrs`}
+              {results.lifespan_penalty != null && results.lifespan_penalty > 0 && (
+                <span className="text-red-500 ml-2">(-{results.lifespan_penalty} yrs)</span>
+              )}
+            </>
+          }
+        />
+        <MetricRow
+          label="CLIMATE-ADJUSTED OPEX"
+          value={
+            <>
+              ${(results.adjusted_opex ?? 0).toLocaleString()}
+              {results.opex_climate_penalty != null && results.opex_climate_penalty > 0 && (
+                <span className="text-red-500 ml-2">(+${results.opex_climate_penalty.toLocaleString()} penalty)</span>
+              )}
+            </>
+          }
+        />
         {results.avoidedBusinessInterruption != null && results.avoidedBusinessInterruption > 0 && (
           <MetricRow
             label="Avoided Downtime Cost"
@@ -807,6 +837,28 @@ function FloodContent({
           label="Value Protected"
           value={formatCurrency(results.valueProtected)}
           accent="#10b981"
+        />
+        <MetricRow
+          label="CLIMATE-ADJUSTED LIFESPAN"
+          value={
+            <>
+              {`${results.adjusted_lifespan ?? assetLifespan ?? 0} yrs`}
+              {results.lifespan_penalty != null && results.lifespan_penalty > 0 && (
+                <span className="text-red-500 ml-2">(-{results.lifespan_penalty} yrs)</span>
+              )}
+            </>
+          }
+        />
+        <MetricRow
+          label="CLIMATE-ADJUSTED OPEX"
+          value={
+            <>
+              ${(results.adjusted_opex ?? 0).toLocaleString()}
+              {results.opex_climate_penalty != null && results.opex_climate_penalty > 0 && (
+                <span className="text-red-500 ml-2">(+${results.opex_climate_penalty.toLocaleString()} penalty)</span>
+              )}
+            </>
+          }
         />
         {results.avoidedBusinessInterruption != null && results.avoidedBusinessInterruption > 0 && (
           <MetricRow
