@@ -44,6 +44,8 @@ interface CoastalResults {
   stormChartData?: StormChartDataItem[];
   adjusted_lifespan?: number | null;
   lifespan_penalty?: number | null;
+  adjusted_opex?: number | null;
+  opex_climate_penalty?: number | null;
 }
 
 interface FloodResults {
@@ -56,6 +58,8 @@ interface FloodResults {
   baseline100yr?: number | null;
   adjusted_lifespan?: number | null;
   lifespan_penalty?: number | null;
+  adjusted_opex?: number | null;
+  opex_climate_penalty?: number | null;
 }
 
 interface ResultsPanelProps {
@@ -428,7 +432,7 @@ export const ResultsPanel = ({
               useProjectStore.getState().setProjectData({
                 interventionName: 'Mangrove Belt',
                 capex: 2500000,
-                opex: 15000,
+                opex: coastalResults.adjusted_opex ?? 25000,
                 insurancePremium: 30000,
                 carbonCredits: 5000,
                 lifespan: coastalResults.adjusted_lifespan ?? 40,
@@ -589,7 +593,7 @@ export const ResultsPanel = ({
               useProjectStore.getState().setProjectData({
                 interventionName: 'Sponge City Retrofit',
                 capex: 1800000,
-                opex: 35000,
+                opex: floodResults.adjusted_opex ?? 25000,
                 insurancePremium: 45000,
                 carbonCredits: 1200,
                 lifespan: floodResults.adjusted_lifespan ?? 30,

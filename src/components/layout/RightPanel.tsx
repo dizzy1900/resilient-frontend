@@ -43,6 +43,8 @@ interface CoastalResults {
   avoidedBusinessInterruption?: number | null;
   adjusted_lifespan?: number | null;
   lifespan_penalty?: number | null;
+  adjusted_opex?: number | null;
+  opex_climate_penalty?: number | null;
 }
 
 interface FloodResults {
@@ -56,6 +58,8 @@ interface FloodResults {
   avoidedBusinessInterruption?: number | null;
   adjusted_lifespan?: number | null;
   lifespan_penalty?: number | null;
+  adjusted_opex?: number | null;
+  opex_climate_penalty?: number | null;
 }
 
 interface SpatialAnalysis {
@@ -715,6 +719,17 @@ function CoastalContent({
             </>
           }
         />
+        <MetricRow
+          label="CLIMATE-ADJUSTED OPEX"
+          value={
+            <>
+              ${(results.adjusted_opex ?? 0).toLocaleString()}
+              {results.opex_climate_penalty != null && results.opex_climate_penalty > 0 && (
+                <span className="text-red-500 ml-2">(+${results.opex_climate_penalty.toLocaleString()} penalty)</span>
+              )}
+            </>
+          }
+        />
         {results.avoidedBusinessInterruption != null && results.avoidedBusinessInterruption > 0 && (
           <MetricRow
             label="Avoided Downtime Cost"
@@ -830,6 +845,17 @@ function FloodContent({
               {`${results.adjusted_lifespan ?? assetLifespan ?? 0} yrs`}
               {results.lifespan_penalty != null && results.lifespan_penalty > 0 && (
                 <span className="text-red-500 ml-2">(-{results.lifespan_penalty} yrs)</span>
+              )}
+            </>
+          }
+        />
+        <MetricRow
+          label="CLIMATE-ADJUSTED OPEX"
+          value={
+            <>
+              ${(results.adjusted_opex ?? 0).toLocaleString()}
+              {results.opex_climate_penalty != null && results.opex_climate_penalty > 0 && (
+                <span className="text-red-500 ml-2">(+${results.opex_climate_penalty.toLocaleString()} penalty)</span>
               )}
             </>
           }
