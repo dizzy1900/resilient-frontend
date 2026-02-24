@@ -13,9 +13,8 @@ import { toast } from '@/hooks/use-toast';
 import { Polygon } from '@/utils/polygonMath';
 import { generateIrregularZone, ZoneMode } from '@/utils/zoneGeneration';
 import { calculateZoneAtTemperature } from '@/utils/zoneMorphing';
-import { supabase } from '@/integrations/supabase/clientSafe';
 import { findClosestAtlasItem } from '@/utils/atlasFallback';
-import { invokeWithRetry, fetchWithRetry } from '@/utils/api';
+import { fetchWithRetry } from '@/utils/api';
 import { LeftPanel } from '@/components/layout/LeftPanel';
 import { RightPanel } from '@/components/layout/RightPanel';
 import { DigitalTwinOverlay } from '@/components/dashboard/DigitalTwinOverlay';
@@ -28,6 +27,10 @@ import { PortfolioAnalysisResult } from '@/types/portfolio';
 const financeBaseUrl = 'https://web-production-8ff9e.up.railway.app';
 const cbaEndpoint = `${financeBaseUrl}/api/v1/finance/cba-series`;
 const cvarEndpoint = `${financeBaseUrl}/api/v1/finance/cvar-simulation`;
+
+/** Live Railway FastAPI backend for Health module (predict-health). */
+const healthBaseUrl = 'https://web-production-8ff9e.up.railway.app';
+const healthEndpoint = `${healthBaseUrl}/predict-health`;
 
 const mockMonthlyData = [
   { month: 'Jan', value: 45 },
@@ -1113,58 +1116,102 @@ const Index = () => {
     setViewState(newViewState);
   }, []);
 
-  // Health simulation handler
+  // Health simulation handler — uses Railway FastAPI /predict-health
   const handleHealthSimulate = useCallback(async () => {
     if (!markerPosition) return;
     setIsHealthSimulating(true);
     setShowHealthResults(false);
 
-    try {
-      const tempDelta = healthTempTarget - 1.4;
-      const { data: responseData, error } = await invokeWithRetry(
-        () =>
-          supabase.functions.invoke('predict-health', {
-            body: {
-              lat: markerPosition.lat,
-              lon: markerPosition.lng,
-              workforce_size: workforceSize,
-              daily_wage: averageDailyWage,
-              temp_increase: tempDelta,
-            },
-          })
-      );
+    const payload = {
+      lat: markerPosition.lat,
+      lon: markerPosition.lng,
+      workforce_size: workforceSize ?? 100,
+      daily_wage: averageDailyWage ?? 50,
+    };
 
-      if (error) throw new Error((error as Error).message || 'Health simulation failed');
+    fetchWithRetry(healthEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`Health simulation failed: ${res.status}`);
+        }
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const textError = await res.text();
+          console.error('Health API non-JSON:', textError.substring(0, 100));
+          throw new TypeError('Health API did not return JSON');
+        }
+        return res.json();
+      })
+      .then((resData: { status?: string; data?: Record<string, unknown> }) => {
+        const data = resData?.data ?? {};
+        const heat = (data?.heat_stress_analysis ?? {}) as Record<string, unknown>;
+        const malaria = (data?.malaria_risk_analysis ?? {}) as Record<string, unknown>;
+        const totalEconomic = (data?.economic_impact as Record<string, unknown> | undefined)?.total_economic_impact as Record<string, unknown> | undefined;
+        const heatStressImpact = (data?.economic_impact as Record<string, unknown> | undefined)?.heat_stress_impact as Record<string, unknown> | undefined;
 
-      setHealthResults(responseData.data);
-      setShowHealthResults(true);
-    } catch (error) {
-      console.error('Health simulation failed:', error);
-      if (error instanceof Error) {
-        console.error('Health error details:', error.message, error.stack);
-      }
-      const baseTemp = 28 + (Math.abs(markerPosition.lat) < 15 ? 4 : markerPosition.lat < 25 ? 2 : 0);
-      const projTemp = baseTemp + (healthTempTarget - 1.4);
-      const wbgt = projTemp * 0.7 + 8;
-      const loss = Math.min(50, Math.max(0, Math.round((wbgt - 25) * 5)));
-      setHealthResults({
-        productivity_loss_pct: loss,
-        economic_loss_daily: Math.round(workforceSize * averageDailyWage * (loss / 100)),
-        wbgt: Math.round(wbgt * 10) / 10,
-        projected_temp: Math.round(projTemp * 10) / 10,
-        malaria_risk: Math.abs(markerPosition.lat) < 25 && projTemp >= 25 ? 'High' : 'Low',
-        dengue_risk: Math.abs(markerPosition.lat) < 35 && projTemp >= 25 ? 'High' : 'Low',
-        workforce_size: workforceSize,
-        daily_wage: averageDailyWage,
+        const wbgtVal = Number(heat?.wbgt_estimate ?? heat?.wbgt ?? 0);
+        const productivityLoss = Number(heat?.productivity_loss_pct ?? heat?.productivity_loss ?? 0);
+        const heatStressCategory = (heat?.heat_stress_category ?? '') as string;
+
+        const malariaRiskScore = Number(malaria?.risk_score ?? 0);
+        const malariaRiskCategory = (malaria?.risk_category ?? 'Low') as string;
+
+        const annualLoss = Number(totalEconomic?.annual_loss ?? 0);
+        const dailyLossAverage = Number(totalEconomic?.daily_loss_average ?? 0);
+        const affectedWorkers = Number(heatStressImpact?.affected_workers ?? 0);
+
+        const economicDaily = dailyLossAverage > 0 ? dailyLossAverage : (annualLoss > 0 ? annualLoss / 365 : 0);
+
+        const malariaRisk = (['High', 'Medium', 'Low'].includes(malariaRiskCategory) ? malariaRiskCategory : 'Low') as 'High' | 'Medium' | 'Low';
+        const workforce = workforceSize ?? 100;
+        const dailyWage = averageDailyWage ?? 50;
+
+        setHealthResults({
+          productivity_loss_pct: Math.min(100, Math.max(0, productivityLoss)),
+          economic_loss_daily: Math.round(economicDaily),
+          wbgt: Math.round(wbgtVal * 10) / 10,
+          projected_temp: Math.round(wbgtVal * 10) / 10,
+          malaria_risk: malariaRisk,
+          dengue_risk: 'Low',
+          workforce_size: workforce,
+          daily_wage: dailyWage,
+        });
+        setShowHealthResults(true);
+      })
+      .catch((error) => {
+        console.error('Health simulation failed:', error);
+        if (error instanceof Error) {
+          console.error('Health error details:', error.message, error.stack);
+        }
+        const baseTemp = 28 + (Math.abs(markerPosition.lat) < 15 ? 4 : markerPosition.lat < 25 ? 2 : 0);
+        const projTemp = baseTemp + (healthTempTarget - 1.4);
+        const wbgt = projTemp * 0.7 + 8;
+        const loss = Math.min(50, Math.max(0, Math.round((wbgt - 25) * 5)));
+        const workforce = workforceSize ?? 100;
+        const dailyWage = averageDailyWage ?? 50;
+        setHealthResults({
+          productivity_loss_pct: loss,
+          economic_loss_daily: Math.round(workforce * dailyWage * (loss / 100)),
+          wbgt: Math.round(wbgt * 10) / 10,
+          projected_temp: Math.round(projTemp * 10) / 10,
+          malaria_risk: Math.abs(markerPosition.lat) < 25 && projTemp >= 25 ? 'High' : 'Low',
+          dengue_risk: Math.abs(markerPosition.lat) < 35 && projTemp >= 25 ? 'High' : 'Low',
+          workforce_size: workforce,
+          daily_wage: dailyWage,
+        });
+        setShowHealthResults(true);
+        toast({
+          title: 'Live API failed, falling back to cached Atlas data',
+          description: 'Showing estimated health values from local calculations.',
+        });
+      })
+      .finally(() => {
+        setIsHealthSimulating(false);
       });
-      setShowHealthResults(true);
-      toast({
-        title: 'Live API failed, falling back to cached Atlas data',
-        description: 'Showing estimated health values from local calculations.',
-      });
-    } finally {
-      setIsHealthSimulating(false);
-    }
   }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget]);
 
   const getCurrentSimulateHandler = useCallback(() => {
