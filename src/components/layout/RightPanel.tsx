@@ -26,6 +26,8 @@ interface AgricultureResults {
   avoidedLoss: number;
   riskReduction: number;
   yieldPotential?: number | null;
+  transitionCapex?: number | null;
+  avoidedRevenueLoss?: number | null;
   monthlyData: { month: string; value: number }[];
 }
 
@@ -603,6 +605,20 @@ function AgricultureContent({
           value={`${results.riskReduction}%`}
           accent="#10b981"
         />
+        {results.transitionCapex != null && results.transitionCapex > 0 && (
+          <MetricRow
+            label="Transition CAPEX"
+            value={formatCurrency(results.transitionCapex)}
+            accent="#f59e0b"
+          />
+        )}
+        {results.avoidedRevenueLoss != null && results.avoidedRevenueLoss > 0 && (
+          <MetricRow
+            label="Avoided Revenue Loss"
+            value={formatCurrency(results.avoidedRevenueLoss)}
+            accent="#10b981"
+          />
+        )}
         {tempIncrease !== undefined && (
           <MetricRow
             label="Temp. Increase"

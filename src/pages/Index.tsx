@@ -59,6 +59,8 @@ const generateFallbackStormChartData = (slr: number) => {
 const Index = () => {
   const [mode, setMode] = useState<DashboardMode>('agriculture');
   const [cropType, setCropType] = useState('maize');
+  const [currentCrop, setCurrentCrop] = useState('maize');
+  const [proposedCrop, setProposedCrop] = useState('none');
   const [mangroveWidth, setMangroveWidth] = useState(100);
   const [propertyValue, setPropertyValue] = useState(5000000);
   const [buildingValue, setBuildingValue] = useState(5000000);
@@ -148,6 +150,8 @@ const Index = () => {
     yieldResilient: 0,
     yieldPotential: null as number | null, // Unified yield metric from API
     portfolioVolatilityPct: null as number | null, // Supply chain volatility CV%
+    transitionCapex: null as number | null,
+    avoidedRevenueLoss: null as number | null,
     monthlyData: mockMonthlyData,
   });
 
@@ -175,10 +179,9 @@ const Index = () => {
     floodedUrbanKm2: null,
     urbanImpactPct: null,
     avoidedBusinessInterruption: null,
-    adjusted_lifespan: null,
-    lifespan_penalty: null,
-    adjusted_opex: null,
-    opex_climate_penalty: null,
+    adjustedLifespan: null,
+    opexClimatePenalty: null,
+    adjustedOpex: null,
   });
 
   // Coastal-specific state (calibrated to Year 2000 baseline)
@@ -466,6 +469,8 @@ const Index = () => {
               lat: markerPosition.lat,
               lon: markerPosition.lng,
               crop: cropType,
+              current_crop: currentCrop,
+              proposed_crop: proposedCrop,
               temp_increase: Math.round(tempDelta * 10) / 10,
               rain_change: rainChange,
               ...(projectParams ? {
@@ -552,7 +557,9 @@ const Index = () => {
         yieldBaseline,
         yieldResilient,
         yieldPotential,
-        portfolioVolatilityPct: apiVolatility !== null ? apiVolatility : Math.round(15 + (globalTempTarget - 1.4) * 10), // Fallback estimate
+        portfolioVolatilityPct: apiVolatility !== null ? apiVolatility : Math.round(15 + (globalTempTarget - 1.4) * 10),
+        transitionCapex: result?.data?.transition_capex ?? null,
+        avoidedRevenueLoss: result?.data?.avoided_revenue_loss ?? null,
         monthlyData: mockMonthlyData,
       });
       setShowResults(true);
@@ -573,6 +580,8 @@ const Index = () => {
           yieldResilient: crop?.resilient_yield_pct ?? 0,
           yieldPotential: crop?.resilient_yield_pct ?? null,
           portfolioVolatilityPct: null,
+          transitionCapex: null,
+          avoidedRevenueLoss: null,
           monthlyData: mockMonthlyData,
         });
         if ((fallback as any).climate_conditions) {
@@ -679,10 +688,9 @@ const Index = () => {
           floodedUrbanKm2: d.flooded_urban_km2 != null ? Number(d.flooded_urban_km2) : null,
           urbanImpactPct: d.urban_impact_pct != null ? Number(d.urban_impact_pct) : null,
           avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
-          adjusted_opex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
-          opex_climate_penalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
-          adjusted_lifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
-          lifespan_penalty: d.lifespan_penalty != null ? Number(d.lifespan_penalty) : null,
+          adjustedOpex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
+          opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
+          adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
         });
         setShowCoastalResults(true);
       })
@@ -784,7 +792,7 @@ const Index = () => {
         const d = data as Record<string, unknown>;
         const rainChartData = d.rain_chart_data as Array<{ month: string; historical: number; projected: number }> | undefined;
         const entry100yr = Array.isArray(rainChartData)
-          ? rainChartData.find((e: { period?: string }) => e.period === '100yr')
+          ? (rainChartData as any[]).find((e: any) => e.period === '100yr')
           : (d.rain_frequency as Record<string, unknown>) != null
             ? (d.rain_frequency as Record<string, unknown>).rain_chart_data
             : null;
@@ -803,10 +811,6 @@ const Index = () => {
           adjustedOpex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
           opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
           adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
-          adjusted_lifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
-          adjusted_opex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
-          opex_climate_penalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
-          lifespan_penalty: d.lifespan_penalty != null ? Number(d.lifespan_penalty) : null,
         });
         setShowFloodResults(true);
       })
@@ -925,6 +929,8 @@ const Index = () => {
         yieldResilient: crop?.resilient_yield_pct ?? 0,
         yieldPotential: crop?.resilient_yield_pct ?? null,
         portfolioVolatilityPct: null,
+        transitionCapex: null,
+        avoidedRevenueLoss: null,
         monthlyData: mockMonthlyData,
       });
 
@@ -1004,6 +1010,9 @@ const Index = () => {
         future100yr: entry100yr?.future_mm ?? null,
         baseline100yr: entry100yr?.baseline_mm ?? null,
         avoidedBusinessInterruption: null,
+        adjustedOpex: null,
+        opexClimatePenalty: null,
+        adjustedLifespan: null,
       });
       setShowFloodResults(true);
     }
@@ -1247,6 +1256,11 @@ const Index = () => {
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
         isPlaying={isTimelinePlaying}
+        currentCrop={currentCrop}
+        onCurrentCropChange={setCurrentCrop}
+        proposedCrop={proposedCrop}
+        onProposedCropChange={setProposedCrop}
+        transitionCapex={results.transitionCapex}
         onPlayToggle={() => setIsTimelinePlaying((prev) => !prev)}
         isFinanceSimulating={isFinanceSimulating}
         onFinanceSimulate={handleFinanceSimulate}
@@ -1282,12 +1296,12 @@ const Index = () => {
         onHealthSimulate={handleHealthSimulate}
         isHealthSimulating={isHealthSimulating}
         onPortfolioResultsChange={setPortfolioResults}
-        coastalAdjustedLifespan={coastalResults.adjusted_lifespan ?? undefined}
-        floodAdjustedLifespan={floodResults.adjusted_lifespan ?? undefined}
+        coastalAdjustedLifespan={coastalResults.adjustedLifespan ?? undefined}
+        floodAdjustedLifespan={floodResults.adjustedLifespan ?? undefined}
         baseAnnualOpex={baseAnnualOpex}
         onBaseAnnualOpexChange={setBaseAnnualOpex}
-        coastalAdjustedOpex={coastalResults.adjusted_opex ?? undefined}
-        floodAdjustedOpex={floodResults.adjusted_opex ?? undefined}
+        coastalAdjustedOpex={coastalResults.adjustedOpex ?? undefined}
+        floodAdjustedOpex={floodResults.adjustedOpex ?? undefined}
       />
 
       {/* Desktop Right Panel — simulation results */}
@@ -1306,11 +1320,12 @@ const Index = () => {
                 avoidedLoss: results.avoidedLoss,
                 riskReduction: results.riskReduction,
                 yieldPotential: results.yieldPotential,
+                transitionCapex: results.transitionCapex,
+                avoidedRevenueLoss: results.avoidedRevenueLoss,
                 monthlyData: results.monthlyData,
               }
             : undefined
         }
-        coastalResults={mode === 'coastal' ? coastalResults : undefined}
         floodResults={mode === 'flood' ? floodResults : undefined}
         healthResults={healthResults}
         mangroveWidth={mangroveWidth}
@@ -1420,6 +1435,11 @@ const Index = () => {
           onAgricultureSimulate: getCurrentSimulateHandler(),
           isAgricultureSimulating: isCurrentlySimulating,
           yieldPotential: showResults ? results.yieldPotential : null,
+          currentCrop,
+          onCurrentCropChange: setCurrentCrop,
+          proposedCrop,
+          onProposedCropChange: setProposedCrop,
+          transitionCapex: results.transitionCapex,
           totalRainIntensity,
           onTotalRainIntensityChange: setTotalRainIntensity,
           floodSelectedYear,
@@ -1446,12 +1466,12 @@ const Index = () => {
           propertyValue,
           onPropertyValueChange: setPropertyValue,
           selectedYear,
-          coastalAdjustedLifespan: coastalResults?.adjusted_lifespan ?? undefined,
-          floodAdjustedLifespan: floodResults?.adjusted_lifespan ?? undefined,
+          coastalAdjustedLifespan: coastalResults?.adjustedLifespan ?? undefined,
+          floodAdjustedLifespan: floodResults?.adjustedLifespan ?? undefined,
           baseAnnualOpex,
           onBaseAnnualOpexChange: setBaseAnnualOpex,
-          coastalAdjustedOpex: coastalResults?.adjusted_opex ?? undefined,
-          floodAdjustedOpex: floodResults?.adjusted_opex ?? undefined,
+          coastalAdjustedOpex: coastalResults?.adjustedOpex ?? undefined,
+          floodAdjustedOpex: floodResults?.adjustedOpex ?? undefined,
         }}
         rightPanelContentProps={{
           locationName: atlasLocationName,
@@ -1463,6 +1483,8 @@ const Index = () => {
             avoidedLoss: results.avoidedLoss,
             riskReduction: results.riskReduction,
             yieldPotential: results.yieldPotential,
+            transitionCapex: results.transitionCapex,
+            avoidedRevenueLoss: results.avoidedRevenueLoss,
             monthlyData: results.monthlyData,
           } : undefined,
           coastalResults: mode === 'coastal' ? coastalResults : undefined,
