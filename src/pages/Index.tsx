@@ -32,6 +32,10 @@ const cvarEndpoint = `${financeBaseUrl}/api/v1/finance/cvar-simulation`;
 const healthBaseUrl = 'https://web-production-8ff9e.up.railway.app';
 const healthEndpoint = `${healthBaseUrl}/predict-health`;
 
+/** Live Railway FastAPI backend for Polygon / Digital Twin simulation (no "data" wrapper). */
+const geoBaseUrl = 'https://web-production-8ff9e.up.railway.app';
+const polygonEndpoint = `${geoBaseUrl.replace(/\/+$/, '')}/simulate/polygon`;
+
 const mockMonthlyData = [
   { month: 'Jan', value: 45 },
   { month: 'Feb', value: 52 },
@@ -228,6 +232,13 @@ const Index = () => {
   const [portfolioResults, setPortfolioResults] = useState<PortfolioAnalysisResult | null>(null);
   const [selectedPolygon, setSelectedPolygon] = useState<DrawnPolygon | null>(null);
   const [polygonExposurePct, setPolygonExposurePct] = useState<number | null>(null);
+  const [polygonTotalArea, setPolygonTotalArea] = useState<number | null>(null);
+  const [polygonExposedArea, setPolygonExposedArea] = useState<number | null>(null);
+  const [polygonTotalAssetValue, setPolygonTotalAssetValue] = useState<number | null>(null);
+  const [polygonExposedValue, setPolygonExposedValue] = useState<number | null>(null);
+  const [polygonValueAtRisk, setPolygonValueAtRisk] = useState<number | null>(null);
+  const [polygonProtectedValue, setPolygonProtectedValue] = useState<number | null>(null);
+  const [isPolygonSimulating, setIsPolygonSimulating] = useState(false);
   const [reverseLocationName, setReverseLocationName] = useState<string | null>(null);
   const [flyToTarget, setFlyToTarget] = useState<FlyToTarget | null>(null);
   const { reverseGeocode } = useMapboxGeocoder();
@@ -346,6 +357,12 @@ const Index = () => {
   const handlePolygonCreated = useCallback((polygon: DrawnPolygon) => {
     setSelectedPolygon(polygon);
     setPolygonExposurePct(null);
+    setPolygonTotalArea(null);
+    setPolygonExposedArea(null);
+    setPolygonTotalAssetValue(null);
+    setPolygonExposedValue(null);
+    setPolygonValueAtRisk(null);
+    setPolygonProtectedValue(null);
     const coords = polygon.coordinates[0];
     if (coords.length > 0) {
       let sumLng = 0, sumLat = 0;
@@ -358,11 +375,81 @@ const Index = () => {
       setMarkerPosition({ lat: centroidLat, lng: centroidLng });
       setIsPanelOpen(true);
     }
-  }, []);
+
+    // Build GeoJSON (close ring if needed: first point = last point)
+    const ring = polygon.coordinates[0] ?? [];
+    const closedRing =
+      ring.length > 0 &&
+      ring[0][0] === ring[ring.length - 1][0] &&
+      ring[0][1] === ring[ring.length - 1][1]
+        ? ring
+        : [...ring, ring[0]];
+    const geojson = {
+      type: 'Feature' as const,
+      properties: {},
+      geometry: { type: 'Polygon' as const, coordinates: [closedRing] },
+    };
+
+    const assetValueUsd = Number(propertyValue) || Number(buildingValue) || 5_000_000;
+    const payload = {
+      geojson,
+      risk_type: 'flood',
+      scenario_year: selectedYear,
+      asset_value_usd: assetValueUsd,
+    };
+
+    setIsPolygonSimulating(true);
+    fetchWithRetry(polygonEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((resData: Record<string, unknown>) => {
+        // CRITICAL: This endpoint returns flat data (no "data" wrapper).
+        // Geospatial / Area Metrics
+        const sa = resData?.spatial_analysis as Record<string, unknown> | undefined;
+        const fr = resData?.financial_risk as Record<string, unknown> | undefined;
+        const totalArea = sa?.total_area_sqkm ?? 0;
+        const exposedArea = sa?.exposed_area_sqkm ?? 0;
+        const exposurePct = sa?.fractional_exposure_pct ?? 0;
+        // Financial Risk Metrics
+        const totalAssetValue = fr?.total_asset_value_usd ?? 0;
+        const exposedValue = fr?.exposed_value_usd ?? 0;
+        const valueAtRisk = fr?.value_at_risk_usd ?? 0;
+        const protectedValue = fr?.protected_value_usd ?? 0;
+
+        setPolygonTotalArea(Number(totalArea));
+        setPolygonExposedArea(Number(exposedArea));
+        setPolygonExposurePct(Number(exposurePct));
+        setPolygonTotalAssetValue(Number(totalAssetValue));
+        setPolygonExposedValue(Number(exposedValue));
+        setPolygonValueAtRisk(Number(valueAtRisk));
+        setPolygonProtectedValue(Number(protectedValue));
+        setShowResults(true);
+      })
+      .catch((error) => {
+        console.error('Polygon simulation failed:', error);
+        toast({
+          title: 'Polygon simulation failed',
+          description: error instanceof Error ? error.message : 'Unable to reach the simulation server.',
+          variant: 'destructive',
+        });
+      })
+      .finally(() => {
+        setIsPolygonSimulating(false);
+      });
+  }, [selectedYear, propertyValue, buildingValue]);
 
   const handlePolygonDeleted = useCallback(() => {
     setSelectedPolygon(null);
     setPolygonExposurePct(null);
+    setPolygonTotalArea(null);
+    setPolygonExposedArea(null);
+    setPolygonTotalAssetValue(null);
+    setPolygonExposedValue(null);
+    setPolygonValueAtRisk(null);
+    setPolygonProtectedValue(null);
   }, []);
 
   // Finance simulation handler — uses Railway FastAPI (cba-series + cvar-simulation)
@@ -1413,8 +1500,8 @@ const Index = () => {
         locationName={atlasLocationName}
         latitude={markerPosition?.lat ?? null}
         longitude={markerPosition?.lng ?? null}
-        isLoading={isCurrentlySimulating || (mode === 'finance' && isFinanceSimulating)}
-        showResults={showCurrentResults || showHealthResults}
+        isLoading={isCurrentlySimulating || (mode === 'finance' && isFinanceSimulating) || isPolygonSimulating}
+        showResults={showCurrentResults || showHealthResults || polygonExposurePct != null}
         agricultureResults={
           mode === 'agriculture'
             ? {
@@ -1459,6 +1546,12 @@ const Index = () => {
         dailyRevenue={dailyRevenue}
         propertyValue={mode === 'coastal' ? propertyValue : buildingValue}
         polygonExposurePct={polygonExposurePct}
+        polygonTotalArea={polygonTotalArea}
+        polygonExposedArea={polygonExposedArea}
+        polygonTotalAssetValue={polygonTotalAssetValue}
+        polygonExposedValue={polygonExposedValue}
+        polygonValueAtRisk={polygonValueAtRisk}
+        polygonProtectedValue={polygonProtectedValue}
         portfolioResults={portfolioResults}
       />
 
@@ -1622,6 +1715,12 @@ const Index = () => {
           dailyRevenue,
           propertyValue: mode === 'coastal' ? propertyValue : buildingValue,
           polygonExposurePct,
+          polygonTotalArea,
+          polygonExposedArea,
+          polygonTotalAssetValue,
+          polygonExposedValue,
+          polygonValueAtRisk,
+          polygonProtectedValue,
           portfolioResults,
         }}
       />

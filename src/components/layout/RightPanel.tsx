@@ -113,6 +113,12 @@ interface RightPanelProps {
   dailyRevenue?: number;
   propertyValue?: number;
   polygonExposurePct?: number | null;
+  polygonTotalArea?: number | null;
+  polygonExposedArea?: number | null;
+  polygonTotalAssetValue?: number | null;
+  polygonExposedValue?: number | null;
+  polygonValueAtRisk?: number | null;
+  polygonProtectedValue?: number | null;
   portfolioResults?: PortfolioAnalysisResult | null;
 }
 
@@ -210,6 +216,12 @@ export function RightPanel({
   dailyRevenue,
   propertyValue,
   polygonExposurePct,
+  polygonTotalArea,
+  polygonExposedArea,
+  polygonTotalAssetValue,
+  polygonExposedValue,
+  polygonValueAtRisk,
+  polygonProtectedValue,
   portfolioResults,
 }: RightPanelProps) {
   if (!visible) return null;
@@ -300,6 +312,12 @@ export function RightPanel({
           dailyRevenue={dailyRevenue}
           propertyValue={propertyValue}
           polygonExposurePct={polygonExposurePct}
+          polygonTotalArea={polygonTotalArea}
+          polygonExposedArea={polygonExposedArea}
+          polygonTotalAssetValue={polygonTotalAssetValue}
+          polygonExposedValue={polygonExposedValue}
+          polygonValueAtRisk={polygonValueAtRisk}
+          polygonProtectedValue={polygonProtectedValue}
           portfolioResults={portfolioResults}
           latitude={latitude}
           longitude={longitude}
@@ -349,6 +367,12 @@ export interface RightPanelContentProps {
   dailyRevenue?: number;
   propertyValue?: number;
   polygonExposurePct?: number | null;
+  polygonTotalArea?: number | null;
+  polygonExposedArea?: number | null;
+  polygonTotalAssetValue?: number | null;
+  polygonExposedValue?: number | null;
+  polygonValueAtRisk?: number | null;
+  polygonProtectedValue?: number | null;
   portfolioResults?: PortfolioAnalysisResult | null;
 }
 
@@ -392,6 +416,12 @@ export function RightPanelContent({
   dailyRevenue,
   propertyValue,
   polygonExposurePct,
+  polygonTotalArea,
+  polygonExposedArea,
+  polygonTotalAssetValue,
+  polygonExposedValue,
+  polygonValueAtRisk,
+  polygonProtectedValue,
   portfolioResults,
 }: RightPanelContentProps) {
   if (isLoading) return <LoadingState />;
@@ -503,7 +533,15 @@ export function RightPanelContent({
       )}
 
       {polygonExposurePct != null && showResults && (
-        <AssetExposureRow exposurePct={polygonExposurePct} />
+        <PolygonDigitalTwinBlock
+          exposurePct={polygonExposurePct}
+          totalArea={polygonTotalArea}
+          exposedArea={polygonExposedArea}
+          totalAssetValue={polygonTotalAssetValue}
+          exposedValue={polygonExposedValue}
+          valueAtRisk={polygonValueAtRisk}
+          protectedValue={polygonProtectedValue}
+        />
       )}
 
       {!showResults && mode !== 'finance' && mode !== 'portfolio' && (
@@ -514,6 +552,68 @@ export function RightPanelContent({
         </div>
       )}
     </>
+  );
+}
+
+/** Format area for Digital Twin panel (e.g. "1.25 sq km"). */
+function formatAreaSqKm(value: number | undefined | null): string {
+  const n = Number(value);
+  if (n !== n) return '0 sq km';
+  return `${Number(n).toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 0 })} sq km`;
+}
+
+function PolygonDigitalTwinBlock({
+  exposurePct,
+  totalArea,
+  exposedArea,
+  totalAssetValue,
+  exposedValue,
+  valueAtRisk,
+  protectedValue,
+}: {
+  exposurePct: number;
+  totalArea?: number | null;
+  exposedArea?: number | null;
+  totalAssetValue?: number | null;
+  exposedValue?: number | null;
+  valueAtRisk?: number | null;
+  protectedValue?: number | null;
+}) {
+  const color = exposurePct >= 50 ? '#f43f5e' : exposurePct >= 25 ? '#f59e0b' : '#10b981';
+  return (
+    <div>
+      <SectionDivider title="Zone Analysis" />
+      <div className="px-4">
+        <div className="flex items-center justify-between py-3 cb-divider">
+          <span className="cb-label">Asset Exposure</span>
+          <span style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 600, color }}>
+            {formatPercent(exposurePct)} of Asset Footprint Affected
+          </span>
+        </div>
+        <div className="py-2">
+          <div className="h-1.5 relative overflow-hidden" style={{ backgroundColor: 'var(--cb-border)' }}>
+            <div
+              className="h-full transition-all duration-500 ease-out"
+              style={{ width: `${Math.min(exposurePct, 100)}%`, backgroundColor: color }}
+            />
+          </div>
+        </div>
+        {(totalArea != null || exposedArea != null) && (
+          <>
+            <MetricRow label="Total Area" value={formatAreaSqKm(totalArea)} />
+            <MetricRow label="Exposed Area" value={formatAreaSqKm(exposedArea)} />
+          </>
+        )}
+        {(totalAssetValue != null || exposedValue != null || valueAtRisk != null || protectedValue != null) && (
+          <>
+            <MetricRow label="Total Asset Value" value={formatCurrencyNoCents(totalAssetValue)} />
+            <MetricRow label="Exposed Value" value={formatCurrencyNoCents(exposedValue)} accent="#f59e0b" />
+            <MetricRow label="Value at Risk" value={formatCurrencyNoCents(valueAtRisk)} accent="#f43f5e" />
+            <MetricRow label="Protected Value" value={formatCurrencyNoCents(protectedValue)} accent="#10b981" />
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 
