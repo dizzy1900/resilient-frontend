@@ -162,6 +162,8 @@ const Index = () => {
     floodedUrbanKm2?: number | null;
     urbanImpactPct?: number | null;
     avoidedBusinessInterruption?: number | null;
+    adjusted_lifespan?: number | null;
+    lifespan_penalty?: number | null;
   }>({
     avoidedLoss: 0,
     slope: null,
@@ -171,6 +173,8 @@ const Index = () => {
     floodedUrbanKm2: null,
     urbanImpactPct: null,
     avoidedBusinessInterruption: null,
+    adjusted_lifespan: null,
+    lifespan_penalty: null,
   });
 
   // Coastal-specific state (calibrated to Year 2000 baseline)
@@ -192,6 +196,8 @@ const Index = () => {
     future100yr: null as number | null,
     baseline100yr: null as number | null,
     avoidedBusinessInterruption: null as number | null,
+    adjusted_lifespan: null as number | null,
+    lifespan_penalty: null as number | null,
   });
 
   // Spatial analysis data from API (for Viable Growing Area card)
@@ -639,6 +645,7 @@ const Index = () => {
               include_storm_surge: includeStormSurge,
               daily_revenue: dailyRevenue,
               expected_downtime_days: expectedDowntimeDays,
+              initial_lifespan_years: assetLifespan,
             },
           })
       );
@@ -665,6 +672,8 @@ const Index = () => {
         const rawFloodedUrbanKm2 = data.flooded_urban_km2;
         const rawUrbanImpactPct = data.urban_impact_pct;
         const rawAvoidedBI = data.avoided_business_interruption;
+        const rawAdjustedLifespan = data.adjusted_lifespan;
+        const rawLifespanPenalty = data.lifespan_penalty;
 
         // Generate fallback storm chart data if API doesn't provide it
         const stormChartData = rawStormChartData ?? generateFallbackStormChartData(totalSLR);
@@ -688,6 +697,8 @@ const Index = () => {
           floodedUrbanKm2,
           urbanImpactPct,
           avoidedBusinessInterruption: rawAvoidedBI ?? (dailyRevenue * expectedDowntimeDays * (mangroveWidth / 500) * 0.3),
+          adjusted_lifespan: rawAdjustedLifespan != null && Number.isFinite(rawAdjustedLifespan) ? Math.round(rawAdjustedLifespan) : null,
+          lifespan_penalty: rawLifespanPenalty != null && Number.isFinite(rawLifespanPenalty) ? Math.round(rawLifespanPenalty) : null,
         });
         setShowCoastalResults(true);
         setIsPanelOpen(true);
@@ -716,6 +727,8 @@ const Index = () => {
           floodedUrbanKm2,
           urbanImpactPct,
           avoidedBusinessInterruption: dailyRevenue * expectedDowntimeDays * (mangroveWidth / 500) * 0.3,
+          adjusted_lifespan: assetLifespan,
+          lifespan_penalty: 0,
         });
         setShowCoastalResults(true);
         setIsPanelOpen(true);
@@ -727,7 +740,7 @@ const Index = () => {
         setIsCoastalSimulating(false);
       }
     },
-    [markerPosition, propertyValue, mangroveWidth, totalSLR, includeStormSurge, selectedPolygon, dailyRevenue, expectedDowntimeDays]
+    [markerPosition, propertyValue, mangroveWidth, totalSLR, includeStormSurge, selectedPolygon, dailyRevenue, expectedDowntimeDays, assetLifespan]
   );
 
   const getInterventionType = useCallback(() => {
@@ -779,6 +792,7 @@ const Index = () => {
         rain_intensity_pct: totalRainIntensity,
         daily_revenue: dailyRevenue,
         expected_downtime_days: expectedDowntimeDays,
+        initial_lifespan_years: assetLifespan,
       };
 
       let polygonPromise: Promise<any> | null = null;
@@ -816,6 +830,8 @@ const Index = () => {
       const floodDepthReduction = analysis.avoided_depth_cm ?? 0;
       const riskIncreasePct = analysis.risk_increase_pct ?? null;
       const futureFloodAreaKm2 = analysis.future_flood_area_km2 ?? null;
+      const adjustedLifespan = analysis.adjusted_lifespan != null && Number.isFinite(analysis.adjusted_lifespan) ? Math.round(analysis.adjusted_lifespan) : null;
+      const lifespanPenalty = analysis.lifespan_penalty != null && Number.isFinite(analysis.lifespan_penalty) ? Math.round(analysis.lifespan_penalty) : null;
 
       // Extract rain chart data from analytics
       const analytics = responseData.data?.analytics || responseData.analytics;
@@ -834,6 +850,8 @@ const Index = () => {
         future100yr,
         baseline100yr,
         avoidedBusinessInterruption: avoidedBI,
+        adjusted_lifespan: adjustedLifespan,
+        lifespan_penalty: lifespanPenalty,
       });
       setShowFloodResults(true);
       setIsPanelOpen(true);
@@ -871,6 +889,8 @@ const Index = () => {
         future100yr: fallbackFuture100yr,
         baseline100yr: fallbackBaseline100yr,
         avoidedBusinessInterruption: dailyRevenue * expectedDowntimeDays * (totalReduction / 100) * 0.4,
+        adjusted_lifespan: assetLifespan,
+        lifespan_penalty: 0,
       });
       setShowFloodResults(true);
       setIsPanelOpen(true);
@@ -881,7 +901,7 @@ const Index = () => {
     } finally {
       setIsFloodSimulating(false);
     }
-  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled, getInterventionType, totalRainIntensity, selectedPolygon, dailyRevenue, expectedDowntimeDays]);
+  }, [markerPosition, buildingValue, greenRoofsEnabled, permeablePavementEnabled, getInterventionType, totalRainIntensity, selectedPolygon, dailyRevenue, expectedDowntimeDays, assetLifespan]);
 
   const handleGreenRoofsChange = useCallback(
     (enabled: boolean) => {
@@ -1342,6 +1362,8 @@ const Index = () => {
         onHealthSimulate={handleHealthSimulate}
         isHealthSimulating={isHealthSimulating}
         onPortfolioResultsChange={setPortfolioResults}
+        coastalAdjustedLifespan={coastalResults.adjusted_lifespan ?? undefined}
+        floodAdjustedLifespan={floodResults.adjusted_lifespan ?? undefined}
       />
 
       {/* Desktop Right Panel — simulation results */}

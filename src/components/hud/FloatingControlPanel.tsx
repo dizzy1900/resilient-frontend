@@ -63,6 +63,8 @@ interface FloatingControlPanelProps {
   onWorkforceSizeChange: (value: number) => void;
   averageDailyWage: number;
   onAverageDailyWageChange: (value: number) => void;
+  coastalAdjustedLifespan?: number | null;
+  floodAdjustedLifespan?: number | null;
 }
 
 const crops = [
@@ -103,6 +105,8 @@ export const FloatingControlPanel = ({
   onWorkforceSizeChange,
   averageDailyWage,
   onAverageDailyWageChange,
+  coastalAdjustedLifespan,
+  floodAdjustedLifespan,
 }: FloatingControlPanelProps) => {
   const [localMangroveWidth, setLocalMangroveWidth] = useState(mangroveWidth);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -280,7 +284,7 @@ export const FloatingControlPanel = ({
                     opex: 15000,
                     insurancePremium: 30000,
                     carbonCredits: 5000,
-                    lifespan: 40,
+                    lifespan: coastalAdjustedLifespan ?? assetLifespan ?? 40,
                   });
                   toast("Project data loaded. Open the Finance tab to calculate ROI.");
                 }}
@@ -342,7 +346,7 @@ export const FloatingControlPanel = ({
                   opex: 25000,
                   insurancePremium: 50000,
                   carbonCredits: 0,
-                  lifespan: 30,
+                  lifespan: coastalAdjustedLifespan ?? assetLifespan ?? 30,
                 });
                 toast("Project data loaded. Open the Finance tab to calculate ROI.");
               }}
