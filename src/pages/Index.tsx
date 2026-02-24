@@ -901,20 +901,30 @@ const Index = () => {
 
     const safeOpex = parseFloat(String(baseAnnualOpex).replace(/,/g, '')) || 25000;
     const safeLifespan = parseInt(String(assetLifespan), 10) || 30;
+    const safePropertyValue = parseFloat(String(propertyValue).replace(/,/g, '')) || 5_000_000;
+
+    // Backend requires rain_intensity in range [10, 150] (e.g. mm/hr)
+    const calculatedRain = typeof totalRainIntensity === 'number' && !Number.isNaN(totalRainIntensity) ? totalRainIntensity : 50;
+    const safeRain = Math.max(10, Math.min(150, calculatedRain));
+
+    // Backend requires one of: 'none' | 'green_roof' | 'permeable_pavement'
+    const interventionType =
+      greenRoofsEnabled ? 'green_roof' : permeablePavementEnabled ? 'permeable_pavement' : 'none';
 
     setIsFloodSimulating(true);
 
     const payload = {
       lat: markerPosition.lat,
       lon: markerPosition.lng,
+      rain_intensity: safeRain,
+      current_imperviousness: 0.7,
+      intervention_type: interventionType,
       base_annual_opex: safeOpex,
       initial_lifespan_years: safeLifespan,
+      asset_value_usd: safePropertyValue,
       green_roofs: greenRoofsEnabled,
       permeable_pavement: permeablePavementEnabled,
-      intervention_type: getInterventionType(),
-      rain_intensity: totalRainIntensity,
       rain_intensity_pct: totalRainIntensity,
-      current_imperviousness: 0.5,
       slope_pct: 2,
     };
 
@@ -976,7 +986,7 @@ const Index = () => {
       .finally(() => {
         setIsFloodSimulating(false);
       });
-  }, [markerPosition, baseAnnualOpex, assetLifespan, greenRoofsEnabled, permeablePavementEnabled, totalRainIntensity, getInterventionType]);
+  }, [markerPosition, baseAnnualOpex, assetLifespan, propertyValue, greenRoofsEnabled, permeablePavementEnabled, totalRainIntensity, toast]);
 
   const handleGreenRoofsChange = useCallback(
     (enabled: boolean) => {
