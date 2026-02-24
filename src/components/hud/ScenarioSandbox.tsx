@@ -1,8 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/clientSafe';
 import { fetchWithRetry } from '@/utils/api';
 import { useProjectStore } from '@/store/useProjectStore';
+
+/** Live Railway FastAPI backend for Finance (CBA + CVaR). */
+const financeBaseUrl = 'https://web-production-8ff9e.up.railway.app';
+const cbaEndpoint = `${financeBaseUrl}/api/v1/finance/cba-series`;
+const cvarEndpoint = `${financeBaseUrl}/api/v1/finance/cvar-simulation`;
 import { CBATimeSeriesChart, type CBATimeSeriesPoint } from '@/components/analytics/CBATimeSeriesChart';
 import { CVaRSection, type CVaRDistributionPoint } from '@/components/analytics/CVaRChart';
 
@@ -120,22 +124,24 @@ export function ScenarioSandbox({
       setCbaTimeSeries([]);
       return;
     }
-    const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
-    const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cba-series`;
     const controller = new AbortController();
+    const capex = Number(assumptions.capex_budget) || 500000;
+    const annualBaselineDamage = capex * 0.02;
     (async () => {
       try {
-        const res = await fetchWithRetry(endpoint, {
+        const res = await fetchWithRetry(cbaEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             lat: latitude,
             lon: longitude,
             crop: cropType,
-            capex_budget: assumptions.capex_budget,
-            opex_annual: assumptions.opex_annual,
+            capex,
+            annual_opex: Number(assumptions.opex_annual) || 25000,
+            discount_rate: Number(assumptions.discount_rate_pct) / 100 || 0.08,
+            lifespan_years: Number(assumptions.asset_lifespan_years) || 30,
+            annual_baseline_damage: annualBaselineDamage,
             base_insurance_premium: assumptions.insurance_premium_annual,
-            discount_rate_pct: assumptions.discount_rate_pct,
           }),
           signal: controller.signal,
         });
@@ -151,7 +157,7 @@ export function ScenarioSandbox({
       }
     })();
     return () => controller.abort();
-  }, [latitude, longitude, cropType, assumptions.capex_budget, assumptions.opex_annual, assumptions.insurance_premium_annual, assumptions.discount_rate_pct]);
+  }, [latitude, longitude, cropType, assumptions.capex_budget, assumptions.opex_annual, assumptions.insurance_premium_annual, assumptions.discount_rate_pct, assumptions.asset_lifespan_years]);
 
   useEffect(() => {
     const annualCarbonRevenue = carbonCredits * carbonPrice;
@@ -166,48 +172,40 @@ export function ScenarioSandbox({
   }, []);
 
   const handleCalculateCBA = useCallback(async () => {
-    console.log('1. ROI Button Clicked!');
-
+    const capex = Number(assumptions.capex_budget) || 500000;
     const payload = {
-      capex: Number(assumptions.capex_budget) || 500000,
+      capex,
       annual_opex: Number(assumptions.opex_annual) || 25000,
       base_insurance_premium: Number(assumptions.insurance_premium_annual) ?? 50000,
       discount_rate: Number(assumptions.discount_rate_pct) / 100 || 0.08,
       lifespan_years: Number(assumptions.asset_lifespan_years) || 30,
+      annual_baseline_damage: capex * 0.02,
       annual_carbon_credits: Number(carbonCredits) || 0,
       carbon_price_per_ton: Number(carbonPrice) || 50,
     };
 
-    console.log('2. Sending Payload:', payload);
-
     try {
-      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
-      const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cba-series`;
-      const response = await fetchWithRetry(endpoint, {
+      const response = await fetchWithRetry(cbaEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-
-      console.log('3. Fetch status:', response.status);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('4. Backend Data Received:', data);
-
-      const series = data?.time_series;
+      const series = data?.time_series ?? data?.data?.time_series;
       setCbaTimeSeries(Array.isArray(series) ? series : []);
-      const metrics = data?.bond_metrics ?? null;
+      const metrics = data?.bond_metrics ?? data?.data?.bond_metrics ?? null;
       setBondMetrics(metrics);
       onCbaResult?.({ bond_metrics: metrics, capex_budget: assumptions.capex_budget });
       if (!Array.isArray(series) || series.length === 0) {
         console.warn('CBA response missing or empty time_series:', data);
       }
     } catch (error) {
-      console.error('5. Fetch Failed:', error);
+      console.error('CBA fetch failed:', error);
     }
   }, [assumptions.capex_budget, assumptions.opex_annual, assumptions.insurance_premium_annual, assumptions.discount_rate_pct, assumptions.asset_lifespan_years, carbonCredits, carbonPrice, onCbaResult]);
 
@@ -215,56 +213,101 @@ export function ScenarioSandbox({
     if (!latitude || !longitude) return;
     setIsCalculating(true);
 
+    const capex = Number(assumptions.capex_budget) || 500000;
+    const cbaPayload = {
+      lat: latitude,
+      lon: longitude,
+      crop: cropType,
+      capex,
+      annual_opex: Number(assumptions.opex_annual) || 25000,
+      discount_rate: Number(assumptions.discount_rate_pct) / 100 || 0.08,
+      lifespan_years: Number(assumptions.asset_lifespan_years) || 30,
+      annual_baseline_damage: capex * 0.02,
+    };
+    const cvarPayload = {
+      asset_value: capex,
+      mean_damage_pct: Number(meanDamage) / 100 || 0.02,
+      volatility_pct: Number(volatility) / 100 || 0.05,
+      num_simulations: 10_000,
+    };
+
     try {
-      const { data: responseData, error } = await supabase.functions.invoke('simulate-finance', {
-        body: {
-          lat: latitude,
-          lon: longitude,
-          crop: cropType,
-          capex_budget: assumptions.capex_budget,
+      const [cbaRes, cvarRes] = await Promise.all([
+        fetchWithRetry(cbaEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(cbaPayload),
+        }),
+        fetchWithRetry(cvarEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(cvarPayload),
+        }),
+      ]);
+
+      if (!cbaRes.ok) throw new Error(`CBA failed: ${cbaRes.status}`);
+      if (!cvarRes.ok) throw new Error(`CVaR failed: ${cvarRes.status}`);
+
+      const cbaData = await cbaRes.json();
+      const cvarData = await cvarRes.json();
+
+      const timeSeries = cbaData?.time_series ?? cbaData?.data?.time_series ?? [];
+      const financialData = {
+        assumptions: {
+          capex,
           opex_annual: assumptions.opex_annual,
           discount_rate_pct: assumptions.discount_rate_pct,
           asset_lifespan_years: assumptions.asset_lifespan_years,
         },
-      });
+        time_series: Array.isArray(timeSeries) ? timeSeries : [],
+        npv: cbaData?.npv ?? cbaData?.data?.npv ?? null,
+        bond_metrics: cbaData?.bond_metrics ?? cbaData?.data?.bond_metrics ?? null,
+        ...(cbaData?.data && typeof cbaData.data === 'object' ? cbaData.data : {}),
+      };
 
-      if (error) throw new Error(error.message || 'Re-calculation failed');
-
-      const result = Array.isArray(responseData) ? responseData[0] : responseData;
-      const financialAnalysis = result?.financial_analysis ?? result?.data?.financial_analysis ?? result;
+      const dist = cvarData?.distribution ?? cvarData?.data?.distribution ?? [];
+      const metrics = cvarData?.metrics ?? cvarData?.data?.metrics ?? cvarData;
+      const monteCarloData = {
+        distribution: Array.isArray(dist) ? dist : [],
+        VaR_95: metrics?.cvar_95 ?? metrics?.cvar_95th ?? null,
+        metrics: {
+          npv_usd: { p5: metrics?.cvar_95 ?? metrics?.cvar_95th },
+          expected_annual_loss: metrics?.expected_annual_loss,
+          cvar_95: metrics?.cvar_95 ?? metrics?.cvar_95th,
+          cvar_99: metrics?.cvar_99 ?? metrics?.cvar_99th,
+        },
+        simulation_count: 10_000,
+        ...(typeof metrics === 'object' && metrics !== null ? metrics : {}),
+      };
 
       onRecalculated({
-        financialData: financialAnalysis,
-        monteCarloData: result?.monte_carlo_analysis ?? null,
-        executiveSummary: result?.executive_summary ?? null,
-        sensitivityData: result?.sensitivity_analysis ?? null,
-        adaptationStrategy: result?.adaptation_strategy ?? null,
-        adaptationPortfolio: result?.adaptation_portfolio ?? null,
-        satellitePreview: result?.satellite_preview ?? null,
-        marketIntelligence: result?.market_intelligence ?? null,
-        temporalAnalysis: result?.temporal_analysis ?? null,
+        financialData,
+        monteCarloData,
+        executiveSummary: null,
+        sensitivityData: null,
+        adaptationStrategy: null,
+        adaptationPortfolio: null,
+        satellitePreview: null,
+        marketIntelligence: null,
+        temporalAnalysis: null,
       });
     } catch (err) {
       console.error('Scenario re-calculation failed:', err);
     } finally {
       setIsCalculating(false);
     }
-  }, [latitude, longitude, cropType, assumptions, onRecalculated]);
+  }, [latitude, longitude, cropType, assumptions, meanDamage, volatility, onRecalculated]);
 
   const handleRunMonteCarlo = useCallback(async () => {
-    console.log('1. Monte Carlo Button Clicked!');
     setIsSimulating(true);
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
-    const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/finance/cvar-simulation`;
-    const capexBudget = assumptions.capex_budget;
     const payload = {
-      asset_value: Number(capexBudget) || 5_000_000,
-      mean_damage_pct: Number(meanDamage) / 100,
-      volatility_pct: Number(volatility) / 100,
+      asset_value: Number(assumptions.capex_budget) || 5_000_000,
+      mean_damage_pct: Number(meanDamage) / 100 || 0.02,
+      volatility_pct: Number(volatility) / 100 || 0.05,
       num_simulations: 10_000,
     };
     try {
-      const res = await fetchWithRetry(endpoint, {
+      const res = await fetchWithRetry(cvarEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -286,7 +329,6 @@ export function ScenarioSandbox({
           : null;
       setCvarDistribution(Array.isArray(dist) ? dist : null);
       setCvarMetrics(metrics);
-      console.log('2. CVaR Data Received:', data);
     } catch (err) {
       console.error('Monte Carlo simulation error:', err);
       setCvarDistribution(null);
