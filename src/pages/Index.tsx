@@ -617,9 +617,7 @@ const Index = () => {
   }, [markerPosition, handleSimulate]);
 
   const handleCoastalSimulate = useCallback(async () => {
-    console.log('Simulation triggered. Preparing payload...');
     if (!markerPosition) {
-      console.warn('Simulation aborted: no location selected (markerPosition is null). Please select a location on the map first.');
       toast({
         title: 'Location required',
         description: 'Please select a location on the map first.',
@@ -628,32 +626,67 @@ const Index = () => {
       return;
     }
 
+    const safeOpex = parseFloat(String(baseAnnualOpex).replace(/,/g, '')) || 25000;
+    const safeLifespan = parseInt(String(assetLifespan), 10) || 30;
+
     setIsCoastalSimulating(true);
 
     const payload = {
-      lat: 25.1496,
-      lon: 55.2528,
-      base_annual_opex: 25000,
-      initial_lifespan_years: 30,
+      lat: markerPosition.lat,
+      lon: markerPosition.lng,
+      base_annual_opex: safeOpex,
+      initial_lifespan_years: safeLifespan,
+      mangrove_width: mangroveWidth,
+      sea_level_rise: totalSLR,
+      slr_projection: totalSLR,
+      include_storm_surge: includeStormSurge,
     };
-    console.log('Hardcoded payload built:', payload);
 
-    console.log('Firing fetch...');
     fetchWithRetry('/api/predict', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
       .then((res) => {
-        console.log('Fetch success!', res);
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then((data) => {
+        console.log('Parsed API Data:', data);
+        const d = data as Record<string, unknown>;
+        const slr = Number(d.sea_level_rise ?? d.slr_projection ?? totalSLR) ?? totalSLR;
+        const stormChartData = (d.storm_chart_data as Array<{ period: string; current_depth: number; future_depth: number }>) ?? generateFallbackStormChartData(slr);
+        setCoastalResults({
+          avoidedLoss: Number(d.avoided_loss ?? 0),
+          slope: d.slope != null ? Number(d.slope) : null,
+          stormWave: d.storm_wave != null ? Number(d.storm_wave) : d.surge_m != null ? Number(d.surge_m) : null,
+          isUnderwater: Boolean(d.is_underwater),
+          floodDepth: d.flood_depth_m != null ? Number(d.flood_depth_m) : null,
+          seaLevelRise: slr,
+          includeStormSurge: includeStormSurge,
+          stormChartData: Array.isArray(stormChartData) ? stormChartData : generateFallbackStormChartData(slr),
+          floodedUrbanKm2: d.flooded_urban_km2 != null ? Number(d.flooded_urban_km2) : null,
+          urbanImpactPct: d.urban_impact_pct != null ? Number(d.urban_impact_pct) : null,
+          avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
+          adjusted_opex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
+          opex_climate_penalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
+          adjusted_lifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
+          lifespan_penalty: d.lifespan_penalty != null ? Number(d.lifespan_penalty) : null,
+        });
+        setShowCoastalResults(true);
       })
       .catch((err) => {
-        console.error('FETCH FAILED CATASTROPHICALLY:', err);
+        console.error('Simulation failed:', err);
+        toast({
+          title: 'Simulation failed',
+          description: err instanceof Error ? err.message : 'Coastal simulation failed.',
+          variant: 'destructive',
+        });
       })
       .finally(() => {
         setIsCoastalSimulating(false);
       });
-  }, [markerPosition]);
+  }, [markerPosition, baseAnnualOpex, assetLifespan, mangroveWidth, totalSLR, includeStormSurge]);
 
   const getInterventionType = useCallback(() => {
     const selectedToolkits: string[] = [
@@ -687,9 +720,7 @@ const Index = () => {
   }, [greenRoofsEnabled, permeablePavementEnabled]);
 
   const handleFloodSimulate = useCallback(async () => {
-    console.log('Simulation triggered. Preparing payload...');
     if (!markerPosition) {
-      console.warn('Simulation aborted: no location selected (markerPosition is null). Please select a location on the map first.');
       toast({
         title: 'Location required',
         description: 'Please select a location on the map first.',
@@ -698,32 +729,77 @@ const Index = () => {
       return;
     }
 
+    const safeOpex = parseFloat(String(baseAnnualOpex).replace(/,/g, '')) || 25000;
+    const safeLifespan = parseInt(String(assetLifespan), 10) || 30;
+
     setIsFloodSimulating(true);
 
     const payload = {
-      lat: 25.1496,
-      lon: 55.2528,
-      base_annual_opex: 25000,
-      initial_lifespan_years: 30,
+      lat: markerPosition.lat,
+      lon: markerPosition.lng,
+      base_annual_opex: safeOpex,
+      initial_lifespan_years: safeLifespan,
+      green_roofs: greenRoofsEnabled,
+      permeable_pavement: permeablePavementEnabled,
+      intervention_type: getInterventionType(),
+      rain_intensity: totalRainIntensity,
+      rain_intensity_pct: totalRainIntensity,
+      current_imperviousness: 0.5,
+      slope_pct: 2,
     };
-    console.log('Hardcoded payload built:', payload);
 
-    console.log('Firing fetch...');
     fetchWithRetry('/api/predict', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
       .then((res) => {
-        console.log('Fetch success!', res);
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then((data) => {
+        console.log('Parsed API Data:', data);
+        const d = data as Record<string, unknown>;
+        const rainChartData = d.rain_chart_data as Array<{ month: string; historical: number; projected: number }> | undefined;
+        const entry100yr = Array.isArray(rainChartData)
+          ? rainChartData.find((e: { period?: string }) => e.period === '100yr')
+          : (d.rain_frequency as Record<string, unknown>) != null
+            ? (d.rain_frequency as Record<string, unknown>).rain_chart_data
+            : null;
+        const rf = (d.rain_frequency ?? d.rainfall_frequency) as Record<string, unknown> | undefined;
+        const rc = rf?.rain_chart_data as Array<{ period?: string; baseline_mm?: number; future_mm?: number }> | undefined;
+        const e100 = Array.isArray(rc) ? rc.find((x) => x.period === '100yr') : null;
+        setFloodResults({
+          floodDepthReduction: Number(d.flood_depth_reduction ?? d.depth_reduction ?? 0),
+          valueProtected: Number(d.value_protected ?? 0),
+          riskIncreasePct: d.risk_increase_pct != null ? Number(d.risk_increase_pct) : null,
+          futureFloodAreaKm2: d.future_flood_area_km2 != null ? Number(d.future_flood_area_km2) : null,
+          rainChartData: Array.isArray(rainChartData) ? rainChartData : null,
+          future100yr: e100?.future_mm ?? (entry100yr as { future_mm?: number } | undefined)?.future_mm ?? null,
+          baseline100yr: e100?.baseline_mm ?? (entry100yr as { baseline_mm?: number } | undefined)?.baseline_mm ?? null,
+          avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
+          adjustedOpex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
+          opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
+          adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
+          adjusted_lifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
+          adjusted_opex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
+          opex_climate_penalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
+          lifespan_penalty: d.lifespan_penalty != null ? Number(d.lifespan_penalty) : null,
+        });
+        setShowFloodResults(true);
       })
       .catch((err) => {
-        console.error('FETCH FAILED CATASTROPHICALLY:', err);
+        console.error('Simulation failed:', err);
+        toast({
+          title: 'Simulation failed',
+          description: err instanceof Error ? err.message : 'Flood simulation failed.',
+          variant: 'destructive',
+        });
       })
       .finally(() => {
         setIsFloodSimulating(false);
       });
-  }, [markerPosition]);
+  }, [markerPosition, baseAnnualOpex, assetLifespan, greenRoofsEnabled, permeablePavementEnabled, totalRainIntensity, getInterventionType]);
 
   const handleGreenRoofsChange = useCallback(
     (enabled: boolean) => {
