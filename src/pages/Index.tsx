@@ -1547,6 +1547,12 @@ const Index = () => {
           propertyValue,
           onPropertyValueChange: setPropertyValue,
           selectedYear,
+          coastalAdjustedLifespan: coastalResults?.adjusted_lifespan ?? undefined,
+          floodAdjustedLifespan: floodResults?.adjusted_lifespan ?? undefined,
+          baseAnnualOpex,
+          onBaseAnnualOpexChange: setBaseAnnualOpex,
+          coastalAdjustedOpex: coastalResults?.adjusted_opex ?? undefined,
+          floodAdjustedOpex: floodResults?.adjusted_opex ?? undefined,
         }}
         rightPanelContentProps={{
           locationName: atlasLocationName,
