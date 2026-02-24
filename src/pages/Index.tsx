@@ -82,7 +82,6 @@ const Index = () => {
   const [assetLifespan, setAssetLifespan] = useState(30);
   const [baseAnnualOpex, setBaseAnnualOpex] = useState(25000);
   const [dailyRevenue, setDailyRevenue] = useState(20000);
-  const [baseAnnualOpex, setBaseAnnualOpex] = useState(25000);
   const [expectedDowntimeDays, setExpectedDowntimeDays] = useState(14);
 
   const [isCoastalSimulating, setIsCoastalSimulating] = useState(false);
@@ -619,11 +618,16 @@ const Index = () => {
 
   const handleCoastalSimulate = useCallback(
     async () => {
+      console.log('Simulation triggered. Preparing payload...');
       if (!markerPosition) return;
 
       setIsCoastalSimulating(true);
 
       try {
+        // Sanitize numeric inputs (strip commas and ensure numbers)
+        const safeOpex = Number(String(baseAnnualOpex).replace(/,/g, '')) || 0;
+        const safeLifespan = Number(String(assetLifespan).replace(/,/g, '')) || 30;
+
         // Calculate total water level for the API (totalSLR already includes 2000-2026 rise)
         const stormSurgeHeight = includeStormSurge ? 2.5 : 0;
         const totalWaterLevel = totalSLR + stormSurgeHeight;
@@ -640,24 +644,32 @@ const Index = () => {
           });
         }
 
-      const { data: responseData, error } = await invokeWithRetry(
-        () =>
-          supabase.functions.invoke('simulate-coastal', {
-            body: {
-              lat: markerPosition.lat,
-              lon: markerPosition.lng,
-              mangrove_width: mangroveWidth,
-              slr_projection: totalSLR,
-              include_storm_surge: includeStormSurge,
-              daily_revenue: dailyRevenue,
-              expected_downtime_days: expectedDowntimeDays,
-              property_value: propertyValue,
-              asset_lifespan: assetLifespan,
-              initial_lifespan_years: assetLifespan,
-              base_annual_opex: baseAnnualOpex,
-            },
-          })
-      );
+        let body: Record<string, unknown>;
+        try {
+          body = {
+            lat: markerPosition.lat,
+            lon: markerPosition.lng,
+            mangrove_width: mangroveWidth,
+            slr_projection: totalSLR,
+            include_storm_surge: includeStormSurge,
+            daily_revenue: dailyRevenue,
+            expected_downtime_days: expectedDowntimeDays,
+            property_value: propertyValue,
+            asset_lifespan: safeLifespan,
+            initial_lifespan_years: safeLifespan,
+            base_annual_opex: safeOpex,
+          };
+        } catch (payloadError) {
+          console.error('Coastal payload construction failed:', payloadError);
+          throw payloadError;
+        }
+
+        const { data: responseData, error } = await invokeWithRetry(
+          () =>
+            supabase.functions.invoke('simulate-coastal', {
+              body,
+            })
+        );
 
         if (polygonPromise) {
           try {
@@ -788,30 +800,41 @@ const Index = () => {
   }, [greenRoofsEnabled, permeablePavementEnabled]);
 
   const handleFloodSimulate = useCallback(async () => {
+    console.log('Simulation triggered. Preparing payload...');
     if (!markerPosition) return;
 
     setIsFloodSimulating(true);
 
     try {
+      // Sanitize numeric inputs (strip commas and ensure numbers)
+      const safeOpex = Number(String(baseAnnualOpex).replace(/,/g, '')) || 0;
+      const safeLifespan = Number(String(assetLifespan).replace(/,/g, '')) || 30;
+
       const intervention_type = getInterventionType();
 
-      const payload = {
-        rain_intensity: 100 + totalRainIntensity,
-        current_imperviousness: 0.7,
-        intervention_type,
-        slope_pct: 2.0,
-        lat: markerPosition.lat,
-        lon: markerPosition.lng,
-        rain_intensity_pct: totalRainIntensity,
-        daily_revenue: dailyRevenue,
-        expected_downtime_days: expectedDowntimeDays,
-        building_value: buildingValue,
-        initial_lifespan_years: assetLifespan,
-        asset_lifespan: assetLifespan,
-        base_annual_opex: baseAnnualOpex,
-        green_roofs: greenRoofsEnabled,
-        permeable_pavement: permeablePavementEnabled,
-      };
+      let payload: Record<string, unknown>;
+      try {
+        payload = {
+          rain_intensity: 100 + totalRainIntensity,
+          current_imperviousness: 0.7,
+          intervention_type,
+          slope_pct: 2.0,
+          lat: markerPosition.lat,
+          lon: markerPosition.lng,
+          rain_intensity_pct: totalRainIntensity,
+          daily_revenue: dailyRevenue,
+          expected_downtime_days: expectedDowntimeDays,
+          building_value: buildingValue,
+          initial_lifespan_years: safeLifespan,
+          asset_lifespan: safeLifespan,
+          base_annual_opex: safeOpex,
+          green_roofs: greenRoofsEnabled,
+          permeable_pavement: permeablePavementEnabled,
+        };
+      } catch (payloadError) {
+        console.error('Flood payload construction failed:', payloadError);
+        throw payloadError;
+      }
 
       let polygonPromise: Promise<any> | null = null;
       if (selectedPolygon) {
