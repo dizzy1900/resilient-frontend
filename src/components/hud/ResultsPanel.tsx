@@ -42,6 +42,8 @@ interface CoastalResults {
   seaLevelRise?: number;
   includeStormSurge?: boolean;
   stormChartData?: StormChartDataItem[];
+  adjusted_lifespan?: number | null;
+  lifespan_penalty?: number | null;
 }
 
 interface FloodResults {
@@ -52,6 +54,8 @@ interface FloodResults {
   rainChartData?: RainfallChartData[] | null;
   future100yr?: number | null;
   baseline100yr?: number | null;
+  adjusted_lifespan?: number | null;
+  lifespan_penalty?: number | null;
 }
 
 interface ResultsPanelProps {
@@ -427,7 +431,7 @@ export const ResultsPanel = ({
                 opex: 15000,
                 insurancePremium: 30000,
                 carbonCredits: 5000,
-                lifespan: 40,
+                lifespan: coastalResults.adjusted_lifespan ?? 40,
               });
               toast.success('Project data loaded into Finance Module.');
             }}
@@ -588,7 +592,7 @@ export const ResultsPanel = ({
                 opex: 35000,
                 insurancePremium: 45000,
                 carbonCredits: 1200,
-                lifespan: 30,
+                lifespan: floodResults.adjusted_lifespan ?? 30,
               });
               toast.success('Project data loaded into Finance Module.');
             }}

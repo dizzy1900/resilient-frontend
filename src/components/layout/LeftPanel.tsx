@@ -210,6 +210,8 @@ export interface LeftPanelProps {
   onHealthSimulate: () => void;
   isHealthSimulating: boolean;
   onPortfolioResultsChange?: (data: import("@/types/portfolio").PortfolioAnalysisResult | null) => void;
+  coastalAdjustedLifespan?: number | null;
+  floodAdjustedLifespan?: number | null;
 }
 
 export function LeftPanel({
@@ -290,6 +292,8 @@ export function LeftPanel({
   onHealthSimulate,
   isHealthSimulating,
   onPortfolioResultsChange,
+  coastalAdjustedLifespan,
+  floodAdjustedLifespan,
 }: LeftPanelProps) {
   const [localMangroveWidth, setLocalMangroveWidth] = useState(mangroveWidth);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -501,6 +505,8 @@ export function LeftPanel({
             propertyValue={propertyValue}
             onPropertyValueChange={onPropertyValueChange}
             selectedYear={selectedYear}
+            coastalAdjustedLifespan={coastalAdjustedLifespan}
+            floodAdjustedLifespan={floodAdjustedLifespan}
           />
         </div>
 
@@ -583,6 +589,8 @@ export interface ModeContentProps {
   propertyValue: number;
   onPropertyValueChange: (v: number) => void;
   selectedYear: number;
+  coastalAdjustedLifespan?: number | null;
+  floodAdjustedLifespan?: number | null;
 }
 
 function SectionRow({ label, children }: { label: string; children: React.ReactNode }) {
@@ -664,6 +672,8 @@ export function ModeContent(props: ModeContentProps) {
     propertyValue,
     onPropertyValueChange,
     selectedYear,
+    coastalAdjustedLifespan,
+    floodAdjustedLifespan,
   } = props;
 
   const [isUploading, setIsUploading] = useState(false);
@@ -828,7 +838,7 @@ export function ModeContent(props: ModeContentProps) {
                 opex: 15000,
                 insurancePremium: 30000,
                 carbonCredits: 5000,
-                lifespan: 40,
+                lifespan: coastalAdjustedLifespan ?? assetLifespan ?? 40,
               });
               toast("Project data loaded. Open the Finance tab to calculate ROI.");
             }}
@@ -886,7 +896,7 @@ export function ModeContent(props: ModeContentProps) {
                 opex: 25000,
                 insurancePremium: 50000,
                 carbonCredits: 0,
-                lifespan: 30,
+                lifespan: coastalAdjustedLifespan ?? assetLifespan ?? 30,
               });
               toast("Project data loaded. Open the Finance tab to calculate ROI.");
             }}
@@ -1082,7 +1092,7 @@ export function ModeContent(props: ModeContentProps) {
                   opex: 35000,
                   insurancePremium: 25000,
                   carbonCredits: 12000,
-                  lifespan: 50,
+                  lifespan: floodAdjustedLifespan ?? assetLifespan ?? 50,
                 });
                 toast("Flood project data loaded into Finance Module.");
               }}
@@ -1100,7 +1110,7 @@ export function ModeContent(props: ModeContentProps) {
                   opex: 8000,
                   insurancePremium: 40000,
                   carbonCredits: 0,
-                  lifespan: 25,
+                  lifespan: floodAdjustedLifespan ?? assetLifespan ?? 25,
                 });
                 toast("Flood project data loaded into Finance Module.");
               }}
