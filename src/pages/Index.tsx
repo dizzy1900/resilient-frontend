@@ -24,6 +24,11 @@ import { DrawnPolygon } from '@/components/dashboard/DrawControl';
 import { useMapboxGeocoder } from '@/hooks/useMapboxGeocoder';
 import { PortfolioAnalysisResult } from '@/types/portfolio';
 
+/** Live Railway FastAPI backend for Finance module (CBA + CVaR). */
+const financeBaseUrl = 'https://web-production-8ff9e.up.railway.app';
+const cbaEndpoint = `${financeBaseUrl}/api/v1/finance/cba-series`;
+const cvarEndpoint = `${financeBaseUrl}/api/v1/finance/cvar-simulation`;
+
 const mockMonthlyData = [
   { month: 'Jan', value: 45 },
   { month: 'Feb', value: 52 },
@@ -357,49 +362,91 @@ const Index = () => {
     setPolygonExposurePct(null);
   }, []);
 
-  // Finance simulation handler
+  // Finance simulation handler — uses Railway FastAPI (cba-series + cvar-simulation)
   const handleFinanceSimulate = useCallback(async () => {
     if (!markerPosition) return;
     setIsFinanceSimulating(true);
-    setAtlasFinancialData(null); // Clear to show loading
+    setAtlasFinancialData(null);
+    setAtlasMonteCarloData(null);
+
+    const capex = Number(propertyValue) || 5_000_000;
+    const annualOpex = Number(baseAnnualOpex) || 25_000;
+    const lifespanYears = Number(assetLifespan) || 30;
+    const discountRate = 0.08;
+    const annualBaselineDamage = (capex * 0.02) || 0; // 2% of capex default
+
+    const cbaPayload = {
+      lat: markerPosition.lat,
+      lon: markerPosition.lng,
+      crop: cropType,
+      capex,
+      annual_opex: annualOpex,
+      discount_rate: discountRate,
+      lifespan_years: lifespanYears,
+      annual_baseline_damage: annualBaselineDamage,
+    };
+
+    const cvarPayload = {
+      asset_value: capex,
+      mean_damage_pct: 0.02,
+      volatility_pct: 0.05,
+      num_simulations: 10_000,
+    };
 
     try {
-      let polygonPromise: Promise<any> | null = null;
-      if (selectedPolygon) {
-        polygonPromise = supabase.functions.invoke('simulate-polygon', {
-          body: {
-            geometry: selectedPolygon,
-            mode: 'finance',
-            crop: cropType,
-          },
-        });
-      }
+      const [cbaRes, cvarRes] = await Promise.all([
+        fetchWithRetry(cbaEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(cbaPayload),
+        }),
+        fetchWithRetry(cvarEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(cvarPayload),
+        }),
+      ]);
 
-      const { data: responseData, error } = await invokeWithRetry(
-        () =>
-          supabase.functions.invoke('simulate-finance', {
-            body: {
-              lat: markerPosition.lat,
-              lon: markerPosition.lng,
-              crop: cropType,
-            },
-          })
-      );
+      if (!cbaRes.ok) throw new Error(`CBA request failed: ${cbaRes.status}`);
+      if (!cvarRes.ok) throw new Error(`CVaR request failed: ${cvarRes.status}`);
 
-      if (polygonPromise) {
-        try {
-          const { data: polyData } = await polygonPromise;
-          const exposure = polyData?.fractional_exposure_pct ?? polyData?.data?.fractional_exposure_pct;
-          if (exposure != null) setPolygonExposurePct(Math.round(exposure * 10) / 10);
-        } catch { /* polygon call is best-effort */ }
-      }
+      const cbaData = await cbaRes.json();
+      const cvarData = await cvarRes.json();
 
-      if (error) throw new Error((error as Error).message || 'Finance simulation failed');
+      const timeSeries = cbaData?.time_series ?? cbaData?.data?.time_series ?? [];
+      const financialData = {
+        assumptions: {
+          capex,
+          opex_annual: annualOpex,
+          discount_rate_pct: discountRate * 100,
+          asset_lifespan_years: lifespanYears,
+        },
+        time_series: Array.isArray(timeSeries) ? timeSeries : [],
+        npv: cbaData?.npv ?? cbaData?.data?.npv ?? null,
+        bond_metrics: cbaData?.bond_metrics ?? cbaData?.data?.bond_metrics ?? null,
+        ...(cbaData?.data && typeof cbaData.data === 'object' ? cbaData.data : {}),
+      };
+      setAtlasFinancialData(financialData);
 
-      const result = Array.isArray(responseData) ? responseData[0] : responseData;
-      const financialAnalysis = result?.financial_analysis ?? result?.data?.financial_analysis ?? result;
+      const dist = cvarData?.distribution ?? cvarData?.data?.distribution ?? [];
+      const metrics = cvarData?.metrics ?? cvarData?.data?.metrics ?? cvarData;
+      const cvar95 = metrics?.cvar_95 ?? metrics?.cvar_95th ?? cvarData?.cvar_95 ?? cvarData?.cvar_95th;
+      const cvar99 = metrics?.cvar_99 ?? metrics?.cvar_99th ?? cvarData?.cvar_99 ?? cvarData?.cvar_99th;
+      const expectedAnnualLoss = metrics?.expected_annual_loss ?? cvarData?.expected_annual_loss;
+      const monteCarloData = {
+        distribution: Array.isArray(dist) ? dist : [],
+        VaR_95: cvar95 ?? null,
+        metrics: {
+          npv_usd: { p5: cvar95 ?? undefined },
+          expected_annual_loss: expectedAnnualLoss,
+          cvar_95: cvar95,
+          cvar_99: cvar99,
+        },
+        simulation_count: 10_000,
+        ...(typeof metrics === 'object' && metrics !== null ? metrics : {}),
+      };
+      setAtlasMonteCarloData(monteCarloData);
 
-      setAtlasFinancialData(financialAnalysis);
       setAtlasLocationName(`${markerPosition.lat.toFixed(2)}, ${markerPosition.lng.toFixed(2)}`);
       setIsPanelOpen(true);
     } catch (error) {
@@ -428,6 +475,7 @@ const Index = () => {
         });
       } else {
         setAtlasFinancialData(null);
+        setAtlasMonteCarloData(null);
         toast({
           title: 'Finance Simulation Failed',
           description: error instanceof Error ? error.message : 'Unable to connect. Please try again.',
@@ -437,7 +485,7 @@ const Index = () => {
     } finally {
       setIsFinanceSimulating(false);
     }
-  }, [markerPosition, cropType, selectedPolygon]);
+  }, [markerPosition, cropType, propertyValue, baseAnnualOpex, assetLifespan]);
 
   const handleGlobalTempTargetChange = useCallback((value: number) => {
     setGlobalTempTarget(value);
