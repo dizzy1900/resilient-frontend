@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { MapView, MapStyle, ViewState, ZoneData, PortfolioMapAsset, FlyToTarget } from '@/components/dashboard/MapView';
 import { AtlasClickData } from '@/components/dashboard/AtlasMarkers';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
@@ -71,8 +71,8 @@ const generateFallbackStormChartData = (slr: number) => {
 const Index = () => {
   const [mode, setMode] = useState<DashboardMode>('agriculture');
   const [cropType, setCropType] = useState('maize');
-  const [currentCrop, setCurrentCrop] = useState('maize');
-  const [proposedCrop, setProposedCrop] = useState('none');
+  const [currentCrop, setCurrentCrop] = useState('Maize');
+  const [proposedCrop, setProposedCrop] = useState('None');
   const [mangroveWidth, setMangroveWidth] = useState(100);
   const [propertyValue, setPropertyValue] = useState(5000000);
   const [buildingValue, setBuildingValue] = useState(5000000);
@@ -220,6 +220,20 @@ const Index = () => {
     opexClimatePenalty: null as number | null,
     adjustedLifespan: null as number | null,
   });
+
+  // Ref so payload always uses current toggle state (avoids stale closure when toggles trigger re-simulate)
+  const floodInterventionRef = useRef({
+    greenRoofsEnabled,
+    permeablePavementEnabled,
+    drainageEnabled,
+  });
+  useEffect(() => {
+    floodInterventionRef.current = {
+      greenRoofsEnabled,
+      permeablePavementEnabled,
+      drainageEnabled,
+    };
+  }, [greenRoofsEnabled, permeablePavementEnabled, drainageEnabled]);
 
   // Spatial analysis data from API (for Viable Growing Area card)
   const [spatialAnalysis, setSpatialAnalysis] = useState<{
@@ -601,6 +615,7 @@ const Index = () => {
     const agriBaseUrl = 'https://web-production-8ff9e.up.railway.app';
     const agriEndpoint = `${agriBaseUrl.replace(/\/+$/, '')}/predict-agri`;
 
+    // Send exact UI strings for crops (no lowercase/snake_case); backend expects e.g. "Drought-Resistant Sorghum"
     const payload = {
       lat: markerPosition.lat,
       lon: markerPosition.lng,
@@ -907,9 +922,10 @@ const Index = () => {
     const calculatedRain = typeof totalRainIntensity === 'number' && !Number.isNaN(totalRainIntensity) ? totalRainIntensity : 50;
     const safeRain = Math.max(10, Math.min(150, calculatedRain));
 
-    // Backend requires one of: 'none' | 'green_roof' | 'permeable_pavement'
+    // Read current toggle state from ref so we send actual UI state (avoids stale closure when toggles trigger re-simulate)
+    const { greenRoofsEnabled: gr, permeablePavementEnabled: pp, drainageEnabled: du } = floodInterventionRef.current;
     const interventionType =
-      greenRoofsEnabled ? 'green_roof' : permeablePavementEnabled ? 'permeable_pavement' : 'none';
+      gr ? 'green_roof' : pp ? 'permeable_pavement' : du ? 'drainage_upgrade' : 'none';
 
     setIsFloodSimulating(true);
 
@@ -922,11 +938,13 @@ const Index = () => {
       base_annual_opex: safeOpex,
       initial_lifespan_years: safeLifespan,
       asset_value_usd: safePropertyValue,
-      green_roofs: greenRoofsEnabled,
-      permeable_pavement: permeablePavementEnabled,
+      green_roofs: gr,
+      permeable_pavement: pp,
       rain_intensity_pct: totalRainIntensity,
       slope_pct: 2,
     };
+
+    console.log('Sending Flood Payload:', payload);
 
     const floodBaseUrl = 'https://web-production-8ff9e.up.railway.app';
     const floodEndpoint = `${floodBaseUrl.replace(/\/+$/, '')}/predict-flood`;
@@ -948,9 +966,10 @@ const Index = () => {
         }
         return res.json();
       })
-      .then((data) => {
-        console.log('Parsed API Data:', data);
-        const d = data as Record<string, unknown>;
+      .then((resData) => {
+        console.log('Parsed API Data:', resData);
+        // Unwrap response: backend may return { data: { depth_reduction, value_protected, ... } }
+        const d = ((resData as Record<string, unknown>)?.data ?? resData) as Record<string, unknown>;
         const rainChartData = d.rain_chart_data as Array<{ month: string; historical: number; projected: number }> | undefined;
         const entry100yr = Array.isArray(rainChartData)
           ? (rainChartData as any[]).find((e: any) => e.period === '100yr')
@@ -960,9 +979,11 @@ const Index = () => {
         const rf = (d.rain_frequency ?? d.rainfall_frequency) as Record<string, unknown> | undefined;
         const rc = rf?.rain_chart_data as Array<{ period?: string; baseline_mm?: number; future_mm?: number }> | undefined;
         const e100 = Array.isArray(rc) ? rc.find((x) => x.period === '100yr') : null;
+        const depthReduction = Number(d.depth_reduction ?? d.flood_depth_reduction ?? 0);
+        const valueProtected = Number(d.value_protected ?? 0);
         setFloodResults({
-          floodDepthReduction: Number(d.flood_depth_reduction ?? d.depth_reduction ?? 0),
-          valueProtected: Number(d.value_protected ?? 0),
+          floodDepthReduction: depthReduction,
+          valueProtected,
           riskIncreasePct: d.risk_increase_pct != null ? Number(d.risk_increase_pct) : null,
           futureFloodAreaKm2: d.future_flood_area_km2 != null ? Number(d.future_flood_area_km2) : null,
           rainChartData: Array.isArray(rainChartData) ? rainChartData : null,
@@ -986,7 +1007,7 @@ const Index = () => {
       .finally(() => {
         setIsFloodSimulating(false);
       });
-  }, [markerPosition, baseAnnualOpex, assetLifespan, propertyValue, greenRoofsEnabled, permeablePavementEnabled, totalRainIntensity, toast]);
+  }, [markerPosition, baseAnnualOpex, assetLifespan, propertyValue, totalRainIntensity, toast]);
 
   const handleGreenRoofsChange = useCallback(
     (enabled: boolean) => {
@@ -1532,6 +1553,7 @@ const Index = () => {
               }
             : undefined
         }
+        coastalResults={mode === 'coastal' ? coastalResults : undefined}
         floodResults={mode === 'flood' ? floodResults : undefined}
         healthResults={healthResults}
         mangroveWidth={mangroveWidth}
