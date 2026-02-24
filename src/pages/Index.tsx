@@ -619,7 +619,15 @@ const Index = () => {
   const handleCoastalSimulate = useCallback(
     async () => {
       console.log('Simulation triggered. Preparing payload...');
-      if (!markerPosition) return;
+      if (!markerPosition) {
+        console.warn('Simulation aborted: no location selected (markerPosition is null). Please select a location on the map first.');
+        toast({
+          title: 'Location required',
+          description: 'Please select a location on the map first.',
+          variant: 'destructive',
+        });
+        return;
+      }
 
       setIsCoastalSimulating(true);
 
@@ -801,7 +809,15 @@ const Index = () => {
 
   const handleFloodSimulate = useCallback(async () => {
     console.log('Simulation triggered. Preparing payload...');
-    if (!markerPosition) return;
+    if (!markerPosition) {
+      console.warn('Simulation aborted: no location selected (markerPosition is null). Please select a location on the map first.');
+      toast({
+        title: 'Location required',
+        description: 'Please select a location on the map first.',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     setIsFloodSimulating(true);
 
