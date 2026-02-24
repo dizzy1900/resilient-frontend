@@ -143,6 +143,7 @@ const Index = () => {
 
   const [results, setResults] = useState({
     avoidedLoss: 0,
+    transitionCapex: 0,
     riskReduction: 0,
     yieldBaseline: 0,
     yieldResilient: 0,
@@ -495,8 +496,10 @@ const Index = () => {
 
       const yieldBaseline = predictions.standard_seed?.predicted_yield ?? 0;
       const yieldResilient = predictions.resilient_seed?.predicted_yield ?? 0;
-      const avoidedLoss = analysis.avoided_loss ?? 0;
-      const percentageImprovement = analysis.percentage_improvement ?? 0;
+      const avoidedLoss = (analysis as Record<string, unknown>).avoided_revenue_loss ?? analysis.avoided_loss ?? 0;
+      const rawRiskReduction = (analysis as Record<string, unknown>).risk_reduction ?? analysis.percentage_improvement ?? 0;
+      const riskReductionPct = typeof rawRiskReduction === 'number' && rawRiskReduction <= 1 ? rawRiskReduction * 100 : Number(rawRiskReduction) || 0;
+      const transitionCapex = (analysis as Record<string, unknown>).transition_capex ?? (result?.data as Record<string, unknown>)?.transition_capex ?? 0;
       
       // Extract resilience_score from API - this is the single source of truth
       // Look for resilience_score in multiple possible locations in the response
@@ -548,7 +551,8 @@ const Index = () => {
 
       setResults({
         avoidedLoss: Math.round(avoidedLoss * 100) / 100,
-        riskReduction: Math.round(percentageImprovement * 100),
+        transitionCapex: Number(transitionCapex) || 0,
+        riskReduction: Math.round(riskReductionPct * 10) / 10,
         yieldBaseline,
         yieldResilient,
         yieldPotential,
@@ -568,7 +572,8 @@ const Index = () => {
         const crop = (fallback as any).crop_analysis;
         setResults({
           avoidedLoss: crop?.avoided_loss_pct ?? 0,
-          riskReduction: Math.round((crop?.percentage_improvement ?? 0) * 100),
+          transitionCapex: 0,
+          riskReduction: Math.round((crop?.percentage_improvement ?? 0) * 10) / 10,
           yieldBaseline: crop?.standard_yield_pct ?? 0,
           yieldResilient: crop?.resilient_yield_pct ?? 0,
           yieldPotential: crop?.resilient_yield_pct ?? null,
@@ -1304,6 +1309,7 @@ const Index = () => {
           mode === 'agriculture'
             ? {
                 avoidedLoss: results.avoidedLoss,
+                transitionCapex: results.transitionCapex,
                 riskReduction: results.riskReduction,
                 yieldPotential: results.yieldPotential,
                 monthlyData: results.monthlyData,
@@ -1461,6 +1467,7 @@ const Index = () => {
           showResults: showCurrentResults || showHealthResults,
           agricultureResults: mode === 'agriculture' ? {
             avoidedLoss: results.avoidedLoss,
+            transitionCapex: results.transitionCapex,
             riskReduction: results.riskReduction,
             yieldPotential: results.yieldPotential,
             monthlyData: results.monthlyData,

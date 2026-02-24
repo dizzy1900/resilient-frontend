@@ -24,6 +24,7 @@ import { PortfolioAnalysisResult, PortfolioSummary } from '@/types/portfolio';
 
 interface AgricultureResults {
   avoidedLoss: number;
+  transitionCapex?: number;
   riskReduction: number;
   yieldPotential?: number | null;
   monthlyData: { month: string; value: number }[];
@@ -126,6 +127,21 @@ function formatCurrency(value: number) {
   if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
   if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
   return `$${value.toFixed(0)}`;
+}
+
+/** Format as currency without cents (e.g. $120,000). Safe for NaN/undefined. */
+function formatCurrencyNoCents(value: number | undefined | null): string {
+  const n = Number(value);
+  if (n !== n) return '$0';
+  return `$${Math.round(n).toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}`;
+}
+
+/** Format as percentage with at most 1 decimal place. Safe for NaN/undefined. */
+function formatPercent(value: number | undefined | null): string {
+  const n = Number(value);
+  if (n !== n) return '0%';
+  const rounded = Math.round(n * 10) / 10;
+  return `${rounded.toLocaleString('en-US', { maximumFractionDigits: 1, minimumFractionDigits: 0 })}%`;
 }
 
 function MetricRow({ label, value, accent }: { label: string; value: React.ReactNode; accent?: string }) {
@@ -594,13 +610,18 @@ function AgricultureContent({
           accent={yieldColor}
         />
         <MetricRow
+          label="Transition Capex"
+          value={formatCurrencyNoCents(results.transitionCapex)}
+          accent="#f59e0b"
+        />
+        <MetricRow
           label="Avoided Loss"
-          value={formatCurrency(results.avoidedLoss)}
+          value={formatCurrencyNoCents(results.avoidedLoss)}
           accent="#10b981"
         />
         <MetricRow
           label="Risk Reduction"
-          value={`${results.riskReduction}%`}
+          value={formatPercent(results.riskReduction)}
           accent="#10b981"
         />
         {tempIncrease !== undefined && (
