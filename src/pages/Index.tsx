@@ -620,6 +620,8 @@ const Index = () => {
       } : {}),
     };
 
+    console.log('Sending Agri Payload:', { current_crop: currentCrop, proposed_crop: proposedCrop });
+
     fetchWithRetry(agriEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -817,25 +819,30 @@ const Index = () => {
       })
       .then((data) => {
         console.log('Parsed API Data:', data);
-        const d = data as Record<string, unknown>;
-        const slr = Number(d.sea_level_rise ?? d.slr_projection ?? totalSLR) ?? totalSLR;
-        const stormChartData = (d.storm_chart_data as Array<{ period: string; current_depth: number; future_depth: number }>) ?? generateFallbackStormChartData(slr);
-        setCoastalResults({
-          avoidedLoss: Number(d.avoided_loss ?? 0),
-          slope: d.slope != null ? Number(d.slope) : null,
-          stormWave: d.storm_wave != null ? Number(d.storm_wave) : d.surge_m != null ? Number(d.surge_m) : null,
-          isUnderwater: Boolean(d.is_underwater),
-          floodDepth: d.flood_depth_m != null ? Number(d.flood_depth_m) : null,
-          seaLevelRise: slr,
-          includeStormSurge: includeStormSurge,
-          stormChartData: Array.isArray(stormChartData) ? stormChartData : generateFallbackStormChartData(slr),
-          floodedUrbanKm2: d.flooded_urban_km2 != null ? Number(d.flooded_urban_km2) : null,
-          urbanImpactPct: d.urban_impact_pct != null ? Number(d.urban_impact_pct) : null,
-          avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
-          adjustedOpex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
-          opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
-          adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
-        });
+        try {
+          const raw = data as Record<string, unknown>;
+          const d = (raw.data ?? raw) as Record<string, unknown>;
+          const slr = Number(d.sea_level_rise ?? d.slr_projection ?? totalSLR) ?? totalSLR;
+          const stormChartData = (d.storm_chart_data as Array<{ period: string; current_depth: number; future_depth: number }>) ?? generateFallbackStormChartData(slr);
+          setCoastalResults({
+            avoidedLoss: Number(d.avoided_loss ?? 0),
+            slope: d.slope != null ? Number(d.slope) : null,
+            stormWave: d.storm_wave != null ? Number(d.storm_wave) : d.surge_m != null ? Number(d.surge_m) : null,
+            isUnderwater: Boolean(d.is_underwater),
+            floodDepth: d.flood_depth_m != null ? Number(d.flood_depth_m) : null,
+            seaLevelRise: slr,
+            includeStormSurge: includeStormSurge,
+            stormChartData: Array.isArray(stormChartData) ? stormChartData : generateFallbackStormChartData(slr),
+            floodedUrbanKm2: d.flooded_urban_km2 != null ? Number(d.flooded_urban_km2) : null,
+            urbanImpactPct: d.urban_impact_pct != null ? Number(d.urban_impact_pct) : null,
+            avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
+            adjustedOpex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
+            opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
+            adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
+          });
+        } catch (e) {
+          console.error('Coastal results mapping error:', e);
+        }
         setShowCoastalResults(true);
       })
       .catch((err) => {
