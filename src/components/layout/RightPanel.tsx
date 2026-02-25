@@ -48,6 +48,10 @@ interface CoastalResults {
   lifespan_penalty?: number | null;
   adjusted_opex?: number | null;
   opex_climate_penalty?: number | null;
+  /** CamelCase from Index state (fetch maps to these) */
+  adjustedLifespan?: number | null;
+  adjustedOpex?: number | null;
+  opexClimatePenalty?: number | null;
 }
 
 interface FloodResults {
@@ -730,13 +734,6 @@ function AgricultureContent({
           value={formatPercent(results.riskReduction)}
           accent="#10b981"
         />
-        {results.transitionCapex != null && results.transitionCapex > 0 && (
-          <MetricRow
-            label="Transition CAPEX"
-            value={formatCurrency(results.transitionCapex)}
-            accent="#f59e0b"
-          />
-        )}
         {results.avoidedRevenueLoss != null && results.avoidedRevenueLoss > 0 && (
           <MetricRow
             label="Avoided Revenue Loss"
@@ -845,30 +842,42 @@ function CoastalContent({
           <MetricRow label="Coastal Slope" value={`${results.slope.toFixed(1)}°`} />
         )}
         <MetricRow
-          label="Avoided Loss"
+          label="AVOIDED LOSS"
           value={formatCurrency(results.avoidedLoss)}
           accent="#10b981"
         />
         <MetricRow
           label="CLIMATE-ADJUSTED LIFESPAN"
           value={
-            <>
-              {`${results.adjusted_lifespan ?? assetLifespan ?? 0} yrs`}
-              {results.lifespan_penalty != null && results.lifespan_penalty > 0 && (
-                <span className="text-red-500 ml-2">(-{results.lifespan_penalty} yrs)</span>
-              )}
-            </>
+            (() => {
+              const yrs = results.adjusted_lifespan ?? results.adjustedLifespan ?? assetLifespan ?? 0;
+              const penalty = results.lifespan_penalty ?? null;
+              return (
+                <>
+                  {`${Number(yrs)} yrs`}
+                  {penalty != null && penalty > 0 && (
+                    <span className="text-red-500 ml-2">(-{penalty} yrs)</span>
+                  )}
+                </>
+              );
+            })()
           }
         />
         <MetricRow
           label="CLIMATE-ADJUSTED OPEX"
           value={
-            <>
-              ${(results.adjusted_opex ?? 0).toLocaleString()}
-              {results.opex_climate_penalty != null && results.opex_climate_penalty > 0 && (
-                <span className="text-red-500 ml-2">(+${results.opex_climate_penalty.toLocaleString()} penalty)</span>
-              )}
-            </>
+            (() => {
+              const opex = results.adjusted_opex ?? results.adjustedOpex ?? 0;
+              const penalty = results.opex_climate_penalty ?? results.opexClimatePenalty ?? null;
+              return (
+                <>
+                  ${(Number(opex)).toLocaleString()}
+                  {penalty != null && penalty > 0 && (
+                    <span className="text-red-500 ml-2">(+${Number(penalty).toLocaleString()} penalty)</span>
+                  )}
+                </>
+              );
+            })()
           }
         />
         {results.avoidedBusinessInterruption != null && results.avoidedBusinessInterruption > 0 && (
