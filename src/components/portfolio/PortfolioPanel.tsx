@@ -159,15 +159,19 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
       const exposurePct = payload?.portfolio_summary?.risk_exposure_pct ?? 0;
       const totalAssets = payload?.portfolio_summary?.total_assets ?? 0;
       const assets = payload?.asset_results ?? [];
-      const normalizedAssets = assets.map((asset: Record<string, unknown>) => ({
-        ...asset,
-        lat: (asset?.input as Record<string, unknown>)?.lat ?? (asset?.location as Record<string, unknown>)?.lat ?? asset?.lat,
-        lon: (asset?.input as Record<string, unknown>)?.lon ?? (asset?.location as Record<string, unknown>)?.lon ?? asset?.lon,
-        name: (asset?.input as Record<string, unknown>)?.name ?? asset?.name,
-        value: (asset?.input as Record<string, unknown>)?.value ?? asset?.value,
-        value_at_risk: asset?.value_at_risk,
-        resilience_score: asset?.resilience_score,
-      }));
+      const normalizedAssets = assets.map((asset: Record<string, unknown>) => {
+        const input = (asset?.input ?? {}) as Record<string, unknown>;
+        const location = (asset?.location ?? {}) as Record<string, unknown>;
+        return {
+          ...asset,
+          lat: input?.lat ?? location?.lat ?? asset?.lat,
+          lon: input?.lon ?? location?.lon ?? asset?.lon,
+          name: input?.crop_type ?? input?.name ?? asset?.name ?? 'Unknown Asset',
+          value: Number(input?.asset_value ?? input?.value ?? asset?.value ?? 0) || 0,
+          value_at_risk: Number(asset?.value_at_risk ?? 0) || 0,
+          resilience_score: asset?.resilience_score != null ? Number(asset.resilience_score) : undefined,
+        };
+      });
 
       const mappedData: PortfolioAnalysisResult = {
         portfolio_summary: {
