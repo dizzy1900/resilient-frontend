@@ -17,10 +17,12 @@ export interface PortfolioAsset {
   Lat: number;
   Lon: number;
   Value: number;
+  asset_value?: number;
+  crop_type?: string;
 }
 
 interface PortfolioCSVUploadProps {
-  onDataParsed: (data: PortfolioAsset[]) => void;
+  onDataParsed: (data: PortfolioAsset[], rawFile?: File) => void;
   parsedData: PortfolioAsset[];
   onClear: () => void;
 }
@@ -32,6 +34,7 @@ export const PortfolioCSVUpload = ({
 }: PortfolioCSVUploadProps) => {
   const { CSVReader } = useCSVReader();
   const [error, setError] = useState<string | null>(null);
+  const [rawFile, setRawFile] = useState<File | null>(null);
 
   /** Normalize header cell: trim and lowercase; blank columns become "". */
   const norm = (h: string) => (h ?? '').trim().toLowerCase();
@@ -49,8 +52,9 @@ export const PortfolioCSVUpload = ({
     return -1;
   };
 
-  const handleUploadAccepted = (results: { data: string[][] }) => {
+  const handleUploadAccepted = (results: { data: string[][] }, file?: File) => {
     setError(null);
+    if (file) setRawFile(file);
 
     try {
       const rows = results.data;
@@ -70,6 +74,8 @@ export const PortfolioCSVUpload = ({
       const latIdx = headerRow.findIndex((h) => norm(h) === 'lat');
       const lonIdx = headerRow.findIndex((h) => norm(h) === 'lon');
       const valueIdx = headerRow.findIndex((h) => norm(h) === 'value');
+      const assetValueIdx = headerRow.findIndex((h) => norm(h) === 'asset_value');
+      const cropTypeIdx = headerRow.findIndex((h) => norm(h) === 'crop_type');
 
       if (latIdx === -1 || lonIdx === -1) {
         setError('CSV must have at least columns: Lat, Lon (optional: Name/farm_id, Value)');
@@ -93,7 +99,9 @@ export const PortfolioCSVUpload = ({
         const name = nameIdx !== -1 ? (row[nameIdx]?.trim() || `Asset ${i}`) : `Asset ${i}`;
         const lat = parseFloat(row[latIdx]);
         const lon = parseFloat(row[lonIdx]);
-        const value = valueIdx !== -1 ? parseFloat(row[valueIdx]) : 0;
+        const value = valueIdx !== -1 ? parseFloat(row[valueIdx]) : (assetValueIdx !== -1 ? parseFloat(row[assetValueIdx]) : 0);
+        const assetValue = assetValueIdx !== -1 ? parseFloat(row[assetValueIdx]) : undefined;
+        const cropType = cropTypeIdx !== -1 ? row[cropTypeIdx]?.trim() : undefined;
 
         // Validate name length
         if (name.length > 200) {
@@ -133,6 +141,8 @@ export const PortfolioCSVUpload = ({
           Lat: lat,
           Lon: lon,
           Value: parsedValue,
+          ...(assetValue != null && !isNaN(assetValue) ? { asset_value: assetValue } : {}),
+          ...(cropType ? { crop_type: cropType } : {}),
         });
       }
 
@@ -150,7 +160,7 @@ export const PortfolioCSVUpload = ({
         console.warn('CSV validation warnings:', validationErrors);
       }
 
-      onDataParsed(assets);
+      onDataParsed(assets, rawFile ?? undefined);
     } catch (err) {
       setError('Failed to parse CSV file');
       console.error('CSV parse error:', err);
@@ -189,6 +199,7 @@ export const PortfolioCSVUpload = ({
             <TableHeader>
               <TableRow className="border-white/10 hover:bg-transparent">
                 <TableHead className="text-white/60 text-xs">Name</TableHead>
+                <TableHead className="text-white/60 text-xs">Crop</TableHead>
                 <TableHead className="text-white/60 text-xs">Lat</TableHead>
                 <TableHead className="text-white/60 text-xs">Lon</TableHead>
                 <TableHead className="text-white/60 text-xs text-right">Value</TableHead>
@@ -200,6 +211,9 @@ export const PortfolioCSVUpload = ({
                   <TableCell className="text-white text-xs font-medium">
                     {asset.Name}
                   </TableCell>
+                  <TableCell className="text-white/70 text-xs">
+                    {asset.crop_type || '—'}
+                  </TableCell>
                   <TableCell className="text-white/70 text-xs tabular-nums">
                     {asset.Lat.toFixed(4)}
                   </TableCell>
@@ -207,7 +221,7 @@ export const PortfolioCSVUpload = ({
                     {asset.Lon.toFixed(4)}
                   </TableCell>
                   <TableCell className="text-emerald-400 text-xs text-right tabular-nums">
-                    {formatCurrency(asset.Value)}
+                    {formatCurrency(asset.asset_value ?? asset.Value)}
                   </TableCell>
                 </TableRow>
               ))}
@@ -226,8 +240,9 @@ export const PortfolioCSVUpload = ({
 
   return (
     <GlassCard className="p-4">
-      <CSVReader onUploadAccepted={handleUploadAccepted}>
-        {({ getRootProps, acceptedFile, ProgressBar }: any) => (
+      <CSVReader onUploadAccepted={(results: any, file: any) => handleUploadAccepted(results, file)}>
+        {({ getRootProps, acceptedFile, ProgressBar }: any) => {
+          return (
           <div className="space-y-3">
             <div
               {...getRootProps()}
@@ -241,7 +256,7 @@ export const PortfolioCSVUpload = ({
                 or click to browse
               </p>
               <p className="text-[10px] text-white/30 mt-3">
-                Columns: Lat, Lon (required) · Name/farm_id, Value (optional)
+                Columns: Lat, Lon (required) · Name/farm_id, Value, crop_type, asset_value (optional)
               </p>
             </div>
 
@@ -254,7 +269,8 @@ export const PortfolioCSVUpload = ({
 
             <ProgressBar />
           </div>
-        )}
+          );
+        }}
       </CSVReader>
 
       {error && (

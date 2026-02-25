@@ -24,7 +24,6 @@ import { PortfolioAnalysisResult, PortfolioSummary } from '@/types/portfolio';
 
 interface AgricultureResults {
   avoidedLoss: number;
-  transitionCapex?: number;
   riskReduction: number;
   yieldPotential?: number | null;
   transitionCapex?: number | null;

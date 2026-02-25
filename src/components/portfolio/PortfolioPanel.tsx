@@ -43,6 +43,7 @@ interface PortfolioPanelProps {
 
 export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: PortfolioPanelProps) => {
   const [parsedData, setParsedData] = useState<PortfolioAsset[]>([]);
+  const [rawFile, setRawFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentJob, setCurrentJob] = useState<BatchJob | null>(null);
   const { user, session, loading: authLoading } = useAuth();
@@ -95,14 +96,16 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
     };
   }, [currentJob?.id]);
 
-  const handleDataParsed = useCallback((data: PortfolioAsset[]) => {
+  const handleDataParsed = useCallback((data: PortfolioAsset[], file?: File) => {
     setParsedData(data);
+    if (file) setRawFile(file);
     setCurrentJob(null);
     onAssetsChange?.(data);
   }, [onAssetsChange]);
 
   const handleClear = useCallback(() => {
     setParsedData([]);
+    setRawFile(null);
     setCurrentJob(null);
     onAssetsChange?.([]);
   }, [onAssetsChange]);
@@ -125,13 +128,20 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
     setIsSubmitting(true);
 
     try {
-      const header = 'Name,Lat,Lon,Value';
-      const rows = parsedData.map((a) => `${escapeCsv(a.Name)},${a.Lat},${a.Lon},${a.Value}`).join('\n');
-      const csv = `${header}\n${rows}`;
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const file = new File([blob], 'portfolio.csv', { type: 'text/csv' });
       const formData = new FormData();
-      formData.append('file', file);
+
+      // Send the original raw file when available to preserve all columns (crop_type, asset_value, etc.)
+      if (rawFile) {
+        formData.append('file', rawFile);
+      } else {
+        // Fallback: reconstruct CSV from parsed data (e.g. demo data)
+        const header = 'Name,Lat,Lon,Value';
+        const rows = parsedData.map((a) => `${escapeCsv(a.Name)},${a.Lat},${a.Lon},${a.Value}`).join('\n');
+        const csv = `${header}\n${rows}`;
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const file = new File([blob], 'portfolio.csv', { type: 'text/csv' });
+        formData.append('file', file);
+      }
 
       const response = await fetchWithRetry(portfolioUrl, { method: 'POST', body: formData });
       if (!response.ok) {
