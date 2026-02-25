@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { X, MapPin, Landmark } from 'lucide-react';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { HealthResults } from '@/components/hud/HealthResultsPanel';
@@ -101,6 +102,8 @@ interface RightPanelProps {
   globalTempTarget: number;
   spatialAnalysis?: SpatialAnalysis | null;
   isSpatialLoading?: boolean;
+  ndviData?: { month: string; value: number }[];
+  isNdviLoading?: boolean;
   cropType: string;
   portfolioAssets?: PortfolioAsset[];
   atlasFinancialData?: any;
@@ -204,6 +207,8 @@ export function RightPanel({
   globalTempTarget,
   spatialAnalysis,
   isSpatialLoading,
+  ndviData,
+  isNdviLoading,
   cropType,
   portfolioAssets,
   atlasFinancialData,
@@ -300,6 +305,8 @@ export function RightPanel({
           globalTempTarget={globalTempTarget}
           spatialAnalysis={spatialAnalysis}
           isSpatialLoading={isSpatialLoading}
+          ndviData={ndviData}
+          isNdviLoading={isNdviLoading}
           cropType={cropType}
           portfolioAssets={portfolioAssets}
           atlasFinancialData={atlasFinancialData}
@@ -355,6 +362,8 @@ export interface RightPanelContentProps {
   globalTempTarget: number;
   spatialAnalysis?: SpatialAnalysis | null;
   isSpatialLoading?: boolean;
+  ndviData?: { month: string; value: number }[];
+  isNdviLoading?: boolean;
   cropType: string;
   portfolioAssets?: PortfolioAsset[];
   atlasFinancialData?: any;
@@ -404,6 +413,8 @@ export function RightPanelContent({
   globalTempTarget,
   spatialAnalysis,
   isSpatialLoading,
+  ndviData,
+  isNdviLoading,
   cropType,
   portfolioAssets,
   atlasFinancialData,
@@ -491,6 +502,8 @@ export function RightPanelContent({
           globalTempTarget={globalTempTarget}
           spatialAnalysis={spatialAnalysis}
           isSpatialLoading={isSpatialLoading}
+          ndviData={ndviData}
+          isNdviLoading={isNdviLoading}
           mode={mode}
           latitude={latitude}
           longitude={longitude}
@@ -679,6 +692,8 @@ function AgricultureContent({
   globalTempTarget,
   spatialAnalysis,
   isSpatialLoading,
+  ndviData,
+  isNdviLoading,
   mode,
   latitude,
   longitude,
@@ -696,6 +711,8 @@ function AgricultureContent({
   globalTempTarget: number;
   spatialAnalysis?: { baseline_sq_km: number; future_sq_km: number; loss_pct: number } | null;
   isSpatialLoading?: boolean;
+  ndviData?: { month: string; value: number }[];
+  isNdviLoading?: boolean;
   mode: DashboardMode;
   latitude: number | null;
   longitude: number | null;
@@ -746,6 +763,60 @@ function AgricultureContent({
             value={`+${tempIncrease.toFixed(1)}°C`}
             accent="#f59e0b"
           />
+        )}
+      </div>
+
+      <SectionDivider title="Satellite Ground-Truth (GEE NDVI)" />
+      <div className="px-4 pt-3 pb-4">
+        {isNdviLoading ? (
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-3/4" style={{ backgroundColor: 'var(--cb-surface)' }} />
+            <Skeleton className="h-32 w-full animate-pulse" style={{ backgroundColor: 'var(--cb-surface)' }} />
+            <p style={{ fontSize: 10, color: 'var(--cb-text-muted)', textAlign: 'center', marginTop: 4 }}>
+              Querying Earth Engine…
+            </p>
+          </div>
+        ) : ndviData && ndviData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={180}>
+            <LineChart data={ndviData} margin={{ top: 4, right: 8, bottom: 0, left: -16 }}>
+              <XAxis
+                dataKey="month"
+                tick={{ fontSize: 9, fill: 'var(--cb-text-muted)' }}
+                axisLine={{ stroke: 'var(--cb-border)' }}
+                tickLine={false}
+              />
+              <YAxis
+                domain={[-1, 1]}
+                tick={{ fontSize: 9, fill: 'var(--cb-text-muted)' }}
+                axisLine={{ stroke: 'var(--cb-border)' }}
+                tickLine={false}
+                tickCount={5}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'var(--cb-bg)',
+                  border: '1px solid var(--cb-border)',
+                  borderRadius: 6,
+                  fontSize: 11,
+                }}
+                labelStyle={{ color: 'var(--cb-text)', fontWeight: 600 }}
+                itemStyle={{ color: '#10b981' }}
+                formatter={(v: number) => [v.toFixed(3), 'NDVI']}
+              />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#10b981"
+                strokeWidth={2}
+                dot={{ r: 3, fill: '#10b981', strokeWidth: 0 }}
+                activeDot={{ r: 5, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <p style={{ fontSize: 10, color: 'var(--cb-text-muted)', textAlign: 'center' }}>
+            No NDVI data available. Run a simulation to fetch satellite ground-truth.
+          </p>
         )}
       </div>
 

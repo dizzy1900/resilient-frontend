@@ -241,6 +241,8 @@ const Index = () => {
     loss_pct: number;
   } | null>(null);
   const [isSpatialLoading, setIsSpatialLoading] = useState(false);
+  const [ndviData, setNdviData] = useState<{ month: string; value: number }[]>([]);
+  const [isNdviLoading, setIsNdviLoading] = useState(false);
   const [portfolioAssets, setPortfolioAssets] = useState<PortfolioAsset[]>([]);
   const [portfolioResults, setPortfolioResults] = useState<PortfolioAnalysisResult | null>(null);
   const [selectedPolygon, setSelectedPolygon] = useState<DrawnPolygon | null>(null);
@@ -1572,6 +1574,8 @@ const Index = () => {
         globalTempTarget={globalTempTarget}
         spatialAnalysis={mode === 'agriculture' ? spatialAnalysis : null}
         isSpatialLoading={mode === 'agriculture' && isSpatialLoading}
+        ndviData={mode === 'agriculture' ? ndviData : undefined}
+        isNdviLoading={mode === 'agriculture' && isNdviLoading}
         cropType={cropType}
         portfolioAssets={portfolioAssets}
         atlasFinancialData={atlasFinancialData}
@@ -1740,6 +1744,8 @@ const Index = () => {
           globalTempTarget,
           spatialAnalysis: mode === 'agriculture' ? spatialAnalysis : null,
           isSpatialLoading: mode === 'agriculture' && isSpatialLoading,
+          ndviData: mode === 'agriculture' ? ndviData : undefined,
+          isNdviLoading: mode === 'agriculture' && isNdviLoading,
           cropType,
           portfolioAssets,
           atlasFinancialData,
