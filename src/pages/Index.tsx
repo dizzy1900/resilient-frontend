@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { MapView, MapStyle, ViewState, ZoneData, PortfolioMapAsset, FlyToTarget } from '@/components/dashboard/MapView';
 import { AtlasClickData } from '@/components/dashboard/AtlasMarkers';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
@@ -71,8 +71,8 @@ const generateFallbackStormChartData = (slr: number) => {
 const Index = () => {
   const [mode, setMode] = useState<DashboardMode>('agriculture');
   const [cropType, setCropType] = useState('maize');
-  const [currentCrop, setCurrentCrop] = useState('maize');
-  const [proposedCrop, setProposedCrop] = useState('none');
+  const [currentCrop, setCurrentCrop] = useState('Maize');
+  const [proposedCrop, setProposedCrop] = useState('None');
   const [mangroveWidth, setMangroveWidth] = useState(100);
   const [propertyValue, setPropertyValue] = useState(5000000);
   const [buildingValue, setBuildingValue] = useState(5000000);
@@ -157,13 +157,12 @@ const Index = () => {
 
   const [results, setResults] = useState({
     avoidedLoss: 0,
-    transitionCapex: 0,
+    transitionCapex: 0 as number | null,
     riskReduction: 0,
     yieldBaseline: 0,
     yieldResilient: 0,
-    yieldPotential: null as number | null, // Unified yield metric from API
-    portfolioVolatilityPct: null as number | null, // Supply chain volatility CV%
-    transitionCapex: null as number | null,
+    yieldPotential: null as number | null,
+    portfolioVolatilityPct: null as number | null,
     avoidedRevenueLoss: null as number | null,
     monthlyData: mockMonthlyData,
   });
@@ -220,6 +219,20 @@ const Index = () => {
     opexClimatePenalty: null as number | null,
     adjustedLifespan: null as number | null,
   });
+
+  // Ref so payload always uses current toggle state (avoids stale closure when toggles trigger re-simulate)
+  const floodInterventionRef = useRef({
+    greenRoofsEnabled,
+    permeablePavementEnabled,
+    drainageEnabled,
+  });
+  useEffect(() => {
+    floodInterventionRef.current = {
+      greenRoofsEnabled,
+      permeablePavementEnabled,
+      drainageEnabled,
+    };
+  }, [greenRoofsEnabled, permeablePavementEnabled, drainageEnabled]);
 
   // Spatial analysis data from API (for Viable Growing Area card)
   const [spatialAnalysis, setSpatialAnalysis] = useState<{
@@ -601,6 +614,7 @@ const Index = () => {
     const agriBaseUrl = 'https://web-production-8ff9e.up.railway.app';
     const agriEndpoint = `${agriBaseUrl.replace(/\/+$/, '')}/predict-agri`;
 
+    // Send exact UI strings for crops (no lowercase/snake_case); backend expects e.g. "Drought-Resistant Sorghum"
     const payload = {
       lat: markerPosition.lat,
       lon: markerPosition.lng,
@@ -620,6 +634,8 @@ const Index = () => {
       } : {}),
     };
 
+    console.log('Sending Agri Payload:', payload);
+
     fetchWithRetry(agriEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -637,8 +653,9 @@ const Index = () => {
         }
         return res.json();
       })
-      .then((data) => {
-        const raw = Array.isArray(data) ? data[0] : data;
+      .then((resData) => {
+        console.log('EXACT AGRI RESPONSE:', JSON.stringify(resData, null, 2));
+        const raw = Array.isArray(resData) ? resData[0] : resData;
         const d = raw as Record<string, unknown>;
         const result = d?.data ?? d;
         const r = result as Record<string, unknown>;
@@ -704,6 +721,7 @@ const Index = () => {
           yieldResilient,
           yieldPotential,
           portfolioVolatilityPct: apiVolatility != null ? Number(apiVolatility) : Math.round(15 + (globalTempTarget - 1.4) * 10),
+          avoidedRevenueLoss: avoidedRevenueLoss ?? null,
           monthlyData: mockMonthlyData,
         });
         setShowResults(true);
@@ -725,6 +743,7 @@ const Index = () => {
             yieldResilient: crop?.resilient_yield_pct ?? 0,
             yieldPotential: crop?.resilient_yield_pct ?? null,
             portfolioVolatilityPct: null,
+            avoidedRevenueLoss: null,
             monthlyData: mockMonthlyData,
           });
           if ((fallback as any).climate_conditions) {
@@ -817,25 +836,30 @@ const Index = () => {
       })
       .then((data) => {
         console.log('Parsed API Data:', data);
-        const d = data as Record<string, unknown>;
-        const slr = Number(d.sea_level_rise ?? d.slr_projection ?? totalSLR) ?? totalSLR;
-        const stormChartData = (d.storm_chart_data as Array<{ period: string; current_depth: number; future_depth: number }>) ?? generateFallbackStormChartData(slr);
-        setCoastalResults({
-          avoidedLoss: Number(d.avoided_loss ?? 0),
-          slope: d.slope != null ? Number(d.slope) : null,
-          stormWave: d.storm_wave != null ? Number(d.storm_wave) : d.surge_m != null ? Number(d.surge_m) : null,
-          isUnderwater: Boolean(d.is_underwater),
-          floodDepth: d.flood_depth_m != null ? Number(d.flood_depth_m) : null,
-          seaLevelRise: slr,
-          includeStormSurge: includeStormSurge,
-          stormChartData: Array.isArray(stormChartData) ? stormChartData : generateFallbackStormChartData(slr),
-          floodedUrbanKm2: d.flooded_urban_km2 != null ? Number(d.flooded_urban_km2) : null,
-          urbanImpactPct: d.urban_impact_pct != null ? Number(d.urban_impact_pct) : null,
-          avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
-          adjustedOpex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
-          opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
-          adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
-        });
+        try {
+          const raw = data as Record<string, unknown>;
+          const d = (raw.data ?? raw) as Record<string, unknown>;
+          const slr = Number(d.sea_level_rise ?? d.slr_projection ?? totalSLR) ?? totalSLR;
+          const stormChartData = (d.storm_chart_data as Array<{ period: string; current_depth: number; future_depth: number }>) ?? generateFallbackStormChartData(slr);
+          setCoastalResults({
+            avoidedLoss: Number(d.avoided_loss ?? 0),
+            slope: d.slope != null ? Number(d.slope) : null,
+            stormWave: d.storm_wave != null ? Number(d.storm_wave) : d.surge_m != null ? Number(d.surge_m) : null,
+            isUnderwater: Boolean(d.is_underwater),
+            floodDepth: d.flood_depth_m != null ? Number(d.flood_depth_m) : null,
+            seaLevelRise: slr,
+            includeStormSurge: includeStormSurge,
+            stormChartData: Array.isArray(stormChartData) ? stormChartData : generateFallbackStormChartData(slr),
+            floodedUrbanKm2: d.flooded_urban_km2 != null ? Number(d.flooded_urban_km2) : null,
+            urbanImpactPct: d.urban_impact_pct != null ? Number(d.urban_impact_pct) : null,
+            avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
+            adjustedOpex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
+            opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
+            adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
+          });
+        } catch (e) {
+          console.error('Coastal results mapping error:', e);
+        }
         setShowCoastalResults(true);
       })
       .catch((err) => {
@@ -894,22 +918,35 @@ const Index = () => {
 
     const safeOpex = parseFloat(String(baseAnnualOpex).replace(/,/g, '')) || 25000;
     const safeLifespan = parseInt(String(assetLifespan), 10) || 30;
+    const safePropertyValue = parseFloat(String(propertyValue).replace(/,/g, '')) || 5_000_000;
+
+    // Backend requires rain_intensity in range [10, 150] (e.g. mm/hr)
+    const calculatedRain = typeof totalRainIntensity === 'number' && !Number.isNaN(totalRainIntensity) ? totalRainIntensity : 50;
+    const safeRain = Math.max(10, Math.min(150, calculatedRain));
+
+    // Read current toggle state from ref so we send actual UI state (avoids stale closure when toggles trigger re-simulate)
+    const { greenRoofsEnabled: gr, permeablePavementEnabled: pp, drainageEnabled: du } = floodInterventionRef.current;
+    const interventionType =
+      gr ? 'green_roof' : pp ? 'permeable_pavement' : du ? 'drainage_upgrade' : 'none';
 
     setIsFloodSimulating(true);
 
     const payload = {
       lat: markerPosition.lat,
       lon: markerPosition.lng,
+      rain_intensity: safeRain,
+      current_imperviousness: 0.7,
+      intervention_type: interventionType,
       base_annual_opex: safeOpex,
       initial_lifespan_years: safeLifespan,
-      green_roofs: greenRoofsEnabled,
-      permeable_pavement: permeablePavementEnabled,
-      intervention_type: getInterventionType(),
-      rain_intensity: totalRainIntensity,
+      asset_value_usd: safePropertyValue,
+      green_roofs: gr,
+      permeable_pavement: pp,
       rain_intensity_pct: totalRainIntensity,
-      current_imperviousness: 0.5,
       slope_pct: 2,
     };
+
+    console.log('Sending Flood Payload:', payload);
 
     const floodBaseUrl = 'https://web-production-8ff9e.up.railway.app';
     const floodEndpoint = `${floodBaseUrl.replace(/\/+$/, '')}/predict-flood`;
@@ -931,9 +968,10 @@ const Index = () => {
         }
         return res.json();
       })
-      .then((data) => {
-        console.log('Parsed API Data:', data);
-        const d = data as Record<string, unknown>;
+      .then((resData) => {
+        console.log('EXACT FLOOD RESPONSE:', JSON.stringify(resData, null, 2));
+        const data = (resData as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
+        const d = data ?? (resData as Record<string, unknown>);
         const rainChartData = d.rain_chart_data as Array<{ month: string; historical: number; projected: number }> | undefined;
         const entry100yr = Array.isArray(rainChartData)
           ? (rainChartData as any[]).find((e: any) => e.period === '100yr')
@@ -943,18 +981,25 @@ const Index = () => {
         const rf = (d.rain_frequency ?? d.rainfall_frequency) as Record<string, unknown> | undefined;
         const rc = rf?.rain_chart_data as Array<{ period?: string; baseline_mm?: number; future_mm?: number }> | undefined;
         const e100 = Array.isArray(rc) ? rc.find((x) => x.period === '100yr') : null;
+
+        type FloodResponse = { data?: { analysis?: { avoided_depth_cm?: number }; avoided_loss?: number; adjusted_opex?: number; asset_depreciation?: { adjusted_lifespan?: number } } };
+        const depth = (resData as FloodResponse)?.data?.analysis?.avoided_depth_cm ?? 0;
+        const avoidedLoss = (resData as FloodResponse)?.data?.avoided_loss ?? 0;
+        const newOpex = (resData as FloodResponse)?.data?.adjusted_opex ?? baseAnnualOpex ?? 0;
+        const newLifespan = (resData as FloodResponse)?.data?.asset_depreciation?.adjusted_lifespan ?? 0;
+
         setFloodResults({
-          floodDepthReduction: Number(d.flood_depth_reduction ?? d.depth_reduction ?? 0),
-          valueProtected: Number(d.value_protected ?? 0),
+          floodDepthReduction: depth,
+          valueProtected: Math.round(avoidedLoss),
           riskIncreasePct: d.risk_increase_pct != null ? Number(d.risk_increase_pct) : null,
           futureFloodAreaKm2: d.future_flood_area_km2 != null ? Number(d.future_flood_area_km2) : null,
           rainChartData: Array.isArray(rainChartData) ? rainChartData : null,
           future100yr: e100?.future_mm ?? (entry100yr as { future_mm?: number } | undefined)?.future_mm ?? null,
           baseline100yr: e100?.baseline_mm ?? (entry100yr as { baseline_mm?: number } | undefined)?.baseline_mm ?? null,
-          avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
-          adjustedOpex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
+          avoidedBusinessInterruption: d.avoided_business_interruption != null ? Math.round(Number(d.avoided_business_interruption)) : null,
+          adjustedOpex: Math.round(Number(newOpex)) || 0,
           opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
-          adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
+          adjustedLifespan: newLifespan,
         });
         setShowFloodResults(true);
       })
@@ -969,7 +1014,7 @@ const Index = () => {
       .finally(() => {
         setIsFloodSimulating(false);
       });
-  }, [markerPosition, baseAnnualOpex, assetLifespan, greenRoofsEnabled, permeablePavementEnabled, totalRainIntensity, getInterventionType]);
+  }, [markerPosition, baseAnnualOpex, assetLifespan, propertyValue, totalRainIntensity, toast]);
 
   const handleGreenRoofsChange = useCallback(
     (enabled: boolean) => {
@@ -1509,12 +1554,12 @@ const Index = () => {
                 transitionCapex: results.transitionCapex,
                 riskReduction: results.riskReduction,
                 yieldPotential: results.yieldPotential,
-                transitionCapex: results.transitionCapex,
                 avoidedRevenueLoss: results.avoidedRevenueLoss,
                 monthlyData: results.monthlyData,
               }
             : undefined
         }
+        coastalResults={mode === 'coastal' ? coastalResults : undefined}
         floodResults={mode === 'flood' ? floodResults : undefined}
         healthResults={healthResults}
         mangroveWidth={mangroveWidth}
@@ -1679,7 +1724,6 @@ const Index = () => {
             transitionCapex: results.transitionCapex,
             riskReduction: results.riskReduction,
             yieldPotential: results.yieldPotential,
-            transitionCapex: results.transitionCapex,
             avoidedRevenueLoss: results.avoidedRevenueLoss,
             monthlyData: results.monthlyData,
           } : undefined,

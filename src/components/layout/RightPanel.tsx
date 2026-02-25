@@ -24,7 +24,6 @@ import { PortfolioAnalysisResult, PortfolioSummary } from '@/types/portfolio';
 
 interface AgricultureResults {
   avoidedLoss: number;
-  transitionCapex?: number;
   riskReduction: number;
   yieldPotential?: number | null;
   transitionCapex?: number | null;
@@ -48,6 +47,10 @@ interface CoastalResults {
   lifespan_penalty?: number | null;
   adjusted_opex?: number | null;
   opex_climate_penalty?: number | null;
+  /** CamelCase from Index state (fetch maps to these) */
+  adjustedLifespan?: number | null;
+  adjustedOpex?: number | null;
+  opexClimatePenalty?: number | null;
 }
 
 interface FloodResults {
@@ -63,6 +66,10 @@ interface FloodResults {
   lifespan_penalty?: number | null;
   adjusted_opex?: number | null;
   opex_climate_penalty?: number | null;
+  /** CamelCase form from Index.tsx state */
+  adjustedOpex?: number | null;
+  opexClimatePenalty?: number | null;
+  adjustedLifespan?: number | null;
 }
 
 interface SpatialAnalysis {
@@ -726,13 +733,6 @@ function AgricultureContent({
           value={formatPercent(results.riskReduction)}
           accent="#10b981"
         />
-        {results.transitionCapex != null && results.transitionCapex > 0 && (
-          <MetricRow
-            label="Transition CAPEX"
-            value={formatCurrency(results.transitionCapex)}
-            accent="#f59e0b"
-          />
-        )}
         {results.avoidedRevenueLoss != null && results.avoidedRevenueLoss > 0 && (
           <MetricRow
             label="Avoided Revenue Loss"
@@ -841,30 +841,42 @@ function CoastalContent({
           <MetricRow label="Coastal Slope" value={`${results.slope.toFixed(1)}°`} />
         )}
         <MetricRow
-          label="Avoided Loss"
+          label="AVOIDED LOSS"
           value={formatCurrency(results.avoidedLoss)}
           accent="#10b981"
         />
         <MetricRow
           label="CLIMATE-ADJUSTED LIFESPAN"
           value={
-            <>
-              {`${results.adjusted_lifespan ?? assetLifespan ?? 0} yrs`}
-              {results.lifespan_penalty != null && results.lifespan_penalty > 0 && (
-                <span className="text-red-500 ml-2">(-{results.lifespan_penalty} yrs)</span>
-              )}
-            </>
+            (() => {
+              const yrs = results.adjusted_lifespan ?? results.adjustedLifespan ?? assetLifespan ?? 0;
+              const penalty = results.lifespan_penalty ?? null;
+              return (
+                <>
+                  {`${Number(yrs)} yrs`}
+                  {penalty != null && penalty > 0 && (
+                    <span className="text-red-500 ml-2">(-{penalty} yrs)</span>
+                  )}
+                </>
+              );
+            })()
           }
         />
         <MetricRow
           label="CLIMATE-ADJUSTED OPEX"
           value={
-            <>
-              ${(results.adjusted_opex ?? 0).toLocaleString()}
-              {results.opex_climate_penalty != null && results.opex_climate_penalty > 0 && (
-                <span className="text-red-500 ml-2">(+${results.opex_climate_penalty.toLocaleString()} penalty)</span>
-              )}
-            </>
+            (() => {
+              const opex = results.adjusted_opex ?? results.adjustedOpex ?? 0;
+              const penalty = results.opex_climate_penalty ?? results.opexClimatePenalty ?? null;
+              return (
+                <>
+                  ${(Number(opex)).toLocaleString()}
+                  {penalty != null && penalty > 0 && (
+                    <span className="text-red-500 ml-2">(+${Number(penalty).toLocaleString()} penalty)</span>
+                  )}
+                </>
+              );
+            })()
           }
         />
         {results.avoidedBusinessInterruption != null && results.avoidedBusinessInterruption > 0 && (
@@ -979,8 +991,8 @@ function FloodContent({
           label="CLIMATE-ADJUSTED LIFESPAN"
           value={
             <>
-              {`${results.adjusted_lifespan ?? assetLifespan ?? 0} yrs`}
-              {results.lifespan_penalty != null && results.lifespan_penalty > 0 && (
+              {`${results.adjusted_lifespan ?? results.adjustedLifespan ?? assetLifespan ?? 0} yrs`}
+              {(results.lifespan_penalty != null && results.lifespan_penalty > 0) && (
                 <span className="text-red-500 ml-2">(-{results.lifespan_penalty} yrs)</span>
               )}
             </>
@@ -990,9 +1002,12 @@ function FloodContent({
           label="CLIMATE-ADJUSTED OPEX"
           value={
             <>
-              ${(results.adjusted_opex ?? 0).toLocaleString()}
-              {results.opex_climate_penalty != null && results.opex_climate_penalty > 0 && (
-                <span className="text-red-500 ml-2">(+${results.opex_climate_penalty.toLocaleString()} penalty)</span>
+              ${(results.adjusted_opex ?? results.adjustedOpex ?? 0).toLocaleString()}
+              {(results.opex_climate_penalty ?? results.opexClimatePenalty) != null &&
+                (results.opex_climate_penalty ?? results.opexClimatePenalty)! > 0 && (
+                <span className="text-red-500 ml-2">
+                  (+${(results.opex_climate_penalty ?? results.opexClimatePenalty)!.toLocaleString()} penalty)
+                </span>
               )}
             </>
           }
@@ -1398,6 +1413,12 @@ function AggregatePortfolioSummary({ summary }: { summary: PortfolioSummary }) {
   const totalVaR = Number(
     summary.totalValueAtRisk ?? s?.total_value_at_risk ?? summary.total_value_at_risk ?? 0
   );
+  const exposurePct = Number(
+    summary.risk_exposure_pct ?? s?.risk_exposure_pct ?? 0
+  );
+  const totalAssets = Number(
+    summary.total_assets ?? s?.total_assets ?? 0
+  );
   const avgScore =
     summary.averageResilienceScore ?? s?.average_resilience_score ?? summary.average_resilience_score ?? null;
   const avgScoreNum = avgScore != null ? Number(avgScore) : null;
@@ -1448,6 +1469,26 @@ function AggregatePortfolioSummary({ summary }: { summary: PortfolioSummary }) {
             {formatCurrency(totalVaR)}
           </p>
         </div>
+        {totalAssets > 0 && (
+          <div>
+            <p style={{ fontSize: 10, color: 'var(--cb-secondary)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
+              Total Assets
+            </p>
+            <p style={{ fontSize: 28, fontWeight: 300, letterSpacing: '-0.02em', color: 'var(--cb-text)', fontFamily: 'monospace' }}>
+              {totalAssets}
+            </p>
+          </div>
+        )}
+        {exposurePct > 0 && (
+          <div>
+            <p style={{ fontSize: 10, color: 'var(--cb-secondary)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
+              Risk Exposure
+            </p>
+            <p style={{ fontSize: 28, fontWeight: 300, letterSpacing: '-0.02em', color: 'var(--cb-text)', fontFamily: 'monospace' }}>
+              {exposurePct.toFixed(1)}%
+            </p>
+          </div>
+        )}
         {avgScoreNum != null && (
           <div>
             <p style={{ fontSize: 10, color: 'var(--cb-secondary)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>

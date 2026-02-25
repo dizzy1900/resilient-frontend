@@ -279,9 +279,9 @@ export function LeftPanel({
   onAgricultureSimulate,
   isAgricultureSimulating,
   yieldPotential,
-  currentCrop = 'maize',
+  currentCrop = 'Maize',
   onCurrentCropChange,
-  proposedCrop = 'none',
+  proposedCrop = 'None',
   onProposedCropChange,
   transitionCapex,
   totalRainIntensity,
@@ -683,9 +683,9 @@ export function ModeContent(props: ModeContentProps) {
     onAgricultureSimulate,
     isAgricultureSimulating,
     yieldPotential,
-    currentCrop = 'maize',
+    currentCrop = 'Maize',
     onCurrentCropChange,
-    proposedCrop = 'none',
+    proposedCrop = 'None',
     onProposedCropChange,
     transitionCapex,
     totalRainIntensity,
@@ -725,55 +725,55 @@ export function ModeContent(props: ModeContentProps) {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const portfolioUrl = 'https://web-production-8ff9e.up.railway.app/api/v1/analyze-portfolio';
+
   const handleFileUpload = useCallback(
     async (selectedFile: File) => {
-      console.log("1. File Selected:", selectedFile);
       if (!selectedFile || !selectedFile.name.toLowerCase().endsWith(".csv")) return;
       setIsUploading(true);
       onPortfolioResultsChange?.(null);
       try {
         const formData = new FormData();
-        formData.append("file", selectedFile);
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
-        const endpoint = `${baseUrl.replace(/\/+$/, "")}/api/v1/analyze-portfolio`;
-        console.log("2. Fetching URL:", endpoint);
-        const response = await fetchWithRetry(endpoint, {
-          method: "POST",
+        formData.append('file', selectedFile);
+        const response = await fetchWithRetry(portfolioUrl, {
+          method: 'POST',
           body: formData,
         });
-        console.log("3. Raw Response Status:", response.status);
         if (!response.ok) {
           const errText = await response.text();
           throw new Error(errText || `HTTP ${response.status}`);
         }
-        const payload = await response.json();
-        console.log("RAW BACKEND PAYLOAD:", payload);
-
-        if (payload?.error) {
-          throw new Error("Python Error: " + payload.error);
+        const resData = await response.json();
+        if (resData?.error) {
+          throw new Error("Python Error: " + resData.error);
         }
-
-        const resultData = payload?.data != null ? payload.data : payload;
-        const isObject = resultData != null && typeof resultData === "object";
-        if (payload != null && typeof payload === "object" && payload.detail) {
-          console.error("FastAPI Error Returned as 200:", payload.detail);
-        }
-        const hasSummary = isObject && "portfolio_summary" in resultData && resultData.portfolio_summary != null;
-        if (hasSummary) {
-          const ps = resultData.portfolio_summary;
-          const mappedData = {
-            ...resultData,
-            portfolio_summary: {
-              ...ps,
-              totalPortfolioValue: ps?.total_portfolio_value ?? ps?.totalPortfolioValue ?? 0,
-              totalValueAtRisk: ps?.total_value_at_risk ?? ps?.totalValueAtRisk ?? 0,
-              averageResilienceScore: ps?.average_resilience_score ?? ps?.averageResilienceScore ?? 0,
-            },
-          };
-          onPortfolioResultsChange?.(mappedData);
-        } else {
-          throw new Error("Missing portfolio_summary. Backend actually sent: " + JSON.stringify(payload));
-        }
+        const payload = resData?.data != null ? resData.data : resData;
+        const totalValue = payload?.portfolio_summary?.total_portfolio_value_usd ?? payload?.portfolio_summary?.total_portfolio_value ?? 0;
+        const valueAtRisk = payload?.portfolio_summary?.total_value_at_risk_usd ?? payload?.portfolio_summary?.total_value_at_risk ?? 0;
+        const exposurePct = payload?.portfolio_summary?.risk_exposure_pct ?? 0;
+        const totalAssets = payload?.portfolio_summary?.total_assets ?? 0;
+        const assets = payload?.asset_results ?? [];
+        const normalizedAssets = assets.map((asset: Record<string, unknown>) => ({
+          ...asset,
+          lat: (asset?.input as Record<string, unknown>)?.lat ?? (asset?.location as Record<string, unknown>)?.lat ?? asset?.lat,
+          lon: (asset?.input as Record<string, unknown>)?.lon ?? (asset?.location as Record<string, unknown>)?.lon ?? asset?.lon,
+          name: (asset?.input as Record<string, unknown>)?.name ?? asset?.name,
+          value: (asset?.input as Record<string, unknown>)?.value ?? asset?.value,
+          value_at_risk: asset?.value_at_risk,
+          resilience_score: asset?.resilience_score,
+        }));
+        const mappedData = {
+          portfolio_summary: {
+            ...payload?.portfolio_summary,
+            totalPortfolioValue: totalValue,
+            totalValueAtRisk: valueAtRisk,
+            risk_exposure_pct: exposurePct,
+            total_assets: totalAssets,
+            averageResilienceScore: payload?.portfolio_summary?.average_resilience_score ?? payload?.portfolio_summary?.averageResilienceScore ?? 0,
+          },
+          asset_results: normalizedAssets,
+        };
+        onPortfolioResultsChange?.(mappedData);
       } catch (error) {
         console.error("FETCH ERROR:", error);
         setIsUploading(false);
@@ -861,9 +861,9 @@ export function ModeContent(props: ModeContentProps) {
                   }}
                 >
                   {[
-                    { value: "maize", label: "Maize" },
-                    { value: "wheat", label: "Wheat" },
-                    { value: "rice", label: "Rice" },
+                    { value: "Maize", label: "Maize" },
+                    { value: "Wheat", label: "Wheat" },
+                    { value: "Rice", label: "Rice" },
                   ].map((c) => (
                     <SelectItem
                       key={c.value}
@@ -901,9 +901,9 @@ export function ModeContent(props: ModeContentProps) {
                   }}
                 >
                   {[
-                    { value: "none", label: "None" },
-                    { value: "drought_resistant_sorghum", label: "Drought-Resistant Sorghum" },
-                    { value: "heat_tolerant_wheat", label: "Heat-Tolerant Wheat" },
+                    { value: "None", label: "None" },
+                    { value: "Drought-Resistant Sorghum", label: "Drought-Resistant Sorghum" },
+                    { value: "Heat-Tolerant Wheat", label: "Heat-Tolerant Wheat" },
                   ].map((c) => (
                     <SelectItem
                       key={c.value}
@@ -924,7 +924,7 @@ export function ModeContent(props: ModeContentProps) {
           <button
             onClick={() => {
               useProjectStore.getState().setProjectData({
-                interventionName: proposedCrop !== 'none'
+                interventionName: proposedCrop !== 'None'
                   ? `Crop Switch: ${currentCrop} → ${proposedCrop}`
                   : `Agriculture: ${currentCrop}`,
                 capex: transitionCapex ?? 250000,

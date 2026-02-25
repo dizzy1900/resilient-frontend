@@ -43,6 +43,7 @@ interface PortfolioPanelProps {
 
 export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: PortfolioPanelProps) => {
   const [parsedData, setParsedData] = useState<PortfolioAsset[]>([]);
+  const [rawFile, setRawFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentJob, setCurrentJob] = useState<BatchJob | null>(null);
   const { user, token, loading: authLoading } = useAuth();
@@ -95,14 +96,16 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
     };
   }, [currentJob?.id]);
 
-  const handleDataParsed = useCallback((data: PortfolioAsset[]) => {
+  const handleDataParsed = useCallback((data: PortfolioAsset[], file?: File) => {
     setParsedData(data);
+    if (file) setRawFile(file);
     setCurrentJob(null);
     onAssetsChange?.(data);
   }, [onAssetsChange]);
 
   const handleClear = useCallback(() => {
     setParsedData([]);
+    setRawFile(null);
     setCurrentJob(null);
     onAssetsChange?.([]);
   }, [onAssetsChange]);
@@ -117,85 +120,81 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
     });
   }, [onAssetsChange]);
 
+  const portfolioUrl = 'https://web-production-8ff9e.up.railway.app/api/v1/analyze-portfolio';
+
   const handleAnalyzePortfolio = async () => {
     if (parsedData.length === 0) return;
 
     setIsSubmitting(true);
 
     try {
-      if (user && token) {
-        // Authenticated path: use edge function
-        const assets = parsedData.map((asset) => ({
-          name: asset.Name,
-          lat: asset.Lat,
-          lon: asset.Lon,
-          value: asset.Value,
-        }));
+      const formData = new FormData();
 
-        const { data, error } = await supabase.functions.invoke('submit-portfolio', {
-          body: { assets },
-        });
-
-        if (error) throw new Error(error.message || 'Failed to submit portfolio');
-        if (!data?.success) {
-          throw new Error(data?.message || data?.details?.[0]?.message || 'Validation failed');
-        }
-
-        setCurrentJob({
-          id: data.job_id,
-          status: 'pending',
-          total_assets: data.assets_count,
-          processed_assets: 0,
-          report_url: null,
-          error_message: null,
-        });
-
-        toast({
-          title: 'Portfolio Analysis Started',
-          description: `Analyzing ${data.assets_count} assets...`,
-        });
+      // Send the original raw file when available to preserve all columns (crop_type, asset_value, etc.)
+      if (rawFile) {
+        formData.append('file', rawFile);
       } else {
-        // Anonymous path: call FastAPI analyze-portfolio with CSV built from parsed data
+        // Fallback: reconstruct CSV from parsed data (e.g. demo data)
         const header = 'Name,Lat,Lon,Value';
         const rows = parsedData.map((a) => `${escapeCsv(a.Name)},${a.Lat},${a.Lon},${a.Value}`).join('\n');
         const csv = `${header}\n${rows}`;
         const blob = new Blob([csv], { type: 'text/csv' });
         const file = new File([blob], 'portfolio.csv', { type: 'text/csv' });
-        const formData = new FormData();
         formData.append('file', file);
-
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
-        const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/analyze-portfolio`;
-        const response = await fetchWithRetry(endpoint, { method: 'POST', body: formData });
-        const payload = await response.json().catch(() => ({}));
-        const resultData: PortfolioAnalysisResult = payload?.data != null ? payload.data : payload;
-
-        if (response.ok && resultData && typeof resultData === 'object' && resultData.portfolio_summary != null) {
-          const ps = resultData.portfolio_summary;
-          const mappedData = {
-            ...resultData,
-            portfolio_summary: {
-              ...ps,
-              totalPortfolioValue: ps?.total_portfolio_value ?? ps?.totalPortfolioValue ?? 0,
-              totalValueAtRisk: ps?.total_value_at_risk ?? ps?.totalValueAtRisk ?? 0,
-              averageResilienceScore: ps?.average_resilience_score ?? ps?.averageResilienceScore ?? 0,
-            },
-          };
-          onPortfolioResultsChange?.(mappedData);
-          confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#22c55e', '#14b8a6', '#3b82f6'],
-          });
-          toast({
-            title: 'Analysis Complete!',
-            description: `Analyzed ${parsedData.length} assets.`,
-          });
-        } else {
-          throw new Error((payload as { message?: string })?.message ?? `HTTP ${response.status}`);
-        }
       }
+
+      const response = await fetchWithRetry(portfolioUrl, { method: 'POST', body: formData });
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(errText || `HTTP ${response.status}`);
+      }
+      const resData = await response.json();
+      const payload = resData?.data != null ? resData.data : resData;
+      if (payload?.error) {
+        throw new Error('Python Error: ' + payload.error);
+      }
+
+      const totalValue = payload?.portfolio_summary?.total_portfolio_value_usd ?? payload?.portfolio_summary?.total_portfolio_value ?? 0;
+      const valueAtRisk = payload?.portfolio_summary?.total_value_at_risk_usd ?? payload?.portfolio_summary?.total_value_at_risk ?? 0;
+      const exposurePct = payload?.portfolio_summary?.risk_exposure_pct ?? 0;
+      const totalAssets = payload?.portfolio_summary?.total_assets ?? 0;
+      const assets = payload?.asset_results ?? [];
+      const normalizedAssets = assets.map((asset: Record<string, unknown>) => {
+        const input = (asset?.input ?? {}) as Record<string, unknown>;
+        const location = (asset?.location ?? {}) as Record<string, unknown>;
+        return {
+          ...asset,
+          lat: input?.lat ?? location?.lat ?? asset?.lat,
+          lon: input?.lon ?? location?.lon ?? asset?.lon,
+          name: input?.crop_type ?? input?.name ?? asset?.name ?? 'Unknown Asset',
+          value: Number(input?.asset_value ?? input?.value ?? asset?.value ?? 0) || 0,
+          value_at_risk: Number(asset?.value_at_risk ?? 0) || 0,
+          resilience_score: asset?.resilience_score != null ? Number(asset.resilience_score) : undefined,
+        };
+      });
+
+      const mappedData: PortfolioAnalysisResult = {
+        portfolio_summary: {
+          ...payload?.portfolio_summary,
+          totalPortfolioValue: totalValue,
+          totalValueAtRisk: valueAtRisk,
+          risk_exposure_pct: exposurePct,
+          total_assets: totalAssets,
+          averageResilienceScore: payload?.portfolio_summary?.average_resilience_score ?? payload?.portfolio_summary?.averageResilienceScore ?? 0,
+        },
+        asset_results: normalizedAssets,
+      };
+      onPortfolioResultsChange?.(mappedData);
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#22c55e', '#14b8a6', '#3b82f6'],
+      });
+      toast({
+        title: 'Analysis Complete!',
+        description: `Analyzed ${parsedData.length} assets.`,
+      });
     } catch (error) {
       console.error('Portfolio analysis failed:', error);
       toast({
