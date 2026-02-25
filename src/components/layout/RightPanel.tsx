@@ -63,6 +63,10 @@ interface FloodResults {
   lifespan_penalty?: number | null;
   adjusted_opex?: number | null;
   opex_climate_penalty?: number | null;
+  /** CamelCase form from Index.tsx state */
+  adjustedOpex?: number | null;
+  opexClimatePenalty?: number | null;
+  adjustedLifespan?: number | null;
 }
 
 interface SpatialAnalysis {
@@ -979,8 +983,8 @@ function FloodContent({
           label="CLIMATE-ADJUSTED LIFESPAN"
           value={
             <>
-              {`${results.adjusted_lifespan ?? assetLifespan ?? 0} yrs`}
-              {results.lifespan_penalty != null && results.lifespan_penalty > 0 && (
+              {`${results.adjusted_lifespan ?? results.adjustedLifespan ?? assetLifespan ?? 0} yrs`}
+              {(results.lifespan_penalty != null && results.lifespan_penalty > 0) && (
                 <span className="text-red-500 ml-2">(-{results.lifespan_penalty} yrs)</span>
               )}
             </>
@@ -990,9 +994,12 @@ function FloodContent({
           label="CLIMATE-ADJUSTED OPEX"
           value={
             <>
-              ${(results.adjusted_opex ?? 0).toLocaleString()}
-              {results.opex_climate_penalty != null && results.opex_climate_penalty > 0 && (
-                <span className="text-red-500 ml-2">(+${results.opex_climate_penalty.toLocaleString()} penalty)</span>
+              ${(results.adjusted_opex ?? results.adjustedOpex ?? 0).toLocaleString()}
+              {(results.opex_climate_penalty ?? results.opexClimatePenalty) != null &&
+                (results.opex_climate_penalty ?? results.opexClimatePenalty)! > 0 && (
+                <span className="text-red-500 ml-2">
+                  (+${(results.opex_climate_penalty ?? results.opexClimatePenalty)!.toLocaleString()} penalty)
+                </span>
               )}
             </>
           }

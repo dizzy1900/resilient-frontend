@@ -933,7 +933,8 @@ const Index = () => {
       })
       .then((data) => {
         console.log('Parsed API Data:', data);
-        const d = data as Record<string, unknown>;
+        const resData = data as Record<string, unknown>;
+        const d = (resData?.data as Record<string, unknown> | undefined) ?? resData;
         const rainChartData = d.rain_chart_data as Array<{ month: string; historical: number; projected: number }> | undefined;
         const entry100yr = Array.isArray(rainChartData)
           ? (rainChartData as any[]).find((e: any) => e.period === '100yr')
