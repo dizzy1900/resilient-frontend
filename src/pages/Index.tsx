@@ -931,9 +931,9 @@ const Index = () => {
         }
         return res.json();
       })
-      .then((data) => {
-        console.log('Parsed API Data:', data);
-        const d = data as Record<string, unknown>;
+      .then((resData) => {
+        console.log('Parsed API Data:', resData);
+        const d = resData as Record<string, unknown>;
         const rainChartData = d.rain_chart_data as Array<{ month: string; historical: number; projected: number }> | undefined;
         const entry100yr = Array.isArray(rainChartData)
           ? (rainChartData as any[]).find((e: any) => e.period === '100yr')
@@ -943,6 +943,7 @@ const Index = () => {
         const rf = (d.rain_frequency ?? d.rainfall_frequency) as Record<string, unknown> | undefined;
         const rc = rf?.rain_chart_data as Array<{ period?: string; baseline_mm?: number; future_mm?: number }> | undefined;
         const e100 = Array.isArray(rc) ? rc.find((x) => x.period === '100yr') : null;
+        const adjustedOpexRaw = (d?.data != null ? (d.data as Record<string, unknown>).adjusted_opex : d?.adjusted_opex) ?? baseAnnualOpex ?? 0;
         setFloodResults({
           floodDepthReduction: Number(d.flood_depth_reduction ?? d.depth_reduction ?? 0),
           valueProtected: Number(d.value_protected ?? 0),
@@ -952,7 +953,7 @@ const Index = () => {
           future100yr: e100?.future_mm ?? (entry100yr as { future_mm?: number } | undefined)?.future_mm ?? null,
           baseline100yr: e100?.baseline_mm ?? (entry100yr as { baseline_mm?: number } | undefined)?.baseline_mm ?? null,
           avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
-          adjustedOpex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
+          adjustedOpex: Number(adjustedOpexRaw) || 0,
           opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
           adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
         });
