@@ -36,6 +36,10 @@ const healthEndpoint = `${healthBaseUrl}/predict-health`;
 const geoBaseUrl = 'https://web-production-8ff9e.up.railway.app';
 const polygonEndpoint = `${geoBaseUrl.replace(/\/+$/, '')}/simulate/polygon`;
 
+/** Earth Observation NDVI endpoint (Google Earth Engine). */
+const eoBaseUrl = 'https://web-production-8ff9e.up.railway.app';
+const ndviEndpoint = `${eoBaseUrl.replace(/\/+$/, '')}/api/v1/eo/ndvi`;
+
 const mockMonthlyData = [
   { month: 'Jan', value: 45 },
   { month: 'Feb', value: 52 },
@@ -80,6 +84,8 @@ const Index = () => {
   const [permeablePavementEnabled, setPermeablePavementEnabled] = useState(false);
   const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
+  const [ndviData, setNdviData] = useState<any[]>([]);
+  const [isNdviLoading, setIsNdviLoading] = useState(false);
 
   // Intervention Wizard state
   const [showWizard, setShowWizard] = useState(false);
@@ -635,6 +641,23 @@ const Index = () => {
     };
 
     console.log('Sending Agri Payload:', payload);
+
+    // Fire-and-forget NDVI fetch — runs concurrently, never blocks main simulation
+    (async () => {
+      try {
+        setIsNdviLoading(true);
+        const ndviUrl = `${ndviEndpoint}?lat=${markerPosition.lat}&lon=${markerPosition.lng}`;
+        const ndviRes = await fetchWithRetry(ndviUrl, { method: 'GET' });
+        if (!ndviRes.ok) throw new Error(`NDVI HTTP ${ndviRes.status}`);
+        const ndviJson = await ndviRes.json();
+        const timeSeries = Array.isArray(ndviJson) ? ndviJson : (ndviJson?.data ?? []);
+        setNdviData(timeSeries);
+      } catch (ndviErr) {
+        console.warn('[NDVI] Earth Observation fetch failed (non-blocking):', ndviErr);
+      } finally {
+        setIsNdviLoading(false);
+      }
+    })();
 
     fetchWithRetry(agriEndpoint, {
       method: 'POST',
