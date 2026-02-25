@@ -1414,6 +1414,12 @@ function AggregatePortfolioSummary({ summary }: { summary: PortfolioSummary }) {
   const totalVaR = Number(
     summary.totalValueAtRisk ?? s?.total_value_at_risk ?? summary.total_value_at_risk ?? 0
   );
+  const exposurePct = Number(
+    summary.risk_exposure_pct ?? s?.risk_exposure_pct ?? 0
+  );
+  const totalAssets = Number(
+    summary.total_assets ?? s?.total_assets ?? 0
+  );
   const avgScore =
     summary.averageResilienceScore ?? s?.average_resilience_score ?? summary.average_resilience_score ?? null;
   const avgScoreNum = avgScore != null ? Number(avgScore) : null;
@@ -1464,6 +1470,26 @@ function AggregatePortfolioSummary({ summary }: { summary: PortfolioSummary }) {
             {formatCurrency(totalVaR)}
           </p>
         </div>
+        {totalAssets > 0 && (
+          <div>
+            <p style={{ fontSize: 10, color: 'var(--cb-secondary)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
+              Total Assets
+            </p>
+            <p style={{ fontSize: 28, fontWeight: 300, letterSpacing: '-0.02em', color: 'var(--cb-text)', fontFamily: 'monospace' }}>
+              {totalAssets}
+            </p>
+          </div>
+        )}
+        {exposurePct > 0 && (
+          <div>
+            <p style={{ fontSize: 10, color: 'var(--cb-secondary)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
+              Risk Exposure
+            </p>
+            <p style={{ fontSize: 28, fontWeight: 300, letterSpacing: '-0.02em', color: 'var(--cb-text)', fontFamily: 'monospace' }}>
+              {exposurePct.toFixed(1)}%
+            </p>
+          </div>
+        )}
         {avgScoreNum != null && (
           <div>
             <p style={{ fontSize: 10, color: 'var(--cb-secondary)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
