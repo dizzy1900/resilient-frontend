@@ -46,7 +46,7 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
   const [rawFile, setRawFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentJob, setCurrentJob] = useState<BatchJob | null>(null);
-  const { user, session, loading: authLoading } = useAuth();
+  const { user, token, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   // Subscribe to realtime updates for batch_jobs

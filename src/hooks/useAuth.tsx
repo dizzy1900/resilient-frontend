@@ -1,10 +1,17 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/clientSafe';
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+
+const API_BASE = 'https://web-production-8ff9e.up.railway.app';
+const TOKEN_KEY = 'resilient_auth_token';
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  [key: string]: unknown;
+}
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: AuthUser | null;
+  token: string | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
@@ -14,53 +21,121 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+  const clearSession = useCallback(() => {
+    localStorage.removeItem(TOKEN_KEY);
+    setToken(null);
+    setUser(null);
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error ? new Error(error.message) : null };
+  useEffect(() => {
+    const storedToken = localStorage.getItem(TOKEN_KEY);
+    if (!storedToken) {
+      setLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${storedToken}` },
+        });
+
+        if (!res.ok) {
+          clearSession();
+          return;
+        }
+
+        const data = await res.json();
+        if (!cancelled) {
+          setUser(data);
+          setToken(storedToken);
+        }
+      } catch {
+        clearSession();
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const signIn = async (email: string, password: string): Promise<{ error: Error | null }> => {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        const message = body.detail ?? body.message ?? `Login failed (${res.status})`;
+        return { error: new Error(message) };
+      }
+
+      const data = await res.json();
+      localStorage.setItem(TOKEN_KEY, data.access_token);
+      setToken(data.access_token);
+
+      const meRes = await fetch(`${API_BASE}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${data.access_token}` },
+      });
+
+      if (meRes.ok) {
+        setUser(await meRes.json());
+      }
+
+      return { error: null };
+    } catch (err) {
+      return { error: err instanceof Error ? err : new Error('Network error') };
+    }
   };
 
-  const signUp = async (email: string, password: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl
+  const signUp = async (email: string, password: string): Promise<{ error: Error | null }> => {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        const message = body.detail ?? body.message ?? `Registration failed (${res.status})`;
+        return { error: new Error(message) };
       }
-    });
-    return { error: error ? new Error(error.message) : null };
+
+      const data = await res.json();
+      localStorage.setItem(TOKEN_KEY, data.access_token);
+      setToken(data.access_token);
+
+      const meRes = await fetch(`${API_BASE}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${data.access_token}` },
+      });
+
+      if (meRes.ok) {
+        setUser(await meRes.json());
+      }
+
+      return { error: null };
+    } catch (err) {
+      return { error: err instanceof Error ? err : new Error('Network error') };
+    }
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    clearSession();
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, token, loading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );
@@ -77,7 +152,7 @@ export function useAuth() {
 /** No-op auth for prototyping: no login, no session, all pages public. */
 const NO_AUTH_VALUE: AuthContextType = {
   user: null,
-  session: null,
+  token: null,
   loading: false,
   signIn: async () => ({ error: null }),
   signUp: async () => ({ error: null }),

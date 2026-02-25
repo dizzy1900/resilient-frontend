@@ -56,19 +56,14 @@ export default function Auth() {
       if (isLogin) {
         const { error } = await signIn(email, password);
         if (error) {
-          if (error.message.includes('Invalid login credentials')) {
-            toast({
-              title: 'Login Failed',
-              description: 'Invalid email or password. Please try again.',
-              variant: 'destructive',
-            });
-          } else {
-            toast({
-              title: 'Login Failed',
-              description: error.message,
-              variant: 'destructive',
-            });
-          }
+          const msg = error.message.toLowerCase();
+          toast({
+            title: 'Login Failed',
+            description: msg.includes('invalid') || msg.includes('credentials') || msg.includes('incorrect')
+              ? 'Invalid email or password. Please try again.'
+              : error.message,
+            variant: 'destructive',
+          });
         } else {
           toast({
             title: 'Welcome back!',
@@ -79,7 +74,8 @@ export default function Auth() {
       } else {
         const { error } = await signUp(email, password);
         if (error) {
-          if (error.message.includes('User already registered')) {
+          const msg = error.message.toLowerCase();
+          if (msg.includes('already') || msg.includes('exists') || msg.includes('registered')) {
             toast({
               title: 'Account Exists',
               description: 'This email is already registered. Please sign in instead.',
@@ -95,9 +91,10 @@ export default function Auth() {
           }
         } else {
           toast({
-            title: 'Check your email',
-            description: 'We sent you a confirmation link to verify your account.',
+            title: 'Account Created',
+            description: 'Your account has been created and you are now signed in.',
           });
+          navigate('/');
         }
       }
     } finally {
