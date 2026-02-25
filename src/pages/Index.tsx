@@ -984,7 +984,7 @@ const Index = () => {
         type FloodResponse = { data?: { analysis?: { avoided_depth_cm?: number }; avoided_loss?: number; adjusted_opex?: number; asset_depreciation?: { adjusted_lifespan?: number } } };
         const depth = (resData as FloodResponse)?.data?.analysis?.avoided_depth_cm ?? 0;
         const avoidedLoss = (resData as FloodResponse)?.data?.avoided_loss ?? 0;
-        const newOpex = (resData as FloodResponse)?.data?.adjusted_opex ?? 0;
+        const newOpex = (resData as FloodResponse)?.data?.adjusted_opex ?? baseAnnualOpex ?? 0;
         const newLifespan = (resData as FloodResponse)?.data?.asset_depreciation?.adjusted_lifespan ?? 0;
 
         setFloodResults({
@@ -996,7 +996,7 @@ const Index = () => {
           future100yr: e100?.future_mm ?? (entry100yr as { future_mm?: number } | undefined)?.future_mm ?? null,
           baseline100yr: e100?.baseline_mm ?? (entry100yr as { baseline_mm?: number } | undefined)?.baseline_mm ?? null,
           avoidedBusinessInterruption: d.avoided_business_interruption != null ? Math.round(Number(d.avoided_business_interruption)) : null,
-          adjustedOpex: Math.round(newOpex),
+          adjustedOpex: Math.round(Number(newOpex)) || 0,
           opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
           adjustedLifespan: newLifespan,
         });
