@@ -45,7 +45,7 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
   const [parsedData, setParsedData] = useState<PortfolioAsset[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentJob, setCurrentJob] = useState<BatchJob | null>(null);
-  const { user, session, loading: authLoading } = useAuth();
+  const { user, token, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   // Subscribe to realtime updates for batch_jobs
@@ -123,7 +123,7 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
     setIsSubmitting(true);
 
     try {
-      if (user && session) {
+      if (user && token) {
         // Authenticated path: use edge function
         const assets = parsedData.map((asset) => ({
           name: asset.Name,

@@ -40,6 +40,11 @@ export async function fetchWithRetry(
   let lastError: unknown;
   let toastShown = false;
 
+  const token = localStorage.getItem('resilient_auth_token');
+  const authHeaders: HeadersInit = token
+    ? { Authorization: `Bearer ${token}` }
+    : {};
+
   for (let attempt = 0; attempt < retries; attempt++) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
@@ -53,7 +58,8 @@ export async function fetchWithRetry(
     const signal = controller.signal;
 
     try {
-      const response = await fetch(url, { ...options, signal });
+      const mergedHeaders = { ...authHeaders, ...(options?.headers as Record<string, string>) };
+      const response = await fetch(url, { ...options, headers: mergedHeaders, signal });
       clearTimeout(timeoutId);
 
       if (response.ok) {
