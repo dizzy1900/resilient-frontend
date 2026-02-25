@@ -12,6 +12,10 @@ export interface PortfolioAssetResult {
 export interface PortfolioSummary {
   total_portfolio_value?: number;
   total_value_at_risk?: number;
+  total_portfolio_value_usd?: number;
+  total_value_at_risk_usd?: number;
+  risk_exposure_pct?: number;
+  total_assets?: number;
   average_resilience_score?: number;
   totalPortfolioValue?: number;
   totalValueAtRisk?: number;
