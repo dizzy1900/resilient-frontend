@@ -635,7 +635,7 @@ const Index = () => {
       } : {}),
     };
 
-    console.log('Sending Agri Payload:', { current_crop: currentCrop, proposed_crop: proposedCrop });
+    console.log('Sending Agri Payload:', payload);
 
     fetchWithRetry(agriEndpoint, {
       method: 'POST',
@@ -967,9 +967,10 @@ const Index = () => {
         return res.json();
       })
       .then((resData) => {
-        console.log('Parsed API Data:', resData);
-        // Unwrap response: backend may return { data: { depth_reduction, value_protected, ... } }
-        const d = ((resData as Record<string, unknown>)?.data ?? resData) as Record<string, unknown>;
+        console.log('Flood API Response:', resData);
+        // Unwrap response: backend returns { data: { depth_reduction, value_protected, ... } }
+        const data = (resData as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
+        const d = data ?? (resData as Record<string, unknown>);
         const rainChartData = d.rain_chart_data as Array<{ month: string; historical: number; projected: number }> | undefined;
         const entry100yr = Array.isArray(rainChartData)
           ? (rainChartData as any[]).find((e: any) => e.period === '100yr')
@@ -979,8 +980,8 @@ const Index = () => {
         const rf = (d.rain_frequency ?? d.rainfall_frequency) as Record<string, unknown> | undefined;
         const rc = rf?.rain_chart_data as Array<{ period?: string; baseline_mm?: number; future_mm?: number }> | undefined;
         const e100 = Array.isArray(rc) ? rc.find((x) => x.period === '100yr') : null;
-        const depthReduction = Number(d.depth_reduction ?? d.flood_depth_reduction ?? 0);
-        const valueProtected = Number(d.value_protected ?? 0);
+        const depthReduction = Number(data?.depth_reduction ?? data?.flood_depth_reduction ?? d.depth_reduction ?? d.flood_depth_reduction ?? 0);
+        const valueProtected = Number(data?.value_protected ?? d.value_protected ?? 0);
         setFloodResults({
           floodDepthReduction: depthReduction,
           valueProtected,
