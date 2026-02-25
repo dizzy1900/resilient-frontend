@@ -279,9 +279,9 @@ export function LeftPanel({
   onAgricultureSimulate,
   isAgricultureSimulating,
   yieldPotential,
-  currentCrop = 'maize',
+  currentCrop = 'Maize',
   onCurrentCropChange,
-  proposedCrop = 'none',
+  proposedCrop = 'None',
   onProposedCropChange,
   transitionCapex,
   totalRainIntensity,
@@ -683,9 +683,9 @@ export function ModeContent(props: ModeContentProps) {
     onAgricultureSimulate,
     isAgricultureSimulating,
     yieldPotential,
-    currentCrop = 'maize',
+    currentCrop = 'Maize',
     onCurrentCropChange,
-    proposedCrop = 'none',
+    proposedCrop = 'None',
     onProposedCropChange,
     transitionCapex,
     totalRainIntensity,
@@ -861,9 +861,9 @@ export function ModeContent(props: ModeContentProps) {
                   }}
                 >
                   {[
-                    { value: "maize", label: "Maize" },
-                    { value: "wheat", label: "Wheat" },
-                    { value: "rice", label: "Rice" },
+                    { value: "Maize", label: "Maize" },
+                    { value: "Wheat", label: "Wheat" },
+                    { value: "Rice", label: "Rice" },
                   ].map((c) => (
                     <SelectItem
                       key={c.value}
@@ -901,9 +901,9 @@ export function ModeContent(props: ModeContentProps) {
                   }}
                 >
                   {[
-                    { value: "none", label: "None" },
-                    { value: "drought_resistant_sorghum", label: "Drought-Resistant Sorghum" },
-                    { value: "heat_tolerant_wheat", label: "Heat-Tolerant Wheat" },
+                    { value: "None", label: "None" },
+                    { value: "Drought-Resistant Sorghum", label: "Drought-Resistant Sorghum" },
+                    { value: "Heat-Tolerant Wheat", label: "Heat-Tolerant Wheat" },
                   ].map((c) => (
                     <SelectItem
                       key={c.value}
@@ -924,7 +924,7 @@ export function ModeContent(props: ModeContentProps) {
           <button
             onClick={() => {
               useProjectStore.getState().setProjectData({
-                interventionName: proposedCrop !== 'none'
+                interventionName: proposedCrop !== 'None'
                   ? `Crop Switch: ${currentCrop} → ${proposedCrop}`
                   : `Agriculture: ${currentCrop}`,
                 capex: transitionCapex ?? 250000,
