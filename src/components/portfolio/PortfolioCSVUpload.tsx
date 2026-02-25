@@ -160,7 +160,7 @@ export const PortfolioCSVUpload = ({
         console.warn('CSV validation warnings:', validationErrors);
       }
 
-      onDataParsed(assets, rawFile ?? undefined);
+      onDataParsed(assets, file ?? rawFile ?? undefined);
     } catch (err) {
       setError('Failed to parse CSV file');
       console.error('CSV parse error:', err);
