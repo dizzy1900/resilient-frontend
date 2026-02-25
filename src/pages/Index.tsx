@@ -654,8 +654,9 @@ const Index = () => {
         }
         return res.json();
       })
-      .then((data) => {
-        const raw = Array.isArray(data) ? data[0] : data;
+      .then((resData) => {
+        console.log('EXACT AGRI RESPONSE:', JSON.stringify(resData, null, 2));
+        const raw = Array.isArray(resData) ? resData[0] : resData;
         const d = raw as Record<string, unknown>;
         const result = d?.data ?? d;
         const r = result as Record<string, unknown>;
@@ -967,8 +968,7 @@ const Index = () => {
         return res.json();
       })
       .then((resData) => {
-        console.log('Flood API Response:', resData);
-        // Unwrap response: backend returns { data: { depth_reduction, value_protected, ... } }
+        console.log('EXACT FLOOD RESPONSE:', JSON.stringify(resData, null, 2));
         const data = (resData as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
         const d = data ?? (resData as Record<string, unknown>);
         const rainChartData = d.rain_chart_data as Array<{ month: string; historical: number; projected: number }> | undefined;
@@ -980,20 +980,25 @@ const Index = () => {
         const rf = (d.rain_frequency ?? d.rainfall_frequency) as Record<string, unknown> | undefined;
         const rc = rf?.rain_chart_data as Array<{ period?: string; baseline_mm?: number; future_mm?: number }> | undefined;
         const e100 = Array.isArray(rc) ? rc.find((x) => x.period === '100yr') : null;
-        const depthReduction = Number(data?.depth_reduction ?? data?.flood_depth_reduction ?? d.depth_reduction ?? d.flood_depth_reduction ?? 0);
-        const valueProtected = Number(data?.value_protected ?? d.value_protected ?? 0);
+
+        type FloodResponse = { data?: { analysis?: { avoided_depth_cm?: number }; avoided_loss?: number; adjusted_opex?: number; asset_depreciation?: { adjusted_lifespan?: number } } };
+        const depth = (resData as FloodResponse)?.data?.analysis?.avoided_depth_cm ?? 0;
+        const avoidedLoss = (resData as FloodResponse)?.data?.avoided_loss ?? 0;
+        const newOpex = (resData as FloodResponse)?.data?.adjusted_opex ?? 0;
+        const newLifespan = (resData as FloodResponse)?.data?.asset_depreciation?.adjusted_lifespan ?? 0;
+
         setFloodResults({
-          floodDepthReduction: depthReduction,
-          valueProtected,
+          floodDepthReduction: depth,
+          valueProtected: Math.round(avoidedLoss),
           riskIncreasePct: d.risk_increase_pct != null ? Number(d.risk_increase_pct) : null,
           futureFloodAreaKm2: d.future_flood_area_km2 != null ? Number(d.future_flood_area_km2) : null,
           rainChartData: Array.isArray(rainChartData) ? rainChartData : null,
           future100yr: e100?.future_mm ?? (entry100yr as { future_mm?: number } | undefined)?.future_mm ?? null,
           baseline100yr: e100?.baseline_mm ?? (entry100yr as { baseline_mm?: number } | undefined)?.baseline_mm ?? null,
-          avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
-          adjustedOpex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
+          avoidedBusinessInterruption: d.avoided_business_interruption != null ? Math.round(Number(d.avoided_business_interruption)) : null,
+          adjustedOpex: Math.round(newOpex),
           opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
-          adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
+          adjustedLifespan: newLifespan,
         });
         setShowFloodResults(true);
       })
