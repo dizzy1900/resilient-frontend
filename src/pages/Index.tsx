@@ -157,13 +157,12 @@ const Index = () => {
 
   const [results, setResults] = useState({
     avoidedLoss: 0,
-    transitionCapex: 0,
+    transitionCapex: 0 as number | null,
     riskReduction: 0,
     yieldBaseline: 0,
     yieldResilient: 0,
-    yieldPotential: null as number | null, // Unified yield metric from API
-    portfolioVolatilityPct: null as number | null, // Supply chain volatility CV%
-    transitionCapex: null as number | null,
+    yieldPotential: null as number | null,
+    portfolioVolatilityPct: null as number | null,
     avoidedRevenueLoss: null as number | null,
     monthlyData: mockMonthlyData,
   });
@@ -722,6 +721,7 @@ const Index = () => {
           yieldResilient,
           yieldPotential,
           portfolioVolatilityPct: apiVolatility != null ? Number(apiVolatility) : Math.round(15 + (globalTempTarget - 1.4) * 10),
+          avoidedRevenueLoss: avoidedRevenueLoss ?? null,
           monthlyData: mockMonthlyData,
         });
         setShowResults(true);
@@ -743,6 +743,7 @@ const Index = () => {
             yieldResilient: crop?.resilient_yield_pct ?? 0,
             yieldPotential: crop?.resilient_yield_pct ?? null,
             portfolioVolatilityPct: null,
+            avoidedRevenueLoss: null,
             monthlyData: mockMonthlyData,
           });
           if ((fallback as any).climate_conditions) {
@@ -1553,7 +1554,6 @@ const Index = () => {
                 transitionCapex: results.transitionCapex,
                 riskReduction: results.riskReduction,
                 yieldPotential: results.yieldPotential,
-                transitionCapex: results.transitionCapex,
                 avoidedRevenueLoss: results.avoidedRevenueLoss,
                 monthlyData: results.monthlyData,
               }
@@ -1724,7 +1724,6 @@ const Index = () => {
             transitionCapex: results.transitionCapex,
             riskReduction: results.riskReduction,
             yieldPotential: results.yieldPotential,
-            transitionCapex: results.transitionCapex,
             avoidedRevenueLoss: results.avoidedRevenueLoss,
             monthlyData: results.monthlyData,
           } : undefined,
