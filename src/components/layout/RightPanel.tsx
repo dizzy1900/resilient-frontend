@@ -726,13 +726,6 @@ function AgricultureContent({
           value={formatPercent(results.riskReduction)}
           accent="#10b981"
         />
-        {results.transitionCapex != null && results.transitionCapex > 0 && (
-          <MetricRow
-            label="Transition CAPEX"
-            value={formatCurrency(results.transitionCapex)}
-            accent="#f59e0b"
-          />
-        )}
         {results.avoidedRevenueLoss != null && results.avoidedRevenueLoss > 0 && (
           <MetricRow
             label="Avoided Revenue Loss"
