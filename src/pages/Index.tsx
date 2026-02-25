@@ -247,8 +247,6 @@ const Index = () => {
     loss_pct: number;
   } | null>(null);
   const [isSpatialLoading, setIsSpatialLoading] = useState(false);
-  const [ndviData, setNdviData] = useState<{ month: string; value: number }[]>([]);
-  const [isNdviLoading, setIsNdviLoading] = useState(false);
   const [portfolioAssets, setPortfolioAssets] = useState<PortfolioAsset[]>([]);
   const [portfolioResults, setPortfolioResults] = useState<PortfolioAnalysisResult | null>(null);
   const [selectedPolygon, setSelectedPolygon] = useState<DrawnPolygon | null>(null);
