@@ -247,6 +247,7 @@ const Index = () => {
     loss_pct: number;
   } | null>(null);
   const [isSpatialLoading, setIsSpatialLoading] = useState(false);
+  const [priceShockData, setPriceShockData] = useState<any | null>(null);
   const [portfolioAssets, setPortfolioAssets] = useState<PortfolioAsset[]>([]);
   const [portfolioResults, setPortfolioResults] = useState<PortfolioAnalysisResult | null>(null);
   const [selectedPolygon, setSelectedPolygon] = useState<DrawnPolygon | null>(null);
@@ -676,7 +677,7 @@ const Index = () => {
         }
         return res.json();
       })
-      .then((resData) => {
+      .then(async (resData) => {
         console.log('EXACT AGRI RESPONSE:', JSON.stringify(resData, null, 2));
         const raw = Array.isArray(resData) ? resData[0] : resData;
         const d = raw as Record<string, unknown>;
@@ -749,6 +750,28 @@ const Index = () => {
         });
         setShowResults(true);
         setIsPanelOpen(true);
+
+        // Fire price-shock call after successful simulation
+        try {
+          const priceShockEndpoint = `${agriBaseUrl.replace(/\/+$/, '')}/api/v1/finance/price-shock`;
+          const stressedYield = yieldPotential ?? yieldResilient;
+          const priceShockRes = await fetchWithRetry(priceShockEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              crop_type: cropType,
+              baseline_yield_tons: 100,
+              stressed_yield_tons: stressedYield,
+            }),
+          });
+          if (priceShockRes.ok) {
+            const psData = await priceShockRes.json();
+            setPriceShockData(psData?.data ?? psData);
+            console.log('Price shock data:', psData);
+          }
+        } catch (psErr) {
+          console.warn('Price shock fetch failed (non-blocking):', psErr);
+        }
       })
       .catch((error) => {
         console.error('Agriculture simulation failed:', error);
