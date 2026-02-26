@@ -21,6 +21,7 @@ import { DigitalTwinOverlay } from '@/components/dashboard/DigitalTwinOverlay';
 import { DigitalTwinToggle } from '@/components/dashboard/DigitalTwinToggle';
 import { DrawnPolygon } from '@/components/dashboard/DrawControl';
 import { useMapboxGeocoder } from '@/hooks/useMapboxGeocoder';
+import { useGeolocateIP } from '@/hooks/useGeolocateIP';
 import { PortfolioAnalysisResult } from '@/types/portfolio';
 
 /** Live Railway FastAPI backend for Finance module (CBA + CVaR). */
@@ -262,6 +263,27 @@ const Index = () => {
   const [reverseLocationName, setReverseLocationName] = useState<string | null>(null);
   const [flyToTarget, setFlyToTarget] = useState<FlyToTarget | null>(null);
   const { reverseGeocode } = useMapboxGeocoder();
+  const geoIP = useGeolocateIP();
+  const hasGeolocated = useRef(false);
+
+  // Auto-center map on user's IP-based location (once)
+  useEffect(() => {
+    if (geoIP.loading || hasGeolocated.current) return;
+    hasGeolocated.current = true;
+    setViewState((prev) => ({
+      ...prev,
+      longitude: geoIP.longitude,
+      latitude: geoIP.latitude,
+      zoom: 10,
+    }));
+    if (geoIP.city) {
+      setReverseLocationName(geoIP.city);
+    } else {
+      reverseGeocode(geoIP.latitude, geoIP.longitude).then((name) => {
+        if (name) setReverseLocationName(name);
+      });
+    }
+  }, [geoIP.loading, geoIP.latitude, geoIP.longitude, geoIP.city, reverseGeocode]);
 
   const mapStyle: MapStyle = mode === 'coastal' ? 'satellite' : mode === 'flood' ? 'flood' : 'dark';
   const showFloodOverlay = mode === 'flood' && markerPosition !== null;
