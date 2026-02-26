@@ -1646,6 +1646,7 @@ const Index = () => {
         polygonValueAtRisk={polygonValueAtRisk}
         polygonProtectedValue={polygonProtectedValue}
         portfolioResults={portfolioResults}
+        priceShockData={mode === 'agriculture' ? priceShockData : undefined}
       />
 
       {/* Portfolio left panel content (desktop) */}
