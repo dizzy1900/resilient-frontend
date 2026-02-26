@@ -130,6 +130,7 @@ interface RightPanelProps {
   polygonValueAtRisk?: number | null;
   polygonProtectedValue?: number | null;
   portfolioResults?: PortfolioAnalysisResult | null;
+  priceShockData?: any;
 }
 
 const MODE_ACCENT: Record<DashboardMode, string> = {
@@ -235,6 +236,7 @@ export function RightPanel({
   polygonValueAtRisk,
   polygonProtectedValue,
   portfolioResults,
+  priceShockData,
 }: RightPanelProps) {
   if (!visible) return null;
 
@@ -333,6 +335,7 @@ export function RightPanel({
           polygonValueAtRisk={polygonValueAtRisk}
           polygonProtectedValue={polygonProtectedValue}
           portfolioResults={portfolioResults}
+          priceShockData={priceShockData}
           latitude={latitude}
           longitude={longitude}
         />
@@ -390,6 +393,7 @@ export interface RightPanelContentProps {
   polygonValueAtRisk?: number | null;
   polygonProtectedValue?: number | null;
   portfolioResults?: PortfolioAnalysisResult | null;
+  priceShockData?: any;
 }
 
 export function RightPanelContent({
@@ -441,6 +445,7 @@ export function RightPanelContent({
   polygonValueAtRisk,
   polygonProtectedValue,
   portfolioResults,
+  priceShockData,
 }: RightPanelContentProps) {
   if (isLoading) return <LoadingState />;
 
@@ -513,6 +518,7 @@ export function RightPanelContent({
           assetLifespan={assetLifespan}
           dailyRevenue={dailyRevenue}
           propertyValue={propertyValue}
+          priceShockData={priceShockData}
         />
       )}
 
@@ -703,6 +709,7 @@ function AgricultureContent({
   assetLifespan,
   dailyRevenue,
   propertyValue,
+  priceShockData,
 }: {
   results: AgricultureResults;
   tempIncrease?: number;
@@ -722,6 +729,7 @@ function AgricultureContent({
   assetLifespan?: number;
   dailyRevenue?: number;
   propertyValue?: number;
+  priceShockData?: any;
 }) {
   const yp = results.yieldPotential ?? 0;
   const yieldColor = yp >= 70 ? '#10b981' : yp >= 40 ? '#f59e0b' : '#f43f5e';
@@ -765,6 +773,49 @@ function AgricultureContent({
           />
         )}
       </div>
+
+      {priceShockData && (
+        <>
+          <SectionDivider title="Commodity Price Shock (Local Spot)" />
+          <div className="px-4 pt-3 pb-4">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center">
+                <p style={{ fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Baseline</p>
+                <p style={{ fontSize: 18, fontWeight: 700, color: 'var(--cb-text)', fontVariantNumeric: 'tabular-nums' }}>
+                  ${Number(priceShockData.baseline_price ?? 0).toFixed(0)}
+                </p>
+                <p style={{ fontSize: 9, color: 'var(--cb-text-muted)' }}>/ ton</p>
+              </div>
+              <div className="text-center">
+                <p style={{ fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Shocked</p>
+                <p style={{ fontSize: 18, fontWeight: 700, color: '#f59e0b', fontVariantNumeric: 'tabular-nums' }}>
+                  ${Number(priceShockData.shocked_price ?? 0).toFixed(0)}
+                </p>
+                <p style={{ fontSize: 9, color: 'var(--cb-text-muted)' }}>/ ton</p>
+              </div>
+              <div className="text-center">
+                <p style={{ fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Price Spike</p>
+                <p style={{ fontSize: 18, fontWeight: 700, color: (Number(priceShockData.price_increase_pct ?? 0)) >= 20 ? '#f43f5e' : '#f59e0b', fontVariantNumeric: 'tabular-nums' }}>
+                  +{Number(priceShockData.price_increase_pct ?? 0).toFixed(1)}%
+                </p>
+              </div>
+            </div>
+            {priceShockData.forward_contract_recommendation && (
+              <div
+                className="mt-3 p-2.5 rounded"
+                style={{ backgroundColor: 'color-mix(in srgb, #f59e0b 8%, transparent)', border: '1px solid color-mix(in srgb, #f59e0b 25%, transparent)' }}
+              >
+                <p style={{ fontSize: 9, color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600, marginBottom: 4 }}>
+                  Forward Contract Recommendation
+                </p>
+                <p style={{ fontSize: 11, color: 'var(--cb-text)', lineHeight: 1.5 }}>
+                  {priceShockData.forward_contract_recommendation}
+                </p>
+              </div>
+            )}
+          </div>
+        </>
+      )}
 
       <SectionDivider title="Satellite Ground-Truth (GEE NDVI)" />
       <div className="px-4 pt-3 pb-4">
