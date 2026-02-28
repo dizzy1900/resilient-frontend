@@ -1325,12 +1325,17 @@ const Index = () => {
     setIsHealthSimulating(true);
     setShowHealthResults(false);
 
+    // Format intervention type to strict snake_case for backend contract
+    const formattedIntervention = healthIntervention === 'hvac_retrofit' ? 'hvac_retrofit'
+      : healthIntervention === 'passive_cooling' ? 'passive_cooling'
+      : 'none';
+
     const payload = {
       lat: markerPosition.lat,
       lon: markerPosition.lng,
       workforce_size: workforceSize ?? 100,
       daily_wage: averageDailyWage ?? 50,
-      intervention_type: healthIntervention,
+      intervention_type: formattedIntervention,
       intervention_capex: coolingCapex,
       intervention_annual_opex: coolingOpex,
     };
@@ -1376,18 +1381,25 @@ const Index = () => {
         const workforce = workforceSize ?? 100;
         const dailyWage = averageDailyWage ?? 50;
 
-        // Extract intervention analysis if present
+        // Extract nested intervention analysis matching backend contract
         const interventionRaw = data?.intervention_analysis as Record<string, unknown> | undefined;
-        const interventionAnalysis = interventionRaw ? {
-          intervention_type: String(interventionRaw.intervention_type ?? healthIntervention),
-          avoided_loss_daily: Number(interventionRaw.avoided_loss_daily ?? 0),
-          adjusted_wbgt: Number(interventionRaw.adjusted_wbgt ?? wbgtVal),
-          adjusted_productivity_loss_pct: Number(interventionRaw.adjusted_productivity_loss_pct ?? productivityLoss),
-          payback_period_years: Number(interventionRaw.payback_period_years ?? 0),
-          npv: Number(interventionRaw.npv ?? 0),
-          capex: Number(interventionRaw.capex ?? coolingCapex),
-          annual_opex: Number(interventionRaw.annual_opex ?? coolingOpex),
-        } : undefined;
+        let interventionAnalysis: import('@/components/hud/HealthResultsPanel').InterventionAnalysis | undefined;
+        if (interventionRaw) {
+          const wbgtAdj = interventionRaw.wbgt_adjustment as Record<string, unknown> | undefined;
+          const econImpact = interventionRaw.economic_impact as Record<string, unknown> | undefined;
+          const finAnalysis = interventionRaw.financial_analysis as Record<string, unknown> | undefined;
+
+          interventionAnalysis = {
+            intervention_type: String(interventionRaw.intervention_type ?? formattedIntervention),
+            adjusted_wbgt: Number(wbgtAdj?.adjusted_wbgt ?? wbgtVal),
+            adjusted_productivity_loss_pct: Number(wbgtAdj?.adjusted_productivity_loss_pct ?? productivityLoss),
+            avoided_annual_loss: Number(econImpact?.avoided_annual_economic_loss_usd ?? 0),
+            payback_period_years: finAnalysis?.payback_period_years != null ? Number(finAnalysis.payback_period_years) : null,
+            npv_10yr: Number(finAnalysis?.npv_10yr_at_10pct_discount ?? 0),
+            capex: Number(interventionRaw.capex ?? coolingCapex),
+            annual_opex: Number(interventionRaw.annual_opex ?? coolingOpex),
+          };
+        }
 
         setHealthResults({
           productivity_loss_pct: Math.min(100, Math.max(0, productivityLoss)),

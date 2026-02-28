@@ -6,11 +6,11 @@ import { cn } from '@/lib/utils';
 
 export interface InterventionAnalysis {
   intervention_type: string;
-  avoided_loss_daily: number;
   adjusted_wbgt: number;
   adjusted_productivity_loss_pct: number;
-  payback_period_years: number;
-  npv: number;
+  avoided_annual_loss: number;
+  payback_period_years: number | null;
+  npv_10yr: number;
   capex: number;
   annual_opex: number;
 }
