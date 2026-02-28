@@ -6,13 +6,24 @@ import { cn } from '@/lib/utils';
 
 export interface InterventionAnalysis {
   intervention_type: string;
-  adjusted_wbgt: number;
-  adjusted_productivity_loss_pct: number;
-  avoided_annual_loss: number;
-  payback_period_years: number | null;
-  npv_10yr: number;
-  capex: number;
-  annual_opex: number;
+  wbgt_adjustment?: {
+    adjusted_wbgt: number;
+  };
+  economic_impact?: {
+    avoided_annual_economic_loss_usd: number;
+  };
+  financial_analysis?: {
+    payback_period_years: number | null;
+    npv_10yr_at_10pct_discount: number;
+  };
+  // Legacy flat fields (kept for backwards compat)
+  adjusted_wbgt?: number;
+  adjusted_productivity_loss_pct?: number;
+  avoided_annual_loss?: number;
+  payback_period_years?: number | null;
+  npv_10yr?: number;
+  capex?: number;
+  annual_opex?: number;
 }
 
 export interface HealthResults {
