@@ -1413,6 +1413,7 @@ const Index = () => {
           intervention_analysis: interventionAnalysis,
         });
         setShowHealthResults(true);
+        setIsPanelOpen(true);
       })
       .catch((error) => {
         console.error('Health simulation failed:', error);
@@ -1436,6 +1437,7 @@ const Index = () => {
           daily_wage: dailyWage,
         });
         setShowHealthResults(true);
+        setIsPanelOpen(true);
         toast({
           title: 'Live API failed, falling back to cached Atlas data',
           description: 'Showing estimated health values from local calculations.',
