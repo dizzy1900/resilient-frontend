@@ -1381,6 +1381,9 @@ const Index = () => {
         const workforce = workforceSize ?? 100;
         const dailyWage = averageDailyWage ?? 50;
 
+        // Debug: log the raw API response
+        console.log("HEALTH API RESPONSE:", JSON.stringify(data, null, 2));
+
         // Extract nested intervention analysis matching backend contract
         const interventionRaw = data?.intervention_analysis as Record<string, unknown> | undefined;
         let interventionAnalysis: import('@/components/hud/HealthResultsPanel').InterventionAnalysis | undefined;
@@ -1391,6 +1394,18 @@ const Index = () => {
 
           interventionAnalysis = {
             intervention_type: String(interventionRaw.intervention_type ?? formattedIntervention),
+            // Nested structure for RightPanel JSX
+            wbgt_adjustment: {
+              adjusted_wbgt: Number(wbgtAdj?.adjusted_wbgt ?? wbgtVal),
+            },
+            economic_impact: {
+              avoided_annual_economic_loss_usd: Number(econImpact?.avoided_annual_economic_loss_usd ?? 0),
+            },
+            financial_analysis: {
+              payback_period_years: finAnalysis?.payback_period_years != null ? Number(finAnalysis.payback_period_years) : null,
+              npv_10yr_at_10pct_discount: Number(finAnalysis?.npv_10yr_at_10pct_discount ?? 0),
+            },
+            // Legacy flat fields for backwards compat
             adjusted_wbgt: Number(wbgtAdj?.adjusted_wbgt ?? wbgtVal),
             adjusted_productivity_loss_pct: Number(wbgtAdj?.adjusted_productivity_loss_pct ?? productivityLoss),
             avoided_annual_loss: Number(econImpact?.avoided_annual_economic_loss_usd ?? 0),
