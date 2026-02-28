@@ -1264,23 +1264,23 @@ function HealthContent({ results, visible }: { results: HealthResults | null; vi
           <div className="px-4">
             <MetricRow
               label="Adjusted WBGT"
-              value={`${intervention_analysis.adjusted_wbgt.toFixed(1)}°C`}
+              value={`${(intervention_analysis?.wbgt_adjustment?.adjusted_wbgt ?? 0).toFixed(1)}°C`}
               accent="#10b981"
             />
             <MetricRow
               label="Avoided Annual Loss"
-              value={formatCurrency(intervention_analysis.avoided_annual_loss)}
+              value={formatCurrency(intervention_analysis?.economic_impact?.avoided_annual_economic_loss_usd ?? 0)}
               accent="#10b981"
             />
             <MetricRow
               label="Payback Period"
-              value={intervention_analysis.payback_period_years != null ? `${intervention_analysis.payback_period_years.toFixed(1)} Years` : 'N/A'}
-              accent={intervention_analysis.payback_period_years != null && intervention_analysis.payback_period_years <= 5 ? '#10b981' : '#f59e0b'}
+              value={intervention_analysis?.financial_analysis?.payback_period_years != null ? `${intervention_analysis.financial_analysis.payback_period_years.toFixed(1)} Years` : 'N/A'}
+              accent={intervention_analysis?.financial_analysis?.payback_period_years != null && intervention_analysis.financial_analysis.payback_period_years <= 5 ? '#10b981' : '#f59e0b'}
             />
             <MetricRow
               label="10-Year NPV"
-              value={formatCurrency(intervention_analysis.npv_10yr)}
-              accent={intervention_analysis.npv_10yr >= 0 ? '#10b981' : '#f43f5e'}
+              value={formatCurrency(intervention_analysis?.financial_analysis?.npv_10yr_at_10pct_discount ?? 0)}
+              accent={(intervention_analysis?.financial_analysis?.npv_10yr_at_10pct_discount ?? 0) >= 0 ? '#10b981' : '#f43f5e'}
             />
           </div>
         </>
