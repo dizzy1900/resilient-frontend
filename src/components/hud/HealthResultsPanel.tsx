@@ -4,6 +4,17 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
+export interface InterventionAnalysis {
+  intervention_type: string;
+  avoided_loss_daily: number;
+  adjusted_wbgt: number;
+  adjusted_productivity_loss_pct: number;
+  payback_period_years: number;
+  npv: number;
+  capex: number;
+  annual_opex: number;
+}
+
 export interface HealthResults {
   productivity_loss_pct: number;
   economic_loss_daily: number;
@@ -13,6 +24,7 @@ export interface HealthResults {
   dengue_risk: 'High' | 'Medium' | 'Low';
   workforce_size: number;
   daily_wage: number;
+  intervention_analysis?: InterventionAnalysis;
 }
 
 interface HealthResultsPanelProps {

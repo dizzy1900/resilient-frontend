@@ -120,6 +120,9 @@ const Index = () => {
   const [healthSelectedYear, setHealthSelectedYear] = useState(2026);
   const [healthTempTarget, setHealthTempTarget] = useState(1.4);
   const [healthResults, setHealthResults] = useState<HealthResults | null>(null);
+  const [healthIntervention, setHealthIntervention] = useState<'none' | 'hvac_retrofit' | 'passive_cooling'>('none');
+  const [coolingCapex, setCoolingCapex] = useState(150000);
+  const [coolingOpex, setCoolingOpex] = useState(15000);
   const [isSplitMode, setIsSplitMode] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState<'controls' | 'data'>('controls');
@@ -1327,6 +1330,9 @@ const Index = () => {
       lon: markerPosition.lng,
       workforce_size: workforceSize ?? 100,
       daily_wage: averageDailyWage ?? 50,
+      intervention_type: healthIntervention,
+      intervention_capex: coolingCapex,
+      intervention_annual_opex: coolingOpex,
     };
 
     fetchWithRetry(healthEndpoint, {
@@ -1370,6 +1376,19 @@ const Index = () => {
         const workforce = workforceSize ?? 100;
         const dailyWage = averageDailyWage ?? 50;
 
+        // Extract intervention analysis if present
+        const interventionRaw = data?.intervention_analysis as Record<string, unknown> | undefined;
+        const interventionAnalysis = interventionRaw ? {
+          intervention_type: String(interventionRaw.intervention_type ?? healthIntervention),
+          avoided_loss_daily: Number(interventionRaw.avoided_loss_daily ?? 0),
+          adjusted_wbgt: Number(interventionRaw.adjusted_wbgt ?? wbgtVal),
+          adjusted_productivity_loss_pct: Number(interventionRaw.adjusted_productivity_loss_pct ?? productivityLoss),
+          payback_period_years: Number(interventionRaw.payback_period_years ?? 0),
+          npv: Number(interventionRaw.npv ?? 0),
+          capex: Number(interventionRaw.capex ?? coolingCapex),
+          annual_opex: Number(interventionRaw.annual_opex ?? coolingOpex),
+        } : undefined;
+
         setHealthResults({
           productivity_loss_pct: Math.min(100, Math.max(0, productivityLoss)),
           economic_loss_daily: Math.round(economicDaily),
@@ -1379,6 +1398,7 @@ const Index = () => {
           dengue_risk: 'Low',
           workforce_size: workforce,
           daily_wage: dailyWage,
+          intervention_analysis: interventionAnalysis,
         });
         setShowHealthResults(true);
       })
@@ -1412,7 +1432,7 @@ const Index = () => {
       .finally(() => {
         setIsHealthSimulating(false);
       });
-  }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget]);
+  }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex]);
 
   const getCurrentSimulateHandler = useCallback(() => {
     if (mode === 'agriculture') return handleSimulate;
