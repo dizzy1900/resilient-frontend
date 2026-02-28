@@ -1269,18 +1269,18 @@ function HealthContent({ results, visible }: { results: HealthResults | null; vi
             />
             <MetricRow
               label="Avoided Annual Loss"
-              value={formatCurrency(intervention_analysis.avoided_loss_daily * 365)}
+              value={formatCurrency(intervention_analysis.avoided_annual_loss)}
               accent="#10b981"
             />
             <MetricRow
               label="Payback Period"
-              value={`${intervention_analysis.payback_period_years.toFixed(1)} Years`}
-              accent={intervention_analysis.payback_period_years <= 5 ? '#10b981' : '#f59e0b'}
+              value={intervention_analysis.payback_period_years != null ? `${intervention_analysis.payback_period_years.toFixed(1)} Years` : 'N/A'}
+              accent={intervention_analysis.payback_period_years != null && intervention_analysis.payback_period_years <= 5 ? '#10b981' : '#f59e0b'}
             />
             <MetricRow
               label="10-Year NPV"
-              value={formatCurrency(intervention_analysis.npv)}
-              accent={intervention_analysis.npv >= 0 ? '#10b981' : '#f43f5e'}
+              value={formatCurrency(intervention_analysis.npv_10yr)}
+              accent={intervention_analysis.npv_10yr >= 0 ? '#10b981' : '#f43f5e'}
             />
           </div>
         </>
