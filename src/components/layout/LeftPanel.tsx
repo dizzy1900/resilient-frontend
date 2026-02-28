@@ -215,6 +215,12 @@ export interface LeftPanelProps {
   onHealthSelectedYearChange: (v: number) => void;
   onHealthSimulate: () => void;
   isHealthSimulating: boolean;
+  healthIntervention: 'none' | 'hvac_retrofit' | 'passive_cooling';
+  onHealthInterventionChange: (v: 'none' | 'hvac_retrofit' | 'passive_cooling') => void;
+  coolingCapex: number;
+  onCoolingCapexChange: (v: number) => void;
+  coolingOpex: number;
+  onCoolingOpexChange: (v: number) => void;
   onPortfolioResultsChange?: (data: import("@/types/portfolio").PortfolioAnalysisResult | null) => void;
   coastalAdjustedLifespan?: number | null;
   floodAdjustedLifespan?: number | null;
@@ -306,6 +312,12 @@ export function LeftPanel({
   onHealthSelectedYearChange,
   onHealthSimulate,
   isHealthSimulating,
+  healthIntervention,
+  onHealthInterventionChange,
+  coolingCapex,
+  onCoolingCapexChange,
+  coolingOpex,
+  onCoolingOpexChange,
   onPortfolioResultsChange,
   coastalAdjustedLifespan,
   floodAdjustedLifespan,
@@ -525,6 +537,12 @@ export function LeftPanel({
             onHealthSelectedYearChange={onHealthSelectedYearChange}
             onHealthSimulate={onHealthSimulate}
             isHealthSimulating={isHealthSimulating}
+            healthIntervention={healthIntervention}
+            onHealthInterventionChange={onHealthInterventionChange}
+            coolingCapex={coolingCapex}
+            onCoolingCapexChange={onCoolingCapexChange}
+            coolingOpex={coolingOpex}
+            onCoolingOpexChange={onCoolingOpexChange}
             onPortfolioResultsChange={onPortfolioResultsChange}
             propertyValue={propertyValue}
             onPropertyValueChange={onPropertyValueChange}
@@ -618,6 +636,12 @@ export interface ModeContentProps {
   onHealthSelectedYearChange: (v: number) => void;
   onHealthSimulate: () => void;
   isHealthSimulating: boolean;
+  healthIntervention: 'none' | 'hvac_retrofit' | 'passive_cooling';
+  onHealthInterventionChange: (v: 'none' | 'hvac_retrofit' | 'passive_cooling') => void;
+  coolingCapex: number;
+  onCoolingCapexChange: (v: number) => void;
+  coolingOpex: number;
+  onCoolingOpexChange: (v: number) => void;
   onPortfolioResultsChange?: (data: import("@/types/portfolio").PortfolioAnalysisResult | null) => void;
   propertyValue: number;
   onPropertyValueChange: (v: number) => void;
@@ -710,6 +734,12 @@ export function ModeContent(props: ModeContentProps) {
     onHealthSelectedYearChange,
     onHealthSimulate,
     isHealthSimulating,
+    healthIntervention,
+    onHealthInterventionChange,
+    coolingCapex,
+    onCoolingCapexChange,
+    coolingOpex,
+    onCoolingOpexChange,
     onPortfolioResultsChange,
     propertyValue,
     onPropertyValueChange,
@@ -1358,6 +1388,78 @@ export function ModeContent(props: ModeContentProps) {
                 }}
               />
             </div>
+          </div>
+        </SectionRow>
+
+        <SimDivider />
+
+        {/* Workplace Adaptation */}
+        <SectionRow label="Workplace Adaptation">
+          <div className="space-y-3">
+            <div>
+              <div className="cb-label mb-1.5">Cooling Intervention</div>
+              <Select
+                value={healthIntervention}
+                onValueChange={(v) => onHealthInterventionChange(v as 'none' | 'hvac_retrofit' | 'passive_cooling')}
+              >
+                <SelectTrigger
+                  className="h-7 border-0 border-b rounded-none bg-transparent text-xs focus:ring-0"
+                  style={{ color: 'var(--cb-text)', borderColor: 'var(--cb-border)', borderBottomWidth: 1, borderBottomStyle: 'solid' }}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  <SelectItem value="hvac_retrofit">HVAC Retrofit</SelectItem>
+                  <SelectItem value="passive_cooling">Passive Cooling</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {healthIntervention !== 'none' && (
+              <>
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="cb-label">CAPEX ($)</span>
+                    <span style={{ fontSize: 10, color: 'var(--cb-text)', fontFamily: 'ui-monospace, monospace' }}>
+                      ${coolingCapex.toLocaleString()}
+                    </span>
+                  </div>
+                  <Slider
+                    value={[coolingCapex]}
+                    onValueChange={(v) => onCoolingCapexChange(v[0])}
+                    min={10000}
+                    max={500000}
+                    step={5000}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between mt-0.5" style={{ fontSize: 9, color: 'var(--cb-secondary)' }}>
+                    <span>$10K</span>
+                    <span>$500K</span>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="cb-label">Annual OPEX ($)</span>
+                    <span style={{ fontSize: 10, color: 'var(--cb-text)', fontFamily: 'ui-monospace, monospace' }}>
+                      ${coolingOpex.toLocaleString()}
+                    </span>
+                  </div>
+                  <Slider
+                    value={[coolingOpex]}
+                    onValueChange={(v) => onCoolingOpexChange(v[0])}
+                    min={1000}
+                    max={100000}
+                    step={1000}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between mt-0.5" style={{ fontSize: 9, color: 'var(--cb-secondary)' }}>
+                    <span>$1K</span>
+                    <span>$100K</span>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </SectionRow>
 

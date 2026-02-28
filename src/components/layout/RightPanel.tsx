@@ -1223,7 +1223,7 @@ function HealthContent({ results, visible }: { results: HealthResults | null; vi
     );
   }
 
-  const { productivity_loss_pct, economic_loss_daily, wbgt, projected_temp, malaria_risk, dengue_risk } = results;
+  const { productivity_loss_pct, economic_loss_daily, wbgt, projected_temp, malaria_risk, dengue_risk, intervention_analysis } = results;
   const lossColor = productivity_loss_pct >= 30 ? '#f43f5e' : productivity_loss_pct >= 15 ? '#f59e0b' : '#10b981';
 
   return (
@@ -1257,6 +1257,34 @@ function HealthContent({ results, visible }: { results: HealthResults | null; vi
           accent={dengue_risk === 'High' ? '#f43f5e' : dengue_risk === 'Medium' ? '#f59e0b' : '#10b981'}
         />
       </div>
+
+      {intervention_analysis && (
+        <>
+          <SectionDivider title="Cooling ROI Analysis" />
+          <div className="px-4">
+            <MetricRow
+              label="Adjusted WBGT"
+              value={`${intervention_analysis.adjusted_wbgt.toFixed(1)}°C`}
+              accent="#10b981"
+            />
+            <MetricRow
+              label="Avoided Annual Loss"
+              value={formatCurrency(intervention_analysis.avoided_loss_daily * 365)}
+              accent="#10b981"
+            />
+            <MetricRow
+              label="Payback Period"
+              value={`${intervention_analysis.payback_period_years.toFixed(1)} Years`}
+              accent={intervention_analysis.payback_period_years <= 5 ? '#10b981' : '#f59e0b'}
+            />
+            <MetricRow
+              label="10-Year NPV"
+              value={formatCurrency(intervention_analysis.npv)}
+              accent={intervention_analysis.npv >= 0 ? '#10b981' : '#f43f5e'}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }
