@@ -1616,6 +1616,12 @@ const Index = () => {
         onHealthSelectedYearChange={setHealthSelectedYear}
         onHealthSimulate={handleHealthSimulate}
         isHealthSimulating={isHealthSimulating}
+        healthIntervention={healthIntervention}
+        onHealthInterventionChange={setHealthIntervention}
+        coolingCapex={coolingCapex}
+        onCoolingCapexChange={setCoolingCapex}
+        coolingOpex={coolingOpex}
+        onCoolingOpexChange={setCoolingOpex}
         onPortfolioResultsChange={setPortfolioResults}
         coastalAdjustedLifespan={coastalResults.adjustedLifespan ?? undefined}
         floodAdjustedLifespan={floodResults.adjustedLifespan ?? undefined}
@@ -1793,6 +1799,12 @@ const Index = () => {
           onHealthSelectedYearChange: setHealthSelectedYear,
           onHealthSimulate: handleHealthSimulate,
           isHealthSimulating,
+          healthIntervention,
+          onHealthInterventionChange: setHealthIntervention,
+          coolingCapex,
+          onCoolingCapexChange: setCoolingCapex,
+          coolingOpex,
+          onCoolingOpexChange: setCoolingOpex,
           onPortfolioResultsChange: setPortfolioResults,
           propertyValue,
           onPropertyValueChange: setPropertyValue,
