@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { X, MapPin, Landmark } from 'lucide-react';
+import { X, MapPin, Landmark, Download, Loader2 } from 'lucide-react';
+import { generateTearSheet } from '@/utils/pdfExport';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { HealthResults } from '@/components/hud/HealthResultsPanel';
 import { FloodFrequencyChart, StormChartDataItem } from '@/components/analytics/FloodFrequencyChart';
@@ -288,58 +289,108 @@ export function RightPanel({
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0">
-        <RightPanelContent
-          mode={mode}
-          locationName={locationName}
-          isLoading={isLoading}
-          showResults={showResults}
-          agricultureResults={agricultureResults}
-          coastalResults={coastalResults}
-          floodResults={floodResults}
-          healthResults={healthResults}
-          mangroveWidth={mangroveWidth}
-          greenRoofsEnabled={greenRoofsEnabled}
-          permeablePavementEnabled={permeablePavementEnabled}
-          tempIncrease={tempIncrease}
-          rainChange={rainChange}
-          baselineZone={baselineZone}
-          currentZone={currentZone}
-          globalTempTarget={globalTempTarget}
-          spatialAnalysis={spatialAnalysis}
-          isSpatialLoading={isSpatialLoading}
-          ndviData={ndviData}
-          isNdviLoading={isNdviLoading}
-          cropType={cropType}
-          portfolioAssets={portfolioAssets}
-          atlasFinancialData={atlasFinancialData}
-          atlasMonteCarloData={atlasMonteCarloData}
-          atlasExecutiveSummary={atlasExecutiveSummary}
-          atlasSensitivityData={atlasSensitivityData}
-          atlasAdaptationStrategy={atlasAdaptationStrategy}
-          atlasSatellitePreview={atlasSatellitePreview}
-          atlasMarketIntelligence={atlasMarketIntelligence}
-          atlasTemporalAnalysis={atlasTemporalAnalysis}
-          atlasAdaptationPortfolio={atlasAdaptationPortfolio}
-          isFinanceSimulating={isFinanceSimulating}
-          chartData={chartData}
-          projectParams={projectParams}
-          defensiveProjectParams={defensiveProjectParams}
-          assetLifespan={assetLifespan}
-          dailyRevenue={dailyRevenue}
-          propertyValue={propertyValue}
-          polygonExposurePct={polygonExposurePct}
-          polygonTotalArea={polygonTotalArea}
-          polygonExposedArea={polygonExposedArea}
-          polygonTotalAssetValue={polygonTotalAssetValue}
-          polygonExposedValue={polygonExposedValue}
-          polygonValueAtRisk={polygonValueAtRisk}
-          polygonProtectedValue={polygonProtectedValue}
-          portfolioResults={portfolioResults}
-          priceShockData={priceShockData}
-          latitude={latitude}
-          longitude={longitude}
-        />
+        <div id="report-content">
+          <RightPanelContent
+            mode={mode}
+            locationName={locationName}
+            isLoading={isLoading}
+            showResults={showResults}
+            agricultureResults={agricultureResults}
+            coastalResults={coastalResults}
+            floodResults={floodResults}
+            healthResults={healthResults}
+            mangroveWidth={mangroveWidth}
+            greenRoofsEnabled={greenRoofsEnabled}
+            permeablePavementEnabled={permeablePavementEnabled}
+            tempIncrease={tempIncrease}
+            rainChange={rainChange}
+            baselineZone={baselineZone}
+            currentZone={currentZone}
+            globalTempTarget={globalTempTarget}
+            spatialAnalysis={spatialAnalysis}
+            isSpatialLoading={isSpatialLoading}
+            ndviData={ndviData}
+            isNdviLoading={isNdviLoading}
+            cropType={cropType}
+            portfolioAssets={portfolioAssets}
+            atlasFinancialData={atlasFinancialData}
+            atlasMonteCarloData={atlasMonteCarloData}
+            atlasExecutiveSummary={atlasExecutiveSummary}
+            atlasSensitivityData={atlasSensitivityData}
+            atlasAdaptationStrategy={atlasAdaptationStrategy}
+            atlasSatellitePreview={atlasSatellitePreview}
+            atlasMarketIntelligence={atlasMarketIntelligence}
+            atlasTemporalAnalysis={atlasTemporalAnalysis}
+            atlasAdaptationPortfolio={atlasAdaptationPortfolio}
+            isFinanceSimulating={isFinanceSimulating}
+            chartData={chartData}
+            projectParams={projectParams}
+            defensiveProjectParams={defensiveProjectParams}
+            assetLifespan={assetLifespan}
+            dailyRevenue={dailyRevenue}
+            propertyValue={propertyValue}
+            polygonExposurePct={polygonExposurePct}
+            polygonTotalArea={polygonTotalArea}
+            polygonExposedArea={polygonExposedArea}
+            polygonTotalAssetValue={polygonTotalAssetValue}
+            polygonExposedValue={polygonExposedValue}
+            polygonValueAtRisk={polygonValueAtRisk}
+            polygonProtectedValue={polygonProtectedValue}
+            portfolioResults={portfolioResults}
+            priceShockData={priceShockData}
+            latitude={latitude}
+            longitude={longitude}
+          />
+        </div>
+
+        {showResults && (
+          <ExportPDFButton
+            locationName={locationName || 'Unknown Location'}
+            mode={mode}
+          />
+        )}
       </div>
+    </div>
+  );
+}
+
+function ExportPDFButton({ locationName, mode }: { locationName: string; mode: string }) {
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = useCallback(() => {
+    setIsExporting(true);
+    generateTearSheet('report-content', locationName, mode.toUpperCase())
+      .finally(() => setIsExporting(false));
+  }, [locationName, mode]);
+
+  return (
+    <div className="px-4 py-4" style={{ borderTop: '1px solid var(--cb-border)' }}>
+      <button
+        type="button"
+        onClick={handleExport}
+        disabled={isExporting}
+        className="flex items-center justify-center gap-2 w-full"
+        style={{
+          border: '1px solid var(--cb-border)',
+          padding: '8px 16px',
+          fontFamily: 'monospace',
+          fontSize: 10,
+          letterSpacing: '0.08em',
+          color: isExporting ? 'var(--cb-secondary)' : 'var(--cb-text)',
+          backgroundColor: 'transparent',
+          cursor: isExporting ? 'wait' : 'pointer',
+          transition: 'border-color 0.15s, color 0.15s',
+          opacity: isExporting ? 0.7 : 1,
+        }}
+        onMouseEnter={e => { if (!isExporting) (e.currentTarget.style.borderColor = 'var(--cb-text)'); }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--cb-border)'; }}
+      >
+        {isExporting ? (
+          <><Loader2 style={{ width: 12, height: 12 }} className="animate-spin" /> GENERATING REPORT...</>
+        ) : (
+          <><Download style={{ width: 12, height: 12 }} /> DOWNLOAD PDF REPORT</>
+        )}
+      </button>
     </div>
   );
 }
