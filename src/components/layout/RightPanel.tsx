@@ -1285,6 +1285,29 @@ function HealthContent({ results, visible }: { results: HealthResults | null; vi
           </div>
         </>
       )}
+
+      {results?.public_health_analysis && (
+        <>
+          <SectionDivider title="Public Sector ROI (DALYs)" />
+          <div className="px-4">
+            <MetricRow
+              label="DALYs Averted"
+              value={(results.public_health_analysis?.dalys_averted ?? 0).toLocaleString(undefined, { maximumFractionDigits: 1 })}
+              accent="#8b5cf6"
+            />
+            <MetricRow
+              label="Economic Value Preserved"
+              value={formatCurrency(results.public_health_analysis?.economic_value_preserved_usd ?? 0)}
+              accent="#10b981"
+            />
+            <MetricRow
+              label="Value per DALY"
+              value={formatCurrency(results.public_health_analysis?.monetization?.value_per_daly_usd ?? 0)}
+              accent="#3b82f6"
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }
