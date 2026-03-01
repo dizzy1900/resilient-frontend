@@ -26,6 +26,14 @@ export interface InterventionAnalysis {
   annual_opex?: number;
 }
 
+export interface PublicHealthAnalysis {
+  dalys_averted?: number;
+  economic_value_preserved_usd?: number;
+  monetization?: {
+    value_per_daly_usd?: number;
+  };
+}
+
 export interface HealthResults {
   productivity_loss_pct: number;
   economic_loss_daily: number;
@@ -36,6 +44,7 @@ export interface HealthResults {
   workforce_size: number;
   daily_wage: number;
   intervention_analysis?: InterventionAnalysis;
+  public_health_analysis?: PublicHealthAnalysis;
 }
 
 interface HealthResultsPanelProps {

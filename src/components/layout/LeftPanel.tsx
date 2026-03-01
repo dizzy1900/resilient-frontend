@@ -215,8 +215,12 @@ export interface LeftPanelProps {
   onHealthSelectedYearChange: (v: number) => void;
   onHealthSimulate: () => void;
   isHealthSimulating: boolean;
-  healthIntervention: 'none' | 'hvac_retrofit' | 'passive_cooling';
-  onHealthInterventionChange: (v: 'none' | 'hvac_retrofit' | 'passive_cooling') => void;
+  healthIntervention: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication';
+  onHealthInterventionChange: (v: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication') => void;
+  populationSize: number;
+  onPopulationSizeChange: (v: number) => void;
+  gdpPerCapita: number;
+  onGdpPerCapitaChange: (v: number) => void;
   coolingCapex: number;
   onCoolingCapexChange: (v: number) => void;
   coolingOpex: number;
@@ -318,6 +322,10 @@ export function LeftPanel({
   onCoolingCapexChange,
   coolingOpex,
   onCoolingOpexChange,
+  populationSize,
+  onPopulationSizeChange,
+  gdpPerCapita,
+  onGdpPerCapitaChange,
   onPortfolioResultsChange,
   coastalAdjustedLifespan,
   floodAdjustedLifespan,
@@ -543,6 +551,10 @@ export function LeftPanel({
             onCoolingCapexChange={onCoolingCapexChange}
             coolingOpex={coolingOpex}
             onCoolingOpexChange={onCoolingOpexChange}
+            populationSize={populationSize}
+            onPopulationSizeChange={onPopulationSizeChange}
+            gdpPerCapita={gdpPerCapita}
+            onGdpPerCapitaChange={onGdpPerCapitaChange}
             onPortfolioResultsChange={onPortfolioResultsChange}
             propertyValue={propertyValue}
             onPropertyValueChange={onPropertyValueChange}
@@ -636,8 +648,12 @@ export interface ModeContentProps {
   onHealthSelectedYearChange: (v: number) => void;
   onHealthSimulate: () => void;
   isHealthSimulating: boolean;
-  healthIntervention: 'none' | 'hvac_retrofit' | 'passive_cooling';
-  onHealthInterventionChange: (v: 'none' | 'hvac_retrofit' | 'passive_cooling') => void;
+  healthIntervention: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication';
+  onHealthInterventionChange: (v: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication') => void;
+  populationSize: number;
+  onPopulationSizeChange: (v: number) => void;
+  gdpPerCapita: number;
+  onGdpPerCapitaChange: (v: number) => void;
   coolingCapex: number;
   onCoolingCapexChange: (v: number) => void;
   coolingOpex: number;
@@ -740,6 +756,10 @@ export function ModeContent(props: ModeContentProps) {
     onCoolingCapexChange,
     coolingOpex,
     onCoolingOpexChange,
+    populationSize,
+    onPopulationSizeChange,
+    gdpPerCapita,
+    onGdpPerCapitaChange,
     onPortfolioResultsChange,
     propertyValue,
     onPropertyValueChange,
@@ -1400,7 +1420,7 @@ export function ModeContent(props: ModeContentProps) {
               <div className="cb-label mb-1.5">Cooling Intervention</div>
               <Select
                 value={healthIntervention}
-                onValueChange={(v) => onHealthInterventionChange(v as 'none' | 'hvac_retrofit' | 'passive_cooling')}
+                onValueChange={(v) => onHealthInterventionChange(v as any)}
               >
                 <SelectTrigger
                   className="h-7 border-0 border-b rounded-none bg-transparent text-xs focus:ring-0"
@@ -1412,6 +1432,8 @@ export function ModeContent(props: ModeContentProps) {
                   <SelectItem value="none">None</SelectItem>
                   <SelectItem value="hvac_retrofit">HVAC Retrofit</SelectItem>
                   <SelectItem value="passive_cooling">Passive Cooling</SelectItem>
+                  <SelectItem value="urban_cooling_center">Urban Cooling Centers</SelectItem>
+                  <SelectItem value="mosquito_eradication">Mosquito Eradication</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -1460,6 +1482,54 @@ export function ModeContent(props: ModeContentProps) {
                 </div>
               </>
             )}
+          </div>
+        </SectionRow>
+
+        <SimDivider />
+
+        {/* Public Sector Input */}
+        <SectionRow label="Public Sector Input">
+          <div className="space-y-3">
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="cb-label">Affected Population</span>
+                <span style={{ fontSize: 10, color: 'var(--cb-text)', fontFamily: 'ui-monospace, monospace' }}>
+                  {populationSize.toLocaleString()}
+                </span>
+              </div>
+              <Slider
+                value={[populationSize]}
+                onValueChange={(v) => onPopulationSizeChange(v[0])}
+                min={1000}
+                max={5000000}
+                step={1000}
+                className="w-full"
+              />
+              <div className="flex justify-between mt-0.5" style={{ fontSize: 9, color: 'var(--cb-secondary)' }}>
+                <span>1K</span>
+                <span>5M</span>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="cb-label">Local GDP per Capita ($)</span>
+                <span style={{ fontSize: 10, color: 'var(--cb-text)', fontFamily: 'ui-monospace, monospace' }}>
+                  ${gdpPerCapita.toLocaleString()}
+                </span>
+              </div>
+              <Slider
+                value={[gdpPerCapita]}
+                onValueChange={(v) => onGdpPerCapitaChange(v[0])}
+                min={500}
+                max={80000}
+                step={500}
+                className="w-full"
+              />
+              <div className="flex justify-between mt-0.5" style={{ fontSize: 9, color: 'var(--cb-secondary)' }}>
+                <span>$500</span>
+                <span>$80K</span>
+              </div>
+            </div>
           </div>
         </SectionRow>
 

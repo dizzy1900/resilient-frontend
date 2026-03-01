@@ -120,9 +120,11 @@ const Index = () => {
   const [healthSelectedYear, setHealthSelectedYear] = useState(2026);
   const [healthTempTarget, setHealthTempTarget] = useState(1.4);
   const [healthResults, setHealthResults] = useState<HealthResults | null>(null);
-  const [healthIntervention, setHealthIntervention] = useState<'none' | 'hvac_retrofit' | 'passive_cooling'>('none');
+  const [healthIntervention, setHealthIntervention] = useState<'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication'>('none');
   const [coolingCapex, setCoolingCapex] = useState(150000);
   const [coolingOpex, setCoolingOpex] = useState(15000);
+  const [populationSize, setPopulationSize] = useState(100000);
+  const [gdpPerCapita, setGdpPerCapita] = useState(8500);
   const [isSplitMode, setIsSplitMode] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState<'controls' | 'data'>('controls');
@@ -1326,9 +1328,7 @@ const Index = () => {
     setShowHealthResults(false);
 
     // Format intervention type to strict snake_case for backend contract
-    const formattedIntervention = healthIntervention === 'hvac_retrofit' ? 'hvac_retrofit'
-      : healthIntervention === 'passive_cooling' ? 'passive_cooling'
-      : 'none';
+    const formattedIntervention = healthIntervention;
 
     const payload = {
       lat: markerPosition.lat,
@@ -1338,6 +1338,8 @@ const Index = () => {
       intervention_type: formattedIntervention,
       intervention_capex: coolingCapex,
       intervention_annual_opex: coolingOpex,
+      population_size: populationSize,
+      gdp_per_capita_usd: gdpPerCapita,
     };
 
     fetchWithRetry(healthEndpoint, {
@@ -1416,6 +1418,9 @@ const Index = () => {
           };
         }
 
+        // Extract public health DALY analysis
+        const publicHealthRaw = data?.public_health_analysis as Record<string, unknown> | undefined;
+
         setHealthResults({
           productivity_loss_pct: Math.min(100, Math.max(0, productivityLoss)),
           economic_loss_daily: Math.round(economicDaily),
@@ -1426,6 +1431,13 @@ const Index = () => {
           workforce_size: workforce,
           daily_wage: dailyWage,
           intervention_analysis: interventionAnalysis,
+          public_health_analysis: publicHealthRaw ? {
+            dalys_averted: Number(publicHealthRaw.dalys_averted ?? 0),
+            economic_value_preserved_usd: Number(publicHealthRaw.economic_value_preserved_usd ?? 0),
+            monetization: {
+              value_per_daly_usd: Number((publicHealthRaw.monetization as Record<string, unknown> | undefined)?.value_per_daly_usd ?? 0),
+            },
+          } : undefined,
         });
         setShowHealthResults(true);
         setIsPanelOpen(true);
@@ -1461,7 +1473,7 @@ const Index = () => {
       .finally(() => {
         setIsHealthSimulating(false);
       });
-  }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex]);
+  }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex, populationSize, gdpPerCapita]);
 
   const getCurrentSimulateHandler = useCallback(() => {
     if (mode === 'agriculture') return handleSimulate;
@@ -1651,6 +1663,10 @@ const Index = () => {
         onCoolingCapexChange={setCoolingCapex}
         coolingOpex={coolingOpex}
         onCoolingOpexChange={setCoolingOpex}
+        populationSize={populationSize}
+        onPopulationSizeChange={setPopulationSize}
+        gdpPerCapita={gdpPerCapita}
+        onGdpPerCapitaChange={setGdpPerCapita}
         onPortfolioResultsChange={setPortfolioResults}
         coastalAdjustedLifespan={coastalResults.adjustedLifespan ?? undefined}
         floodAdjustedLifespan={floodResults.adjustedLifespan ?? undefined}
@@ -1834,6 +1850,10 @@ const Index = () => {
           onCoolingCapexChange: setCoolingCapex,
           coolingOpex,
           onCoolingOpexChange: setCoolingOpex,
+          populationSize,
+          onPopulationSizeChange: setPopulationSize,
+          gdpPerCapita,
+          onGdpPerCapitaChange: setGdpPerCapita,
           onPortfolioResultsChange: setPortfolioResults,
           propertyValue,
           onPropertyValueChange: setPropertyValue,
