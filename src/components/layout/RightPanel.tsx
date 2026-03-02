@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { X, MapPin, Landmark, Download, Loader2 } from 'lucide-react';
+import { X, MapPin, Landmark, Download, Loader2, Sparkles } from 'lucide-react';
+import { fetchWithRetry } from '@/utils/api';
 import { generateTearSheet } from '@/utils/pdfExport';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { HealthResults } from '@/components/hud/HealthResultsPanel';
@@ -498,6 +499,46 @@ export function RightPanelContent({
   portfolioResults,
   priceShockData,
 }: RightPanelContentProps) {
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [isGeneratingAi, setIsGeneratingAi] = useState(false);
+
+  useEffect(() => {
+    setAiSummary(null);
+  }, [mode, locationName]);
+
+  const generateExecutiveSummary = useCallback(async () => {
+    setIsGeneratingAi(true);
+    try {
+      const activeData =
+        mode === 'health' ? healthResults :
+        mode === 'agriculture' ? agricultureResults :
+        mode === 'coastal' ? coastalResults :
+        mode === 'flood' ? floodResults :
+        mode === 'finance' ? atlasFinancialData : null;
+
+      const res = await fetchWithRetry(
+        'https://web-production-8ff9e.up.railway.app/api/v1/ai/executive-summary',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            module_name: mode,
+            location_name: locationName || 'Unknown Location',
+            simulation_data: activeData,
+          }),
+        }
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setAiSummary(data.summary_text ?? data.summary ?? null);
+    } catch (err) {
+      console.error('[Executive Summary]', err);
+      setAiSummary(null);
+    } finally {
+      setIsGeneratingAi(false);
+    }
+  }, [mode, locationName, healthResults, agricultureResults, coastalResults, floodResults, atlasFinancialData]);
+
   if (isLoading) return <LoadingState />;
 
   // In portfolio mode: display assets from API (asset_results) or CSV (portfolioAssets).
@@ -518,6 +559,52 @@ export function RightPanelContent({
 
   return (
     <>
+      {/* Executive Insight */}
+      {showResults && mode !== 'portfolio' && (
+        <div className="px-4 pt-4 pb-2">
+          <span className="cb-section-heading">✨ EXECUTIVE INSIGHT</span>
+          {aiSummary ? (
+            <div
+              className="mt-2 rounded-md px-3 py-3"
+              style={{
+                backgroundColor: 'color-mix(in srgb, var(--cb-bg) 80%, var(--cb-text) 5%)',
+                border: '1px solid var(--cb-border)',
+              }}
+            >
+              <p style={{ fontSize: 12, lineHeight: 1.7, color: 'var(--cb-text)' }}>
+                {aiSummary}
+              </p>
+            </div>
+          ) : isGeneratingAi ? (
+            <div className="mt-2 flex items-center gap-2" style={{ color: 'var(--cb-secondary)', fontSize: 10 }}>
+              <Loader2 style={{ width: 12, height: 12 }} className="animate-spin" />
+              Synthesizing data…
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={generateExecutiveSummary}
+              className="mt-2 flex items-center gap-1.5"
+              style={{
+                fontSize: 10,
+                letterSpacing: '0.06em',
+                color: 'var(--cb-secondary)',
+                background: 'none',
+                border: '1px solid var(--cb-border)',
+                padding: '5px 10px',
+                cursor: 'pointer',
+                transition: 'color 0.15s',
+                fontFamily: 'monospace',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--cb-text)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--cb-secondary)')}
+            >
+              <Sparkles style={{ width: 10, height: 10 }} /> GENERATE BRIEFING
+            </button>
+          )}
+        </div>
+      )}
+
       {mode === 'portfolio' && portfolioResults != null && portfolioResults.portfolio_summary != null && (
         <AggregatePortfolioSummary summary={portfolioResults.portfolio_summary} />
       )}
