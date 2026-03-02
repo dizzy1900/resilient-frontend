@@ -516,13 +516,15 @@ export function RightPanelContent({
         mode === 'flood' ? floodResults :
         mode === 'finance' ? atlasFinancialData : null;
 
+      const payloadModuleName = (mode === 'health' && activeData?.public_health_analysis) ? 'health_public' : mode;
+
       const res = await fetchWithRetry(
         'https://web-production-8ff9e.up.railway.app/api/v1/ai/executive-summary',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            module_name: mode,
+            module_name: payloadModuleName,
             location_name: locationName || 'Unknown Location',
             simulation_data: activeData,
           }),
