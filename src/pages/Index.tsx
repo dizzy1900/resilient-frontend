@@ -1681,7 +1681,7 @@ const Index = () => {
         visible={isPanelOpen}
         onClose={() => setIsPanelOpen(false)}
         mode={mode}
-        locationName={atlasLocationName}
+        locationName={atlasLocationName || reverseLocationName || 'Unknown Location'}
         latitude={markerPosition?.lat ?? null}
         longitude={markerPosition?.lng ?? null}
         isLoading={isCurrentlySimulating || (mode === 'finance' && isFinanceSimulating) || isPolygonSimulating}
