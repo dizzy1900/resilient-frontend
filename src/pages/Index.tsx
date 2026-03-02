@@ -934,6 +934,7 @@ const Index = () => {
           console.error('Coastal results mapping error:', e);
         }
         setShowCoastalResults(true);
+        setIsPanelOpen(true);
       })
       .catch((err) => {
         console.error('Simulation failed:', err);
@@ -942,6 +943,7 @@ const Index = () => {
           description: err instanceof Error ? err.message : 'Coastal simulation failed.',
           variant: 'destructive',
         });
+        setIsPanelOpen(true);
       })
       .finally(() => {
         setIsCoastalSimulating(false);
@@ -1075,6 +1077,7 @@ const Index = () => {
           adjustedLifespan: newLifespan,
         });
         setShowFloodResults(true);
+        setIsPanelOpen(true);
       })
       .catch((err) => {
         console.error('Simulation failed:', err);
@@ -1083,6 +1086,7 @@ const Index = () => {
           description: err instanceof Error ? err.message : 'Flood simulation failed.',
           variant: 'destructive',
         });
+        setIsPanelOpen(true);
       })
       .finally(() => {
         setIsFloodSimulating(false);
