@@ -504,7 +504,7 @@ export function RightPanelContent({
 
   useEffect(() => {
     setAiSummary(null);
-  }, [mode, locationName]);
+  }, [mode, locationName, healthResults, agricultureResults, coastalResults, floodResults]);
 
   const generateExecutiveSummary = useCallback(async () => {
     setIsGeneratingAi(true);
