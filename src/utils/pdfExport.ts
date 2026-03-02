@@ -16,7 +16,7 @@ export async function generateTearSheet(
     scale: 2,
     useCORS: true,
     logging: false,
-    backgroundColor: '#0a0a0a',
+    backgroundColor: '#1a1a1a',
   });
 
   const pdf = new jsPDF('p', 'mm', 'a4');

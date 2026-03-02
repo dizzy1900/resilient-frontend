@@ -345,7 +345,7 @@ export function RightPanel({
 
         {showResults && (
           <ExportPDFButton
-            locationName={locationName || 'Unknown Location'}
+            locationName={locationName || (latitude && longitude ? `Lat: ${latitude.toFixed(4)}, Lon: ${longitude.toFixed(4)}` : 'Unknown Location')}
             mode={mode}
           />
         )}
@@ -364,7 +364,7 @@ function ExportPDFButton({ locationName, mode }: { locationName: string; mode: s
   }, [locationName, mode]);
 
   return (
-    <div className="px-4 py-4" style={{ borderTop: '1px solid var(--cb-border)' }}>
+    <div className="px-4 py-4" style={{ borderTop: '1px solid var(--cb-border)' }} data-html2canvas-ignore="true">
       <button
         type="button"
         onClick={handleExport}
