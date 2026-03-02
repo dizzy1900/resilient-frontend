@@ -215,8 +215,8 @@ export interface LeftPanelProps {
   onHealthSelectedYearChange: (v: number) => void;
   onHealthSimulate: () => void;
   isHealthSimulating: boolean;
-  healthIntervention: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication';
-  onHealthInterventionChange: (v: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication') => void;
+  healthIntervention: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication' | 'hospital_expansion';
+  onHealthInterventionChange: (v: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication' | 'hospital_expansion') => void;
   populationSize: number;
   onPopulationSizeChange: (v: number) => void;
   gdpPerCapita: number;
@@ -226,6 +226,10 @@ export interface LeftPanelProps {
   coolingOpex: number;
   onCoolingOpexChange: (v: number) => void;
   onPortfolioResultsChange?: (data: import("@/types/portfolio").PortfolioAnalysisResult | null) => void;
+  economyTier: string;
+  onEconomyTierChange: (v: string) => void;
+  customBedsPer1000: number | null;
+  onCustomBedsPer1000Change: (v: number | null) => void;
   coastalAdjustedLifespan?: number | null;
   floodAdjustedLifespan?: number | null;
   baseAnnualOpex?: number;
@@ -327,6 +331,10 @@ export function LeftPanel({
   gdpPerCapita,
   onGdpPerCapitaChange,
   onPortfolioResultsChange,
+  economyTier,
+  onEconomyTierChange,
+  customBedsPer1000,
+  onCustomBedsPer1000Change,
   coastalAdjustedLifespan,
   floodAdjustedLifespan,
   baseAnnualOpex = 25000,
@@ -556,6 +564,10 @@ export function LeftPanel({
             gdpPerCapita={gdpPerCapita}
             onGdpPerCapitaChange={onGdpPerCapitaChange}
             onPortfolioResultsChange={onPortfolioResultsChange}
+            economyTier={economyTier}
+            onEconomyTierChange={onEconomyTierChange}
+            customBedsPer1000={customBedsPer1000}
+            onCustomBedsPer1000Change={onCustomBedsPer1000Change}
             propertyValue={propertyValue}
             onPropertyValueChange={onPropertyValueChange}
             selectedYear={selectedYear}
@@ -648,8 +660,8 @@ export interface ModeContentProps {
   onHealthSelectedYearChange: (v: number) => void;
   onHealthSimulate: () => void;
   isHealthSimulating: boolean;
-  healthIntervention: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication';
-  onHealthInterventionChange: (v: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication') => void;
+  healthIntervention: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication' | 'hospital_expansion';
+  onHealthInterventionChange: (v: 'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication' | 'hospital_expansion') => void;
   populationSize: number;
   onPopulationSizeChange: (v: number) => void;
   gdpPerCapita: number;
@@ -659,6 +671,10 @@ export interface ModeContentProps {
   coolingOpex: number;
   onCoolingOpexChange: (v: number) => void;
   onPortfolioResultsChange?: (data: import("@/types/portfolio").PortfolioAnalysisResult | null) => void;
+  economyTier: string;
+  onEconomyTierChange: (v: string) => void;
+  customBedsPer1000: number | null;
+  onCustomBedsPer1000Change: (v: number | null) => void;
   propertyValue: number;
   onPropertyValueChange: (v: number) => void;
   selectedYear: number;
@@ -761,6 +777,10 @@ export function ModeContent(props: ModeContentProps) {
     gdpPerCapita,
     onGdpPerCapitaChange,
     onPortfolioResultsChange,
+    economyTier,
+    onEconomyTierChange,
+    customBedsPer1000,
+    onCustomBedsPer1000Change,
     propertyValue,
     onPropertyValueChange,
     selectedYear,
@@ -1434,6 +1454,7 @@ export function ModeContent(props: ModeContentProps) {
                   <SelectItem value="passive_cooling">Passive Cooling</SelectItem>
                   <SelectItem value="urban_cooling_center">Urban Cooling Centers</SelectItem>
                   <SelectItem value="mosquito_eradication">Mosquito Eradication</SelectItem>
+                  <SelectItem value="hospital_expansion">Municipal Hospital Expansion</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -1528,6 +1549,50 @@ export function ModeContent(props: ModeContentProps) {
               <div className="flex justify-between mt-0.5" style={{ fontSize: 9, color: 'var(--cb-secondary)' }}>
                 <span>$500</span>
                 <span>$80K</span>
+              </div>
+            </div>
+          </div>
+        </SectionRow>
+
+        <SimDivider />
+
+        {/* Municipal Infrastructure */}
+        <SectionRow label="Municipal Infrastructure">
+          <div className="space-y-3">
+            <div>
+              <div className="cb-label mb-1.5">Economy Tier</div>
+              <Select value={economyTier} onValueChange={onEconomyTierChange}>
+                <SelectTrigger
+                  className="h-7 border-0 border-b rounded-none bg-transparent text-xs focus:ring-0"
+                  style={{ color: 'var(--cb-text)', borderColor: 'var(--cb-border)', borderBottomWidth: 1, borderBottomStyle: 'solid' }}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="high">High Income</SelectItem>
+                  <SelectItem value="middle">Middle Income</SelectItem>
+                  <SelectItem value="low">Low Income</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="cb-label">Custom Baseline Beds (per 1,000)</span>
+                <span style={{ fontSize: 10, color: 'var(--cb-text)', fontFamily: 'ui-monospace, monospace' }}>
+                  {customBedsPer1000 != null ? customBedsPer1000.toFixed(1) : 'Auto'}
+                </span>
+              </div>
+              <Slider
+                value={[customBedsPer1000 ?? 3.0]}
+                onValueChange={(v) => onCustomBedsPer1000Change(v[0])}
+                min={0.5}
+                max={15.0}
+                step={0.1}
+                className="w-full"
+              />
+              <div className="flex justify-between mt-0.5" style={{ fontSize: 9, color: 'var(--cb-secondary)' }}>
+                <span>0.5</span>
+                <span>15.0</span>
               </div>
             </div>
           </div>
