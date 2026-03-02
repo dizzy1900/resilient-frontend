@@ -120,11 +120,13 @@ const Index = () => {
   const [healthSelectedYear, setHealthSelectedYear] = useState(2026);
   const [healthTempTarget, setHealthTempTarget] = useState(1.4);
   const [healthResults, setHealthResults] = useState<HealthResults | null>(null);
-  const [healthIntervention, setHealthIntervention] = useState<'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication'>('none');
+  const [healthIntervention, setHealthIntervention] = useState<'none' | 'hvac_retrofit' | 'passive_cooling' | 'urban_cooling_center' | 'mosquito_eradication' | 'hospital_expansion'>('none');
   const [coolingCapex, setCoolingCapex] = useState(150000);
   const [coolingOpex, setCoolingOpex] = useState(15000);
   const [populationSize, setPopulationSize] = useState(100000);
   const [gdpPerCapita, setGdpPerCapita] = useState(8500);
+  const [economyTier, setEconomyTier] = useState<string>('middle');
+  const [customBedsPer1000, setCustomBedsPer1000] = useState<number | null>(null);
   const [isSplitMode, setIsSplitMode] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState<'controls' | 'data'>('controls');
@@ -1334,7 +1336,7 @@ const Index = () => {
     // Format intervention type to strict snake_case for backend contract
     const formattedIntervention = healthIntervention;
 
-    const payload = {
+    const payload: Record<string, unknown> = {
       lat: markerPosition.lat,
       lon: markerPosition.lng,
       workforce_size: workforceSize ?? 100,
@@ -1344,7 +1346,11 @@ const Index = () => {
       intervention_annual_opex: coolingOpex,
       population_size: populationSize,
       gdp_per_capita_usd: gdpPerCapita,
+      economy_tier: economyTier,
     };
+    if (customBedsPer1000 != null) {
+      payload.user_beds_per_1000 = customBedsPer1000;
+    }
 
     fetchWithRetry(healthEndpoint, {
       method: 'POST',
@@ -1425,6 +1431,9 @@ const Index = () => {
         // Extract public health DALY analysis
         const publicHealthRaw = data?.public_health_analysis as Record<string, unknown> | undefined;
 
+        // Extract infrastructure stress test
+        const infraRaw = data?.infrastructure_stress_test as Record<string, unknown> | undefined;
+
         setHealthResults({
           productivity_loss_pct: Math.min(100, Math.max(0, productivityLoss)),
           economic_loss_daily: Math.round(economicDaily),
@@ -1441,6 +1450,13 @@ const Index = () => {
             monetization: {
               value_per_daly_usd: Number((publicHealthRaw.monetization as Record<string, unknown> | undefined)?.value_per_daly_usd ?? 0),
             },
+          } : undefined,
+          infrastructure_stress_test: infraRaw ? {
+            available_beds: Number(infraRaw.available_beds ?? 0),
+            surge_admissions: Number(infraRaw.surge_admissions ?? 0),
+            bed_deficit: Number(infraRaw.bed_deficit ?? 0),
+            capacity_breach: Boolean(infraRaw.capacity_breach),
+            infrastructure_bond_capex: Number(infraRaw.infrastructure_bond_capex ?? 0),
           } : undefined,
         });
         setShowHealthResults(true);
@@ -1477,7 +1493,7 @@ const Index = () => {
       .finally(() => {
         setIsHealthSimulating(false);
       });
-  }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex, populationSize, gdpPerCapita]);
+  }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex, populationSize, gdpPerCapita, economyTier, customBedsPer1000]);
 
   const getCurrentSimulateHandler = useCallback(() => {
     if (mode === 'agriculture') return handleSimulate;
@@ -1671,6 +1687,10 @@ const Index = () => {
         onPopulationSizeChange={setPopulationSize}
         gdpPerCapita={gdpPerCapita}
         onGdpPerCapitaChange={setGdpPerCapita}
+        economyTier={economyTier}
+        onEconomyTierChange={setEconomyTier}
+        customBedsPer1000={customBedsPer1000}
+        onCustomBedsPer1000Change={setCustomBedsPer1000}
         onPortfolioResultsChange={setPortfolioResults}
         coastalAdjustedLifespan={coastalResults.adjustedLifespan ?? undefined}
         floodAdjustedLifespan={floodResults.adjustedLifespan ?? undefined}
@@ -1858,6 +1878,10 @@ const Index = () => {
           onPopulationSizeChange: setPopulationSize,
           gdpPerCapita,
           onGdpPerCapitaChange: setGdpPerCapita,
+          economyTier,
+          onEconomyTierChange: setEconomyTier,
+          customBedsPer1000,
+          onCustomBedsPer1000Change: setCustomBedsPer1000,
           onPortfolioResultsChange: setPortfolioResults,
           propertyValue,
           onPropertyValueChange: setPropertyValue,

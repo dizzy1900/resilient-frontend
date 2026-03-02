@@ -1448,7 +1448,109 @@ function HealthContent({ results, visible }: { results: HealthResults | null; vi
           </div>
         </>
       )}
+
+      {results?.infrastructure_stress_test && (
+        <InfrastructureStressTestSection data={results.infrastructure_stress_test} />
+      )}
     </div>
+  );
+}
+
+function InfrastructureStressTestSection({ data }: { data: NonNullable<HealthResults['infrastructure_stress_test']> }) {
+  const surgeAdmissions = data.surge_admissions ?? 0;
+  const availableBeds = Math.max(data.available_beds ?? 1, 1);
+  const usagePct = (surgeAdmissions / availableBeds) * 100;
+  const isBreach = data.capacity_breach === true || usagePct > 100;
+  const barWidth = Math.min(usagePct, 100);
+  const bedDeficit = data.bed_deficit ?? 0;
+  const bondCapex = data.infrastructure_bond_capex ?? 0;
+
+  const barColor = isBreach ? '#f43f5e' : '#3b82f6';
+  const deficitColor = bedDeficit > 0 ? '#f43f5e' : '#10b981';
+
+  return (
+    <>
+      <SectionDivider title="Infrastructure Stress Test" />
+      <div className="px-4 space-y-3 pb-2">
+        {/* Surge Capacity Gauge */}
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="cb-label">Surge Capacity Status</span>
+            <span
+              style={{
+                fontFamily: 'monospace',
+                fontSize: 11,
+                fontWeight: 600,
+                color: barColor,
+              }}
+            >
+              {Math.round(usagePct)}%
+            </span>
+          </div>
+          <div className="h-2 relative overflow-hidden" style={{ backgroundColor: 'var(--cb-border)' }}>
+            <div
+              className="h-full transition-all duration-500 ease-out"
+              style={{ width: `${barWidth}%`, backgroundColor: barColor }}
+            />
+          </div>
+          <div className="flex justify-between mt-1" style={{ fontSize: 9, color: 'var(--cb-secondary)' }}>
+            <span>0%</span>
+            <span>100% capacity</span>
+          </div>
+          {isBreach && (
+            <div
+              className="mt-1.5 px-2 py-1"
+              style={{
+                fontSize: 9,
+                fontFamily: 'monospace',
+                letterSpacing: '0.06em',
+                color: '#f43f5e',
+                border: '1px solid rgba(244,63,94,0.3)',
+                backgroundColor: 'rgba(244,63,94,0.08)',
+              }}
+            >
+              ⚠ CAPACITY BREACH — SYSTEM FAILURE
+            </div>
+          )}
+        </div>
+
+        {/* Mini data cards */}
+        <div className="flex gap-2">
+          <div
+            className="flex-1 p-2.5"
+            style={{ border: '1px solid var(--cb-border)', backgroundColor: 'var(--cb-surface)' }}
+          >
+            <div className="cb-label mb-1">BED DEFICIT</div>
+            <span
+              style={{
+                fontFamily: 'monospace',
+                fontSize: 14,
+                fontWeight: 700,
+                color: deficitColor,
+              }}
+            >
+              {bedDeficit > 0 ? `+${bedDeficit.toLocaleString()}` : bedDeficit.toLocaleString()}
+            </span>
+          </div>
+          <div
+            className="flex-1 p-2.5"
+            style={{ border: '1px solid var(--cb-border)', backgroundColor: 'var(--cb-surface)' }}
+          >
+            <div className="cb-label mb-1">REQUIRED BOND</div>
+            <span
+              style={{
+                fontFamily: 'monospace',
+                fontSize: 14,
+                fontWeight: 700,
+                color: 'var(--cb-text)',
+              }}
+            >
+              {formatCurrency(bondCapex)}
+            </span>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 

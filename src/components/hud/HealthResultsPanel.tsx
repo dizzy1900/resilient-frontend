@@ -34,6 +34,14 @@ export interface PublicHealthAnalysis {
   };
 }
 
+export interface InfrastructureStressTest {
+  available_beds?: number;
+  surge_admissions?: number;
+  bed_deficit?: number;
+  capacity_breach?: boolean;
+  infrastructure_bond_capex?: number;
+}
+
 export interface HealthResults {
   productivity_loss_pct: number;
   economic_loss_daily: number;
@@ -45,6 +53,7 @@ export interface HealthResults {
   daily_wage: number;
   intervention_analysis?: InterventionAnalysis;
   public_health_analysis?: PublicHealthAnalysis;
+  infrastructure_stress_test?: InfrastructureStressTest;
 }
 
 interface HealthResultsPanelProps {
