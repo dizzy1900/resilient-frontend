@@ -17,6 +17,16 @@ export async function generateTearSheet(
     useCORS: true,
     logging: false,
     backgroundColor: '#1a1a1a',
+    onclone: (_doc: Document, clonedEl: HTMLElement) => {
+      const allEls = clonedEl.querySelectorAll('*') as NodeListOf<HTMLElement>;
+      allEls.forEach((node) => {
+        const cs = getComputedStyle(node);
+        const needsFix = (v: string) => v.includes('oklch') || v.includes('color(');
+        if (needsFix(cs.color)) node.style.color = 'rgb(255, 255, 255)';
+        if (needsFix(cs.backgroundColor)) node.style.backgroundColor = 'rgb(26, 26, 26)';
+        if (needsFix(cs.borderColor)) node.style.borderColor = 'rgb(51, 51, 51)';
+      });
+    },
   });
 
   const pdf = new jsPDF('p', 'mm', 'a4');
