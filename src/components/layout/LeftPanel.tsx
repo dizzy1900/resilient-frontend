@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
   Wheat,
   Waves,
@@ -38,6 +38,7 @@ import { TimelinePlayer } from "@/components/TimelinePlayer";
 import { cn } from "@/lib/utils";
 import { LocationSearch } from "@/components/dashboard/LocationSearch";
 import { fetchWithRetry } from "@/utils/api";
+import { useScenarioStore } from "@/store/useScenarioStore";
 import { useProjectStore } from "@/store/useProjectStore";
 import { toast } from "sonner";
 
@@ -344,10 +345,36 @@ export function LeftPanel({
 }: LeftPanelProps) {
   const [localMangroveWidth, setLocalMangroveWidth] = useState(mangroveWidth);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [digitalTwinTab, setDigitalTwinTab] = useState<'baseline' | 'scenario'>('baseline');
+  const scenarioStore = useScenarioStore();
+  const isScenarioActive = isSplitMode && digitalTwinTab === 'scenario';
+
+  // Reset tab when exiting split mode
+  useEffect(() => {
+    if (!isSplitMode) setDigitalTwinTab('baseline');
+  }, [isSplitMode]);
+
+  // Clone baseline params into scenario store when entering split mode
+  useEffect(() => {
+    if (isSplitMode) {
+      scenarioStore.setParams({
+        cropType, globalTempTarget, rainChange, currentCrop, proposedCrop,
+        mangroveWidth, propertyValue, totalSLR, includeStormSurge, coastalSelectedYear,
+        seaWallEnabled, buildingValue, greenRoofsEnabled, permeablePavementEnabled,
+        totalRainIntensity, floodSelectedYear, drainageEnabled,
+        healthTempTarget, healthSelectedYear, healthIntervention,
+        workforceSize, averageDailyWage, populationSize, gdpPerCapita,
+        coolingCapex, coolingOpex, economyTier, customBedsPer1000,
+        assetLifespan, dailyRevenue, expectedDowntimeDays, baseAnnualOpex,
+      });
+    }
+    // Only run when split mode activates, not on every param change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSplitMode]);
 
   useEffect(() => {
-    setLocalMangroveWidth(mangroveWidth);
-  }, [mangroveWidth]);
+    setLocalMangroveWidth(isScenarioActive ? scenarioStore.params.mangroveWidth : mangroveWidth);
+  }, [mangroveWidth, isScenarioActive, scenarioStore.params.mangroveWidth]);
 
   useEffect(() => {
     return () => {
@@ -358,12 +385,86 @@ export function LeftPanel({
   const handleMangroveChange = (newValue: number[]) => {
     const val = newValue[0];
     setLocalMangroveWidth(val);
-    onMangroveWidthChange(val);
+    if (isScenarioActive) {
+      scenarioStore.patch({ mangroveWidth: val });
+    } else {
+      onMangroveWidthChange(val);
+    }
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      onMangroveWidthChangeEnd(val);
+      if (!isScenarioActive) onMangroveWidthChangeEnd(val);
     }, 500);
   };
+
+  /** Build scenario-aware overrides for ModeContent props. */
+  const scenarioOverrides = useMemo(() => {
+    if (!isScenarioActive) return {};
+    const sp = scenarioStore.params;
+    return {
+      cropType: sp.cropType,
+      onCropChange: (v: string) => scenarioStore.patch({ cropType: v }),
+      globalTempTarget: sp.globalTempTarget,
+      onGlobalTempTargetChange: (v: number) => scenarioStore.patch({ globalTempTarget: v }),
+      rainChange: sp.rainChange,
+      onRainChangeChange: (v: number) => scenarioStore.patch({ rainChange: v }),
+      buildingValue: sp.buildingValue,
+      onBuildingValueChange: (v: number) => scenarioStore.patch({ buildingValue: v }),
+      greenRoofsEnabled: sp.greenRoofsEnabled,
+      onGreenRoofsChange: (v: boolean) => scenarioStore.patch({ greenRoofsEnabled: v }),
+      permeablePavementEnabled: sp.permeablePavementEnabled,
+      onPermeablePavementChange: (v: boolean) => scenarioStore.patch({ permeablePavementEnabled: v }),
+      totalRainIntensity: sp.totalRainIntensity,
+      onTotalRainIntensityChange: (v: number) => scenarioStore.patch({ totalRainIntensity: v }),
+      floodSelectedYear: sp.floodSelectedYear,
+      onFloodSelectedYearChange: (v: number) => scenarioStore.patch({ floodSelectedYear: v }),
+      drainageEnabled: sp.drainageEnabled,
+      onDrainageChange: (v: boolean) => scenarioStore.patch({ drainageEnabled: v }),
+      seaWallEnabled: sp.seaWallEnabled,
+      onSeaWallChange: (v: boolean) => scenarioStore.patch({ seaWallEnabled: v }),
+      totalSLR: sp.totalSLR,
+      onTotalSLRChange: (v: number) => scenarioStore.patch({ totalSLR: v }),
+      includeStormSurge: sp.includeStormSurge,
+      onIncludeStormSurgeChange: (v: boolean) => scenarioStore.patch({ includeStormSurge: v }),
+      coastalSelectedYear: sp.coastalSelectedYear,
+      onCoastalSelectedYearChange: (v: number) => scenarioStore.patch({ coastalSelectedYear: v }),
+      healthTempTarget: sp.healthTempTarget,
+      onHealthTempTargetChange: (v: number) => scenarioStore.patch({ healthTempTarget: v }),
+      healthSelectedYear: sp.healthSelectedYear,
+      onHealthSelectedYearChange: (v: number) => scenarioStore.patch({ healthSelectedYear: v }),
+      healthIntervention: sp.healthIntervention,
+      onHealthInterventionChange: (v: typeof sp.healthIntervention) => scenarioStore.patch({ healthIntervention: v }),
+      workforceSize: sp.workforceSize,
+      onWorkforceSizeChange: (v: number) => scenarioStore.patch({ workforceSize: v }),
+      averageDailyWage: sp.averageDailyWage,
+      onAverageDailyWageChange: (v: number) => scenarioStore.patch({ averageDailyWage: v }),
+      populationSize: sp.populationSize,
+      onPopulationSizeChange: (v: number) => scenarioStore.patch({ populationSize: v }),
+      gdpPerCapita: sp.gdpPerCapita,
+      onGdpPerCapitaChange: (v: number) => scenarioStore.patch({ gdpPerCapita: v }),
+      coolingCapex: sp.coolingCapex,
+      onCoolingCapexChange: (v: number) => scenarioStore.patch({ coolingCapex: v }),
+      coolingOpex: sp.coolingOpex,
+      onCoolingOpexChange: (v: number) => scenarioStore.patch({ coolingOpex: v }),
+      economyTier: sp.economyTier,
+      onEconomyTierChange: (v: string) => scenarioStore.patch({ economyTier: v }),
+      customBedsPer1000: sp.customBedsPer1000,
+      onCustomBedsPer1000Change: (v: number | null) => scenarioStore.patch({ customBedsPer1000: v }),
+      propertyValue: sp.propertyValue,
+      onPropertyValueChange: (v: number) => scenarioStore.patch({ propertyValue: v }),
+      assetLifespan: sp.assetLifespan,
+      onAssetLifespanChange: (v: number) => scenarioStore.patch({ assetLifespan: v }),
+      dailyRevenue: sp.dailyRevenue,
+      onDailyRevenueChange: (v: number) => scenarioStore.patch({ dailyRevenue: v }),
+      expectedDowntimeDays: sp.expectedDowntimeDays,
+      onExpectedDowntimeDaysChange: (v: number) => scenarioStore.patch({ expectedDowntimeDays: v }),
+      baseAnnualOpex: sp.baseAnnualOpex,
+      onBaseAnnualOpexChange: (v: number) => scenarioStore.patch({ baseAnnualOpex: v }),
+      currentCrop: sp.currentCrop,
+      onCurrentCropChange: (v: string) => scenarioStore.patch({ currentCrop: v }),
+      proposedCrop: sp.proposedCrop,
+      onProposedCropChange: (v: string) => scenarioStore.patch({ proposedCrop: v }),
+    };
+  }, [isScenarioActive, scenarioStore]);
 
   const activeItem = MODE_ITEMS.find((m) => m.mode === mode);
 
@@ -486,97 +587,149 @@ export function LeftPanel({
           </div>
         </div>
 
+        {/* Digital Twin tab toggle */}
+        {isSplitMode && (
+          <div className="shrink-0 flex border-b" style={{ borderColor: 'var(--cb-border)' }}>
+            {(['baseline', 'scenario'] as const).map((tab) => {
+              const active = digitalTwinTab === tab;
+              const isScenario = tab === 'scenario';
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setDigitalTwinTab(tab)}
+                  style={{
+                    flex: 1,
+                    height: 30,
+                    fontSize: 9,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    fontFamily: 'monospace',
+                    backgroundColor: active ? (isScenario ? 'rgba(16, 185, 129, 0.08)' : 'var(--cb-surface)') : 'transparent',
+                    color: active
+                      ? (isScenario ? '#10b981' : 'var(--cb-text)')
+                      : 'var(--cb-secondary)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    borderBottom: active
+                      ? `2px solid ${isScenario ? '#10b981' : 'var(--cb-text)'}`
+                      : '2px solid transparent',
+                    borderRight: tab === 'baseline' ? '1px solid var(--cb-border)' : 'none',
+                  }}
+                >
+                  {tab}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Scenario indicator bar */}
+        {isScenarioActive && (
+          <div
+            className="shrink-0 px-4 py-1.5 flex items-center gap-2"
+            style={{
+              backgroundColor: 'rgba(16, 185, 129, 0.06)',
+              borderBottom: '1px solid rgba(16, 185, 129, 0.2)',
+            }}
+          >
+            <div style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#10b981' }} />
+            <span style={{ fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'monospace', color: '#10b981' }}>
+              Editing Scenario Parameters
+            </span>
+          </div>
+        )}
+
         {/* Mode-specific controls + simulation params — scrollable */}
         <div className="flex-1 overflow-y-auto min-h-0">
           <ModeContent
             mode={mode}
-            cropType={cropType}
-            onCropChange={onCropChange}
+            cropType={isScenarioActive ? scenarioStore.params.cropType : cropType}
+            onCropChange={isScenarioActive ? (v: string) => scenarioStore.patch({ cropType: v }) : onCropChange}
             localMangroveWidth={localMangroveWidth}
             handleMangroveChange={handleMangroveChange}
             canSimulate={canSimulate}
-            seaWallEnabled={seaWallEnabled}
-            onSeaWallChange={onSeaWallChange}
-            drainageEnabled={drainageEnabled}
-            onDrainageChange={onDrainageChange}
+            seaWallEnabled={isScenarioActive ? scenarioStore.params.seaWallEnabled : seaWallEnabled}
+            onSeaWallChange={isScenarioActive ? (v: boolean) => scenarioStore.patch({ seaWallEnabled: v }) : onSeaWallChange}
+            drainageEnabled={isScenarioActive ? scenarioStore.params.drainageEnabled : drainageEnabled}
+            onDrainageChange={isScenarioActive ? (v: boolean) => scenarioStore.patch({ drainageEnabled: v }) : onDrainageChange}
             onOpenDefensiveWizard={onOpenDefensiveWizard}
-            buildingValue={buildingValue}
-            onBuildingValueChange={onBuildingValueChange}
-            dailyRevenue={dailyRevenue}
-            onDailyRevenueChange={onDailyRevenueChange}
-            expectedDowntimeDays={expectedDowntimeDays}
-            onExpectedDowntimeDaysChange={onExpectedDowntimeDaysChange}
-            assetLifespan={assetLifespan}
-            onAssetLifespanChange={onAssetLifespanChange}
-            greenRoofsEnabled={greenRoofsEnabled}
-            onGreenRoofsChange={onGreenRoofsChange}
-            permeablePavementEnabled={permeablePavementEnabled}
-            onPermeablePavementChange={onPermeablePavementChange}
-            workforceSize={workforceSize}
-            onWorkforceSizeChange={onWorkforceSizeChange}
-            averageDailyWage={averageDailyWage}
-            onAverageDailyWageChange={onAverageDailyWageChange}
+            buildingValue={isScenarioActive ? scenarioStore.params.buildingValue : buildingValue}
+            onBuildingValueChange={isScenarioActive ? (v: number) => scenarioStore.patch({ buildingValue: v }) : onBuildingValueChange}
+            dailyRevenue={isScenarioActive ? scenarioStore.params.dailyRevenue : dailyRevenue}
+            onDailyRevenueChange={isScenarioActive ? (v: number) => scenarioStore.patch({ dailyRevenue: v }) : onDailyRevenueChange}
+            expectedDowntimeDays={isScenarioActive ? scenarioStore.params.expectedDowntimeDays : expectedDowntimeDays}
+            onExpectedDowntimeDaysChange={isScenarioActive ? (v: number) => scenarioStore.patch({ expectedDowntimeDays: v }) : onExpectedDowntimeDaysChange}
+            assetLifespan={isScenarioActive ? scenarioStore.params.assetLifespan : assetLifespan}
+            onAssetLifespanChange={isScenarioActive ? (v: number) => scenarioStore.patch({ assetLifespan: v }) : onAssetLifespanChange}
+            greenRoofsEnabled={isScenarioActive ? scenarioStore.params.greenRoofsEnabled : greenRoofsEnabled}
+            onGreenRoofsChange={isScenarioActive ? (v: boolean) => scenarioStore.patch({ greenRoofsEnabled: v }) : onGreenRoofsChange}
+            permeablePavementEnabled={isScenarioActive ? scenarioStore.params.permeablePavementEnabled : permeablePavementEnabled}
+            onPermeablePavementChange={isScenarioActive ? (v: boolean) => scenarioStore.patch({ permeablePavementEnabled: v }) : onPermeablePavementChange}
+            workforceSize={isScenarioActive ? scenarioStore.params.workforceSize : workforceSize}
+            onWorkforceSizeChange={isScenarioActive ? (v: number) => scenarioStore.patch({ workforceSize: v }) : onWorkforceSizeChange}
+            averageDailyWage={isScenarioActive ? scenarioStore.params.averageDailyWage : averageDailyWage}
+            onAverageDailyWageChange={isScenarioActive ? (v: number) => scenarioStore.patch({ averageDailyWage: v }) : onAverageDailyWageChange}
             onOpenInterventionWizard={onOpenInterventionWizard}
             isFinanceSimulating={isFinanceSimulating}
             onFinanceSimulate={onFinanceSimulate}
-            globalTempTarget={globalTempTarget}
-            onGlobalTempTargetChange={onGlobalTempTargetChange}
-            rainChange={rainChange}
-            onRainChangeChange={onRainChangeChange}
+            globalTempTarget={isScenarioActive ? scenarioStore.params.globalTempTarget : globalTempTarget}
+            onGlobalTempTargetChange={isScenarioActive ? (v: number) => scenarioStore.patch({ globalTempTarget: v }) : onGlobalTempTargetChange}
+            rainChange={isScenarioActive ? scenarioStore.params.rainChange : rainChange}
+            onRainChangeChange={isScenarioActive ? (v: number) => scenarioStore.patch({ rainChange: v }) : onRainChangeChange}
             onAgricultureSimulate={onAgricultureSimulate}
             isAgricultureSimulating={isAgricultureSimulating}
             yieldPotential={yieldPotential}
-            currentCrop={currentCrop}
-            onCurrentCropChange={onCurrentCropChange}
-            proposedCrop={proposedCrop}
-            onProposedCropChange={onProposedCropChange}
+            currentCrop={isScenarioActive ? scenarioStore.params.currentCrop : currentCrop}
+            onCurrentCropChange={isScenarioActive ? (v: string) => scenarioStore.patch({ currentCrop: v }) : onCurrentCropChange}
+            proposedCrop={isScenarioActive ? scenarioStore.params.proposedCrop : proposedCrop}
+            onProposedCropChange={isScenarioActive ? (v: string) => scenarioStore.patch({ proposedCrop: v }) : onProposedCropChange}
             transitionCapex={transitionCapex}
-            totalRainIntensity={totalRainIntensity}
-            onTotalRainIntensityChange={onTotalRainIntensityChange}
-            floodSelectedYear={floodSelectedYear}
-            onFloodSelectedYearChange={onFloodSelectedYearChange}
+            totalRainIntensity={isScenarioActive ? scenarioStore.params.totalRainIntensity : totalRainIntensity}
+            onTotalRainIntensityChange={isScenarioActive ? (v: number) => scenarioStore.patch({ totalRainIntensity: v }) : onTotalRainIntensityChange}
+            floodSelectedYear={isScenarioActive ? scenarioStore.params.floodSelectedYear : floodSelectedYear}
+            onFloodSelectedYearChange={isScenarioActive ? (v: number) => scenarioStore.patch({ floodSelectedYear: v }) : onFloodSelectedYearChange}
             isFloodUserOverride={isFloodUserOverride}
             onFloodUserOverrideChange={onFloodUserOverrideChange}
             onFloodSimulate={onFloodSimulate}
             isFloodSimulating={isFloodSimulating}
-            totalSLR={totalSLR}
-            onTotalSLRChange={onTotalSLRChange}
-            includeStormSurge={includeStormSurge}
-            onIncludeStormSurgeChange={onIncludeStormSurgeChange}
-            coastalSelectedYear={coastalSelectedYear}
-            onCoastalSelectedYearChange={onCoastalSelectedYearChange}
+            totalSLR={isScenarioActive ? scenarioStore.params.totalSLR : totalSLR}
+            onTotalSLRChange={isScenarioActive ? (v: number) => scenarioStore.patch({ totalSLR: v }) : onTotalSLRChange}
+            includeStormSurge={isScenarioActive ? scenarioStore.params.includeStormSurge : includeStormSurge}
+            onIncludeStormSurgeChange={isScenarioActive ? (v: boolean) => scenarioStore.patch({ includeStormSurge: v }) : onIncludeStormSurgeChange}
+            coastalSelectedYear={isScenarioActive ? scenarioStore.params.coastalSelectedYear : coastalSelectedYear}
+            onCoastalSelectedYearChange={isScenarioActive ? (v: number) => scenarioStore.patch({ coastalSelectedYear: v }) : onCoastalSelectedYearChange}
             onCoastalSimulate={onCoastalSimulate}
             isCoastalSimulating={isCoastalSimulating}
-            healthTempTarget={healthTempTarget}
-            onHealthTempTargetChange={onHealthTempTargetChange}
-            healthSelectedYear={healthSelectedYear}
-            onHealthSelectedYearChange={onHealthSelectedYearChange}
+            healthTempTarget={isScenarioActive ? scenarioStore.params.healthTempTarget : healthTempTarget}
+            onHealthTempTargetChange={isScenarioActive ? (v: number) => scenarioStore.patch({ healthTempTarget: v }) : onHealthTempTargetChange}
+            healthSelectedYear={isScenarioActive ? scenarioStore.params.healthSelectedYear : healthSelectedYear}
+            onHealthSelectedYearChange={isScenarioActive ? (v: number) => scenarioStore.patch({ healthSelectedYear: v }) : onHealthSelectedYearChange}
             onHealthSimulate={onHealthSimulate}
             isHealthSimulating={isHealthSimulating}
-            healthIntervention={healthIntervention}
-            onHealthInterventionChange={onHealthInterventionChange}
-            coolingCapex={coolingCapex}
-            onCoolingCapexChange={onCoolingCapexChange}
-            coolingOpex={coolingOpex}
-            onCoolingOpexChange={onCoolingOpexChange}
-            populationSize={populationSize}
-            onPopulationSizeChange={onPopulationSizeChange}
-            gdpPerCapita={gdpPerCapita}
-            onGdpPerCapitaChange={onGdpPerCapitaChange}
+            healthIntervention={isScenarioActive ? scenarioStore.params.healthIntervention : healthIntervention}
+            onHealthInterventionChange={isScenarioActive ? (v: typeof healthIntervention) => scenarioStore.patch({ healthIntervention: v }) : onHealthInterventionChange}
+            coolingCapex={isScenarioActive ? scenarioStore.params.coolingCapex : coolingCapex}
+            onCoolingCapexChange={isScenarioActive ? (v: number) => scenarioStore.patch({ coolingCapex: v }) : onCoolingCapexChange}
+            coolingOpex={isScenarioActive ? scenarioStore.params.coolingOpex : coolingOpex}
+            onCoolingOpexChange={isScenarioActive ? (v: number) => scenarioStore.patch({ coolingOpex: v }) : onCoolingOpexChange}
+            populationSize={isScenarioActive ? scenarioStore.params.populationSize : populationSize}
+            onPopulationSizeChange={isScenarioActive ? (v: number) => scenarioStore.patch({ populationSize: v }) : onPopulationSizeChange}
+            gdpPerCapita={isScenarioActive ? scenarioStore.params.gdpPerCapita : gdpPerCapita}
+            onGdpPerCapitaChange={isScenarioActive ? (v: number) => scenarioStore.patch({ gdpPerCapita: v }) : onGdpPerCapitaChange}
             onPortfolioResultsChange={onPortfolioResultsChange}
-            economyTier={economyTier}
-            onEconomyTierChange={onEconomyTierChange}
-            customBedsPer1000={customBedsPer1000}
-            onCustomBedsPer1000Change={onCustomBedsPer1000Change}
-            propertyValue={propertyValue}
-            onPropertyValueChange={onPropertyValueChange}
+            economyTier={isScenarioActive ? scenarioStore.params.economyTier : economyTier}
+            onEconomyTierChange={isScenarioActive ? (v: string) => scenarioStore.patch({ economyTier: v }) : onEconomyTierChange}
+            customBedsPer1000={isScenarioActive ? scenarioStore.params.customBedsPer1000 : customBedsPer1000}
+            onCustomBedsPer1000Change={isScenarioActive ? (v: number | null) => scenarioStore.patch({ customBedsPer1000: v }) : onCustomBedsPer1000Change}
+            propertyValue={isScenarioActive ? scenarioStore.params.propertyValue : propertyValue}
+            onPropertyValueChange={isScenarioActive ? (v: number) => scenarioStore.patch({ propertyValue: v }) : onPropertyValueChange}
             selectedYear={selectedYear}
-            coastalAdjustedLifespan={coastalAdjustedLifespan}
-            floodAdjustedLifespan={floodAdjustedLifespan}
-            baseAnnualOpex={baseAnnualOpex}
-            onBaseAnnualOpexChange={onBaseAnnualOpexChange ?? (() => {})}
-            coastalAdjustedOpex={coastalAdjustedOpex}
-            floodAdjustedOpex={floodAdjustedOpex}
+            coastalAdjustedLifespan={isScenarioActive ? undefined : coastalAdjustedLifespan}
+            floodAdjustedLifespan={isScenarioActive ? undefined : floodAdjustedLifespan}
+            baseAnnualOpex={isScenarioActive ? scenarioStore.params.baseAnnualOpex : baseAnnualOpex}
+            onBaseAnnualOpexChange={isScenarioActive ? (v: number) => scenarioStore.patch({ baseAnnualOpex: v }) : (onBaseAnnualOpexChange ?? (() => {}))}
+            coastalAdjustedOpex={isScenarioActive ? undefined : coastalAdjustedOpex}
+            floodAdjustedOpex={isScenarioActive ? undefined : floodAdjustedOpex}
           />
         </div>
 
