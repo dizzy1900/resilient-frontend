@@ -1714,6 +1714,55 @@ const Index = () => {
     : mode === 'health' ? showHealthResults
     : showFloodResults;
 
+  /** Advanced /agri compare handler — sets mode, twin, crops, location, year, then auto-simulates. */
+  const handleAgriCompare = useCallback((payload: { crop1: string; crop2: string; location: string; coords: { lat: number; lng: number }; year: number }) => {
+    // 1. Route to Agriculture
+    setMode('agriculture');
+
+    // 2. Enable Digital Twin
+    setIsSplitMode(true);
+
+    // 3. Set baseline crop (crop1)
+    const crop1Lower = payload.crop1.toLowerCase();
+    setCropType(crop1Lower);
+    setCurrentCrop(payload.crop1);
+
+    // 4. Set scenario crop (crop2) + year via scenario store
+    scenarioStore.patch({
+      cropType: payload.crop2.toLowerCase(),
+      currentCrop: payload.crop2,
+      proposedCrop: 'None',
+      globalTempTarget: 1.4, // will be overridden by year calc below
+    });
+
+    // Calculate temp target from year using SSP3-7.0 anchors
+    const yearNum = payload.year;
+    let tempTarget = 1.4;
+    if (yearNum <= 2026) tempTarget = 1.4;
+    else if (yearNum <= 2030) tempTarget = 1.4 + (yearNum - 2026) * (1.5 - 1.4) / (2030 - 2026);
+    else if (yearNum <= 2050) tempTarget = 1.5 + (yearNum - 2030) * (2.1 - 1.5) / (2050 - 2030);
+    else tempTarget = 2.1;
+    scenarioStore.patch({ globalTempTarget: Math.round(tempTarget * 100) / 100 });
+
+    // 5. Map navigation — set marker + fly to location
+    setMarkerPosition({ lat: payload.coords.lat, lng: payload.coords.lng });
+    setViewState(prev => ({
+      ...prev,
+      longitude: payload.coords.lng,
+      latitude: payload.coords.lat,
+      zoom: 6,
+    }));
+    setReverseLocationName(payload.location.charAt(0).toUpperCase() + payload.location.slice(1));
+
+    // 6. Auto-trigger simulation after a tick to let state settle
+    setTimeout(() => {
+      // getCurrentSimulateHandler returns the appropriate handler for the current mode + split state
+      // But since we just set state, we call handleSimulate directly for agriculture baseline
+      // and fireScenarioCall for the scenario leg
+      Promise.all([handleSimulate(), fireScenarioCall()]).catch(console.error);
+    }, 200);
+  }, [scenarioStore, handleSimulate, fireScenarioCall]);
+
   return (
     <div className="relative h-screen w-full overflow-hidden" style={{ backgroundColor: 'var(--cb-bg)' }}>
       <CommandPalette
@@ -1721,6 +1770,7 @@ const Index = () => {
         onToggleTwin={() => setIsSplitMode(prev => !prev)}
         currentMode={mode}
         isSplitMode={isSplitMode}
+        onAgriCompare={handleAgriCompare}
       />
       <div className="absolute inset-0">
         {isSplitMode ? (

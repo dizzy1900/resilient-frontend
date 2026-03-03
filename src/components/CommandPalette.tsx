@@ -1,12 +1,50 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Search, Terminal, ArrowRight, Layers, Navigation, ToggleRight } from 'lucide-react';
+import { Search, Terminal, ArrowRight, Layers, Navigation, ToggleRight, Zap } from 'lucide-react';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 
-interface CommandPaletteProps {
+/** Simple coordinate dictionary for key countries / regions. */
+const LOCATION_COORDS: Record<string, { lat: number; lng: number }> = {
+  kenya: { lat: -0.02, lng: 37.91 },
+  brazil: { lat: -14.24, lng: -51.93 },
+  usa: { lat: 39.83, lng: -98.58 },
+  india: { lat: 20.59, lng: 78.96 },
+  nigeria: { lat: 9.08, lng: 7.49 },
+  ethiopia: { lat: 9.15, lng: 40.49 },
+  indonesia: { lat: -0.79, lng: 113.92 },
+  china: { lat: 35.86, lng: 104.20 },
+  australia: { lat: -25.27, lng: 133.78 },
+  mexico: { lat: 23.63, lng: -102.55 },
+  colombia: { lat: 4.57, lng: -74.30 },
+  tanzania: { lat: -6.37, lng: 34.89 },
+  south_africa: { lat: -30.56, lng: 22.94 },
+  'south africa': { lat: -30.56, lng: 22.94 },
+  vietnam: { lat: 14.06, lng: 108.28 },
+  thailand: { lat: 15.87, lng: 100.99 },
+  philippines: { lat: 12.88, lng: 121.77 },
+  bangladesh: { lat: 23.68, lng: 90.36 },
+  egypt: { lat: 26.82, lng: 30.80 },
+  ghana: { lat: 7.95, lng: -1.02 },
+  argentina: { lat: -38.42, lng: -63.62 },
+};
+
+/** Regex to parse: /agri compare <crop1> vs <crop2> in <location> <year> */
+const AGRI_COMPARE_RE = /^\/agri\s+compare\s+(\w+)\s+vs\s+(\w+)\s+in\s+(.+?)\s+(\d{4})$/i;
+
+interface AgriComparePayload {
+  crop1: string;
+  crop2: string;
+  location: string;
+  coords: { lat: number; lng: number };
+  year: number;
+}
+
+export interface CommandPaletteProps {
   onChangeMode: (mode: DashboardMode) => void;
   onToggleTwin: () => void;
   currentMode: DashboardMode;
   isSplitMode: boolean;
+  /** Callback for the advanced /agri compare command. Fires all state updates + simulate. */
+  onAgriCompare?: (payload: AgriComparePayload) => void;
 }
 
 interface CommandItem {
@@ -18,7 +56,7 @@ interface CommandItem {
   action: () => void;
 }
 
-export const CommandPalette = ({ onChangeMode, onToggleTwin, currentMode, isSplitMode }: CommandPaletteProps) => {
+export const CommandPalette = ({ onChangeMode, onToggleTwin, currentMode, isSplitMode, onAgriCompare }: CommandPaletteProps) => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,7 +70,33 @@ export const CommandPalette = ({ onChangeMode, onToggleTwin, currentMode, isSpli
     { id: 'goto-finance', label: 'Go to Finance', group: 'Navigation', keywords: ['/goto finance', 'finance', 'cba'], icon: <Navigation className="w-3.5 h-3.5" />, action: () => onChangeMode('finance') },
     { id: 'goto-portfolio', label: 'Go to Portfolio', group: 'Navigation', keywords: ['/goto portfolio', 'portfolio', 'batch'], icon: <Navigation className="w-3.5 h-3.5" />, action: () => onChangeMode('portfolio') },
     { id: 'toggle-twin', label: `${isSplitMode ? 'Disable' : 'Enable'} Digital Twin`, group: 'View Modes', keywords: ['/toggle twin', 'digital twin', 'split', 'compare'], icon: <ToggleRight className="w-3.5 h-3.5" />, action: () => onToggleTwin() },
+    { id: 'agri-compare-hint', label: '/agri compare [crop1] vs [crop2] in [location] [year]', group: 'Power Commands', keywords: ['/agri compare', 'compare crops', 'digital twin agri'], icon: <Zap className="w-3.5 h-3.5" />, action: () => {} },
   ];
+
+  /** Try to parse and execute an advanced /agri compare command. Returns true if matched. */
+  const tryAgriCompare = useCallback((input: string): boolean => {
+    const match = input.trim().match(AGRI_COMPARE_RE);
+    if (!match) return false;
+
+    const [, crop1Raw, crop2Raw, locationRaw, yearRaw] = match;
+    const locationKey = locationRaw.trim().toLowerCase();
+    const coords = LOCATION_COORDS[locationKey];
+
+    if (!coords) {
+      // Unknown location — don't handle, let it fall through
+      return false;
+    }
+
+    const crop1 = crop1Raw.charAt(0).toUpperCase() + crop1Raw.slice(1).toLowerCase();
+    const crop2 = crop2Raw.charAt(0).toUpperCase() + crop2Raw.slice(1).toLowerCase();
+    const year = parseInt(yearRaw, 10);
+
+    if (onAgriCompare) {
+      onAgriCompare({ crop1, crop2, location: locationKey, coords, year });
+    }
+
+    return true;
+  }, [onAgriCompare]);
 
   const filtered = query.trim()
     ? commands.filter(c => {
@@ -53,6 +117,21 @@ export const CommandPalette = ({ onChangeMode, onToggleTwin, currentMode, isSpli
     setOpen(false);
     setQuery('');
   }, []);
+
+  /** Master execute: first try advanced parsers, then fall back to selected command. */
+  const executeInput = useCallback(() => {
+    const trimmed = query.trim();
+    // Try advanced command parsers first
+    if (trimmed.startsWith('/agri compare') && tryAgriCompare(trimmed)) {
+      setOpen(false);
+      setQuery('');
+      return;
+    }
+    // Fall back to selected command from list
+    if (flatFiltered[selectedIndex]) {
+      execute(flatFiltered[selectedIndex]);
+    }
+  }, [query, tryAgriCompare, flatFiltered, selectedIndex, execute]);
 
   // Global Cmd+K / Ctrl+K listener
   useEffect(() => {
@@ -87,12 +166,16 @@ export const CommandPalette = ({ onChangeMode, onToggleTwin, currentMode, isSpli
       setSelectedIndex(i => Math.max(i - 1, 0));
     } else if (e.key === 'Enter') {
       e.preventDefault();
-      if (flatFiltered[selectedIndex]) execute(flatFiltered[selectedIndex]);
+      executeInput();
     }
   };
 
   // Reset selection when query changes
   useEffect(() => { setSelectedIndex(0); }, [query]);
+
+  // Show live parse feedback for /agri compare
+  const agriMatch = query.trim().match(AGRI_COMPARE_RE);
+  const isPartialAgri = query.trim().toLowerCase().startsWith('/agri compare') && !agriMatch;
 
   if (!open) return null;
 
@@ -116,13 +199,31 @@ export const CommandPalette = ({ onChangeMode, onToggleTwin, currentMode, isSpli
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder='Type a command... (e.g., /goto agri, /toggle twin)'
+            placeholder='Type a command... (e.g., /agri compare maize vs wheat in kenya 2040)'
             className="w-full h-12 bg-transparent text-sm text-white/90 font-mono placeholder:text-white/25 outline-none"
           />
           <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono text-white/30 border border-white/10 bg-white/5">
             ESC
           </kbd>
         </div>
+
+        {/* Live parse feedback for /agri compare */}
+        {agriMatch && (
+          <div className="px-4 py-2 border-b border-emerald-500/20 bg-emerald-500/5 flex items-center gap-2">
+            <Zap className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-xs font-mono text-emerald-400">
+              ✓ Parsed: <span className="text-white/80">{agriMatch[1]}</span> vs <span className="text-white/80">{agriMatch[2]}</span> in <span className="text-white/80">{agriMatch[3]}</span> @ <span className="text-white/80">{agriMatch[4]}</span>
+              {LOCATION_COORDS[agriMatch[3].trim().toLowerCase()] ? '' : <span className="text-amber-400 ml-2">⚠ Unknown location</span>}
+            </span>
+          </div>
+        )}
+        {isPartialAgri && !agriMatch && (
+          <div className="px-4 py-2 border-b border-white/5 bg-white/[0.02]">
+            <span className="text-[10px] font-mono text-white/30">
+              Format: /agri compare [crop1] vs [crop2] in [location] [year]
+            </span>
+          </div>
+        )}
 
         {/* Command list */}
         <div className="max-h-[320px] overflow-y-auto py-2">
