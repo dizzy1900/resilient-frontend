@@ -1357,6 +1357,7 @@ const Index = () => {
     // Format intervention type to strict snake_case for backend contract
     const formattedIntervention = healthIntervention;
 
+    const healthTempDelta = healthTempTarget - 1.4;
     const payload: Record<string, unknown> = {
       lat: markerPosition.lat,
       lon: markerPosition.lng,
@@ -1368,6 +1369,7 @@ const Index = () => {
       population_size: populationSize,
       gdp_per_capita_usd: gdpPerCapita,
       economy_tier: economyTier,
+      temp_increase: Math.round(healthTempDelta * 10) / 10,
     };
     if (customBedsPer1000 != null) {
       payload.user_beds_per_1000 = customBedsPer1000;
@@ -1615,12 +1617,14 @@ const Index = () => {
     }
 
     if (mode === 'health') {
+      const scenarioTempDelta = sp.healthTempTarget - 1.4;
       const payload: Record<string, unknown> = {
         lat: markerPosition.lat, lon: markerPosition.lng,
         workforce_size: sp.workforceSize ?? 100, daily_wage: sp.averageDailyWage ?? 50,
         intervention_type: sp.healthIntervention, intervention_capex: sp.coolingCapex,
         intervention_annual_opex: sp.coolingOpex, population_size: sp.populationSize,
         gdp_per_capita_usd: sp.gdpPerCapita, economy_tier: sp.economyTier,
+        temp_increase: Math.round(scenarioTempDelta * 10) / 10,
       };
       if (sp.customBedsPer1000 != null) payload.user_beds_per_1000 = sp.customBedsPer1000;
       try {
