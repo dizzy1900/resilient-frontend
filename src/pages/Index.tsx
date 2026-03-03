@@ -1323,7 +1323,20 @@ const Index = () => {
     });
   }, []);
 
+  // Hover-gated viewport sync: only the actively-hovered map dispatches updates
+  const activeMapPane = useRef<'left' | 'right' | null>(null);
+
   const handleViewStateChange = useCallback((newViewState: ViewState) => {
+    setViewState(newViewState);
+  }, []);
+
+  const handleLeftViewStateChange = useCallback((newViewState: ViewState) => {
+    if (activeMapPane.current === 'right') return; // ignore echoed updates
+    setViewState(newViewState);
+  }, []);
+
+  const handleRightViewStateChange = useCallback((newViewState: ViewState) => {
+    if (activeMapPane.current === 'left') return; // ignore echoed updates
     setViewState(newViewState);
   }, []);
 
@@ -1522,37 +1535,50 @@ const Index = () => {
       <div className="absolute inset-0">
         {isSplitMode ? (
           <DigitalTwinOverlay
+            leftLabel="BASELINE (2026)"
+            rightLabel="SCENARIO (2050)"
             leftMap={
-              <MapView
-                onLocationSelect={handleLocationSelect}
-                markerPosition={markerPosition}
-                mapStyle={mapStyle}
-                showFloodOverlay={showFloodOverlay}
-                viewState={viewState}
-                onViewStateChange={handleViewStateChange}
-                flyToTarget={flyToTarget}
-                scenarioLabel="Baseline"
-                zoneData={zoneData}
-                portfolioAssets={portfolioMapAssets}
-                onAtlasClick={handleAtlasClick}
-                atlasOverlay={atlasOverlay}
-                fitBoundsTarget={fitBoundsTarget}
-                usePortfolioAccentStyle={!!portfolioResults}
-              />
+              <div
+                className="w-full h-full"
+                onPointerEnter={() => { activeMapPane.current = 'left'; }}
+                onPointerLeave={() => { if (activeMapPane.current === 'left') activeMapPane.current = null; }}
+              >
+                <MapView
+                  onLocationSelect={handleLocationSelect}
+                  markerPosition={markerPosition}
+                  mapStyle={mapStyle}
+                  showFloodOverlay={showFloodOverlay}
+                  viewState={viewState}
+                  onViewStateChange={handleLeftViewStateChange}
+                  flyToTarget={flyToTarget}
+                  zoneData={zoneData}
+                  portfolioAssets={portfolioMapAssets}
+                  onAtlasClick={handleAtlasClick}
+                  atlasOverlay={atlasOverlay}
+                  fitBoundsTarget={fitBoundsTarget}
+                  usePortfolioAccentStyle={!!portfolioResults}
+                />
+              </div>
             }
             rightMap={
-              <MapView
-                onLocationSelect={handleLocationSelect}
-                markerPosition={markerPosition}
-                mapStyle={mapStyle}
-                showFloodOverlay={showFloodOverlay}
-                viewState={viewState}
-                onViewStateChange={handleViewStateChange}
-                flyToTarget={flyToTarget}
-                scenarioLabel="With Adaptation"
-                isAdaptationScenario={true}
-                zoneData={zoneData}
-              />
+              <div
+                className="w-full h-full"
+                onPointerEnter={() => { activeMapPane.current = 'right'; }}
+                onPointerLeave={() => { if (activeMapPane.current === 'right') activeMapPane.current = null; }}
+              >
+                <MapView
+                  onLocationSelect={handleLocationSelect}
+                  markerPosition={markerPosition}
+                  mapStyle={mapStyle}
+                  showFloodOverlay={showFloodOverlay}
+                  viewState={viewState}
+                  onViewStateChange={handleRightViewStateChange}
+                  flyToTarget={flyToTarget}
+                  scenarioLabel="With Adaptation"
+                  isAdaptationScenario={true}
+                  zoneData={zoneData}
+                />
+              </div>
             }
           />
         ) : (
