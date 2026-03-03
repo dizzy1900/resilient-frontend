@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { fetchWithRetry } from '@/utils/api';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
@@ -184,6 +184,12 @@ export function ComparativeDiffView({
 
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [isGeneratingAi, setIsGeneratingAi] = useState(false);
+
+  // Clear stale briefing whenever mode, location, or scenario results change
+  useEffect(() => {
+    setAiSummary(null);
+  }, [mode, locationName, scenarioHealth, scenarioAgriculture, scenarioCoastal, scenarioFlood,
+      baselineHealth, baselineAgriculture, baselineCoastal, baselineFlood]);
 
   const generateExecutiveSummary = useCallback(async () => {
     setIsGeneratingAi(true);
