@@ -647,8 +647,9 @@ const Index = () => {
     setSelectedYear(value);
   }, []);
 
-  const handleSimulate = useCallback(async () => {
-    if (!markerPosition) return;
+  const handleSimulate = useCallback(async (coordsOverride?: { lat: number; lng: number }) => {
+    const coords = coordsOverride || markerPosition;
+    if (!coords) return;
 
     setIsSimulating(true);
     setIsSpatialLoading(true);
@@ -661,8 +662,8 @@ const Index = () => {
 
     // Send exact UI strings for crops (no lowercase/snake_case); backend expects e.g. "Drought-Resistant Sorghum"
     const payload = {
-      lat: markerPosition.lat,
-      lon: markerPosition.lng,
+      lat: coords.lat,
+      lon: coords.lng,
       crop: cropType,
       current_crop: currentCrop,
       proposed_crop: proposedCrop,
@@ -685,7 +686,7 @@ const Index = () => {
     (async () => {
       try {
         setIsNdviLoading(true);
-        const ndviUrl = `${ndviEndpoint}?lat=${markerPosition.lat}&lon=${markerPosition.lng}`;
+        const ndviUrl = `${ndviEndpoint}?lat=${coords.lat}&lon=${coords.lng}`;
         const ndviRes = await fetchWithRetry(ndviUrl, { method: 'GET' });
         if (!ndviRes.ok) throw new Error(`NDVI HTTP ${ndviRes.status}`);
         const ndviJson = await ndviRes.json();
@@ -1520,15 +1521,16 @@ const Index = () => {
   }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex, populationSize, gdpPerCapita, economyTier, customBedsPer1000]);
 
   /** Fire a scenario API call concurrently when in Digital Twin mode. */
-  const fireScenarioCall = useCallback(async () => {
-    if (!markerPosition || !isSplitMode) return;
+  const fireScenarioCall = useCallback(async (coordsOverride?: { lat: number; lng: number }) => {
+    const coords = coordsOverride || markerPosition;
+    if (!coords || !isSplitMode) return;
     const sp = scenarioStore.params;
 
     if (mode === 'agriculture') {
       const agriEndpoint = 'https://web-production-8ff9e.up.railway.app/predict-agri';
       const tempDelta = sp.globalTempTarget - 1.4;
       const payload = {
-        lat: markerPosition.lat, lon: markerPosition.lng, crop: sp.cropType,
+        lat: coords.lat, lon: coords.lng, crop: sp.cropType,
         current_crop: sp.currentCrop, proposed_crop: sp.proposedCrop,
         baseline_yield_value: 500000, temp_increase: Math.round(tempDelta * 10) / 10,
         rain_change: sp.rainChange,
@@ -1558,7 +1560,7 @@ const Index = () => {
     if (mode === 'coastal') {
       const coastalEndpoint = 'https://web-production-8ff9e.up.railway.app/predict-coastal';
       const payload = {
-        lat: markerPosition.lat, lon: markerPosition.lng,
+        lat: coords.lat, lon: coords.lng,
         base_annual_opex: Number(sp.baseAnnualOpex) || 25000,
         initial_lifespan_years: Number(sp.assetLifespan) || 30,
         mangrove_width: sp.mangroveWidth, sea_level_rise: sp.totalSLR,
@@ -1588,7 +1590,7 @@ const Index = () => {
       const safeRain = Math.max(10, Math.min(150, sp.totalRainIntensity));
       const interventionType = sp.greenRoofsEnabled ? 'green_roof' : sp.permeablePavementEnabled ? 'permeable_pavement' : sp.drainageEnabled ? 'drainage_upgrade' : 'none';
       const payload = {
-        lat: markerPosition.lat, lon: markerPosition.lng, rain_intensity: safeRain,
+        lat: coords.lat, lon: coords.lng, rain_intensity: safeRain,
         current_imperviousness: 0.7, intervention_type: interventionType,
         base_annual_opex: Number(sp.baseAnnualOpex) || 25000,
         initial_lifespan_years: Number(sp.assetLifespan) || 30,
@@ -1620,7 +1622,7 @@ const Index = () => {
     if (mode === 'health') {
       const scenarioTempDelta = sp.healthTempTarget - 1.4;
       const payload: Record<string, unknown> = {
-        lat: markerPosition.lat, lon: markerPosition.lng,
+        lat: coords.lat, lon: coords.lng,
         workforce_size: sp.workforceSize ?? 100, daily_wage: sp.averageDailyWage ?? 50,
         intervention_type: sp.healthIntervention, intervention_capex: sp.coolingCapex,
         intervention_annual_opex: sp.coolingOpex, population_size: sp.populationSize,
@@ -1754,13 +1756,11 @@ const Index = () => {
     }));
     setReverseLocationName(payload.location.charAt(0).toUpperCase() + payload.location.slice(1));
 
-    // 6. Auto-trigger simulation after a tick to let state settle
+    // 6. Auto-trigger simulation — pass coords directly to bypass stale closure
+    const freshCoords = { lat: payload.coords.lat, lng: payload.coords.lng };
     setTimeout(() => {
-      // getCurrentSimulateHandler returns the appropriate handler for the current mode + split state
-      // But since we just set state, we call handleSimulate directly for agriculture baseline
-      // and fireScenarioCall for the scenario leg
-      Promise.all([handleSimulate(), fireScenarioCall()]).catch(console.error);
-    }, 200);
+      Promise.all([handleSimulate(freshCoords), fireScenarioCall(freshCoords)]).catch(console.error);
+    }, 300);
   }, [scenarioStore, handleSimulate, fireScenarioCall]);
 
   return (
