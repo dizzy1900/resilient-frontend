@@ -320,6 +320,7 @@ export function RightPanel({
           {showComparative ? (
             <ComparativeDiffView
               mode={mode}
+              locationName={locationName}
               baselineAgriculture={agricultureResults}
               scenarioAgriculture={scenarioAgriResults}
               baselineCoastal={coastalResults}

@@ -1,3 +1,6 @@
+import { useState, useCallback } from 'react';
+import { Sparkles, Loader2 } from 'lucide-react';
+import { fetchWithRetry } from '@/utils/api';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { HealthResults } from '@/components/hud/HealthResultsPanel';
 
@@ -38,6 +41,7 @@ interface FloodResults {
 
 export interface ComparativeDiffViewProps {
   mode: DashboardMode;
+  locationName?: string | null;
   baselineAgriculture?: AgricultureResults;
   scenarioAgriculture?: AgricultureResults;
   baselineCoastal?: CoastalResults;
@@ -166,6 +170,7 @@ function SectionHeading({ title }: { title: string }) {
 
 export function ComparativeDiffView({
   mode,
+  locationName,
   baselineAgriculture,
   scenarioAgriculture,
   baselineCoastal,
@@ -176,6 +181,43 @@ export function ComparativeDiffView({
   scenarioHealth,
 }: ComparativeDiffViewProps) {
   const accent = MODE_ACCENT[mode] ?? '#10b981';
+
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [isGeneratingAi, setIsGeneratingAi] = useState(false);
+
+  const generateExecutiveSummary = useCallback(async () => {
+    setIsGeneratingAi(true);
+    try {
+      const scenarioData =
+        mode === 'health' ? scenarioHealth :
+        mode === 'agriculture' ? scenarioAgriculture :
+        mode === 'coastal' ? scenarioCoastal :
+        mode === 'flood' ? scenarioFlood : null;
+
+      const payloadModuleName = (mode === 'health' && (scenarioData as HealthResults | null)?.public_health_analysis) ? 'health_public' : mode;
+
+      const res = await fetchWithRetry(
+        'https://web-production-8ff9e.up.railway.app/api/v1/ai/executive-summary',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            module_name: payloadModuleName,
+            location_name: locationName || 'Unknown Location',
+            simulation_data: scenarioData,
+          }),
+        }
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setAiSummary(data.summary_text ?? data.summary ?? null);
+    } catch (err) {
+      console.error('[Executive Summary DT]', err);
+      setAiSummary(null);
+    } finally {
+      setIsGeneratingAi(false);
+    }
+  }, [mode, locationName, scenarioHealth, scenarioAgriculture, scenarioCoastal, scenarioFlood]);
 
   return (
     <div>
@@ -210,7 +252,50 @@ export function ComparativeDiffView({
         </div>
       </div>
 
-      {/* Agriculture */}
+      {/* Executive Insight */}
+      <div className="px-4 pt-3 pb-2">
+        <span className="cb-section-heading">✨ EXECUTIVE INSIGHT</span>
+        {aiSummary ? (
+          <div
+            className="mt-2 rounded-md px-3 py-3"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--cb-bg) 80%, var(--cb-text) 5%)',
+              border: '1px solid var(--cb-border)',
+            }}
+          >
+            <p style={{ fontSize: 12, lineHeight: 1.7, color: 'var(--cb-text)' }}>
+              {aiSummary}
+            </p>
+          </div>
+        ) : isGeneratingAi ? (
+          <div className="mt-2 flex items-center gap-2" style={{ color: 'var(--cb-secondary)', fontSize: 10 }}>
+            <Loader2 style={{ width: 12, height: 12 }} className="animate-spin" />
+            Synthesizing scenario data…
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={generateExecutiveSummary}
+            className="mt-2 flex items-center gap-1.5"
+            style={{
+              fontSize: 10,
+              letterSpacing: '0.06em',
+              color: 'var(--cb-secondary)',
+              background: 'none',
+              border: '1px solid var(--cb-border)',
+              padding: '5px 10px',
+              cursor: 'pointer',
+              transition: 'color 0.15s',
+              fontFamily: 'monospace',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--cb-text)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--cb-secondary)')}
+          >
+            <Sparkles style={{ width: 10, height: 10 }} /> GENERATE BRIEFING
+          </button>
+        )}
+      </div>
+
       {mode === 'agriculture' && baselineAgriculture && scenarioAgriculture && (
         <>
           <SectionHeading title="Yield & Loss" />
@@ -430,10 +515,10 @@ export function ComparativeDiffView({
                       </div>
                       <CompMetricRow
                         label="BED DEFICIT"
-                        baselineValue={bInfra?.bed_deficit ?? 0}
-                        scenarioValue={sInfra?.bed_deficit ?? 0}
-                        baselineDisplay={`${bInfra?.bed_deficit ?? 0}`}
-                        scenarioDisplay={`${sInfra?.bed_deficit ?? 0}`}
+                        baselineValue={Math.ceil(bInfra?.bed_deficit ?? 0)}
+                        scenarioValue={Math.ceil(sInfra?.bed_deficit ?? 0)}
+                        baselineDisplay={`${Math.ceil(bInfra?.bed_deficit ?? 0)}`}
+                        scenarioDisplay={`${Math.ceil(sInfra?.bed_deficit ?? 0)}`}
                         invertDelta
                       />
                       <CompMetricRow
