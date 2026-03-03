@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { MapView, MapStyle, ViewState, ZoneData, PortfolioMapAsset, FlyToTarget } from '@/components/dashboard/MapView';
+import { useScenarioStore, ScenarioParams } from '@/store/useScenarioStore';
 import { AtlasClickData } from '@/components/dashboard/AtlasMarkers';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
 import { HealthResults } from '@/components/hud/HealthResultsPanel';
@@ -128,6 +129,13 @@ const Index = () => {
   const [economyTier, setEconomyTier] = useState<string>('middle');
   const [customBedsPer1000, setCustomBedsPer1000] = useState<number | null>(null);
   const [isSplitMode, setIsSplitMode] = useState(false);
+
+  // Scenario results for Digital Twin comparative analysis
+  const [scenarioAgriResults, setScenarioAgriResults] = useState<typeof results | null>(null);
+  const [scenarioCoastalResults, setScenarioCoastalResults] = useState<typeof coastalResults | null>(null);
+  const [scenarioFloodResults, setScenarioFloodResults] = useState<typeof floodResults | null>(null);
+  const [scenarioHealthResults, setScenarioHealthResults] = useState<HealthResults | null>(null);
+  const scenarioStore = useScenarioStore();
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState<'controls' | 'data'>('controls');
   // Finance mode: track current atlas item's financial data
@@ -1508,12 +1516,183 @@ const Index = () => {
       });
   }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex, populationSize, gdpPerCapita, economyTier, customBedsPer1000]);
 
+  /** Fire a scenario API call concurrently when in Digital Twin mode. */
+  const fireScenarioCall = useCallback(async () => {
+    if (!markerPosition || !isSplitMode) return;
+    const sp = scenarioStore.params;
+
+    if (mode === 'agriculture') {
+      const agriEndpoint = 'https://web-production-8ff9e.up.railway.app/predict-agri';
+      const tempDelta = sp.globalTempTarget - 1.4;
+      const payload = {
+        lat: markerPosition.lat, lon: markerPosition.lng, crop: sp.cropType,
+        current_crop: sp.currentCrop, proposed_crop: sp.proposedCrop,
+        baseline_yield_value: 500000, temp_increase: Math.round(tempDelta * 10) / 10,
+        rain_change: sp.rainChange,
+      };
+      try {
+        const res = await fetchWithRetry(agriEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const resData = await res.json();
+        const raw = Array.isArray(resData) ? resData[0] : resData;
+        const d = raw as Record<string, unknown>;
+        const r = (d?.data ?? d) as Record<string, unknown>;
+        const transitionCapex = Number(r?.transition_capex ?? d?.transition_capex ?? 0);
+        const avoidedRevenueLoss = Number(r?.avoided_revenue_loss ?? d?.avoided_revenue_loss ?? r?.avoided_loss ?? d?.avoided_loss ?? 0);
+        const riskReductionPct = Number(r?.risk_reduction_pct ?? d?.risk_reduction_pct ?? 0);
+        const resilienceScore = r?.resilience_score ?? null;
+        const predictions = r?.predictions as Record<string, unknown> | undefined;
+        const yieldResilient = predictions ? Number((predictions?.resilient_seed as Record<string, unknown>)?.predicted_yield ?? 0) : 0;
+        const yieldPotential = resilienceScore !== null ? Math.min(100, Math.max(0, Number(resilienceScore))) : Math.min(100, Math.max(0, yieldResilient));
+        setScenarioAgriResults({
+          avoidedLoss: Math.round(avoidedRevenueLoss * 100) / 100,
+          transitionCapex, riskReduction: Math.round(riskReductionPct * 10) / 10,
+          yieldBaseline: 0, yieldResilient, yieldPotential, portfolioVolatilityPct: null,
+          avoidedRevenueLoss: avoidedRevenueLoss ?? null, monthlyData: mockMonthlyData,
+        });
+      } catch { setScenarioAgriResults(null); }
+    }
+
+    if (mode === 'coastal') {
+      const coastalEndpoint = 'https://web-production-8ff9e.up.railway.app/predict-coastal';
+      const payload = {
+        lat: markerPosition.lat, lon: markerPosition.lng,
+        base_annual_opex: Number(sp.baseAnnualOpex) || 25000,
+        initial_lifespan_years: Number(sp.assetLifespan) || 30,
+        mangrove_width: sp.mangroveWidth, sea_level_rise: sp.totalSLR,
+        slr_projection: sp.totalSLR, include_storm_surge: sp.includeStormSurge,
+      };
+      try {
+        const res = await fetchWithRetry(coastalEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const data = await res.json();
+        const raw = data as Record<string, unknown>;
+        const d = (raw.data ?? raw) as Record<string, unknown>;
+        setScenarioCoastalResults({
+          avoidedLoss: Number(d.avoided_loss ?? 0), slope: d.slope != null ? Number(d.slope) : null,
+          stormWave: d.storm_wave != null ? Number(d.storm_wave) : d.surge_m != null ? Number(d.surge_m) : null,
+          isUnderwater: Boolean(d.is_underwater), floodDepth: d.flood_depth_m != null ? Number(d.flood_depth_m) : null,
+          seaLevelRise: Number(d.sea_level_rise ?? d.slr_projection ?? sp.totalSLR),
+          includeStormSurge: sp.includeStormSurge,
+          adjustedOpex: d.adjusted_opex != null ? Number(d.adjusted_opex) : null,
+          opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
+          adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
+          avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
+        });
+      } catch { setScenarioCoastalResults(null); }
+    }
+
+    if (mode === 'flood') {
+      const floodEndpoint = 'https://web-production-8ff9e.up.railway.app/predict-flood';
+      const safeRain = Math.max(10, Math.min(150, sp.totalRainIntensity));
+      const interventionType = sp.greenRoofsEnabled ? 'green_roof' : sp.permeablePavementEnabled ? 'permeable_pavement' : sp.drainageEnabled ? 'drainage_upgrade' : 'none';
+      const payload = {
+        lat: markerPosition.lat, lon: markerPosition.lng, rain_intensity: safeRain,
+        current_imperviousness: 0.7, intervention_type: interventionType,
+        base_annual_opex: Number(sp.baseAnnualOpex) || 25000,
+        initial_lifespan_years: Number(sp.assetLifespan) || 30,
+        asset_value_usd: Number(sp.buildingValue) || 5_000_000,
+        green_roofs: sp.greenRoofsEnabled, permeable_pavement: sp.permeablePavementEnabled,
+        rain_intensity_pct: sp.totalRainIntensity, slope_pct: 2,
+      };
+      try {
+        const res = await fetchWithRetry(floodEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const resData = await res.json();
+        const data = (resData as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
+        const d = data ?? (resData as Record<string, unknown>);
+        type FR = { data?: { analysis?: { avoided_depth_cm?: number }; avoided_loss?: number; adjusted_opex?: number; asset_depreciation?: { adjusted_lifespan?: number } } };
+        const depth = (resData as FR)?.data?.analysis?.avoided_depth_cm ?? 0;
+        const avoidedLoss = (resData as FR)?.data?.avoided_loss ?? 0;
+        setScenarioFloodResults({
+          floodDepthReduction: depth, valueProtected: Math.round(avoidedLoss),
+          riskIncreasePct: d.risk_increase_pct != null ? Number(d.risk_increase_pct) : null,
+          futureFloodAreaKm2: d.future_flood_area_km2 != null ? Number(d.future_flood_area_km2) : null,
+          rainChartData: null, future100yr: null, baseline100yr: null,
+          avoidedBusinessInterruption: d.avoided_business_interruption != null ? Math.round(Number(d.avoided_business_interruption)) : null,
+          adjustedOpex: (resData as FR)?.data?.adjusted_opex ?? null,
+          opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
+          adjustedLifespan: (resData as FR)?.data?.asset_depreciation?.adjusted_lifespan ?? null,
+        });
+      } catch { setScenarioFloodResults(null); }
+    }
+
+    if (mode === 'health') {
+      const payload: Record<string, unknown> = {
+        lat: markerPosition.lat, lon: markerPosition.lng,
+        workforce_size: sp.workforceSize ?? 100, daily_wage: sp.averageDailyWage ?? 50,
+        intervention_type: sp.healthIntervention, intervention_capex: sp.coolingCapex,
+        intervention_annual_opex: sp.coolingOpex, population_size: sp.populationSize,
+        gdp_per_capita_usd: sp.gdpPerCapita, economy_tier: sp.economyTier,
+      };
+      if (sp.customBedsPer1000 != null) payload.user_beds_per_1000 = sp.customBedsPer1000;
+      try {
+        const res = await fetchWithRetry(healthEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const resData = await res.json();
+        const data = resData?.data ?? {};
+        const heat = (data?.heat_stress_analysis ?? {}) as Record<string, unknown>;
+        const malaria = (data?.malaria_risk_analysis ?? {}) as Record<string, unknown>;
+        const totalEconomic = (data?.economic_impact as Record<string, unknown> | undefined)?.total_economic_impact as Record<string, unknown> | undefined;
+        const wbgtVal = Number(heat?.wbgt_estimate ?? heat?.wbgt ?? 0);
+        const productivityLoss = Number(heat?.productivity_loss_pct ?? 0);
+        const dailyLossAverage = Number(totalEconomic?.daily_loss_average ?? 0);
+        const annualLoss = Number(totalEconomic?.annual_loss ?? 0);
+        const economicDaily = dailyLossAverage > 0 ? dailyLossAverage : (annualLoss > 0 ? annualLoss / 365 : 0);
+        const malariaRiskCategory = (malaria?.risk_category ?? 'Low') as string;
+        const interventionRaw = data?.intervention_analysis as Record<string, unknown> | undefined;
+        let interventionAnalysis: import('@/components/hud/HealthResultsPanel').InterventionAnalysis | undefined;
+        if (interventionRaw) {
+          const wbgtAdj = interventionRaw.wbgt_adjustment as Record<string, unknown> | undefined;
+          const econImpact = interventionRaw.economic_impact as Record<string, unknown> | undefined;
+          const finAnalysis = interventionRaw.financial_analysis as Record<string, unknown> | undefined;
+          interventionAnalysis = {
+            intervention_type: String(interventionRaw.intervention_type ?? sp.healthIntervention),
+            wbgt_adjustment: { adjusted_wbgt: Number(wbgtAdj?.adjusted_wbgt ?? wbgtVal) },
+            economic_impact: { avoided_annual_economic_loss_usd: Number(econImpact?.avoided_annual_economic_loss_usd ?? 0) },
+            financial_analysis: { payback_period_years: finAnalysis?.payback_period_years != null ? Number(finAnalysis.payback_period_years) : null, npv_10yr_at_10pct_discount: Number(finAnalysis?.npv_10yr_at_10pct_discount ?? 0) },
+            adjusted_wbgt: Number(wbgtAdj?.adjusted_wbgt ?? wbgtVal),
+            adjusted_productivity_loss_pct: Number(wbgtAdj?.adjusted_productivity_loss_pct ?? productivityLoss),
+            avoided_annual_loss: Number(econImpact?.avoided_annual_economic_loss_usd ?? 0),
+            payback_period_years: finAnalysis?.payback_period_years != null ? Number(finAnalysis.payback_period_years) : null,
+            npv_10yr: Number(finAnalysis?.npv_10yr_at_10pct_discount ?? 0),
+            capex: Number(interventionRaw.capex ?? sp.coolingCapex), annual_opex: Number(interventionRaw.annual_opex ?? sp.coolingOpex),
+          };
+        }
+        const publicHealthRaw = data?.public_health_analysis as Record<string, unknown> | undefined;
+        const infraRaw = data?.infrastructure_stress_test as Record<string, unknown> | undefined;
+        setScenarioHealthResults({
+          productivity_loss_pct: Math.min(100, Math.max(0, productivityLoss)),
+          economic_loss_daily: Math.round(economicDaily),
+          wbgt: Math.round(wbgtVal * 10) / 10, projected_temp: Math.round(wbgtVal * 10) / 10,
+          malaria_risk: (['High', 'Medium', 'Low'].includes(malariaRiskCategory) ? malariaRiskCategory : 'Low') as 'High' | 'Medium' | 'Low',
+          dengue_risk: 'Low', workforce_size: sp.workforceSize, daily_wage: sp.averageDailyWage,
+          intervention_analysis: interventionAnalysis,
+          public_health_analysis: publicHealthRaw ? {
+            dalys_averted: Number(publicHealthRaw.dalys_averted ?? 0),
+            economic_value_preserved_usd: Number(publicHealthRaw.economic_value_preserved_usd ?? 0),
+            monetization: { value_per_daly_usd: Number((publicHealthRaw.monetization as Record<string, unknown> | undefined)?.value_per_daly_usd ?? 0) },
+          } : undefined,
+          infrastructure_stress_test: infraRaw ? {
+            available_beds: Number(infraRaw.available_beds ?? 0), surge_admissions: Number(infraRaw.surge_admissions ?? 0),
+            bed_deficit: Number(infraRaw.bed_deficit ?? 0), capacity_breach: Boolean(infraRaw.capacity_breach),
+            infrastructure_bond_capex: Number(infraRaw.infrastructure_bond_capex ?? 0),
+          } : undefined,
+        });
+      } catch { setScenarioHealthResults(null); }
+    }
+  }, [markerPosition, isSplitMode, mode, scenarioStore.params]);
+
   const getCurrentSimulateHandler = useCallback(() => {
-    if (mode === 'agriculture') return handleSimulate;
-    if (mode === 'coastal') return handleCoastalSimulate;
-    if (mode === 'health') return handleHealthSimulate;
-    return handleFloodSimulate;
-  }, [mode, handleSimulate, handleCoastalSimulate, handleFloodSimulate, handleHealthSimulate]);
+    // Wrap handlers: when in split mode, fire both baseline + scenario concurrently
+    const baseHandler =
+      mode === 'agriculture' ? handleSimulate
+      : mode === 'coastal' ? handleCoastalSimulate
+      : mode === 'health' ? handleHealthSimulate
+      : handleFloodSimulate;
+
+    if (!isSplitMode) return baseHandler;
+
+    return async () => {
+      await Promise.all([baseHandler(), fireScenarioCall()]);
+    };
+  }, [mode, isSplitMode, handleSimulate, handleCoastalSimulate, handleFloodSimulate, handleHealthSimulate, fireScenarioCall]);
 
   const isCurrentlySimulating =
     mode === 'agriculture'
@@ -1687,7 +1866,7 @@ const Index = () => {
         onFloodSelectedYearChange={setFloodSelectedYear}
         isFloodUserOverride={isFloodUserOverride}
         onFloodUserOverrideChange={setIsFloodUserOverride}
-        onFloodSimulate={handleFloodSimulate}
+        onFloodSimulate={isSplitMode ? async () => { await Promise.all([handleFloodSimulate(), fireScenarioCall()]); } : handleFloodSimulate}
         isFloodSimulating={isFloodSimulating}
         totalSLR={totalSLR}
         onTotalSLRChange={setTotalSLR}
@@ -1695,13 +1874,13 @@ const Index = () => {
         onIncludeStormSurgeChange={setIncludeStormSurge}
         coastalSelectedYear={coastalSelectedYear}
         onCoastalSelectedYearChange={setCoastalSelectedYear}
-        onCoastalSimulate={handleCoastalSimulate}
+        onCoastalSimulate={isSplitMode ? async () => { await Promise.all([handleCoastalSimulate(), fireScenarioCall()]); } : handleCoastalSimulate}
         isCoastalSimulating={isCoastalSimulating}
         healthTempTarget={healthTempTarget}
         onHealthTempTargetChange={setHealthTempTarget}
         healthSelectedYear={healthSelectedYear}
         onHealthSelectedYearChange={setHealthSelectedYear}
-        onHealthSimulate={handleHealthSimulate}
+        onHealthSimulate={isSplitMode ? async () => { await Promise.all([handleHealthSimulate(), fireScenarioCall()]); } : handleHealthSimulate}
         isHealthSimulating={isHealthSimulating}
         healthIntervention={healthIntervention}
         onHealthInterventionChange={setHealthIntervention}
@@ -1790,6 +1969,18 @@ const Index = () => {
         polygonProtectedValue={polygonProtectedValue}
         portfolioResults={portfolioResults}
         priceShockData={mode === 'agriculture' ? priceShockData : undefined}
+        isSplitMode={isSplitMode}
+        scenarioAgriResults={mode === 'agriculture' && scenarioAgriResults ? {
+          avoidedLoss: scenarioAgriResults.avoidedLoss,
+          transitionCapex: scenarioAgriResults.transitionCapex,
+          riskReduction: scenarioAgriResults.riskReduction,
+          yieldPotential: scenarioAgriResults.yieldPotential,
+          avoidedRevenueLoss: scenarioAgriResults.avoidedRevenueLoss,
+          monthlyData: scenarioAgriResults.monthlyData,
+        } : undefined}
+        scenarioCoastalResults={mode === 'coastal' ? scenarioCoastalResults ?? undefined : undefined}
+        scenarioFloodResults={mode === 'flood' ? scenarioFloodResults ?? undefined : undefined}
+        scenarioHealthResults={scenarioHealthResults}
       />
 
       {/* Portfolio left panel content (desktop) */}

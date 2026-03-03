@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { ComparativeDiffView } from './ComparativeDiffView';
 import { X, MapPin, Landmark, Download, Loader2, Sparkles } from 'lucide-react';
 import { fetchWithRetry } from '@/utils/api';
 import { generateTearSheet } from '@/utils/pdfExport';
@@ -133,6 +134,11 @@ interface RightPanelProps {
   polygonProtectedValue?: number | null;
   portfolioResults?: PortfolioAnalysisResult | null;
   priceShockData?: any;
+  isSplitMode?: boolean;
+  scenarioAgriResults?: AgricultureResults;
+  scenarioCoastalResults?: CoastalResults;
+  scenarioFloodResults?: FloodResults;
+  scenarioHealthResults?: HealthResults | null;
 }
 
 const MODE_ACCENT: Record<DashboardMode, string> = {
@@ -239,6 +245,11 @@ export function RightPanel({
   polygonProtectedValue,
   portfolioResults,
   priceShockData,
+  isSplitMode,
+  scenarioAgriResults,
+  scenarioCoastalResults,
+  scenarioFloodResults,
+  scenarioHealthResults,
 }: RightPanelProps) {
   if (!visible) return null;
 
@@ -246,6 +257,13 @@ export function RightPanel({
   const displayName = portfolioResults && mode === 'portfolio'
     ? 'Aggregate Portfolio'
     : (locationName ?? (latitude && longitude ? `${latitude.toFixed(4)}, ${longitude.toFixed(4)}` : 'Selected Location'));
+
+  const showComparative = isSplitMode && showResults && (
+    (mode === 'agriculture' && agricultureResults && scenarioAgriResults) ||
+    (mode === 'coastal' && coastalResults && scenarioCoastalResults) ||
+    (mode === 'flood' && floodResults && scenarioFloodResults) ||
+    (mode === 'health' && healthResults && scenarioHealthResults)
+  );
 
   return (
     <div
@@ -272,6 +290,14 @@ export function RightPanel({
           </span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          {isSplitMode && (
+            <span
+              className="cb-label px-1.5 py-0.5"
+              style={{ border: '1px solid #f59e0b', color: '#f59e0b', fontSize: 8 }}
+            >
+              TWIN
+            </span>
+          )}
           <span
             className="cb-label px-1.5 py-0.5"
             style={{ border: `1px solid ${accent}`, color: accent }}
@@ -291,57 +317,71 @@ export function RightPanel({
 
       <div className="flex-1 overflow-y-auto min-h-0">
         <div id="report-content">
-          <RightPanelContent
-            mode={mode}
-            locationName={locationName}
-            isLoading={isLoading}
-            showResults={showResults}
-            agricultureResults={agricultureResults}
-            coastalResults={coastalResults}
-            floodResults={floodResults}
-            healthResults={healthResults}
-            mangroveWidth={mangroveWidth}
-            greenRoofsEnabled={greenRoofsEnabled}
-            permeablePavementEnabled={permeablePavementEnabled}
-            tempIncrease={tempIncrease}
-            rainChange={rainChange}
-            baselineZone={baselineZone}
-            currentZone={currentZone}
-            globalTempTarget={globalTempTarget}
-            spatialAnalysis={spatialAnalysis}
-            isSpatialLoading={isSpatialLoading}
-            ndviData={ndviData}
-            isNdviLoading={isNdviLoading}
-            cropType={cropType}
-            portfolioAssets={portfolioAssets}
-            atlasFinancialData={atlasFinancialData}
-            atlasMonteCarloData={atlasMonteCarloData}
-            atlasExecutiveSummary={atlasExecutiveSummary}
-            atlasSensitivityData={atlasSensitivityData}
-            atlasAdaptationStrategy={atlasAdaptationStrategy}
-            atlasSatellitePreview={atlasSatellitePreview}
-            atlasMarketIntelligence={atlasMarketIntelligence}
-            atlasTemporalAnalysis={atlasTemporalAnalysis}
-            atlasAdaptationPortfolio={atlasAdaptationPortfolio}
-            isFinanceSimulating={isFinanceSimulating}
-            chartData={chartData}
-            projectParams={projectParams}
-            defensiveProjectParams={defensiveProjectParams}
-            assetLifespan={assetLifespan}
-            dailyRevenue={dailyRevenue}
-            propertyValue={propertyValue}
-            polygonExposurePct={polygonExposurePct}
-            polygonTotalArea={polygonTotalArea}
-            polygonExposedArea={polygonExposedArea}
-            polygonTotalAssetValue={polygonTotalAssetValue}
-            polygonExposedValue={polygonExposedValue}
-            polygonValueAtRisk={polygonValueAtRisk}
-            polygonProtectedValue={polygonProtectedValue}
-            portfolioResults={portfolioResults}
-            priceShockData={priceShockData}
-            latitude={latitude}
-            longitude={longitude}
-          />
+          {showComparative ? (
+            <ComparativeDiffView
+              mode={mode}
+              baselineAgriculture={agricultureResults}
+              scenarioAgriculture={scenarioAgriResults}
+              baselineCoastal={coastalResults}
+              scenarioCoastal={scenarioCoastalResults}
+              baselineFlood={floodResults}
+              scenarioFlood={scenarioFloodResults}
+              baselineHealth={healthResults}
+              scenarioHealth={scenarioHealthResults}
+            />
+          ) : (
+            <RightPanelContent
+              mode={mode}
+              locationName={locationName}
+              isLoading={isLoading}
+              showResults={showResults}
+              agricultureResults={agricultureResults}
+              coastalResults={coastalResults}
+              floodResults={floodResults}
+              healthResults={healthResults}
+              mangroveWidth={mangroveWidth}
+              greenRoofsEnabled={greenRoofsEnabled}
+              permeablePavementEnabled={permeablePavementEnabled}
+              tempIncrease={tempIncrease}
+              rainChange={rainChange}
+              baselineZone={baselineZone}
+              currentZone={currentZone}
+              globalTempTarget={globalTempTarget}
+              spatialAnalysis={spatialAnalysis}
+              isSpatialLoading={isSpatialLoading}
+              ndviData={ndviData}
+              isNdviLoading={isNdviLoading}
+              cropType={cropType}
+              portfolioAssets={portfolioAssets}
+              atlasFinancialData={atlasFinancialData}
+              atlasMonteCarloData={atlasMonteCarloData}
+              atlasExecutiveSummary={atlasExecutiveSummary}
+              atlasSensitivityData={atlasSensitivityData}
+              atlasAdaptationStrategy={atlasAdaptationStrategy}
+              atlasSatellitePreview={atlasSatellitePreview}
+              atlasMarketIntelligence={atlasMarketIntelligence}
+              atlasTemporalAnalysis={atlasTemporalAnalysis}
+              atlasAdaptationPortfolio={atlasAdaptationPortfolio}
+              isFinanceSimulating={isFinanceSimulating}
+              chartData={chartData}
+              projectParams={projectParams}
+              defensiveProjectParams={defensiveProjectParams}
+              assetLifespan={assetLifespan}
+              dailyRevenue={dailyRevenue}
+              propertyValue={propertyValue}
+              polygonExposurePct={polygonExposurePct}
+              polygonTotalArea={polygonTotalArea}
+              polygonExposedArea={polygonExposedArea}
+              polygonTotalAssetValue={polygonTotalAssetValue}
+              polygonExposedValue={polygonExposedValue}
+              polygonValueAtRisk={polygonValueAtRisk}
+              polygonProtectedValue={polygonProtectedValue}
+              portfolioResults={portfolioResults}
+              priceShockData={priceShockData}
+              latitude={latitude}
+              longitude={longitude}
+            />
+          )}
         </div>
 
         {showResults && (
