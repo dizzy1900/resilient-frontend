@@ -24,6 +24,7 @@ import { DrawnPolygon } from '@/components/dashboard/DrawControl';
 import { useMapboxGeocoder } from '@/hooks/useMapboxGeocoder';
 import { useGeolocateIP } from '@/hooks/useGeolocateIP';
 import { PortfolioAnalysisResult } from '@/types/portfolio';
+import { CommandPalette } from '@/components/CommandPalette';
 
 /** Live Railway FastAPI backend for Finance module (CBA + CVaR). */
 const financeBaseUrl = 'https://web-production-8ff9e.up.railway.app';
@@ -1715,6 +1716,12 @@ const Index = () => {
 
   return (
     <div className="relative h-screen w-full overflow-hidden" style={{ backgroundColor: 'var(--cb-bg)' }}>
+      <CommandPalette
+        onChangeMode={handleModeChange}
+        onToggleTwin={() => setIsSplitMode(prev => !prev)}
+        currentMode={mode}
+        isSplitMode={isSplitMode}
+      />
       <div className="absolute inset-0">
         {isSplitMode ? (
           <DigitalTwinOverlay
