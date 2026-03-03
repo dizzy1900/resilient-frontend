@@ -4,9 +4,10 @@ import { DashboardMode } from '@/components/dashboard/ModeSelector';
 
 /** Simple coordinate dictionary for key countries / regions. */
 const LOCATION_COORDS: Record<string, { lat: number; lng: number }> = {
-  kenya: { lat: -0.02, lng: 37.91 },
-  brazil: { lat: -14.24, lng: -51.93 },
-  usa: { lat: 39.83, lng: -98.58 },
+  kenya: { lat: -1.2921, lng: 36.8219 },
+  brazil: { lat: -23.5505, lng: -46.6333 },
+  usa: { lat: 40.7128, lng: -74.006 },
+  'new york': { lat: 40.7128, lng: -74.006 },
   india: { lat: 20.59, lng: 78.96 },
   nigeria: { lat: 9.08, lng: 7.49 },
   ethiopia: { lat: 9.15, lng: 40.49 },
