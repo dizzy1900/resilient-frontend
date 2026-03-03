@@ -1,113 +1,78 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { GripVertical } from 'lucide-react';
+import { useState, useCallback, useRef } from 'react';
 
 interface DigitalTwinOverlayProps {
   leftMap: React.ReactNode;
   rightMap: React.ReactNode;
+  leftLabel?: string;
+  rightLabel?: string;
 }
 
-export function DigitalTwinOverlay({ leftMap, rightMap }: DigitalTwinOverlayProps) {
-  const [splitPosition, setSplitPosition] = useState(50);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
-
-  const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    isDragging.current = true;
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  }, []);
-
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isDragging.current || !containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const pct = Math.max(20, Math.min(80, (x / rect.width) * 100));
-    setSplitPosition(pct);
-  }, []);
-
-  const handlePointerUp = useCallback(() => {
-    isDragging.current = false;
-  }, []);
-
-  useEffect(() => {
-    const handleGlobalUp = () => { isDragging.current = false; };
-    window.addEventListener('pointerup', handleGlobalUp);
-    return () => window.removeEventListener('pointerup', handleGlobalUp);
-  }, []);
-
+/**
+ * 50/50 side-by-side split view for Digital Twin mode.
+ * Both maps share the same viewState; hover-gating prevents infinite loops.
+ */
+export function DigitalTwinOverlay({
+  leftMap,
+  rightMap,
+  leftLabel = 'BASELINE (2026)',
+  rightLabel = 'SCENARIO (2050)',
+}: DigitalTwinOverlayProps) {
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full overflow-hidden"
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-    >
-      <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - splitPosition}% 0 0)` }}>
+    <div className="relative w-full h-full flex">
+      {/* Left: Baseline */}
+      <div className="relative flex-1 h-full overflow-hidden border-r" style={{ borderColor: 'var(--cb-border)' }}>
         {leftMap}
-      </div>
 
-      <div className="absolute inset-0" style={{ clipPath: `inset(0 0 0 ${splitPosition}%)` }}>
-        {rightMap}
-      </div>
-
-      <div
-        className="absolute top-0 left-0 z-20 pointer-events-none"
-        style={{
-          backgroundColor: 'var(--cb-bg)',
-          color: 'var(--cb-secondary)',
-          fontFamily: "'Inter', monospace",
-          fontSize: 10,
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase' as const,
-          padding: '6px 16px',
-          borderBottom: '1px solid var(--cb-border)',
-          borderRight: '1px solid var(--cb-border)',
-        }}
-      >
-        BASELINE SCENARIO
-      </div>
-
-      <div
-        className="absolute top-0 z-20 pointer-events-none"
-        style={{
-          right: 80,
-          backgroundColor: 'rgba(16, 185, 129, 0.12)',
-          color: '#10b981',
-          fontFamily: "'Inter', monospace",
-          fontSize: 10,
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase' as const,
-          padding: '6px 16px',
-          borderBottom: '1px solid #10b981',
-          borderLeft: '1px solid #10b981',
-        }}
-      >
-        RESILIENT SCENARIO
-      </div>
-
-      <div
-        className="absolute top-0 bottom-0 z-30 flex items-center"
-        style={{ left: `${splitPosition}%`, transform: 'translateX(-50%)' }}
-      >
+        {/* Floating label */}
         <div
-          className="absolute top-0 bottom-0"
-          style={{ width: 1, backgroundColor: 'var(--cb-border)', left: '50%', transform: 'translateX(-50%)' }}
-        />
-
-        <div
-          onPointerDown={handlePointerDown}
-          className="relative flex items-center justify-center cursor-col-resize select-none"
+          className="absolute top-3 left-1/2 -translate-x-1/2 z-20 pointer-events-none select-none"
           style={{
-            width: 28,
-            height: 48,
-            backgroundColor: 'var(--cb-bg)',
-            border: '1px solid var(--cb-border)',
-            borderRadius: 4,
+            backgroundColor: 'rgba(15, 15, 20, 0.75)',
+            backdropFilter: 'blur(8px)',
             color: 'var(--cb-secondary)',
-            zIndex: 1,
-            touchAction: 'none',
+            fontFamily: "'Inter', monospace",
+            fontSize: 10,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase' as const,
+            padding: '5px 14px',
+            border: '1px solid var(--cb-border)',
           }}
         >
-          <GripVertical style={{ width: 14, height: 14 }} />
+          {leftLabel}
+        </div>
+      </div>
+
+      {/* Divider line */}
+      <div
+        className="absolute top-0 bottom-0 z-30 pointer-events-none"
+        style={{
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 1,
+          backgroundColor: 'var(--cb-border)',
+        }}
+      />
+
+      {/* Right: Scenario */}
+      <div className="relative flex-1 h-full overflow-hidden">
+        {rightMap}
+
+        {/* Floating label */}
+        <div
+          className="absolute top-3 left-1/2 -translate-x-1/2 z-20 pointer-events-none select-none"
+          style={{
+            backgroundColor: 'rgba(16, 185, 129, 0.10)',
+            backdropFilter: 'blur(8px)',
+            color: '#10b981',
+            fontFamily: "'Inter', monospace",
+            fontSize: 10,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase' as const,
+            padding: '5px 14px',
+            border: '1px solid rgba(16, 185, 129, 0.35)',
+          }}
+        >
+          {rightLabel}
         </div>
       </div>
     </div>
