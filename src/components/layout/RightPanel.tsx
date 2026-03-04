@@ -515,10 +515,43 @@ function ExportPDFButton({
 
   const dateStr = new Date().toISOString().split('T')[0];
 
+  const [liveSummary, setLiveSummary] = useState<string | null>(null);
+
+  // Track externally-provided summary
+  useEffect(() => { setLiveSummary(executiveSummary ?? null); }, [executiveSummary]);
+
   const handleExport = useCallback(async () => {
     setIsExporting(true);
     try {
-      await new Promise(r => setTimeout(r, 100));
+      // Auto-generate briefing if missing
+      let summary = liveSummary;
+      if (!summary) {
+        try {
+          const activeData =
+            mode === 'health' ? healthResults :
+            mode === 'agriculture' ? agricultureResults :
+            mode === 'coastal' ? coastalResults :
+            mode === 'flood' ? floodResults : null;
+          const payloadModuleName = (mode === 'health' && activeData?.public_health_analysis) ? 'health_public' : mode;
+          const res = await fetchWithRetry(
+            'https://web-production-8ff9e.up.railway.app/api/v1/ai/executive-summary',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ module_name: payloadModuleName, location_name: locationName, simulation_data: activeData }),
+            }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            summary = data.summary_text ?? data.summary ?? null;
+            if (summary) setLiveSummary(summary);
+          }
+        } catch (aiErr) {
+          console.warn('[PDF] Auto-briefing failed, proceeding without:', aiErr);
+        }
+      }
+
+      await new Promise(r => setTimeout(r, 200));
       const el = document.getElementById('tcfd-report-template');
       if (!el) { console.warn('[PDF] TCFD template not found'); return; }
 
@@ -546,7 +579,7 @@ function ExportPDFButton({
     } finally {
       setIsExporting(false);
     }
-  }, []);
+  }, [liveSummary, mode, locationName, healthResults, agricultureResults, coastalResults, floodResults]);
 
   return (
     <>
@@ -554,7 +587,7 @@ function ExportPDFButton({
         mode={mode}
         locationName={locationName}
         date={dateStr}
-        executiveSummary={executiveSummary}
+        executiveSummary={liveSummary}
         baselineMetrics={baselineMetrics}
         scenarioMetrics={scenarioMetrics}
         deltaMetrics={deltaMetrics}
