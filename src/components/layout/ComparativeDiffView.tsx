@@ -405,56 +405,56 @@ export function ComparativeDiffView({
         <>
           <SectionHeading title="Flood Mitigation" />
           <div className="px-4">
-            {(baselineFlood.riskIncreasePct != null || scenarioFlood.riskIncreasePct != null) && (
+            {((baselineFlood?.riskIncreasePct ?? null) != null || (scenarioFlood?.riskIncreasePct ?? null) != null) && (
               <CompMetricRow
                 label="CLIMATE RISK INCREASE"
-                baselineValue={baselineFlood.riskIncreasePct ?? 0}
-                scenarioValue={scenarioFlood.riskIncreasePct ?? 0}
-                baselineDisplay={`+${(baselineFlood.riskIncreasePct ?? 0).toFixed(1)}%`}
-                scenarioDisplay={`+${(scenarioFlood.riskIncreasePct ?? 0).toFixed(1)}%`}
+                baselineValue={baselineFlood?.riskIncreasePct ?? 0}
+                scenarioValue={scenarioFlood?.riskIncreasePct ?? 0}
+                baselineDisplay={`+${(baselineFlood?.riskIncreasePct ?? 0).toFixed(1)}%`}
+                scenarioDisplay={`+${(scenarioFlood?.riskIncreasePct ?? 0).toFixed(1)}%`}
                 invertDelta
               />
             )}
             <CompMetricRow
               label="DEPTH REDUCTION"
-              baselineValue={baselineFlood.floodDepthReduction}
-              scenarioValue={scenarioFlood.floodDepthReduction}
-              baselineDisplay={`${baselineFlood.floodDepthReduction.toFixed(1)} cm`}
-              scenarioDisplay={`${scenarioFlood.floodDepthReduction.toFixed(1)} cm`}
+              baselineValue={baselineFlood?.floodDepthReduction ?? 0}
+              scenarioValue={scenarioFlood?.floodDepthReduction ?? 0}
+              baselineDisplay={`${(baselineFlood?.floodDepthReduction ?? 0).toFixed(1)} cm`}
+              scenarioDisplay={`${(scenarioFlood?.floodDepthReduction ?? 0).toFixed(1)} cm`}
             />
             <CompMetricRow
               label="VALUE PROTECTED"
-              baselineValue={baselineFlood.valueProtected}
-              scenarioValue={scenarioFlood.valueProtected}
-              baselineDisplay={formatCurrency(baselineFlood.valueProtected)}
-              scenarioDisplay={formatCurrency(scenarioFlood.valueProtected)}
+              baselineValue={baselineFlood?.valueProtected ?? 0}
+              scenarioValue={scenarioFlood?.valueProtected ?? 0}
+              baselineDisplay={formatCurrency(baselineFlood?.valueProtected ?? 0)}
+              scenarioDisplay={formatCurrency(scenarioFlood?.valueProtected ?? 0)}
             />
-            {(baselineFlood.adjustedLifespan != null || scenarioFlood.adjustedLifespan != null) && (
+            {((baselineFlood?.adjustedLifespan ?? null) != null || (scenarioFlood?.adjustedLifespan ?? null) != null) && (
               <CompMetricRow
                 label="CLIMATE-ADJUSTED LIFESPAN"
-                baselineValue={baselineFlood.adjustedLifespan ?? 0}
-                scenarioValue={scenarioFlood.adjustedLifespan ?? 0}
-                baselineDisplay={`${baselineFlood.adjustedLifespan ?? 0} yrs`}
-                scenarioDisplay={`${scenarioFlood.adjustedLifespan ?? 0} yrs`}
+                baselineValue={baselineFlood?.adjustedLifespan ?? 0}
+                scenarioValue={scenarioFlood?.adjustedLifespan ?? 0}
+                baselineDisplay={`${baselineFlood?.adjustedLifespan ?? 0} yrs`}
+                scenarioDisplay={`${scenarioFlood?.adjustedLifespan ?? 0} yrs`}
               />
             )}
-            {(baselineFlood.adjustedOpex != null || scenarioFlood.adjustedOpex != null) && (
+            {((baselineFlood?.adjustedOpex ?? null) != null || (scenarioFlood?.adjustedOpex ?? null) != null) && (
               <CompMetricRow
                 label="CLIMATE-ADJUSTED OPEX"
-                baselineValue={baselineFlood.adjustedOpex ?? 0}
-                scenarioValue={scenarioFlood.adjustedOpex ?? 0}
-                baselineDisplay={formatCurrency(baselineFlood.adjustedOpex ?? 0)}
-                scenarioDisplay={formatCurrency(scenarioFlood.adjustedOpex ?? 0)}
+                baselineValue={baselineFlood?.adjustedOpex ?? 0}
+                scenarioValue={scenarioFlood?.adjustedOpex ?? 0}
+                baselineDisplay={formatCurrency(baselineFlood?.adjustedOpex ?? 0)}
+                scenarioDisplay={formatCurrency(scenarioFlood?.adjustedOpex ?? 0)}
                 invertDelta
               />
             )}
-            {(baselineFlood.opexClimatePenalty != null || scenarioFlood.opexClimatePenalty != null) && (
+            {((baselineFlood?.opexClimatePenalty ?? null) != null || (scenarioFlood?.opexClimatePenalty ?? null) != null) && (
               <CompMetricRow
                 label="OPEX CLIMATE PENALTY"
-                baselineValue={baselineFlood.opexClimatePenalty ?? 0}
-                scenarioValue={scenarioFlood.opexClimatePenalty ?? 0}
-                baselineDisplay={formatCurrency(baselineFlood.opexClimatePenalty ?? 0)}
-                scenarioDisplay={formatCurrency(scenarioFlood.opexClimatePenalty ?? 0)}
+                baselineValue={baselineFlood?.opexClimatePenalty ?? 0}
+                scenarioValue={scenarioFlood?.opexClimatePenalty ?? 0}
+                baselineDisplay={formatCurrency(baselineFlood?.opexClimatePenalty ?? 0)}
+                scenarioDisplay={formatCurrency(scenarioFlood?.opexClimatePenalty ?? 0)}
                 invertDelta
               />
             )}

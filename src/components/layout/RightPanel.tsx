@@ -381,6 +381,9 @@ export function RightPanel({
               priceShockData={priceShockData}
               latitude={latitude}
               longitude={longitude}
+              isSplitMode={isSplitMode}
+              scenarioAgriResults={scenarioAgriResults}
+              scenarioFloodResults={scenarioFloodResults}
             />
           )}
         </div>
@@ -487,6 +490,9 @@ export interface RightPanelContentProps {
   polygonProtectedValue?: number | null;
   portfolioResults?: PortfolioAnalysisResult | null;
   priceShockData?: any;
+  isSplitMode?: boolean;
+  scenarioAgriResults?: AgricultureResults;
+  scenarioFloodResults?: FloodResults;
 }
 
 export function RightPanelContent({
@@ -539,6 +545,9 @@ export function RightPanelContent({
   polygonProtectedValue,
   portfolioResults,
   priceShockData,
+  isSplitMode,
+  scenarioAgriResults,
+  scenarioFloodResults,
 }: RightPanelContentProps) {
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [isGeneratingAi, setIsGeneratingAi] = useState(false);
@@ -680,27 +689,31 @@ export function RightPanelContent({
       )}
 
       {mode === 'agriculture' && showResults && agricultureResults && (
-        <AgricultureContent
-          results={agricultureResults}
-          tempIncrease={tempIncrease}
-          baselineZone={baselineZone}
-          currentZone={currentZone}
-          globalTempTarget={globalTempTarget}
-          spatialAnalysis={spatialAnalysis}
-          isSpatialLoading={isSpatialLoading}
-          ndviData={ndviData}
-          isNdviLoading={isNdviLoading}
-          mode={mode}
-          latitude={latitude}
-          longitude={longitude}
-          cropType={cropType}
-          chartData={chartData}
-          projectParams={projectParams}
-          assetLifespan={assetLifespan}
-          dailyRevenue={dailyRevenue}
-          propertyValue={propertyValue}
-          priceShockData={priceShockData}
-        />
+        isSplitMode && scenarioAgriResults ? (
+          <AgriComparativeInline baseline={agricultureResults} scenario={scenarioAgriResults} />
+        ) : (
+          <AgricultureContent
+            results={agricultureResults}
+            tempIncrease={tempIncrease}
+            baselineZone={baselineZone}
+            currentZone={currentZone}
+            globalTempTarget={globalTempTarget}
+            spatialAnalysis={spatialAnalysis}
+            isSpatialLoading={isSpatialLoading}
+            ndviData={ndviData}
+            isNdviLoading={isNdviLoading}
+            mode={mode}
+            latitude={latitude}
+            longitude={longitude}
+            cropType={cropType}
+            chartData={chartData}
+            projectParams={projectParams}
+            assetLifespan={assetLifespan}
+            dailyRevenue={dailyRevenue}
+            propertyValue={propertyValue}
+            priceShockData={priceShockData}
+          />
+        )
       )}
 
       {mode === 'coastal' && showResults && coastalResults && (
@@ -870,6 +883,83 @@ function LoadingState() {
     </div>
   );
 }
+
+function AgriComparativeInline({ baseline, scenario }: { baseline: AgricultureResults; scenario: AgricultureResults }) {
+  const bYield = baseline.yieldPotential ?? 0;
+  const sYield = scenario.yieldPotential ?? 0;
+  const bCapex = baseline.transitionCapex ?? 0;
+  const sCapex = scenario.transitionCapex ?? 0;
+  const bLoss = baseline.avoidedLoss ?? 0;
+  const sLoss = scenario.avoidedLoss ?? 0;
+  const bRisk = baseline.riskReduction ?? 0;
+  const sRisk = scenario.riskReduction ?? 0;
+
+  function delta(b: number, s: number): number | null {
+    if (b === 0 && s === 0) return null;
+    if (b === 0) return s > 0 ? 100 : -100;
+    return ((s - b) / Math.abs(b)) * 100;
+  }
+
+  function DeltaTag({ d, invert = false }: { d: number | null; invert?: boolean }) {
+    if (d == null) return null;
+    const color = invert ? (d >= 0 ? '#f43f5e' : '#10b981') : (d >= 0 ? '#10b981' : '#f43f5e');
+    return (
+      <span style={{ fontFamily: 'monospace', fontSize: 9, fontWeight: 600, color, backgroundColor: `color-mix(in srgb, ${color} 12%, transparent)`, padding: '2px 6px', letterSpacing: '0.04em' }}>
+        Δ {d >= 0 ? '+' : ''}{Math.round(d)}%
+      </span>
+    );
+  }
+
+  function Row({ label, bVal, sVal, bDisp, sDisp, invert = false }: { label: string; bVal: number; sVal: number; bDisp: string; sDisp: string; invert?: boolean }) {
+    const d = delta(bVal, sVal);
+    const sColor = d != null ? (invert ? (d >= 0 ? '#f43f5e' : '#10b981') : (d >= 0 ? '#10b981' : '#f43f5e')) : 'var(--cb-text)';
+    return (
+      <div style={{ borderBottom: '1px solid var(--cb-border)', paddingTop: 8, paddingBottom: 8 }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
+          <span style={{ fontFamily: 'monospace', fontSize: 9, letterSpacing: '0.08em', color: 'var(--cb-secondary)', textTransform: 'uppercase' as const }}>{label}</span>
+          <DeltaTag d={d} invert={invert} />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="text-center py-1.5 rounded" style={{ backgroundColor: 'var(--cb-surface)' }}>
+            <p style={{ fontSize: 8, color: 'var(--cb-text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.06em', marginBottom: 2 }}>Baseline</p>
+            <span style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 600, color: 'var(--cb-text)' }}>{bDisp}</span>
+          </div>
+          <div className="text-center py-1.5 rounded" style={{ backgroundColor: 'color-mix(in srgb, var(--cb-surface) 80%, transparent)', border: `1px solid color-mix(in srgb, ${sColor} 30%, transparent)` }}>
+            <p style={{ fontSize: 8, color: 'var(--cb-text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.06em', marginBottom: 2 }}>Scenario</p>
+            <span style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 600, color: sColor }}>{sDisp}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="border-t pt-6 mt-6 px-4" style={{ borderColor: 'var(--cb-border)' }}>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-px flex-1" style={{ backgroundColor: '#10b981' }} />
+          <span style={{ fontFamily: 'monospace', fontSize: 10, letterSpacing: '0.1em', color: '#10b981', fontWeight: 600 }}>COMPARATIVE ANALYSIS</span>
+          <div className="h-px flex-1" style={{ backgroundColor: '#10b981' }} />
+        </div>
+        <div className="grid grid-cols-2 gap-3 mt-3">
+          <div className="text-center py-1" style={{ borderBottom: '2px solid var(--cb-border)' }}>
+            <span style={{ fontSize: 9, fontFamily: 'monospace', letterSpacing: '0.08em', color: 'var(--cb-secondary)' }}>BASELINE</span>
+          </div>
+          <div className="text-center py-1" style={{ borderBottom: '2px solid #10b981' }}>
+            <span style={{ fontSize: 9, fontFamily: 'monospace', letterSpacing: '0.08em', color: '#10b981' }}>SCENARIO</span>
+          </div>
+        </div>
+      </div>
+      <div className="px-4 pt-2">
+        <Row label="Yield Potential" bVal={bYield} sVal={sYield} bDisp={`${bYield.toFixed(0)}%`} sDisp={`${sYield.toFixed(0)}%`} />
+        <Row label="Transition Capex" bVal={bCapex} sVal={sCapex} bDisp={formatCurrencyNoCents(bCapex)} sDisp={formatCurrencyNoCents(sCapex)} invert />
+        <Row label="Avoided Loss" bVal={bLoss} sVal={sLoss} bDisp={formatCurrencyNoCents(bLoss)} sDisp={formatCurrencyNoCents(sLoss)} />
+        <Row label="Risk Reduction" bVal={bRisk} sVal={sRisk} bDisp={formatPercent(bRisk)} sDisp={formatPercent(sRisk)} />
+      </div>
+    </div>
+  );
+}
+
 
 function AgricultureContent({
   results,
