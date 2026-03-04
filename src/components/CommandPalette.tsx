@@ -200,7 +200,7 @@ export const CommandPalette = ({ onChangeMode, onToggleTwin, currentMode, isSpli
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder='Type a command... (e.g., /agri compare maize vs wheat in kenya 2040)'
+            placeholder='Type /goto agri or /agri compare maize vs wheat in kenya 2040'
             className="w-full h-12 bg-transparent text-sm text-white/90 font-mono placeholder:text-white/25 outline-none"
           />
           <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono text-white/30 border border-white/10 bg-white/5">
