@@ -689,7 +689,10 @@ const Index = () => {
 
   const handleSimulate = useCallback(async (coordsOverride?: { lat: number; lng: number }) => {
     const coords = coordsOverride || markerPosition;
-    if (!coords) return;
+    if (!coords || coords.lat == null || coords.lng == null) {
+      console.error('[Simulate] Cannot simulate: Missing latitude or longitude.', coords);
+      return;
+    }
 
     setIsSimulating(true);
     setIsSpatialLoading(true);
@@ -1561,9 +1564,12 @@ const Index = () => {
   }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex, populationSize, gdpPerCapita, economyTier, customBedsPer1000]);
 
   /** Fire a scenario API call concurrently when in Digital Twin mode. */
-  const fireScenarioCall = useCallback(async (coordsOverride?: { lat: number; lng: number }) => {
+   const fireScenarioCall = useCallback(async (coordsOverride?: { lat: number; lng: number }) => {
     const coords = coordsOverride || markerPosition;
-    if (!coords || !isSplitMode) return;
+    if (!coords || coords.lat == null || coords.lng == null || !isSplitMode) {
+      if (!coords || coords.lat == null || coords.lng == null) console.error('[DT Scenario] Missing lat/lon', coords);
+      return;
+    }
     const sp = scenarioStore.params;
 
     if (mode === 'agriculture') {
