@@ -1575,9 +1575,16 @@ const Index = () => {
         baseline_yield_value: 500000, temp_increase: Math.round(tempDelta * 10) / 10,
         rain_change: sp.rainChange,
       };
+      console.log('[DT Scenario] Sending Agri Payload:', payload);
       try {
         const res = await fetchWithRetry(agriEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (!res.ok) throw new Error(`Agri scenario HTTP ${res.status}`);
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new TypeError('Agri scenario API did not return JSON');
+        }
         const resData = await res.json();
+        console.log('[DT Scenario] Agri Response:', JSON.stringify(resData, null, 2));
         const raw = Array.isArray(resData) ? resData[0] : resData;
         const d = raw as Record<string, unknown>;
         const r = (d?.data ?? d) as Record<string, unknown>;
@@ -1590,13 +1597,17 @@ const Index = () => {
         const yieldPotential = resilienceScore !== null ? Math.min(100, Math.max(0, Number(resilienceScore))) : Math.min(100, Math.max(0, yieldResilient));
         setScenarioAgriResults({
           avoidedLoss: Math.round(avoidedRevenueLoss * 100) / 100,
-          transitionCapex, riskReduction: Math.round(riskReductionPct * 10) / 10,
-          yieldBaseline: 0, yieldResilient, yieldPotential, portfolioVolatilityPct: null,
-          avoidedRevenueLoss: avoidedRevenueLoss ?? null, monthlyData: mockMonthlyData,
+          transitionCapex,
+          riskReduction: Math.round(riskReductionPct * 10) / 10,
+          yieldBaseline: 0,
+          yieldResilient,
+          yieldPotential,
+          portfolioVolatilityPct: null,
+          avoidedRevenueLoss: avoidedRevenueLoss ?? null,
+          monthlyData: mockMonthlyData,
         });
       } catch (err) {
         console.error('[DT Scenario] Agri scenario call failed:', err);
-        // Fallback: clone baseline results so comparative UI still renders
         setScenarioAgriResults(null);
       }
     }
@@ -1634,30 +1645,50 @@ const Index = () => {
 
     if (mode === 'flood') {
       const floodEndpoint = 'https://web-production-8ff9e.up.railway.app/predict-flood';
-      const safeRain = Math.max(10, Math.min(150, sp.totalRainIntensity));
+      // Mirror exact safety parsing from single-view handleFloodSimulate
+      const calculatedRain = typeof sp.totalRainIntensity === 'number' && !Number.isNaN(sp.totalRainIntensity) ? sp.totalRainIntensity : 50;
+      const safeRain = Math.max(10, Math.min(150, calculatedRain));
+      const safeOpex = parseFloat(String(sp.baseAnnualOpex).replace(/,/g, '')) || 25000;
+      const safeLifespan = parseInt(String(sp.assetLifespan), 10) || 30;
+      const safePropertyValue = parseFloat(String(sp.buildingValue).replace(/,/g, '')) || 5_000_000;
       const interventionType = sp.greenRoofsEnabled ? 'green_roof' : sp.permeablePavementEnabled ? 'permeable_pavement' : sp.drainageEnabled ? 'drainage_upgrade' : 'none';
       const payload = {
-        lat: coords.lat, lon: coords.lng, rain_intensity: safeRain,
-        current_imperviousness: 0.7, intervention_type: interventionType,
-        base_annual_opex: Number(sp.baseAnnualOpex) || 25000,
-        initial_lifespan_years: Number(sp.assetLifespan) || 30,
-        asset_value_usd: Number(sp.buildingValue) || 5_000_000,
-        green_roofs: sp.greenRoofsEnabled, permeable_pavement: sp.permeablePavementEnabled,
-        rain_intensity_pct: sp.totalRainIntensity, slope_pct: 2,
+        lat: coords.lat,
+        lon: coords.lng,
+        rain_intensity: safeRain,
+        current_imperviousness: 0.7,
+        intervention_type: interventionType,
+        base_annual_opex: safeOpex,
+        initial_lifespan_years: safeLifespan,
+        asset_value_usd: safePropertyValue,
+        green_roofs: sp.greenRoofsEnabled,
+        permeable_pavement: sp.permeablePavementEnabled,
+        rain_intensity_pct: sp.totalRainIntensity,
+        slope_pct: 2,
       };
+      console.log('[DT Scenario] Sending Flood Payload:', payload);
       try {
         const res = await fetchWithRetry(floodEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (!res.ok) throw new Error(`Flood scenario HTTP ${res.status}`);
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new TypeError('Flood scenario API did not return JSON');
+        }
         const resData = await res.json();
+        console.log('[DT Scenario] Flood Response:', JSON.stringify(resData, null, 2));
         const data = (resData as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
         const d = data ?? (resData as Record<string, unknown>);
         type FR = { data?: { analysis?: { avoided_depth_cm?: number }; avoided_loss?: number; adjusted_opex?: number; asset_depreciation?: { adjusted_lifespan?: number } } };
         const depth = (resData as FR)?.data?.analysis?.avoided_depth_cm ?? 0;
         const avoidedLoss = (resData as FR)?.data?.avoided_loss ?? 0;
         setScenarioFloodResults({
-          floodDepthReduction: depth, valueProtected: Math.round(avoidedLoss),
+          floodDepthReduction: depth,
+          valueProtected: Math.round(avoidedLoss),
           riskIncreasePct: d.risk_increase_pct != null ? Number(d.risk_increase_pct) : null,
           futureFloodAreaKm2: d.future_flood_area_km2 != null ? Number(d.future_flood_area_km2) : null,
-          rainChartData: null, future100yr: null, baseline100yr: null,
+          rainChartData: null,
+          future100yr: null,
+          baseline100yr: null,
           avoidedBusinessInterruption: d.avoided_business_interruption != null ? Math.round(Number(d.avoided_business_interruption)) : null,
           adjustedOpex: (resData as FR)?.data?.adjusted_opex ?? null,
           opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
