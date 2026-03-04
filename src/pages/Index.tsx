@@ -301,6 +301,46 @@ const Index = () => {
     }
   }, [geoIP.loading, geoIP.latitude, geoIP.longitude, geoIP.city, reverseGeocode]);
 
+  // Clone baseline params into scenario store when Digital Twin mode is enabled
+  useEffect(() => {
+    if (!isSplitMode) return;
+    scenarioStore.setParams({
+      cropType,
+      globalTempTarget,
+      rainChange,
+      currentCrop,
+      proposedCrop,
+      mangroveWidth,
+      propertyValue,
+      totalSLR,
+      includeStormSurge,
+      coastalSelectedYear,
+      seaWallEnabled,
+      buildingValue,
+      greenRoofsEnabled,
+      permeablePavementEnabled,
+      totalRainIntensity,
+      floodSelectedYear,
+      drainageEnabled,
+      healthTempTarget,
+      healthSelectedYear,
+      healthIntervention,
+      workforceSize,
+      averageDailyWage,
+      populationSize,
+      gdpPerCapita,
+      coolingCapex,
+      coolingOpex,
+      economyTier,
+      customBedsPer1000,
+      assetLifespan,
+      dailyRevenue,
+      expectedDowntimeDays,
+      baseAnnualOpex,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSplitMode]);
+
   const mapStyle: MapStyle = mode === 'coastal' ? 'satellite' : mode === 'flood' ? 'flood' : 'dark';
   const showFloodOverlay = mode === 'flood' && markerPosition !== null;
   const canSimulate = markerPosition !== null;
@@ -1554,7 +1594,11 @@ const Index = () => {
           yieldBaseline: 0, yieldResilient, yieldPotential, portfolioVolatilityPct: null,
           avoidedRevenueLoss: avoidedRevenueLoss ?? null, monthlyData: mockMonthlyData,
         });
-      } catch { setScenarioAgriResults(null); }
+      } catch (err) {
+        console.error('[DT Scenario] Agri scenario call failed:', err);
+        // Fallback: clone baseline results so comparative UI still renders
+        setScenarioAgriResults(null);
+      }
     }
 
     if (mode === 'coastal') {
@@ -1582,7 +1626,10 @@ const Index = () => {
           adjustedLifespan: d.adjusted_lifespan != null ? Number(d.adjusted_lifespan) : null,
           avoidedBusinessInterruption: d.avoided_business_interruption != null ? Number(d.avoided_business_interruption) : null,
         });
-      } catch { setScenarioCoastalResults(null); }
+      } catch (err) {
+        console.error('[DT Scenario] Coastal scenario call failed:', err);
+        setScenarioCoastalResults(null);
+      }
     }
 
     if (mode === 'flood') {
@@ -1616,7 +1663,10 @@ const Index = () => {
           opexClimatePenalty: d.opex_climate_penalty != null ? Number(d.opex_climate_penalty) : null,
           adjustedLifespan: (resData as FR)?.data?.asset_depreciation?.adjusted_lifespan ?? null,
         });
-      } catch { setScenarioFloodResults(null); }
+      } catch (err) {
+        console.error('[DT Scenario] Flood scenario call failed:', err);
+        setScenarioFloodResults(null);
+      }
     }
 
     if (mode === 'health') {
@@ -1682,7 +1732,10 @@ const Index = () => {
             infrastructure_bond_capex: Number(infraRaw.infrastructure_bond_capex ?? 0),
           } : undefined,
         });
-      } catch { setScenarioHealthResults(null); }
+      } catch (err) {
+        console.error('[DT Scenario] Health scenario call failed:', err);
+        setScenarioHealthResults(null);
+      }
     }
   }, [markerPosition, isSplitMode, mode, scenarioStore.params]);
 
