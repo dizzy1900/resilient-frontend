@@ -369,11 +369,31 @@ export function ComparativeDiffView({
             />
             {(baselineCoastal.adjustedLifespan != null || scenarioCoastal.adjustedLifespan != null) && (
               <CompMetricRow
-                label="ADJUSTED LIFESPAN"
+                label="CLIMATE-ADJUSTED LIFESPAN"
                 baselineValue={baselineCoastal.adjustedLifespan ?? 0}
                 scenarioValue={scenarioCoastal.adjustedLifespan ?? 0}
                 baselineDisplay={`${baselineCoastal.adjustedLifespan ?? 0} yrs`}
                 scenarioDisplay={`${scenarioCoastal.adjustedLifespan ?? 0} yrs`}
+              />
+            )}
+            {(baselineCoastal.adjustedOpex != null || scenarioCoastal.adjustedOpex != null) && (
+              <CompMetricRow
+                label="CLIMATE-ADJUSTED OPEX"
+                baselineValue={baselineCoastal.adjustedOpex ?? 0}
+                scenarioValue={scenarioCoastal.adjustedOpex ?? 0}
+                baselineDisplay={formatCurrency(baselineCoastal.adjustedOpex ?? 0)}
+                scenarioDisplay={formatCurrency(scenarioCoastal.adjustedOpex ?? 0)}
+                invertDelta
+              />
+            )}
+            {(baselineCoastal.opexClimatePenalty != null || scenarioCoastal.opexClimatePenalty != null) && (
+              <CompMetricRow
+                label="OPEX CLIMATE PENALTY"
+                baselineValue={baselineCoastal.opexClimatePenalty ?? 0}
+                scenarioValue={scenarioCoastal.opexClimatePenalty ?? 0}
+                baselineDisplay={formatCurrency(baselineCoastal.opexClimatePenalty ?? 0)}
+                scenarioDisplay={formatCurrency(scenarioCoastal.opexClimatePenalty ?? 0)}
+                invertDelta
               />
             )}
           </div>
@@ -409,6 +429,35 @@ export function ComparativeDiffView({
               baselineDisplay={formatCurrency(baselineFlood.valueProtected)}
               scenarioDisplay={formatCurrency(scenarioFlood.valueProtected)}
             />
+            {(baselineFlood.adjustedLifespan != null || scenarioFlood.adjustedLifespan != null) && (
+              <CompMetricRow
+                label="CLIMATE-ADJUSTED LIFESPAN"
+                baselineValue={baselineFlood.adjustedLifespan ?? 0}
+                scenarioValue={scenarioFlood.adjustedLifespan ?? 0}
+                baselineDisplay={`${baselineFlood.adjustedLifespan ?? 0} yrs`}
+                scenarioDisplay={`${scenarioFlood.adjustedLifespan ?? 0} yrs`}
+              />
+            )}
+            {(baselineFlood.adjustedOpex != null || scenarioFlood.adjustedOpex != null) && (
+              <CompMetricRow
+                label="CLIMATE-ADJUSTED OPEX"
+                baselineValue={baselineFlood.adjustedOpex ?? 0}
+                scenarioValue={scenarioFlood.adjustedOpex ?? 0}
+                baselineDisplay={formatCurrency(baselineFlood.adjustedOpex ?? 0)}
+                scenarioDisplay={formatCurrency(scenarioFlood.adjustedOpex ?? 0)}
+                invertDelta
+              />
+            )}
+            {(baselineFlood.opexClimatePenalty != null || scenarioFlood.opexClimatePenalty != null) && (
+              <CompMetricRow
+                label="OPEX CLIMATE PENALTY"
+                baselineValue={baselineFlood.opexClimatePenalty ?? 0}
+                scenarioValue={scenarioFlood.opexClimatePenalty ?? 0}
+                baselineDisplay={formatCurrency(baselineFlood.opexClimatePenalty ?? 0)}
+                scenarioDisplay={formatCurrency(scenarioFlood.opexClimatePenalty ?? 0)}
+                invertDelta
+              />
+            )}
           </div>
         </>
       )}
