@@ -1746,21 +1746,22 @@ const Index = () => {
     else tempTarget = 2.1;
     scenarioStore.patch({ globalTempTarget: Math.round(tempTarget * 100) / 100 });
 
-    // 5. Map navigation — set marker + fly to location
+    // 5. Map navigation — set marker + flyTo with smooth transition
     setMarkerPosition({ lat: payload.coords.lat, lng: payload.coords.lng });
     setViewState(prev => ({
       ...prev,
       longitude: payload.coords.lng,
       latitude: payload.coords.lat,
       zoom: 6,
+      transitionDuration: 1200,
     }));
     setReverseLocationName(payload.location.charAt(0).toUpperCase() + payload.location.slice(1));
 
-    // 6. Auto-trigger simulation — pass coords directly to bypass stale closure
+    // 6. Auto-trigger simulation — wait 1500ms for camera to land, then fire with fresh coords
     const freshCoords = { lat: payload.coords.lat, lng: payload.coords.lng };
     setTimeout(() => {
       Promise.all([handleSimulate(freshCoords), fireScenarioCall(freshCoords)]).catch(console.error);
-    }, 300);
+    }, 1500);
   }, [scenarioStore, handleSimulate, fireScenarioCall]);
 
   return (
