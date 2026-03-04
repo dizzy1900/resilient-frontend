@@ -1,0 +1,280 @@
+import { DashboardMode } from '@/components/dashboard/ModeSelector';
+
+interface TCFDReportTemplateProps {
+  mode: DashboardMode;
+  locationName: string;
+  date: string;
+  executiveSummary?: string | null;
+  baselineMetrics: Record<string, string | number>;
+  scenarioMetrics?: Record<string, string | number> | null;
+  deltaMetrics?: Record<string, string> | null;
+  isDigitalTwin?: boolean;
+}
+
+const MODE_LABELS: Record<string, string> = {
+  agriculture: 'Agriculture & Food Security',
+  coastal: 'Coastal Infrastructure',
+  flood: 'Pluvial Flood Risk',
+  health: 'Climate & Health',
+  finance: 'Climate Finance',
+  portfolio: 'Portfolio Analysis',
+};
+
+export function TCFDReportTemplate({
+  mode,
+  locationName,
+  date,
+  executiveSummary,
+  baselineMetrics,
+  scenarioMetrics,
+  deltaMetrics,
+  isDigitalTwin,
+}: TCFDReportTemplateProps) {
+  return (
+    <div
+      id="tcfd-report-template"
+      style={{
+        position: 'absolute',
+        left: '-9999px',
+        top: 0,
+        width: '816px', // 8.5in at 96dpi
+        minHeight: '1056px', // 11in at 96dpi
+        backgroundColor: '#ffffff',
+        color: '#1a1a1a',
+        fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+        padding: '48px',
+        boxSizing: 'border-box',
+      }}
+    >
+      {/* === HEADER === */}
+      <div style={{ borderBottom: '3px solid #0f172a', paddingBottom: 20, marginBottom: 32 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', margin: 0, letterSpacing: '-0.02em' }}>
+              Resilient
+            </h1>
+            <p style={{ fontSize: 13, color: '#64748b', margin: '4px 0 0', fontWeight: 500 }}>
+              Climate Risk &amp; ROI Prospectus
+            </p>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <span
+              style={{
+                display: 'inline-block',
+                padding: '4px 12px',
+                border: '1.5px solid #0f172a',
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+                color: '#0f172a',
+              }}
+            >
+              TCFD / CSRD ALIGNED
+            </span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 32, marginTop: 16, fontSize: 11, color: '#475569' }}>
+          <span><strong>Location:</strong> {locationName}</span>
+          <span><strong>Module:</strong> {MODE_LABELS[mode] || mode}</span>
+          <span><strong>Date:</strong> {date}</span>
+          {isDigitalTwin && (
+            <span style={{ color: '#d97706', fontWeight: 700 }}>● DIGITAL TWIN ANALYSIS</span>
+          )}
+        </div>
+      </div>
+
+      {/* === SECTION 1: EXECUTIVE SUMMARY === */}
+      <div style={{ marginBottom: 32 }}>
+        <SectionHeader number="1" title="Executive Summary" />
+        <div
+          style={{
+            backgroundColor: '#f8fafc',
+            border: '1px solid #e2e8f0',
+            borderRadius: 6,
+            padding: 20,
+            fontSize: 12,
+            lineHeight: 1.7,
+            color: '#334155',
+          }}
+        >
+          {executiveSummary ? (
+            <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{executiveSummary}</p>
+          ) : (
+            <p style={{ margin: 0, color: '#94a3b8', fontStyle: 'italic' }}>
+              No AI executive summary available for this simulation. Run a simulation and generate the summary to populate this section.
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* === SECTION 2: PHYSICAL RISK ASSESSMENT === */}
+      <div style={{ marginBottom: 32 }}>
+        <SectionHeader number="2" title="Physical Risk Assessment — Baseline" />
+        <MetricsTable metrics={baselineMetrics} headerColor="#0f172a" />
+      </div>
+
+      {/* === SECTION 3: ADAPTATION STRATEGY & ROI === */}
+      {isDigitalTwin && scenarioMetrics && (
+        <div style={{ marginBottom: 32 }}>
+          <SectionHeader number="3" title="Adaptation Strategy & ROI — Scenario" />
+          <div style={{ display: 'flex', gap: 16 }}>
+            <div style={{ flex: 1 }}>
+              <MetricsTable metrics={scenarioMetrics} headerColor="#059669" />
+            </div>
+            {deltaMetrics && Object.keys(deltaMetrics).length > 0 && (
+              <div style={{ flex: 1 }}>
+                <DeltaTable deltas={deltaMetrics} />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* === FOOTER === */}
+      <div
+        style={{
+          borderTop: '2px solid #e2e8f0',
+          paddingTop: 16,
+          marginTop: 40,
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontSize: 9,
+          color: '#94a3b8',
+        }}
+      >
+        <span>Generated by Resilient Climate Platform — resilient.lovable.app</span>
+        <span>Confidential — For Professional Use Only</span>
+      </div>
+    </div>
+  );
+}
+
+function SectionHeader({ number, title }: { number: string; title: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 24,
+          height: 24,
+          borderRadius: '50%',
+          backgroundColor: '#0f172a',
+          color: '#ffffff',
+          fontSize: 11,
+          fontWeight: 700,
+        }}
+      >
+        {number}
+      </span>
+      <h2 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', margin: 0 }}>{title}</h2>
+    </div>
+  );
+}
+
+function MetricsTable({ metrics, headerColor }: { metrics: Record<string, string | number>; headerColor: string }) {
+  const entries = Object.entries(metrics);
+  return (
+    <table
+      style={{
+        width: '100%',
+        borderCollapse: 'collapse',
+        fontSize: 12,
+      }}
+    >
+      <thead>
+        <tr>
+          <th
+            style={{
+              textAlign: 'left',
+              padding: '8px 12px',
+              backgroundColor: headerColor,
+              color: '#ffffff',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.06em',
+              borderTopLeftRadius: 4,
+            }}
+          >
+            METRIC
+          </th>
+          <th
+            style={{
+              textAlign: 'right',
+              padding: '8px 12px',
+              backgroundColor: headerColor,
+              color: '#ffffff',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.06em',
+              borderTopRightRadius: 4,
+            }}
+          >
+            VALUE
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {entries.map(([key, val], i) => (
+          <tr key={key} style={{ backgroundColor: i % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
+            <td style={{ padding: '8px 12px', color: '#334155', fontWeight: 500 }}>{key}</td>
+            <td style={{ padding: '8px 12px', textAlign: 'right', color: '#0f172a', fontWeight: 600 }}>
+              {val}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function DeltaTable({ deltas }: { deltas: Record<string, string> }) {
+  const entries = Object.entries(deltas);
+  return (
+    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+      <thead>
+        <tr>
+          <th
+            style={{
+              textAlign: 'left',
+              padding: '8px 12px',
+              backgroundColor: '#d97706',
+              color: '#ffffff',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.06em',
+              borderTopLeftRadius: 4,
+            }}
+          >
+            METRIC
+          </th>
+          <th
+            style={{
+              textAlign: 'right',
+              padding: '8px 12px',
+              backgroundColor: '#d97706',
+              color: '#ffffff',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.06em',
+              borderTopRightRadius: 4,
+            }}
+          >
+            Δ CHANGE
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {entries.map(([key, val], i) => (
+          <tr key={key} style={{ backgroundColor: i % 2 === 0 ? '#fffbeb' : '#ffffff' }}>
+            <td style={{ padding: '8px 12px', color: '#334155', fontWeight: 500 }}>{key}</td>
+            <td style={{ padding: '8px 12px', textAlign: 'right', color: '#92400e', fontWeight: 700 }}>
+              {val}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}

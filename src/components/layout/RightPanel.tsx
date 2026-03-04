@@ -1,10 +1,12 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { ComparativeDiffView } from './ComparativeDiffView';
 import { X, MapPin, Landmark, Download, Loader2, Sparkles } from 'lucide-react';
 import { fetchWithRetry } from '@/utils/api';
-import { generateTearSheet } from '@/utils/pdfExport';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
+import { TCFDReportTemplate } from '@/components/report/TCFDReportTemplate';
 import { HealthResults } from '@/components/hud/HealthResultsPanel';
 import { FloodFrequencyChart, StormChartDataItem } from '@/components/analytics/FloodFrequencyChart';
 import { RainfallComparisonChart, RainfallChartData } from '@/components/analytics/RainfallComparisonChart';
@@ -392,6 +394,16 @@ export function RightPanel({
           <ExportPDFButton
             locationName={locationName || (latitude && longitude ? `Lat: ${latitude.toFixed(4)}, Lon: ${longitude.toFixed(4)}` : 'Unknown Location')}
             mode={mode}
+            isDigitalTwin={!!isSplitMode}
+            executiveSummary={atlasExecutiveSummary}
+            agricultureResults={agricultureResults}
+            coastalResults={coastalResults}
+            floodResults={floodResults}
+            healthResults={healthResults}
+            scenarioAgriResults={scenarioAgriResults}
+            scenarioCoastalResults={scenarioCoastalResults}
+            scenarioFloodResults={scenarioFloodResults}
+            scenarioHealthResults={scenarioHealthResults}
           />
         )}
       </div>
@@ -399,44 +411,184 @@ export function RightPanel({
   );
 }
 
-function ExportPDFButton({ locationName, mode }: { locationName: string; mode: string }) {
+/* ──────────────────────────── helpers for metric extraction ──────────────────────────── */
+
+function buildBaselineMetrics(
+  mode: DashboardMode,
+  agri?: any,
+  coastal?: any,
+  flood?: any,
+  health?: any,
+): Record<string, string | number> {
+  const m: Record<string, string | number> = {};
+  if (mode === 'agriculture' && agri) {
+    m['Yield Potential'] = `${agri.yieldPotential ?? 0}%`;
+    m['Transition Capex'] = `$${(agri.transitionCapex ?? 0).toLocaleString()}`;
+    m['Avoided Revenue Loss'] = `$${(agri.avoidedRevenueLoss ?? agri.avoidedLoss ?? 0).toLocaleString()}`;
+    m['Risk Reduction'] = `${agri.riskReduction ?? 0}%`;
+  } else if (mode === 'coastal' && coastal) {
+    m['Avoided Loss'] = `$${(coastal.avoidedLoss ?? 0).toLocaleString()}`;
+    m['Climate-Adjusted Lifespan'] = `${coastal.adjustedLifespan ?? coastal.adjusted_lifespan ?? 0} yrs`;
+    m['Climate-Adjusted Opex'] = `$${(coastal.adjustedOpex ?? coastal.adjusted_opex ?? 0).toLocaleString()}/yr`;
+    if (coastal.stormWave != null) m['Storm Wave Height'] = `${coastal.stormWave}m`;
+  } else if (mode === 'flood' && flood) {
+    m['Flood Depth Reduction'] = `${flood.floodDepthReduction ?? 0} cm`;
+    m['Value Protected'] = `$${(flood.valueProtected ?? 0).toLocaleString()}`;
+    m['Risk Increase'] = `${flood.riskIncreasePct ?? 0}%`;
+    m['Climate-Adjusted Lifespan'] = `${flood.adjustedLifespan ?? flood.adjusted_lifespan ?? 0} yrs`;
+    m['Climate-Adjusted Opex'] = `$${(flood.adjustedOpex ?? flood.adjusted_opex ?? 0).toLocaleString()}/yr`;
+  } else if (mode === 'health' && health) {
+    m['DALY Burden'] = `${health.daly_per_100k ?? 0} / 100k`;
+    m['Annual Mortality'] = `${health.annual_mortality ?? 0}`;
+    m['Economic Cost'] = `$${(health.economic_cost_usd ?? 0).toLocaleString()}`;
+    m['Vulnerable Pop.'] = `${health.vulnerable_population_pct ?? 0}%`;
+  }
+  return m;
+}
+
+function buildDeltaMetrics(
+  _mode: DashboardMode,
+  baseline: Record<string, string | number>,
+  scenario: Record<string, string | number>,
+): Record<string, string> {
+  const d: Record<string, string> = {};
+  for (const key of Object.keys(baseline)) {
+    const bStr = String(baseline[key]).replace(/[^0-9.\-]/g, '');
+    const sStr = String(scenario[key]).replace(/[^0-9.\-]/g, '');
+    const bVal = parseFloat(bStr);
+    const sVal = parseFloat(sStr);
+    if (!isNaN(bVal) && !isNaN(sVal) && bVal !== 0) {
+      const pct = ((sVal - bVal) / Math.abs(bVal) * 100).toFixed(1);
+      d[key] = `${Number(pct) >= 0 ? '+' : ''}${pct}%`;
+    }
+  }
+  return d;
+}
+
+/* ──────────────────────────── ExportPDFButton ──────────────────────────── */
+
+interface ExportPDFButtonProps {
+  locationName: string;
+  mode: DashboardMode;
+  isDigitalTwin: boolean;
+  executiveSummary?: string | null;
+  agricultureResults?: any;
+  coastalResults?: any;
+  floodResults?: any;
+  healthResults?: any;
+  scenarioAgriResults?: any;
+  scenarioCoastalResults?: any;
+  scenarioFloodResults?: any;
+  scenarioHealthResults?: any;
+}
+
+function ExportPDFButton({
+  locationName,
+  mode,
+  isDigitalTwin,
+  executiveSummary,
+  agricultureResults,
+  coastalResults,
+  floodResults,
+  healthResults,
+  scenarioAgriResults,
+  scenarioCoastalResults,
+  scenarioFloodResults,
+  scenarioHealthResults,
+}: ExportPDFButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
 
-  const handleExport = useCallback(() => {
+  const baselineMetrics = useMemo(
+    () => buildBaselineMetrics(mode, agricultureResults, coastalResults, floodResults, healthResults),
+    [mode, agricultureResults, coastalResults, floodResults, healthResults],
+  );
+
+  const scenarioMetrics = useMemo(() => {
+    if (!isDigitalTwin) return null;
+    return buildBaselineMetrics(mode, scenarioAgriResults, scenarioCoastalResults, scenarioFloodResults, scenarioHealthResults);
+  }, [mode, isDigitalTwin, scenarioAgriResults, scenarioCoastalResults, scenarioFloodResults, scenarioHealthResults]);
+
+  const deltaMetrics = useMemo(() => {
+    if (!scenarioMetrics) return null;
+    return buildDeltaMetrics(mode, baselineMetrics, scenarioMetrics);
+  }, [mode, baselineMetrics, scenarioMetrics]);
+
+  const dateStr = new Date().toISOString().split('T')[0];
+
+  const handleExport = useCallback(async () => {
     setIsExporting(true);
-    generateTearSheet('report-content', locationName, mode.toUpperCase())
-      .finally(() => setIsExporting(false));
-  }, [locationName, mode]);
+    try {
+      await new Promise(r => setTimeout(r, 100));
+      const el = document.getElementById('tcfd-report-template');
+      if (!el) { console.warn('[PDF] TCFD template not found'); return; }
+
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+      });
+
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const imgData = canvas.toDataURL('image/png');
+      const pxToMm = 25.4 / 96;
+      let imgW = canvas.width * pxToMm;
+      let imgH = canvas.height * pxToMm;
+      const scale = Math.min(pageW / imgW, pageH / imgH, 1) * 0.95;
+      imgW *= scale;
+      imgH *= scale;
+      pdf.addImage(imgData, 'PNG', (pageW - imgW) / 2, (pageH - imgH) / 2, imgW, imgH);
+      pdf.save('Resilient_TCFD_Prospectus.pdf');
+    } catch (err) {
+      console.error('[PDF] Export failed', err);
+    } finally {
+      setIsExporting(false);
+    }
+  }, []);
 
   return (
-    <div className="px-4 py-4" style={{ borderTop: '1px solid var(--cb-border)' }} data-html2canvas-ignore="true">
-      <button
-        type="button"
-        onClick={handleExport}
-        disabled={isExporting}
-        className="flex items-center justify-center gap-2 w-full"
-        style={{
-          border: '1px solid var(--cb-border)',
-          padding: '8px 16px',
-          fontFamily: 'monospace',
-          fontSize: 10,
-          letterSpacing: '0.08em',
-          color: isExporting ? 'var(--cb-secondary)' : 'var(--cb-text)',
-          backgroundColor: 'transparent',
-          cursor: isExporting ? 'wait' : 'pointer',
-          transition: 'border-color 0.15s, color 0.15s',
-          opacity: isExporting ? 0.7 : 1,
-        }}
-        onMouseEnter={e => { if (!isExporting) (e.currentTarget.style.borderColor = 'var(--cb-text)'); }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--cb-border)'; }}
-      >
-        {isExporting ? (
-          <><Loader2 style={{ width: 12, height: 12 }} className="animate-spin" /> GENERATING REPORT...</>
-        ) : (
-          <><Download style={{ width: 12, height: 12 }} /> DOWNLOAD PDF REPORT</>
-        )}
-      </button>
-    </div>
+    <>
+      <TCFDReportTemplate
+        mode={mode}
+        locationName={locationName}
+        date={dateStr}
+        executiveSummary={executiveSummary}
+        baselineMetrics={baselineMetrics}
+        scenarioMetrics={scenarioMetrics}
+        deltaMetrics={deltaMetrics}
+        isDigitalTwin={isDigitalTwin}
+      />
+      <div className="px-4 py-4" style={{ borderTop: '1px solid var(--cb-border)' }} data-html2canvas-ignore="true">
+        <button
+          type="button"
+          onClick={handleExport}
+          disabled={isExporting}
+          className="flex items-center justify-center gap-2 w-full"
+          style={{
+            border: '1px solid var(--cb-border)',
+            padding: '8px 16px',
+            fontFamily: 'monospace',
+            fontSize: 10,
+            letterSpacing: '0.08em',
+            color: isExporting ? 'var(--cb-secondary)' : 'var(--cb-text)',
+            backgroundColor: 'transparent',
+            cursor: isExporting ? 'wait' : 'pointer',
+            transition: 'border-color 0.15s, color 0.15s',
+            opacity: isExporting ? 0.7 : 1,
+          }}
+          onMouseEnter={e => { if (!isExporting) (e.currentTarget.style.borderColor = 'var(--cb-text)'); }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--cb-border)'; }}
+        >
+          {isExporting ? (
+            <><Loader2 style={{ width: 12, height: 12 }} className="animate-spin" /> GENERATING PROSPECTUS...</>
+          ) : (
+            <><Download style={{ width: 12, height: 12 }} /> DOWNLOAD TCFD PROSPECTUS</>
+          )}
+        </button>
+      </div>
+    </>
   );
 }
 
