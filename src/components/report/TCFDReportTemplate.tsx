@@ -9,6 +9,8 @@ interface TCFDReportTemplateProps {
   scenarioMetrics?: Record<string, string | number> | null;
   deltaMetrics?: Record<string, string> | null;
   isDigitalTwin?: boolean;
+  baselineResults?: any;
+  scenarioResults?: any;
 }
 
 const MODE_LABELS: Record<string, string> = {
@@ -20,7 +22,6 @@ const MODE_LABELS: Record<string, string> = {
   portfolio: 'Portfolio Analysis',
 };
 
-/** Metrics that belong in the "Adaptation Strategy & ROI" section vs "Physical Risk" */
 const ADAPTATION_METRICS = new Set([
   'Transition Capex',
   'Avoided Revenue Loss',
@@ -51,6 +52,8 @@ export function TCFDReportTemplate({
   scenarioMetrics,
   deltaMetrics,
   isDigitalTwin,
+  baselineResults,
+  scenarioResults,
 }: TCFDReportTemplateProps) {
   const { baseline: physicalRiskMetrics, adaptation: adaptationMetrics } = splitMetrics(baselineMetrics);
   const hasAdaptation = Object.keys(adaptationMetrics).length > 0;
@@ -71,27 +74,22 @@ export function TCFDReportTemplate({
         boxSizing: 'border-box',
       }}
     >
-      {/* === HEADER === */}
       <Header mode={mode} locationName={locationName} date={date} isDigitalTwin={isDigitalTwin} />
 
-      {/* === SECTION 1: EXECUTIVE SUMMARY === */}
       <Section number="1" title="Executive Summary">
         <SummaryBox text={executiveSummary} />
       </Section>
 
-      {/* === SECTION 2: PHYSICAL RISK ASSESSMENT === */}
       <Section number="2" title="Physical Risk Assessment — Baseline">
         <MetricsTable metrics={physicalRiskMetrics} headerColor="#0f172a" />
       </Section>
 
-      {/* === SECTION 3: ADAPTATION STRATEGY & ROI (single-view) === */}
       {hasAdaptation && !isDigitalTwin && (
         <Section number="3" title="Adaptation Strategy & ROI">
           <MetricsTable metrics={adaptationMetrics} headerColor="#059669" />
         </Section>
       )}
 
-      {/* === SECTION 3: DIGITAL TWIN COMPARATIVE (DT mode) === */}
       {isDigitalTwin && scenarioMetrics && (
         <Section number="3" title="Adaptation Strategy & ROI — Scenario Comparison">
           <div style={{ display: 'flex', gap: 16 }}>
@@ -112,6 +110,19 @@ export function TCFDReportTemplate({
         </Section>
       )}
 
+      {/* === SECTION 4: KEY RISK FACTORS & ANALYTICS === */}
+      <Section number="4" title="Key Risk Factors & Analytics">
+        {mode === 'agriculture' && (
+          <AgriCharts baseline={baselineResults} scenario={scenarioResults} isDT={!!isDigitalTwin} />
+        )}
+        {mode === 'health' && (
+          <HealthCharts baseline={baselineResults} scenario={scenarioResults} isDT={!!isDigitalTwin} />
+        )}
+        {(mode === 'coastal' || mode === 'flood') && (
+          <CoastalFloodCharts baseline={baselineResults} scenario={scenarioResults} isDT={!!isDigitalTwin} mode={mode} />
+        )}
+      </Section>
+
       {/* === FOOTER === */}
       <div
         style={{
@@ -131,7 +142,7 @@ export function TCFDReportTemplate({
   );
 }
 
-/* ── Sub-components ── */
+/* ── Shared sub-components ── */
 
 function Header({ mode, locationName, date, isDigitalTwin }: { mode: string; locationName: string; date: string; isDigitalTwin?: boolean }) {
   return (
@@ -157,7 +168,7 @@ function Header({ mode, locationName, date, isDigitalTwin }: { mode: string; loc
 
 function Section({ number, title, children }: { number: string; title: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: 32 }}>
+    <div style={{ marginBottom: 32, pageBreakInside: 'avoid' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24, borderRadius: '50%', backgroundColor: '#0f172a', color: '#ffffff', fontSize: 11, fontWeight: 700 }}>{number}</span>
         <h2 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', margin: 0 }}>{title}</h2>
@@ -225,4 +236,217 @@ function DeltaTable({ deltas }: { deltas: Record<string, string> }) {
       </tbody>
     </table>
   );
+}
+
+/* ── CSS-Only Chart Components (print-safe, no SVG/canvas) ── */
+
+const BAR_STYLES = {
+  container: { pageBreakInside: 'avoid' as const, marginBottom: 20 },
+  label: { fontSize: 10, fontWeight: 600 as const, color: '#334155', marginBottom: 6, textTransform: 'uppercase' as const, letterSpacing: '0.06em' },
+  track: { height: 18, backgroundColor: '#e2e8f0', borderRadius: 3, overflow: 'hidden' as const, position: 'relative' as const },
+  barBase: { height: '100%', borderRadius: 3, transition: 'none' },
+};
+
+function CSSProgressBar({ label, pct, color, subLabel }: { label: string; pct: number; color: string; subLabel?: string }) {
+  const clamped = Math.max(0, Math.min(100, pct));
+  return (
+    <div style={BAR_STYLES.container}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+        <span style={BAR_STYLES.label}>{label}</span>
+        <span style={{ fontSize: 11, fontWeight: 700, color }}>{clamped.toFixed(0)}%</span>
+      </div>
+      <div style={BAR_STYLES.track}>
+        <div style={{ ...BAR_STYLES.barBase, width: `${clamped}%`, backgroundColor: color }} />
+      </div>
+      {subLabel && <span style={{ fontSize: 9, color: '#94a3b8', marginTop: 2, display: 'block' }}>{subLabel}</span>}
+    </div>
+  );
+}
+
+function DualBar({ label, baselinePct, scenarioPct, baselineColor, scenarioColor }: { label: string; baselinePct: number; scenarioPct: number; baselineColor: string; scenarioColor: string }) {
+  const bClamped = Math.max(0, Math.min(100, baselinePct));
+  const sClamped = Math.max(0, Math.min(100, scenarioPct));
+  return (
+    <div style={BAR_STYLES.container}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+        <span style={BAR_STYLES.label}>{label}</span>
+        <span style={{ fontSize: 9, color: '#64748b' }}>
+          <span style={{ color: baselineColor, fontWeight: 700 }}>■ {bClamped.toFixed(0)}%</span>
+          {' vs '}
+          <span style={{ color: scenarioColor, fontWeight: 700 }}>■ {sClamped.toFixed(0)}%</span>
+        </span>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <div style={BAR_STYLES.track}>
+          <div style={{ ...BAR_STYLES.barBase, width: `${bClamped}%`, backgroundColor: baselineColor }} />
+        </div>
+        <div style={BAR_STYLES.track}>
+          <div style={{ ...BAR_STYLES.barBase, width: `${sClamped}%`, backgroundColor: scenarioColor }} />
+        </div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#94a3b8', marginTop: 2 }}>
+        <span>Baseline</span>
+        <span>Scenario</span>
+      </div>
+    </div>
+  );
+}
+
+/* ── Module-Specific Charts ── */
+
+function AgriCharts({ baseline, scenario, isDT }: { baseline?: any; scenario?: any; isDT: boolean }) {
+  const soilDeg = parseFloat(baseline?.soil_degradation_risk ?? baseline?.soil_moisture ?? '35');
+  const heatStress = parseFloat(baseline?.heat_stress_index ?? baseline?.heat_stress ?? '45');
+  const pestPressure = parseFloat(baseline?.pest_pressure ?? '28');
+
+  const sSoilDeg = parseFloat(scenario?.soil_degradation_risk ?? scenario?.soil_moisture ?? '50');
+  const sHeatStress = parseFloat(scenario?.heat_stress_index ?? scenario?.heat_stress ?? '60');
+  const sPestPressure = parseFloat(scenario?.pest_pressure ?? '40');
+
+  return (
+    <div style={{ pageBreakInside: 'avoid' }}>
+      <p style={{ fontSize: 11, color: '#475569', marginBottom: 16 }}>
+        Risk factor breakdown showing primary agricultural vulnerability drivers.
+        {isDT && ' Baseline (dark) vs Scenario (green) comparison.'}
+      </p>
+      {isDT ? (
+        <>
+          <DualBar label="Soil Degradation Risk" baselinePct={soilDeg} scenarioPct={sSoilDeg} baselineColor="#334155" scenarioColor="#059669" />
+          <DualBar label="Heat Stress Index" baselinePct={heatStress} scenarioPct={sHeatStress} baselineColor="#334155" scenarioColor="#059669" />
+          <DualBar label="Pest & Disease Pressure" baselinePct={pestPressure} scenarioPct={sPestPressure} baselineColor="#334155" scenarioColor="#059669" />
+        </>
+      ) : (
+        <>
+          <CSSProgressBar label="Soil Degradation Risk" pct={soilDeg} color={soilDeg > 60 ? '#dc2626' : '#d97706'} />
+          <CSSProgressBar label="Heat Stress Index" pct={heatStress} color={heatStress > 60 ? '#dc2626' : '#d97706'} />
+          <CSSProgressBar label="Pest & Disease Pressure" pct={pestPressure} color={pestPressure > 50 ? '#dc2626' : '#059669'} />
+        </>
+      )}
+    </div>
+  );
+}
+
+function HealthCharts({ baseline, scenario, isDT }: { baseline?: any; scenario?: any; isDT: boolean }) {
+  const publicHealth = baseline?.public_health_analysis;
+  const capacity = parseFloat(publicHealth?.surge_capacity_pct ?? baseline?.surge_capacity_pct ?? '78');
+  const breached = capacity > 100;
+
+  const sCapacity = parseFloat(scenario?.public_health_analysis?.surge_capacity_pct ?? scenario?.surge_capacity_pct ?? '90');
+  const sBreached = sCapacity > 100;
+
+  return (
+    <div style={{ pageBreakInside: 'avoid' }}>
+      <p style={{ fontSize: 11, color: '#475569', marginBottom: 16 }}>
+        Hospital surge capacity utilisation — exceeding 100% indicates system breach.
+        {isDT && ' Baseline vs Scenario comparison.'}
+      </p>
+
+      {/* Gauge-style capacity bar */}
+      {isDT ? (
+        <div style={{ marginBottom: 16 }}>
+          <DualBar
+            label="Surge Capacity Utilisation"
+            baselinePct={Math.min(capacity, 140)}
+            scenarioPct={Math.min(sCapacity, 140)}
+            baselineColor={breached ? '#dc2626' : '#334155'}
+            scenarioColor={sBreached ? '#dc2626' : '#059669'}
+          />
+          {(breached || sBreached) && (
+            <div style={{ fontSize: 10, color: '#dc2626', fontWeight: 700, marginTop: 4 }}>
+              ⚠ CAPACITY BREACH {breached && sBreached ? '(BOTH)' : breached ? '(BASELINE)' : '(SCENARIO)'}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div style={{ pageBreakInside: 'avoid', marginBottom: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+            <span style={BAR_STYLES.label}>Surge Capacity Utilisation</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: breached ? '#dc2626' : '#059669' }}>{capacity.toFixed(0)}%</span>
+          </div>
+          {/* Track with 100% threshold marker */}
+          <div style={{ position: 'relative' }}>
+            <div style={{ ...BAR_STYLES.track, height: 22 }}>
+              <div style={{ ...BAR_STYLES.barBase, width: `${Math.min(capacity, 140) / 1.4}%`, backgroundColor: breached ? '#dc2626' : '#059669', height: '100%' }} />
+            </div>
+            {/* 100% threshold line */}
+            <div style={{ position: 'absolute', left: `${100 / 1.4}%`, top: -4, bottom: -4, width: 2, backgroundColor: '#0f172a' }} />
+            <div style={{ position: 'absolute', left: `${100 / 1.4}%`, top: -14, fontSize: 8, color: '#0f172a', fontWeight: 700, transform: 'translateX(-50%)' }}>100%</div>
+          </div>
+          {breached && (
+            <div style={{ fontSize: 10, color: '#dc2626', fontWeight: 700, marginTop: 8 }}>
+              ⚠ CAPACITY BREACH — Hospital system overwhelmed
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CoastalFloodCharts({ baseline, scenario, isDT, mode }: { baseline?: any; scenario?: any; isDT: boolean; mode: string }) {
+  const valueProtected = parseFloat(baseline?.value_protected?.toString().replace(/[^0-9.]/g, '') ?? '0');
+  const capex = parseFloat(baseline?.transition_capex?.toString().replace(/[^0-9.]/g, '') ?? '0');
+
+  const sValueProtected = parseFloat(scenario?.value_protected?.toString().replace(/[^0-9.]/g, '') ?? '0');
+  const sCapex = parseFloat(scenario?.transition_capex?.toString().replace(/[^0-9.]/g, '') ?? '0');
+
+  const maxVal = Math.max(valueProtected, capex, sValueProtected, sCapex, 1);
+  const norm = (v: number) => (v / maxVal) * 100;
+
+  const modeLabel = mode === 'coastal' ? 'Coastal' : 'Flood';
+
+  return (
+    <div style={{ pageBreakInside: 'avoid' }}>
+      <p style={{ fontSize: 11, color: '#475569', marginBottom: 16 }}>
+        {modeLabel} investment efficiency — Asset Value Protected vs Intervention Capex.
+        {isDT && ' Baseline vs Scenario comparison.'}
+      </p>
+
+      {isDT ? (
+        <div style={{ display: 'flex', gap: 24 }}>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: 9, fontWeight: 700, color: '#475569', marginBottom: 8, letterSpacing: '0.08em' }}>BASELINE</p>
+            <CapexValueBars valueProtected={norm(valueProtected)} capex={norm(capex)} vpLabel={fmtCurrency(valueProtected)} cxLabel={fmtCurrency(capex)} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: 9, fontWeight: 700, color: '#059669', marginBottom: 8, letterSpacing: '0.08em' }}>SCENARIO</p>
+            <CapexValueBars valueProtected={norm(sValueProtected)} capex={norm(sCapex)} vpLabel={fmtCurrency(sValueProtected)} cxLabel={fmtCurrency(sCapex)} />
+          </div>
+        </div>
+      ) : (
+        <CapexValueBars valueProtected={norm(valueProtected)} capex={norm(capex)} vpLabel={fmtCurrency(valueProtected)} cxLabel={fmtCurrency(capex)} />
+      )}
+    </div>
+  );
+}
+
+function CapexValueBars({ valueProtected, capex, vpLabel, cxLabel }: { valueProtected: number; capex: number; vpLabel: string; cxLabel: string }) {
+  return (
+    <div>
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+          <span style={{ fontSize: 10, fontWeight: 600, color: '#334155' }}>Asset Value Protected</span>
+          <span style={{ fontSize: 10, fontWeight: 700, color: '#059669' }}>{vpLabel}</span>
+        </div>
+        <div style={BAR_STYLES.track}>
+          <div style={{ ...BAR_STYLES.barBase, width: `${Math.max(valueProtected, 2)}%`, backgroundColor: '#059669', height: '100%' }} />
+        </div>
+      </div>
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+          <span style={{ fontSize: 10, fontWeight: 600, color: '#334155' }}>Intervention Capex</span>
+          <span style={{ fontSize: 10, fontWeight: 700, color: '#d97706' }}>{cxLabel}</span>
+        </div>
+        <div style={BAR_STYLES.track}>
+          <div style={{ ...BAR_STYLES.barBase, width: `${Math.max(capex, 2)}%`, backgroundColor: '#d97706', height: '100%' }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function fmtCurrency(val: number): string {
+  if (val >= 1_000_000) return `$${(val / 1_000_000).toFixed(1)}M`;
+  if (val >= 1_000) return `$${(val / 1_000).toFixed(0)}K`;
+  return `$${val.toFixed(0)}`;
 }
