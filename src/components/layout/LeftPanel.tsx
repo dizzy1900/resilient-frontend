@@ -2610,7 +2610,7 @@ function SimButton({
 }) {
   return (
     <button
-      onClick={onClick}
+      onClick={() => onClick()}
       disabled={disabled}
       style={{
         width: "100%",
