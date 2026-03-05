@@ -691,6 +691,11 @@ const Index = () => {
     const coords = coordsOverride || markerPosition;
     if (!coords || coords.lat == null || coords.lng == null) {
       console.error('[Simulate] Cannot simulate: Missing latitude or longitude.', coords);
+      toast({
+        title: 'Location required',
+        description: 'Please select a location on the map first.',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -704,12 +709,15 @@ const Index = () => {
     const agriEndpoint = `${agriBaseUrl.replace(/\/+$/, '')}/predict-agri`;
 
     // Send exact UI strings for crops (no lowercase/snake_case); backend expects e.g. "Drought-Resistant Sorghum"
+    // In Digital Twin mode, baseline should have NO adaptation intervention
+    const baselineProposedCrop = isSplitMode ? 'None' : proposedCrop;
+
     const payload = {
       lat: coords.lat,
       lon: coords.lng,
       crop: cropType,
       current_crop: currentCrop,
-      proposed_crop: proposedCrop,
+      proposed_crop: baselineProposedCrop,
       baseline_yield_value: 500000,
       temp_increase: Math.round(tempDelta * 10) / 10,
       rain_change: rainChange,
@@ -902,7 +910,7 @@ const Index = () => {
         setIsSimulating(false);
         setIsSpatialLoading(false);
       });
-  }, [markerPosition, cropType, currentCrop, proposedCrop, globalTempTarget, rainChange, projectParams]);
+  }, [markerPosition, cropType, currentCrop, proposedCrop, globalTempTarget, rainChange, projectParams, isSplitMode]);
 
   const handleWizardRunAnalysis = useCallback((params: ProjectParams) => {
     setProjectParams(params);
@@ -931,12 +939,15 @@ const Index = () => {
 
     setIsCoastalSimulating(true);
 
+    // In Digital Twin mode, baseline should have NO mangrove intervention
+    const baselineMangroveWidth = isSplitMode ? 0 : mangroveWidth;
+
     const payload = {
       lat: markerPosition.lat,
       lon: markerPosition.lng,
       base_annual_opex: safeOpex,
       initial_lifespan_years: safeLifespan,
-      mangrove_width: mangroveWidth,
+      mangrove_width: baselineMangroveWidth,
       sea_level_rise: totalSLR,
       slr_projection: totalSLR,
       include_storm_surge: includeStormSurge,
@@ -1003,7 +1014,7 @@ const Index = () => {
       .finally(() => {
         setIsCoastalSimulating(false);
       });
-  }, [markerPosition, baseAnnualOpex, assetLifespan, mangroveWidth, totalSLR, includeStormSurge]);
+  }, [markerPosition, baseAnnualOpex, assetLifespan, mangroveWidth, totalSLR, includeStormSurge, isSplitMode]);
 
   const getInterventionType = useCallback(() => {
     const selectedToolkits: string[] = [
@@ -1056,8 +1067,12 @@ const Index = () => {
 
     // Read current toggle state from ref so we send actual UI state (avoids stale closure when toggles trigger re-simulate)
     const { greenRoofsEnabled: gr, permeablePavementEnabled: pp, drainageEnabled: du } = floodInterventionRef.current;
-    const interventionType =
-      gr ? 'green_roof' : pp ? 'permeable_pavement' : du ? 'drainage_upgrade' : 'none';
+
+    // In Digital Twin mode, baseline should have NO flood interventions
+    const interventionType = isSplitMode ? 'none'
+      : gr ? 'green_roof' : pp ? 'permeable_pavement' : du ? 'drainage_upgrade' : 'none';
+    const baselineGR = isSplitMode ? false : gr;
+    const baselinePP = isSplitMode ? false : pp;
 
     setIsFloodSimulating(true);
 
@@ -1070,8 +1085,8 @@ const Index = () => {
       base_annual_opex: safeOpex,
       initial_lifespan_years: safeLifespan,
       asset_value_usd: safePropertyValue,
-      green_roofs: gr,
-      permeable_pavement: pp,
+      green_roofs: baselineGR,
+      permeable_pavement: baselinePP,
       rain_intensity_pct: totalRainIntensity,
       slope_pct: 2,
     };
@@ -1146,7 +1161,7 @@ const Index = () => {
       .finally(() => {
         setIsFloodSimulating(false);
       });
-  }, [markerPosition, baseAnnualOpex, assetLifespan, propertyValue, totalRainIntensity, toast]);
+  }, [markerPosition, baseAnnualOpex, assetLifespan, propertyValue, totalRainIntensity, toast, isSplitMode]);
 
   const handleGreenRoofsChange = useCallback(
     (enabled: boolean) => {
@@ -1399,8 +1414,8 @@ const Index = () => {
     setIsHealthSimulating(true);
     setShowHealthResults(false);
 
-    // Format intervention type to strict snake_case for backend contract
-    const formattedIntervention = healthIntervention;
+    // In Digital Twin mode, baseline should have NO health intervention
+    const formattedIntervention = isSplitMode ? 'none' : healthIntervention;
 
     const healthTempDelta = healthTempTarget - 1.4;
     const payload: Record<string, unknown> = {
@@ -1561,7 +1576,7 @@ const Index = () => {
       .finally(() => {
         setIsHealthSimulating(false);
       });
-  }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex, populationSize, gdpPerCapita, economyTier, customBedsPer1000]);
+  }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex, populationSize, gdpPerCapita, economyTier, customBedsPer1000, isSplitMode]);
 
   /** Fire a scenario API call concurrently when in Digital Twin mode. */
    const fireScenarioCall = useCallback(async (coordsOverride?: { lat: number; lng: number }) => {
