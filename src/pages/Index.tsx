@@ -86,6 +86,7 @@ const Index = () => {
   const [greenRoofsEnabled, setGreenRoofsEnabled] = useState(false);
   const [permeablePavementEnabled, setPermeablePavementEnabled] = useState(false);
   const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const markerPositionRef = useRef<{ lat: number; lng: number } | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [ndviData, setNdviData] = useState<any[]>([]);
   const [isNdviLoading, setIsNdviLoading] = useState(false);
@@ -242,6 +243,11 @@ const Index = () => {
     opexClimatePenalty: null as number | null,
     adjustedLifespan: null as number | null,
   });
+
+  // Keep markerPosition ref in sync (avoids stale closures in simulate handlers)
+  useEffect(() => {
+    markerPositionRef.current = markerPosition;
+  }, [markerPosition]);
 
   // Ref so payload always uses current toggle state (avoids stale closure when toggles trigger re-simulate)
   const floodInterventionRef = useRef({
@@ -552,7 +558,8 @@ const Index = () => {
 
   // Finance simulation handler — uses Railway FastAPI (cba-series + cvar-simulation)
   const handleFinanceSimulate = useCallback(async () => {
-    if (!markerPosition) return;
+    const coords = markerPositionRef.current;
+    if (!coords) return;
     setIsFinanceSimulating(true);
     setAtlasFinancialData(null);
     setAtlasMonteCarloData(null);
@@ -564,8 +571,8 @@ const Index = () => {
     const annualBaselineDamage = (capex * 0.02) || 0; // 2% of capex default
 
     const cbaPayload = {
-      lat: markerPosition.lat,
-      lon: markerPosition.lng,
+      lat: coords.lat,
+      lon: coords.lng,
       crop: cropType,
       capex,
       annual_opex: annualOpex,
@@ -673,7 +680,7 @@ const Index = () => {
     } finally {
       setIsFinanceSimulating(false);
     }
-  }, [markerPosition, cropType, propertyValue, baseAnnualOpex, assetLifespan]);
+  }, [cropType, propertyValue, baseAnnualOpex, assetLifespan]);
 
   const handleGlobalTempTargetChange = useCallback((value: number) => {
     setGlobalTempTarget(value);
@@ -688,7 +695,7 @@ const Index = () => {
   }, []);
 
   const handleSimulate = useCallback(async (coordsOverride?: { lat: number; lng: number }) => {
-    const coords = coordsOverride || markerPosition;
+    const coords = coordsOverride || markerPositionRef.current;
     if (!coords || coords.lat == null || coords.lng == null) {
       console.error('[Simulate] Cannot simulate: Missing latitude or longitude.', coords);
       toast({
@@ -910,22 +917,23 @@ const Index = () => {
         setIsSimulating(false);
         setIsSpatialLoading(false);
       });
-  }, [markerPosition, cropType, currentCrop, proposedCrop, globalTempTarget, rainChange, projectParams, isSplitMode]);
+  }, [cropType, currentCrop, proposedCrop, globalTempTarget, rainChange, projectParams, isSplitMode]);
 
   const handleWizardRunAnalysis = useCallback((params: ProjectParams) => {
     setProjectParams(params);
     setShowWizard(false);
     // Trigger simulation with the new params
-    if (markerPosition) {
+    if (markerPositionRef.current) {
       // Small delay to let state update
       setTimeout(() => {
         handleSimulate();
       }, 100);
     }
-  }, [markerPosition, handleSimulate]);
+  }, [handleSimulate]);
 
   const handleCoastalSimulate = useCallback(async () => {
-    if (!markerPosition) {
+    const coords = markerPositionRef.current;
+    if (!coords) {
       toast({
         title: 'Location required',
         description: 'Please select a location on the map first.',
@@ -943,8 +951,8 @@ const Index = () => {
     const baselineMangroveWidth = isSplitMode ? 0 : mangroveWidth;
 
     const payload = {
-      lat: markerPosition.lat,
-      lon: markerPosition.lng,
+      lat: coords.lat,
+      lon: coords.lng,
       base_annual_opex: safeOpex,
       initial_lifespan_years: safeLifespan,
       mangrove_width: baselineMangroveWidth,
@@ -1014,7 +1022,7 @@ const Index = () => {
       .finally(() => {
         setIsCoastalSimulating(false);
       });
-  }, [markerPosition, baseAnnualOpex, assetLifespan, mangroveWidth, totalSLR, includeStormSurge, isSplitMode]);
+  }, [baseAnnualOpex, assetLifespan, mangroveWidth, totalSLR, includeStormSurge, isSplitMode]);
 
   const getInterventionType = useCallback(() => {
     const selectedToolkits: string[] = [
@@ -1048,7 +1056,8 @@ const Index = () => {
   }, [greenRoofsEnabled, permeablePavementEnabled]);
 
   const handleFloodSimulate = useCallback(async () => {
-    if (!markerPosition) {
+    const coords = markerPositionRef.current;
+    if (!coords) {
       toast({
         title: 'Location required',
         description: 'Please select a location on the map first.',
@@ -1077,8 +1086,8 @@ const Index = () => {
     setIsFloodSimulating(true);
 
     const payload = {
-      lat: markerPosition.lat,
-      lon: markerPosition.lng,
+      lat: coords.lat,
+      lon: coords.lng,
       rain_intensity: safeRain,
       current_imperviousness: 0.7,
       intervention_type: interventionType,
@@ -1161,7 +1170,7 @@ const Index = () => {
       .finally(() => {
         setIsFloodSimulating(false);
       });
-  }, [markerPosition, baseAnnualOpex, assetLifespan, propertyValue, totalRainIntensity, toast, isSplitMode]);
+  }, [baseAnnualOpex, assetLifespan, propertyValue, totalRainIntensity, toast, isSplitMode]);
 
   const handleGreenRoofsChange = useCallback(
     (enabled: boolean) => {
@@ -1410,7 +1419,15 @@ const Index = () => {
 
   // Health simulation handler — uses Railway FastAPI /predict-health
   const handleHealthSimulate = useCallback(async () => {
-    if (!markerPosition) return;
+    const coords = markerPositionRef.current;
+    if (!coords) {
+      toast({
+        title: 'Location required',
+        description: 'Please select a location on the map first.',
+        variant: 'destructive',
+      });
+      return;
+    }
     setIsHealthSimulating(true);
     setShowHealthResults(false);
 
@@ -1419,8 +1436,8 @@ const Index = () => {
 
     const healthTempDelta = healthTempTarget - 1.4;
     const payload: Record<string, unknown> = {
-      lat: markerPosition.lat,
-      lon: markerPosition.lng,
+      lat: coords.lat,
+      lon: coords.lng,
       workforce_size: workforceSize ?? 100,
       daily_wage: averageDailyWage ?? 50,
       intervention_type: formattedIntervention,
@@ -1576,11 +1593,11 @@ const Index = () => {
       .finally(() => {
         setIsHealthSimulating(false);
       });
-  }, [markerPosition, workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex, populationSize, gdpPerCapita, economyTier, customBedsPer1000, isSplitMode]);
+  }, [workforceSize, averageDailyWage, healthTempTarget, healthIntervention, coolingCapex, coolingOpex, populationSize, gdpPerCapita, economyTier, customBedsPer1000, isSplitMode]);
 
   /** Fire a scenario API call concurrently when in Digital Twin mode. */
    const fireScenarioCall = useCallback(async (coordsOverride?: { lat: number; lng: number }) => {
-    const coords = coordsOverride || markerPosition;
+    const coords = coordsOverride || markerPositionRef.current;
     if (!coords || coords.lat == null || coords.lng == null || !isSplitMode) {
       if (!coords || coords.lat == null || coords.lng == null) console.error('[DT Scenario] Missing lat/lon', coords);
       return;
@@ -1789,7 +1806,7 @@ const Index = () => {
         setScenarioHealthResults(null);
       }
     }
-  }, [markerPosition, isSplitMode, mode, scenarioStore.params]);
+  }, [isSplitMode, mode, scenarioStore.params]);
 
   const getCurrentSimulateHandler = useCallback(() => {
     // Wrap handlers: when in split mode, fire both baseline + scenario concurrently
