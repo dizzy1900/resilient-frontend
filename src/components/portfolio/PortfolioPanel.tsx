@@ -124,7 +124,7 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
           description: `Analyzed ${parsedData.length} assets.`,
         });
       } else {
-        throw new Error((payload as { message?: string })?.message ?? `HTTP ${response.status}`);
+        throw new Error((rawJson as { message?: string })?.message ?? `HTTP ${response.status}`);
       }
     } catch (error) {
       console.error('Portfolio analysis failed:', error);
