@@ -557,28 +557,31 @@ const Index = () => {
   }, []);
 
   // Finance simulation handler — uses Railway FastAPI (cba-series + cvar-simulation)
-  const handleFinanceSimulate = useCallback(async () => {
-    const coords = markerPositionRef.current;
-    if (!coords) return;
+   const handleFinanceSimulate = useCallback(async () => {
     setIsFinanceSimulating(true);
     setAtlasFinancialData(null);
     setAtlasMonteCarloData(null);
 
-    const capex = Number(propertyValue) || 5_000_000;
+    const capex = Number(propertyValue) || 500_000;
     const annualOpex = Number(baseAnnualOpex) || 25_000;
     const lifespanYears = Number(assetLifespan) || 30;
     const discountRate = 0.08;
-    const annualBaselineDamage = (capex * 0.02) || 0; // 2% of capex default
+    const annualBaselineDamage = (capex * 0.02) || 100_000;
 
     const cbaPayload = {
-      lat: coords.lat,
-      lon: coords.lng,
-      crop: cropType,
       capex,
       annual_opex: annualOpex,
       discount_rate: discountRate,
       lifespan_years: lifespanYears,
       annual_baseline_damage: annualBaselineDamage,
+      damage_reduction_pct: 0.80,
+      base_insurance_premium: 50_000,
+      insurance_reduction_pct: 0.25,
+      standard_interest_rate: 0.06,
+      greenium_discount_bps: 50.0,
+      bond_tenor_years: 10,
+      annual_carbon_credits: 0,
+      carbon_price_per_ton: 50,
     };
 
     const cvarPayload = {
@@ -642,7 +645,8 @@ const Index = () => {
       };
       setAtlasMonteCarloData(monteCarloData);
 
-      setAtlasLocationName(`${markerPosition.lat.toFixed(2)}, ${markerPosition.lng.toFixed(2)}`);
+      const coords = markerPositionRef.current;
+      setAtlasLocationName(coords ? `${coords.lat.toFixed(2)}, ${coords.lng.toFixed(2)}` : 'Finance Analysis');
       setIsPanelOpen(true);
     } catch (error) {
       console.error('Finance simulation failed:', error);

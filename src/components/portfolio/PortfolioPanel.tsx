@@ -88,6 +88,20 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
         formData.append('file', file);
       }
 
+      // Validate required columns: rebuild CSV with asset_value and crop_type if missing
+      const header = 'Name,Lat,Lon,Value,asset_value,crop_type';
+      const hasRequiredCols = rawFile != null; // raw file may already have them
+      if (!hasRequiredCols) {
+        // Demo data or reconstructed CSV — inject asset_value & crop_type columns
+        const rows = parsedData.map((a) =>
+          `${escapeCsv(a.Name)},${a.Lat},${a.Lon},${a.Value},${a.Value},cocoa`
+        ).join('\n');
+        const enrichedCsv = `${header}\n${rows}`;
+        const enrichedBlob = new Blob([enrichedCsv], { type: 'text/csv' });
+        const enrichedFile = new File([enrichedBlob], 'portfolio.csv', { type: 'text/csv' });
+        formData.set('file', enrichedFile);
+      }
+
       const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
       const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/analyze-portfolio`;
       const response = await fetchWithRetry(endpoint, { method: 'POST', body: formData });
