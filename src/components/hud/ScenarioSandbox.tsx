@@ -120,10 +120,6 @@ export function ScenarioSandbox({
   const cvar99 = cvarMetrics?.cvar_99 ?? null;
 
   useEffect(() => {
-    if (!latitude || !longitude) {
-      setCbaTimeSeries([]);
-      return;
-    }
     const controller = new AbortController();
     const capex = Number(assumptions.capex_budget) || 500000;
     const annualBaselineDamage = capex * 0.02;
@@ -133,15 +129,19 @@ export function ScenarioSandbox({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            lat: latitude,
-            lon: longitude,
-            crop: cropType,
             capex,
             annual_opex: Number(assumptions.opex_annual) || 25000,
             discount_rate: Number(assumptions.discount_rate_pct) / 100 || 0.08,
             lifespan_years: Number(assumptions.asset_lifespan_years) || 30,
             annual_baseline_damage: annualBaselineDamage,
-            base_insurance_premium: assumptions.insurance_premium_annual,
+            damage_reduction_pct: 0.80,
+            base_insurance_premium: Number(assumptions.insurance_premium_annual) || 50000,
+            insurance_reduction_pct: 0.25,
+            standard_interest_rate: 0.06,
+            greenium_discount_bps: 50.0,
+            bond_tenor_years: 10,
+            annual_carbon_credits: Number(carbonCredits) || 0,
+            carbon_price_per_ton: Number(carbonPrice) || 50,
           }),
           signal: controller.signal,
         });
@@ -157,7 +157,7 @@ export function ScenarioSandbox({
       }
     })();
     return () => controller.abort();
-  }, [latitude, longitude, cropType, assumptions.capex_budget, assumptions.opex_annual, assumptions.insurance_premium_annual, assumptions.discount_rate_pct, assumptions.asset_lifespan_years]);
+  }, [assumptions.capex_budget, assumptions.opex_annual, assumptions.insurance_premium_annual, assumptions.discount_rate_pct, assumptions.asset_lifespan_years, carbonCredits, carbonPrice]);
 
   useEffect(() => {
     const annualCarbonRevenue = carbonCredits * carbonPrice;
@@ -210,19 +210,23 @@ export function ScenarioSandbox({
   }, [assumptions.capex_budget, assumptions.opex_annual, assumptions.insurance_premium_annual, assumptions.discount_rate_pct, assumptions.asset_lifespan_years, carbonCredits, carbonPrice, onCbaResult]);
 
   const handleRecalculate = useCallback(async () => {
-    if (!latitude || !longitude) return;
     setIsCalculating(true);
 
     const capex = Number(assumptions.capex_budget) || 500000;
     const cbaPayload = {
-      lat: latitude,
-      lon: longitude,
-      crop: cropType,
       capex,
       annual_opex: Number(assumptions.opex_annual) || 25000,
       discount_rate: Number(assumptions.discount_rate_pct) / 100 || 0.08,
       lifespan_years: Number(assumptions.asset_lifespan_years) || 30,
       annual_baseline_damage: capex * 0.02,
+      damage_reduction_pct: 0.80,
+      base_insurance_premium: Number(assumptions.insurance_premium_annual) || 50000,
+      insurance_reduction_pct: 0.25,
+      standard_interest_rate: 0.06,
+      greenium_discount_bps: 50.0,
+      bond_tenor_years: 10,
+      annual_carbon_credits: Number(carbonCredits) || 0,
+      carbon_price_per_ton: Number(carbonPrice) || 50,
     };
     const cvarPayload = {
       asset_value: capex,
@@ -296,7 +300,7 @@ export function ScenarioSandbox({
     } finally {
       setIsCalculating(false);
     }
-  }, [latitude, longitude, cropType, assumptions, meanDamage, volatility, onRecalculated]);
+  }, [assumptions, meanDamage, volatility, carbonCredits, carbonPrice, onRecalculated]);
 
   const handleRunMonteCarlo = useCallback(async () => {
     setIsSimulating(true);
