@@ -88,15 +88,25 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
       const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
       const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/analyze-portfolio`;
       const response = await fetchWithRetry(endpoint, { method: 'POST', body: formData });
-      const payload = await response.json().catch(() => ({}));
-      const resultData: PortfolioAnalysisResult = payload?.data != null ? payload.data : payload;
+      const rawJson = await response.json().catch(() => ({}));
+      // Unwrap { status, data: {...} } wrapper if present
+      const innerPayload = rawJson?.data != null ? rawJson.data : rawJson;
 
-      if (response.ok && resultData && typeof resultData === 'object' && resultData.portfolio_summary != null) {
-        const ps = resultData.portfolio_summary;
-        const mappedData = {
-          ...resultData,
+      if (response.ok && innerPayload && typeof innerPayload === 'object') {
+        // Backend may return { portfolio_summary: {...}, asset_results: [...] }
+        // OR a flat object like { total_portfolio_value: 1375000, ... }
+        const ps = innerPayload.portfolio_summary ?? innerPayload;
+        const assetResults = innerPayload.asset_results ?? innerPayload.analyzed_assets ?? innerPayload.assets ?? [];
+
+        const mappedData: PortfolioAnalysisResult = {
+          asset_results: assetResults,
           portfolio_summary: {
             ...ps,
+            total_portfolio_value: ps?.total_portfolio_value ?? ps?.totalPortfolioValue ?? 0,
+            total_value_at_risk: ps?.total_value_at_risk ?? ps?.totalValueAtRisk ?? 0,
+            average_resilience_score: ps?.average_resilience_score ?? ps?.averageResilienceScore ?? 0,
+            risk_exposure_pct: ps?.risk_exposure_pct ?? 0,
+            total_assets: ps?.total_assets ?? parsedData.length,
             totalPortfolioValue: ps?.total_portfolio_value ?? ps?.totalPortfolioValue ?? 0,
             totalValueAtRisk: ps?.total_value_at_risk ?? ps?.totalValueAtRisk ?? 0,
             averageResilienceScore: ps?.average_resilience_score ?? ps?.averageResilienceScore ?? 0,
