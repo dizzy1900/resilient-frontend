@@ -791,6 +791,7 @@ export function RightPanelContent({
             Lat: a.lat,
             Lon: a.lon,
             Value: Number(rec.value ?? a.value ?? 0),
+            crop_type: String(rec.crop_type ?? 'maize'),
             score: Number(rec.resilience_score ?? a.resilience_score ?? undefined),
           };
         })

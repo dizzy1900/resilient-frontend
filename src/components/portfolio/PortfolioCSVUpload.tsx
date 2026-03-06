@@ -17,6 +17,7 @@ export interface PortfolioAsset {
   Lat: number;
   Lon: number;
   Value: number;
+  crop_type: string;
 }
 
 interface PortfolioCSVUploadProps {
@@ -36,8 +37,15 @@ export const PortfolioCSVUpload = ({
   const { CSVReader } = useCSVReader();
   const [error, setError] = useState<string | null>(null);
 
-  /** Normalize header cell: trim and lowercase; blank columns become "". */
-  const norm = (h: string) => (h ?? '').trim().toLowerCase();
+  /** Normalize header cell: trim, lowercase, replace spaces with underscores. */
+  const norm = (h: string) => (h ?? '').trim().toLowerCase().replace(/\s+/g, '_');
+
+  /** Strip currency symbols and commas from a value string, return parsed float. */
+  const parseCurrency = (v: string): number => {
+    const cleaned = (v ?? '').replace(/[^0-9.\-]+/g, '');
+    const n = parseFloat(cleaned);
+    return isNaN(n) ? 0 : n;
+  };
 
   /** Find the first row in the first 5–10 rows that contains both 'lat' and 'lon' (case-insensitive, ignoring blank columns). */
   const findHeaderRowIndex = (rows: string[][]): number => {
@@ -72,7 +80,8 @@ export const PortfolioCSVUpload = ({
       const nameIdx = headerRow.findIndex((h) => ['name', 'farm_id'].includes(norm(h)));
       const latIdx = headerRow.findIndex((h) => norm(h) === 'lat');
       const lonIdx = headerRow.findIndex((h) => norm(h) === 'lon');
-      const valueIdx = headerRow.findIndex((h) => norm(h) === 'value');
+      const valueIdx = headerRow.findIndex((h) => ['value', 'asset_value'].includes(norm(h)));
+      const cropIdx = headerRow.findIndex((h) => norm(h) === 'crop_type');
 
       if (latIdx === -1 || lonIdx === -1) {
         setError('CSV must have at least columns: Lat, Lon (optional: Name/farm_id, Value)');
@@ -96,7 +105,8 @@ export const PortfolioCSVUpload = ({
         const name = nameIdx !== -1 ? (row[nameIdx]?.trim() || `Asset ${i}`) : `Asset ${i}`;
         const lat = parseFloat(row[latIdx]);
         const lon = parseFloat(row[lonIdx]);
-        const value = valueIdx !== -1 ? parseFloat(row[valueIdx]) : 0;
+        const value = valueIdx !== -1 ? parseCurrency(row[valueIdx]) : 0;
+        const cropType = cropIdx !== -1 ? (row[cropIdx]?.trim() || 'maize') : 'maize';
 
         // Validate name length
         if (name.length > 200) {
@@ -136,6 +146,7 @@ export const PortfolioCSVUpload = ({
           Lat: lat,
           Lon: lon,
           Value: parsedValue,
+          crop_type: cropType,
         });
       }
 

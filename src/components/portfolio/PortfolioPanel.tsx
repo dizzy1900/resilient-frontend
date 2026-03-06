@@ -15,11 +15,11 @@ function escapeCsv(value: string): string {
 }
 
 const GHANA_COCOA_DEMO: PortfolioAsset[] = [
-  { Name: 'Kumasi Farm', Lat: 6.6885, Lon: -1.6244, Value: 120000 },
-  { Name: 'Takoradi Estate', Lat: 4.8986, Lon: -1.7550, Value: 95000 },
-  { Name: 'Sunyani Plot', Lat: 7.3349, Lon: -2.3266, Value: 80000 },
-  { Name: 'Ahafo Plantation', Lat: 7.0833, Lon: -2.3333, Value: 150000 },
-  { Name: 'Eastern Region Farm', Lat: 6.1000, Lon: -0.7500, Value: 110000 },
+  { Name: 'Kumasi Farm', Lat: 6.6885, Lon: -1.6244, Value: 120000, crop_type: 'cocoa' },
+  { Name: 'Takoradi Estate', Lat: 4.8986, Lon: -1.7550, Value: 95000, crop_type: 'cocoa' },
+  { Name: 'Sunyani Plot', Lat: 7.3349, Lon: -2.3266, Value: 80000, crop_type: 'cocoa' },
+  { Name: 'Ahafo Plantation', Lat: 7.0833, Lon: -2.3333, Value: 150000, crop_type: 'cocoa' },
+  { Name: 'Eastern Region Farm', Lat: 6.1000, Lon: -0.7500, Value: 110000, crop_type: 'cocoa' },
 ];
 
 type JobStatus = 'idle' | 'pending' | 'processing' | 'completed' | 'failed';
@@ -73,34 +73,17 @@ export const PortfolioPanel = ({ onAssetsChange, onPortfolioResultsChange }: Por
     setIsSubmitting(true);
 
     try {
-      const formData = new FormData();
-      // Send the original raw file when available to preserve all columns/formatting
-      const rawFile = rawFileRef.current;
-      if (rawFile) {
-        formData.append('file', rawFile);
-      } else {
-        // Fallback: reconstruct CSV from parsed data (e.g. demo data or cleared upload)
-        const header = 'Name,Lat,Lon,Value';
-        const rows = parsedData.map((a) => `${escapeCsv(a.Name)},${a.Lat},${a.Lon},${a.Value}`).join('\n');
-        const csv = `${header}\n${rows}`;
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const file = new File([blob], 'portfolio.csv', { type: 'text/csv' });
-        formData.append('file', file);
-      }
+      // Always reconstruct a cleaned CSV from the sanitized parsedData
+      // so headers are snake_case and values are numeric (no currency symbols).
+      const csvHeader = 'name,lat,lon,asset_value,crop_type';
+      const csvRows = parsedData.map((a) =>
+        `${escapeCsv(a.Name)},${a.Lat},${a.Lon},${a.Value},${escapeCsv(a.crop_type || 'maize')}`
+      ).join('\n');
+      const cleanedCsv = `${csvHeader}\n${csvRows}`;
+      const cleanedBlob = new Blob([cleanedCsv], { type: 'text/csv' });
 
-      // Validate required columns: rebuild CSV with asset_value and crop_type if missing
-      const header = 'Name,Lat,Lon,Value,asset_value,crop_type';
-      const hasRequiredCols = rawFile != null; // raw file may already have them
-      if (!hasRequiredCols) {
-        // Demo data or reconstructed CSV — inject asset_value & crop_type columns
-        const rows = parsedData.map((a) =>
-          `${escapeCsv(a.Name)},${a.Lat},${a.Lon},${a.Value},${a.Value},cocoa`
-        ).join('\n');
-        const enrichedCsv = `${header}\n${rows}`;
-        const enrichedBlob = new Blob([enrichedCsv], { type: 'text/csv' });
-        const enrichedFile = new File([enrichedBlob], 'portfolio.csv', { type: 'text/csv' });
-        formData.set('file', enrichedFile);
-      }
+      const formData = new FormData();
+      formData.append('file', cleanedBlob, 'cleaned_portfolio.csv');
 
       const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://web-production-8ff9e.up.railway.app';
       const endpoint = `${baseUrl.replace(/\/+$/, '')}/api/v1/analyze-portfolio`;
