@@ -393,12 +393,14 @@ const Index = () => {
       }));
     }
     if (portfolioAssets.length === 0) return [];
-    return portfolioAssets.map((a) => ({
-      lat: a.Lat,
-      lng: a.Lon,
-      name: a.Name,
-      value: a.Value,
-    }));
+    return portfolioAssets
+      .filter((a) => !isNaN(a.Lat) && !isNaN(a.Lon))
+      .map((a) => ({
+        lat: a.Lat,
+        lng: a.Lon,
+        name: a.Name,
+        value: a.Value,
+      }));
   }, [mode, portfolioAssets, portfolioResults]);
 
   const fitBoundsTarget = useMemo(() => {
