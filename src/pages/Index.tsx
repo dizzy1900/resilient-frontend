@@ -404,8 +404,14 @@ const Index = () => {
   const fitBoundsTarget = useMemo(() => {
     const assets = portfolioResults?.asset_results;
     if (!assets?.length) return null;
+    // Filter out any assets with NaN coordinates to prevent Mapbox crash
+    const valid = assets.filter((a: any) =>
+      typeof a.lat === 'number' && !isNaN(a.lat) &&
+      typeof a.lon === 'number' && !isNaN(a.lon)
+    );
+    if (!valid.length) return null;
     let minLat = Infinity, maxLat = -Infinity, minLng = Infinity, maxLng = -Infinity;
-    for (const a of assets) {
+    for (const a of valid) {
       minLat = Math.min(minLat, a.lat);
       maxLat = Math.max(maxLat, a.lat);
       minLng = Math.min(minLng, a.lon);
