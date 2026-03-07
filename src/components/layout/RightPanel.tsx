@@ -389,6 +389,7 @@ export function RightPanel({
               isSplitMode={isSplitMode}
               scenarioAgriResults={scenarioAgriResults}
               scenarioFloodResults={scenarioFloodResults}
+              onBlendedResultChange={setBlendedData}
             />
           )}
         </div>
