@@ -2138,6 +2138,7 @@ function FinanceContent({
             activeFinancialData?.metrics?.resilience_score ??
             null
           }
+          onResultChange={onBlendedResultChange}
         />
       </div>
 
