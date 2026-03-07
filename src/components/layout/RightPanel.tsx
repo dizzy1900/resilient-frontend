@@ -2122,6 +2122,17 @@ function FinanceContent({
         <SolutionEngineCard strategy={activeAdaptationStrategy} portfolio={activeAdaptationPortfolio} />
       </div>
 
+      <div className="border-t" style={{ borderColor: 'var(--cb-border)' }}>
+        <BlendedFinanceCard
+          totalCapex={cbaCapexBudget ?? activeFinancialData?.assumptions?.capex ?? null}
+          resilienceScore={
+            activeFinancialData?.resilience_score ??
+            activeFinancialData?.metrics?.resilience_score ??
+            null
+          }
+        />
+      </div>
+
       <ScenarioSandbox
         latitude={latitude ?? null}
         longitude={longitude ?? null}
