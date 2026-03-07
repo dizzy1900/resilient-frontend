@@ -501,6 +501,7 @@ function ExportPDFButton({
   scenarioCoastalResults,
   scenarioFloodResults,
   scenarioHealthResults,
+  blendedData,
 }: ExportPDFButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
 
