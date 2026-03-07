@@ -254,6 +254,8 @@ export function RightPanel({
   scenarioFloodResults,
   scenarioHealthResults,
 }: RightPanelProps) {
+  const [blendedData, setBlendedData] = useState<BlendedFinanceData | null>(null);
+
   if (!visible) return null;
 
   const accent = MODE_ACCENT[mode];
