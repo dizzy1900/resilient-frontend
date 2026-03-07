@@ -408,6 +408,7 @@ export function RightPanel({
             scenarioCoastalResults={scenarioCoastalResults}
             scenarioFloodResults={scenarioFloodResults}
             scenarioHealthResults={scenarioHealthResults}
+            blendedData={blendedData}
           />
         )}
       </div>
