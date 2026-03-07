@@ -25,6 +25,7 @@ import { ZoneMode } from '@/utils/zoneGeneration';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AnalyticsHighlightsCard } from '@/components/hud/AnalyticsHighlightsCard';
 import { ProjectParams } from '@/components/hud/InterventionWizardModal';
+import { BlendedFinanceCard } from '@/components/hud/BlendedFinanceCard';
 import { DefensiveProjectParams } from '@/components/hud/DefensiveInfrastructureModal';
 import { PortfolioAnalysisResult, PortfolioSummary } from '@/types/portfolio';
 
@@ -2119,6 +2120,17 @@ function FinanceContent({
 
       <div className="border-t" style={{ borderColor: 'var(--cb-border)' }}>
         <SolutionEngineCard strategy={activeAdaptationStrategy} portfolio={activeAdaptationPortfolio} />
+      </div>
+
+      <div className="border-t" style={{ borderColor: 'var(--cb-border)' }}>
+        <BlendedFinanceCard
+          totalCapex={cbaCapexBudget ?? activeFinancialData?.assumptions?.capex ?? null}
+          resilienceScore={
+            activeFinancialData?.resilience_score ??
+            activeFinancialData?.metrics?.resilience_score ??
+            null
+          }
+        />
       </div>
 
       <ScenarioSandbox
