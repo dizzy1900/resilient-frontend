@@ -880,6 +880,12 @@ export function RightPanelContent({
           cropType={cropType}
           propertyValue={propertyValue}
           onBlendedResultChange={onBlendedResultChange}
+          avoidedRevenueLoss={
+            (agricultureResults as any)?.avoidedRevenueLoss ??
+            (agricultureResults as any)?.avoidedLoss ??
+            (coastalResults as any)?.avoidedLoss ??
+            null
+          }
         />
       )}
 
