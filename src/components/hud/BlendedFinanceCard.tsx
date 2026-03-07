@@ -73,6 +73,7 @@ const DonutTooltip = ({ active, payload }: any) => {
 export const BlendedFinanceCard = ({
   totalCapex,
   resilienceScore,
+  onResultChange,
 }: BlendedFinanceCardProps) => {
   const [stack, setStack] = useState<CapitalStack>({ commercial: 50, concessional: 30, equity: 20 });
   const [isCalculating, setIsCalculating] = useState(false);
