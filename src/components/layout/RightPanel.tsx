@@ -879,6 +879,7 @@ export function RightPanelContent({
           longitude={longitude}
           cropType={cropType}
           propertyValue={propertyValue}
+          onBlendedResultChange={onBlendedResultChange}
         />
       )}
 
