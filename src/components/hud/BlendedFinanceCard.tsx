@@ -20,9 +20,17 @@ export interface BlendedResult {
   lifetime_interest_saved: number;
 }
 
+export interface BlendedFinanceData {
+  result: BlendedResult;
+  stack: CapitalStack;
+  totalCapex: number;
+  resilienceScore: number;
+}
+
 interface BlendedFinanceCardProps {
   totalCapex: number | null;
   resilienceScore: number | null;
+  onResultChange?: (data: BlendedFinanceData | null) => void;
 }
 
 const TRANCHE_COLORS: Record<keyof CapitalStack, string> = {
