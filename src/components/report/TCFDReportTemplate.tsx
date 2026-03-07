@@ -60,6 +60,11 @@ export function TCFDReportTemplate({
 }: TCFDReportTemplateProps) {
   const { baseline: physicalRiskMetrics, adaptation: adaptationMetrics } = splitMetrics(baselineMetrics);
   const hasAdaptation = Object.keys(adaptationMetrics).length > 0;
+  const hasBlended = !!blendedData;
+
+  // Dynamic section numbering based on whether Green Bond page is shown
+  const sectionAfterPhysical = hasBlended ? 4 : 3;
+  const sectionAnalytics = hasBlended ? 5 : 4;
 
   return (
     <div
@@ -87,14 +92,19 @@ export function TCFDReportTemplate({
         <MetricsTable metrics={physicalRiskMetrics} headerColor="#0f172a" />
       </Section>
 
+      {/* === GREEN BOND TERM SHEET (conditional) === */}
+      {hasBlended && (
+        <GreenBondTermSheet blendedData={blendedData!} />
+      )}
+
       {hasAdaptation && !isDigitalTwin && (
-        <Section number="3" title="Adaptation Strategy & ROI">
+        <Section number={String(sectionAfterPhysical)} title="Adaptation Strategy & ROI">
           <MetricsTable metrics={adaptationMetrics} headerColor="#059669" />
         </Section>
       )}
 
       {isDigitalTwin && scenarioMetrics && (
-        <Section number="3" title="Adaptation Strategy & ROI — Scenario Comparison">
+        <Section number={String(sectionAfterPhysical)} title="Adaptation Strategy & ROI — Scenario Comparison">
           <div style={{ display: 'flex', gap: 16 }}>
             <div style={{ flex: 1 }}>
               <p style={{ fontSize: 10, fontWeight: 700, color: '#475569', marginBottom: 8, letterSpacing: '0.08em' }}>BASELINE</p>
@@ -113,8 +123,8 @@ export function TCFDReportTemplate({
         </Section>
       )}
 
-      {/* === SECTION 4: KEY RISK FACTORS & ANALYTICS === */}
-      <Section number="4" title="Key Risk Factors & Analytics">
+      {/* === KEY RISK FACTORS & ANALYTICS === */}
+      <Section number={String(sectionAnalytics)} title="Key Risk Factors & Analytics">
         {mode === 'agriculture' && (
           <AgriCharts baseline={baselineResults} scenario={scenarioResults} isDT={!!isDigitalTwin} />
         )}
