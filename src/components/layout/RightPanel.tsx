@@ -687,6 +687,7 @@ export interface RightPanelContentProps {
   isSplitMode?: boolean;
   scenarioAgriResults?: AgricultureResults;
   scenarioFloodResults?: FloodResults;
+  onBlendedResultChange?: (data: BlendedFinanceData | null) => void;
 }
 
 export function RightPanelContent({
