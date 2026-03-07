@@ -21,11 +21,18 @@ export interface BlendedResult {
   lifetime_interest_saved: number;
 }
 
+export interface StressScenario {
+  shock_bps: number;
+  blended_rate: number;
+  annual_debt_service: number;
+}
+
 export interface BlendedFinanceData {
   result: BlendedResult;
   stack: CapitalStack;
   totalCapex: number;
   resilienceScore: number;
+  stressScenarios?: StressScenario[];
 }
 
 interface BlendedFinanceCardProps {
@@ -145,11 +152,19 @@ export const BlendedFinanceCard = ({
 
   const publishResult = useCallback((r: BlendedResult) => {
     setResult(r);
+    // Generate stress scenarios for PDF export at key shock levels
+    const cap = totalCapex ?? 0;
+    const rs = resilienceScore ?? 0;
+    const scenarios: import('./BlendedFinanceCard').StressScenario[] = [100, 200, 300, 500].map((bps) => {
+      const stressed = computeLocalBlended(stack, cap, rs, bps);
+      return { shock_bps: bps, blended_rate: stressed.blended_interest_rate, annual_debt_service: stressed.annual_debt_service };
+    });
     onResultChange?.({
       result: r,
       stack,
-      totalCapex: totalCapex ?? 0,
-      resilienceScore: resilienceScore ?? 0,
+      totalCapex: cap,
+      resilienceScore: rs,
+      stressScenarios: scenarios,
     });
   }, [onResultChange, stack, totalCapex, resilienceScore]);
 

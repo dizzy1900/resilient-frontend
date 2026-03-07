@@ -1,5 +1,5 @@
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
-import type { BlendedFinanceData } from '@/components/hud/BlendedFinanceCard';
+import type { BlendedFinanceData, StressScenario } from '@/components/hud/BlendedFinanceCard';
 
 interface TCFDReportTemplateProps {
   mode: DashboardMode;
@@ -605,10 +605,96 @@ function GreenBondTermSheet({ blendedData }: { blendedData: import('@/components
           fontSize: 12,
           lineHeight: 1.7,
           color: '#065f46',
+          marginBottom: 24,
         }}>
           <strong>🌿 Greenium Impact:</strong> This structure saves <strong style={{ color: '#059669' }}>{fmtCurrencyFull(result.lifetime_interest_saved)}</strong> in lifetime interest costs due to the project's high resilience score ({Math.round(resilienceScore)}/100), qualifying for a <strong>{Math.abs(result.greenium_discount_bps)} bps</strong> green bond discount.
         </div>
       )}
+
+      {/* Stress Test Sensitivity Analysis */}
+      {blendedData.stressScenarios && blendedData.stressScenarios.length > 0 && (
+        <StressTestSensitivityTable
+          scenarios={blendedData.stressScenarios}
+          baselineDebtService={result.annual_debt_service}
+          baselineRate={result.blended_interest_rate}
+        />
+      )}
     </Section>
+  );
+}
+
+/* ── Stress Test Sensitivity Table ── */
+
+function StressTestSensitivityTable({
+  scenarios,
+  baselineDebtService,
+  baselineRate,
+}: {
+  scenarios: StressScenario[];
+  baselineDebtService: number;
+  baselineRate: number;
+}) {
+  return (
+    <div style={{ pageBreakInside: 'avoid' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>Sensitivity Analysis — Interest Rate Stress Test</span>
+      </div>
+      <p style={{ fontSize: 11, color: '#475569', marginBottom: 14, lineHeight: 1.7 }}>
+        The following table demonstrates long-term fiscal stability under adverse rate environments. Baseline debt service is <strong>{fmtCurrencyFull(baselineDebtService)}</strong>/yr at a blended rate of <strong>{baselineRate.toFixed(2)}%</strong>.
+      </p>
+
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, marginBottom: 16 }}>
+        <thead>
+          <tr>
+            <th style={{ textAlign: 'left', padding: '8px 12px', backgroundColor: '#0f172a', color: '#ffffff', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', borderTopLeftRadius: 4 }}>SCENARIO</th>
+            <th style={{ textAlign: 'center', padding: '8px 12px', backgroundColor: '#0f172a', color: '#ffffff', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em' }}>BLENDED RATE</th>
+            <th style={{ textAlign: 'right', padding: '8px 12px', backgroundColor: '#0f172a', color: '#ffffff', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em' }}>ANNUAL DEBT SERVICE</th>
+            <th style={{ textAlign: 'right', padding: '8px 12px', backgroundColor: '#0f172a', color: '#ffffff', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', borderTopRightRadius: 4 }}>Δ vs BASELINE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* Baseline row */}
+          <tr style={{ backgroundColor: '#f0fdf4' }}>
+            <td style={{ padding: '8px 12px', color: '#059669', fontWeight: 600 }}>Baseline (0 bps)</td>
+            <td style={{ padding: '8px 12px', textAlign: 'center', color: '#059669', fontWeight: 700 }}>{baselineRate.toFixed(2)}%</td>
+            <td style={{ padding: '8px 12px', textAlign: 'right', color: '#059669', fontWeight: 700 }}>{fmtCurrencyFull(baselineDebtService)}</td>
+            <td style={{ padding: '8px 12px', textAlign: 'right', color: '#059669', fontWeight: 600 }}>—</td>
+          </tr>
+          {scenarios.map((s, i) => {
+            const delta = s.annual_debt_service - baselineDebtService;
+            const isSevere = s.shock_bps >= 300;
+            const rowBg = i % 2 === 0 ? '#ffffff' : '#f8fafc';
+            return (
+              <tr key={s.shock_bps} style={{ backgroundColor: rowBg }}>
+                <td style={{ padding: '8px 12px', color: '#334155', fontWeight: 500 }}>+{s.shock_bps} bps Shock</td>
+                <td style={{ padding: '8px 12px', textAlign: 'center', color: isSevere ? '#dc2626' : '#d97706', fontWeight: 700 }}>{s.blended_rate.toFixed(2)}%</td>
+                <td style={{ padding: '8px 12px', textAlign: 'right', color: isSevere ? '#dc2626' : '#0f172a', fontWeight: 700 }}>{fmtCurrencyFull(s.annual_debt_service)}</td>
+                <td style={{ padding: '8px 12px', textAlign: 'right', color: delta > 0 ? '#dc2626' : '#059669', fontWeight: 700 }}>
+                  {delta > 0 ? '+' : ''}{fmtCurrencyFull(delta)}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+
+      {/* Warning callout for severe scenarios */}
+      {scenarios.some(s => s.shock_bps >= 300) && (
+        <div style={{
+          backgroundColor: '#fef2f2',
+          border: '1px solid #fecaca',
+          borderLeft: '4px solid #dc2626',
+          borderRadius: 6,
+          padding: 12,
+          fontSize: 11,
+          lineHeight: 1.6,
+          color: '#991b1b',
+        }}>
+          <strong>⚠ Stress Scenario Note:</strong> Under a +300bps or greater rate shock, annual debt service increases by <strong>{fmtCurrencyFull(
+            (scenarios.find(s => s.shock_bps >= 300)?.annual_debt_service ?? baselineDebtService) - baselineDebtService
+          )}</strong>. Investors should ensure adequate debt service coverage ratios (DSCR ≥ 1.2×) under stressed conditions.
+        </div>
+      )}
+    </div>
   );
 }
