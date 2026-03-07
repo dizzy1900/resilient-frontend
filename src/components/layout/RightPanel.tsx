@@ -601,6 +601,7 @@ function ExportPDFButton({
         isDigitalTwin={isDigitalTwin}
         baselineResults={mode === 'agriculture' ? agricultureResults : mode === 'coastal' ? coastalResults : mode === 'flood' ? floodResults : mode === 'health' ? healthResults : null}
         scenarioResults={mode === 'agriculture' ? scenarioAgriResults : mode === 'coastal' ? scenarioCoastalResults : mode === 'flood' ? scenarioFloodResults : mode === 'health' ? scenarioHealthResults : null}
+        blendedData={blendedData}
       />
       <div className="px-4 py-4" style={{ borderTop: '1px solid var(--cb-border)' }} data-html2canvas-ignore="true">
         <button
