@@ -56,6 +56,7 @@ export function TCFDReportTemplate({
   isDigitalTwin,
   baselineResults,
   scenarioResults,
+  blendedData,
 }: TCFDReportTemplateProps) {
   const { baseline: physicalRiskMetrics, adaptation: adaptationMetrics } = splitMetrics(baselineMetrics);
   const hasAdaptation = Object.keys(adaptationMetrics).length > 0;
