@@ -1,4 +1,5 @@
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
+import type { BlendedFinanceData } from '@/components/hud/BlendedFinanceCard';
 
 interface TCFDReportTemplateProps {
   mode: DashboardMode;
@@ -11,6 +12,7 @@ interface TCFDReportTemplateProps {
   isDigitalTwin?: boolean;
   baselineResults?: any;
   scenarioResults?: any;
+  blendedData?: BlendedFinanceData | null;
 }
 
 const MODE_LABELS: Record<string, string> = {
