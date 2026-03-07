@@ -1920,6 +1920,7 @@ function FinanceContent({
   longitude,
   cropType,
   propertyValue,
+  onBlendedResultChange,
 }: {
   atlasFinancialData: any;
   atlasMonteCarloData: any;
