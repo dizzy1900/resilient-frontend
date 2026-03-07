@@ -1936,6 +1936,7 @@ function FinanceContent({
   longitude?: number | null;
   cropType?: string;
   propertyValue?: number;
+  onBlendedResultChange?: (data: BlendedFinanceData | null) => void;
 }) {
   const [localFinancialData, setLocalFinancialData] = useState<any>(null);
   const [localMonteCarloData, setLocalMonteCarloData] = useState<any>(null);
