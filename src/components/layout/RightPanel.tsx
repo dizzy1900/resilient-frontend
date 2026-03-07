@@ -485,6 +485,7 @@ interface ExportPDFButtonProps {
   scenarioCoastalResults?: any;
   scenarioFloodResults?: any;
   scenarioHealthResults?: any;
+  blendedData?: BlendedFinanceData | null;
 }
 
 function ExportPDFButton({
