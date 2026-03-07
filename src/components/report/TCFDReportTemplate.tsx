@@ -605,9 +605,19 @@ function GreenBondTermSheet({ blendedData }: { blendedData: import('@/components
           fontSize: 12,
           lineHeight: 1.7,
           color: '#065f46',
+          marginBottom: 24,
         }}>
           <strong>🌿 Greenium Impact:</strong> This structure saves <strong style={{ color: '#059669' }}>{fmtCurrencyFull(result.lifetime_interest_saved)}</strong> in lifetime interest costs due to the project's high resilience score ({Math.round(resilienceScore)}/100), qualifying for a <strong>{Math.abs(result.greenium_discount_bps)} bps</strong> green bond discount.
         </div>
+      )}
+
+      {/* Stress Test Sensitivity Analysis */}
+      {blendedData.stressScenarios && blendedData.stressScenarios.length > 0 && (
+        <StressTestSensitivityTable
+          scenarios={blendedData.stressScenarios}
+          baselineDebtService={result.annual_debt_service}
+          baselineRate={result.blended_interest_rate}
+        />
       )}
     </Section>
   );
