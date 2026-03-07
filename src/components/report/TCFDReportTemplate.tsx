@@ -1,5 +1,5 @@
 import { DashboardMode } from '@/components/dashboard/ModeSelector';
-import type { BlendedFinanceData } from '@/components/hud/BlendedFinanceCard';
+import type { BlendedFinanceData, StressScenario } from '@/components/hud/BlendedFinanceCard';
 
 interface TCFDReportTemplateProps {
   mode: DashboardMode;
