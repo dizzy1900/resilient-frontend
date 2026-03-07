@@ -743,6 +743,7 @@ export function RightPanelContent({
   isSplitMode,
   scenarioAgriResults,
   scenarioFloodResults,
+  onBlendedResultChange,
 }: RightPanelContentProps) {
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [isGeneratingAi, setIsGeneratingAi] = useState(false);
