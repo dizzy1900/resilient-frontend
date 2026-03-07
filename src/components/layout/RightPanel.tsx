@@ -880,6 +880,12 @@ export function RightPanelContent({
           cropType={cropType}
           propertyValue={propertyValue}
           onBlendedResultChange={onBlendedResultChange}
+          avoidedRevenueLoss={
+            (agricultureResults as any)?.avoidedRevenueLoss ??
+            (agricultureResults as any)?.avoidedLoss ??
+            (coastalResults as any)?.avoidedLoss ??
+            null
+          }
         />
       )}
 
@@ -1921,6 +1927,7 @@ function FinanceContent({
   cropType,
   propertyValue,
   onBlendedResultChange,
+  avoidedRevenueLoss,
 }: {
   atlasFinancialData: any;
   atlasMonteCarloData: any;
@@ -1938,6 +1945,7 @@ function FinanceContent({
   cropType?: string;
   propertyValue?: number;
   onBlendedResultChange?: (data: BlendedFinanceData | null) => void;
+  avoidedRevenueLoss?: number | null;
 }) {
   const [localFinancialData, setLocalFinancialData] = useState<any>(null);
   const [localMonteCarloData, setLocalMonteCarloData] = useState<any>(null);
@@ -2142,6 +2150,7 @@ function FinanceContent({
             activeFinancialData?.metrics?.resilience_score ??
             null
           }
+          avoidedRevenueLoss={avoidedRevenueLoss}
           onResultChange={onBlendedResultChange}
         />
       </div>

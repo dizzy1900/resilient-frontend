@@ -1,9 +1,10 @@
-import { useState, useCallback, useMemo } from 'react';
-import { Layers, Zap, Loader2, TrendingDown, CheckCircle2 } from 'lucide-react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { Layers, Zap, Loader2, TrendingDown, CheckCircle2, AlertTriangle, Activity } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { fetchWithRetry } from '@/utils/api';
 import { toast } from '@/hooks/use-toast';
 
@@ -30,6 +31,7 @@ export interface BlendedFinanceData {
 interface BlendedFinanceCardProps {
   totalCapex: number | null;
   resilienceScore: number | null;
+  avoidedRevenueLoss?: number | null;
   onResultChange?: (data: BlendedFinanceData | null) => void;
 }
 
@@ -70,14 +72,49 @@ const DonutTooltip = ({ active, payload }: any) => {
   );
 };
 
+/* ── Local blended calc helper ── */
+function computeLocalBlended(
+  stack: CapitalStack,
+  totalCapex: number,
+  resilienceScore: number,
+  rateShockBps: number = 0,
+): BlendedResult {
+  const commRate = 0.065 + rateShockBps / 10000;
+  const concRate = 0.025;
+  const greeniumBps = resilienceScore >= 80 ? 50 : 0;
+  const effectiveCommRate = commRate - greeniumBps / 10000;
+  const blended =
+    (stack.commercial / 100) * effectiveCommRate +
+    (stack.concessional / 100) * concRate;
+  const debtFraction = 1 - stack.equity / 100;
+  const annualDebt = totalCapex * debtFraction * blended;
+  const baselineAnnual = totalCapex * debtFraction * 0.065;
+  const saved = (baselineAnnual - annualDebt) * 20;
+
+  return {
+    blended_interest_rate: blended * 100,
+    greenium_discount_bps: -greeniumBps,
+    annual_debt_service: annualDebt,
+    lifetime_interest_saved: saved,
+  };
+}
+
 export const BlendedFinanceCard = ({
   totalCapex,
   resilienceScore,
+  avoidedRevenueLoss,
   onResultChange,
 }: BlendedFinanceCardProps) => {
   const [stack, setStack] = useState<CapitalStack>({ commercial: 50, concessional: 30, equity: 20 });
   const [isCalculating, setIsCalculating] = useState(false);
   const [result, setResult] = useState<BlendedResult | null>(null);
+
+  // Stress test state
+  const [stressEnabled, setStressEnabled] = useState(false);
+  const [rateShockBps, setRateShockBps] = useState(100);
+  const [stressResult, setStressResult] = useState<BlendedResult | null>(null);
+  const [isStressCalc, setIsStressCalc] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleSliderChange = useCallback((field: keyof CapitalStack, newVal: number) => {
     setStack((prev) => {
@@ -147,30 +184,66 @@ export const BlendedFinanceCard = ({
       });
     } catch (err: any) {
       console.error('[BlendedFinance] API error', err);
-      const capex = totalCapex ?? 0;
-      const commRate = 0.065;
-      const concRate = 0.025;
-      const greeniumBps = (resilienceScore ?? 0) >= 80 ? 50 : 0;
-      const effectiveCommRate = commRate - greeniumBps / 10000;
-      const blended =
-        (stack.commercial / 100) * effectiveCommRate +
-        (stack.concessional / 100) * concRate;
-      const annualDebt = capex * (1 - stack.equity / 100) * blended;
-      const baselineAnnual = capex * (1 - stack.equity / 100) * commRate;
-      const saved = (baselineAnnual - annualDebt) * 20;
-
-      publishResult({
-        blended_interest_rate: blended * 100,
-        greenium_discount_bps: -greeniumBps,
-        annual_debt_service: annualDebt,
-        lifetime_interest_saved: saved,
-      });
-
+      publishResult(computeLocalBlended(stack, totalCapex ?? 0, resilienceScore ?? 0));
       toast({ title: 'Using local blended finance model', description: 'Backend unavailable — computed locally.' });
     } finally {
       setIsCalculating(false);
     }
   }, [stack, totalCapex, resilienceScore, publishResult]);
+
+  /* ── Stress test: debounced recalc on slider move ── */
+  const runStressCalc = useCallback(async (bps: number) => {
+    if (!result) return;
+    setIsStressCalc(true);
+    try {
+      const payload = {
+        total_capex: totalCapex ?? 0,
+        resilience_score: resilienceScore ?? 0,
+        commercial_pct: stack.commercial / 100,
+        concessional_pct: stack.concessional / 100,
+        equity_pct: stack.equity / 100,
+        rate_shock_bps: bps,
+      };
+
+      const res = await fetchWithRetry(
+        'https://api.resilient.digital/api/v1/finance/blended-structure',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        },
+      );
+      const json = await res.json().catch(() => ({}));
+      const inner = json?.data ?? json;
+      setStressResult({
+        blended_interest_rate: inner.blended_interest_rate ?? inner.blended_rate ?? 0,
+        greenium_discount_bps: inner.greenium_discount_bps ?? inner.greenium_bps ?? 0,
+        annual_debt_service: inner.annual_debt_service ?? 0,
+        lifetime_interest_saved: inner.lifetime_interest_saved ?? inner.interest_saved ?? 0,
+      });
+    } catch {
+      setStressResult(computeLocalBlended(stack, totalCapex ?? 0, resilienceScore ?? 0, bps));
+    } finally {
+      setIsStressCalc(false);
+    }
+  }, [result, stack, totalCapex, resilienceScore]);
+
+  const handleShockChange = useCallback((bps: number) => {
+    setRateShockBps(bps);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => runStressCalc(bps), 400);
+  }, [runStressCalc]);
+
+  // Reset stress when toggle off
+  useEffect(() => {
+    if (!stressEnabled) {
+      setStressResult(null);
+      setRateShockBps(100);
+    } else if (result) {
+      runStressCalc(rateShockBps);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stressEnabled]);
 
   const showGreenium = (resilienceScore ?? 0) >= 80;
   const capexDisplay = totalCapex != null && totalCapex > 0 ? fmtCurrency(totalCapex) : '—';
@@ -195,6 +268,12 @@ export const BlendedFinanceCard = ({
     ),
     [stack],
   );
+
+  // Debt coverage warning
+  const debtCoverageWarning = useMemo(() => {
+    if (!stressResult || !avoidedRevenueLoss || avoidedRevenueLoss <= 0) return false;
+    return stressResult.annual_debt_service > avoidedRevenueLoss * 0.8;
+  }, [stressResult, avoidedRevenueLoss]);
 
   return (
     <div>
@@ -265,6 +344,111 @@ export const BlendedFinanceCard = ({
           </div>
         </div>
       )}
+
+      {/* ─── Financial Stress Test ─── */}
+      <div className="px-4 py-3" style={{ borderTop: '1px solid var(--cb-border)' }}>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Activity style={{ width: 10, height: 10, color: 'var(--cb-secondary)' }} />
+            <span className="cb-section-heading">FINANCIAL STRESS TEST</span>
+          </div>
+          <Switch
+            checked={stressEnabled}
+            onCheckedChange={setStressEnabled}
+            className="scale-75"
+          />
+        </div>
+
+        {stressEnabled && (
+          <div className="space-y-3">
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="cb-label">Market Rate Fluctuation</span>
+                <span
+                  className="cb-value"
+                  style={{
+                    fontVariantNumeric: 'tabular-nums',
+                    color: rateShockBps > 0 ? '#f59e0b' : rateShockBps < 0 ? '#10b981' : 'var(--cb-text)',
+                  }}
+                >
+                  {rateShockBps > 0 ? '+' : ''}{rateShockBps} bps
+                </span>
+              </div>
+              <Slider
+                min={-200}
+                max={500}
+                step={25}
+                value={[rateShockBps]}
+                onValueChange={([v]) => handleShockChange(v)}
+                className="w-full"
+              />
+              <div className="flex justify-between" style={{ fontSize: 8, color: 'var(--cb-secondary)', fontFamily: 'monospace' }}>
+                <span>−200 bps</span>
+                <span>+500 bps</span>
+              </div>
+            </div>
+
+            {/* Stressed result */}
+            {isStressCalc && (
+              <div className="flex items-center gap-2 py-2">
+                <Loader2 className="animate-spin" style={{ width: 10, height: 10, color: 'var(--cb-secondary)' }} />
+                <span style={{ fontSize: 10, color: 'var(--cb-secondary)' }}>Recalculating…</span>
+              </div>
+            )}
+
+            {stressResult && !isStressCalc && (
+              <div
+                className="rounded-lg p-3 space-y-1"
+                style={{ backgroundColor: 'var(--cb-surface)', border: '1px solid var(--cb-border)' }}
+              >
+                <DataRow
+                  label="STRESSED BLENDED RATE"
+                  value={`${stressResult.blended_interest_rate.toFixed(2)}%`}
+                  valueColor="#f59e0b"
+                />
+                <DataRow
+                  label="NEW ANNUAL DEBT SERVICE"
+                  value={fmtCurrency(stressResult.annual_debt_service)}
+                  valueColor={
+                    result && stressResult.annual_debt_service > result.annual_debt_service
+                      ? '#ef4444'
+                      : '#f59e0b'
+                  }
+                />
+                {result && (
+                  <DataRow
+                    label="Δ DEBT SERVICE"
+                    value={`${stressResult.annual_debt_service > result.annual_debt_service ? '+' : ''}${fmtCurrency(stressResult.annual_debt_service - result.annual_debt_service)}`}
+                    valueColor={stressResult.annual_debt_service > result.annual_debt_service ? '#ef4444' : '#10b981'}
+                  />
+                )}
+              </div>
+            )}
+
+            {/* Debt Coverage Warning */}
+            {debtCoverageWarning && (
+              <div
+                className="flex items-start gap-2 rounded-lg p-3"
+                style={{
+                  backgroundColor: 'rgba(239, 68, 68, 0.08)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                }}
+              >
+                <AlertTriangle style={{ width: 12, height: 12, color: '#ef4444', flexShrink: 0, marginTop: 1 }} />
+                <div>
+                  <p style={{ fontSize: 10, fontWeight: 600, color: '#ef4444', marginBottom: 2, fontFamily: 'monospace', letterSpacing: '0.04em' }}>
+                    DEBT COVERAGE WARNING
+                  </p>
+                  <p style={{ fontSize: 9, color: 'var(--cb-secondary)', lineHeight: 1.4 }}>
+                    Stressed debt service ({fmtCurrency(stressResult!.annual_debt_service)}) exceeds 80% of
+                    avoided revenue loss ({fmtCurrency(avoidedRevenueLoss!)}). DSCR may be insufficient.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* CTA */}
       <div className="px-4 py-3" style={{ borderTop: '1px solid var(--cb-border)' }}>
