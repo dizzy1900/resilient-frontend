@@ -25,7 +25,7 @@ import { ZoneMode } from '@/utils/zoneGeneration';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AnalyticsHighlightsCard } from '@/components/hud/AnalyticsHighlightsCard';
 import { ProjectParams } from '@/components/hud/InterventionWizardModal';
-import { BlendedFinanceCard } from '@/components/hud/BlendedFinanceCard';
+import { BlendedFinanceCard, type BlendedFinanceData } from '@/components/hud/BlendedFinanceCard';
 import { DefensiveProjectParams } from '@/components/hud/DefensiveInfrastructureModal';
 import { PortfolioAnalysisResult, PortfolioSummary } from '@/types/portfolio';
 
@@ -254,6 +254,8 @@ export function RightPanel({
   scenarioFloodResults,
   scenarioHealthResults,
 }: RightPanelProps) {
+  const [blendedData, setBlendedData] = useState<BlendedFinanceData | null>(null);
+
   if (!visible) return null;
 
   const accent = MODE_ACCENT[mode];
@@ -387,6 +389,7 @@ export function RightPanel({
               isSplitMode={isSplitMode}
               scenarioAgriResults={scenarioAgriResults}
               scenarioFloodResults={scenarioFloodResults}
+              onBlendedResultChange={setBlendedData}
             />
           )}
         </div>
@@ -405,6 +408,7 @@ export function RightPanel({
             scenarioCoastalResults={scenarioCoastalResults}
             scenarioFloodResults={scenarioFloodResults}
             scenarioHealthResults={scenarioHealthResults}
+            blendedData={blendedData}
           />
         )}
       </div>
@@ -481,6 +485,7 @@ interface ExportPDFButtonProps {
   scenarioCoastalResults?: any;
   scenarioFloodResults?: any;
   scenarioHealthResults?: any;
+  blendedData?: BlendedFinanceData | null;
 }
 
 function ExportPDFButton({
@@ -496,6 +501,7 @@ function ExportPDFButton({
   scenarioCoastalResults,
   scenarioFloodResults,
   scenarioHealthResults,
+  blendedData,
 }: ExportPDFButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
 
@@ -595,6 +601,7 @@ function ExportPDFButton({
         isDigitalTwin={isDigitalTwin}
         baselineResults={mode === 'agriculture' ? agricultureResults : mode === 'coastal' ? coastalResults : mode === 'flood' ? floodResults : mode === 'health' ? healthResults : null}
         scenarioResults={mode === 'agriculture' ? scenarioAgriResults : mode === 'coastal' ? scenarioCoastalResults : mode === 'flood' ? scenarioFloodResults : mode === 'health' ? scenarioHealthResults : null}
+        blendedData={blendedData}
       />
       <div className="px-4 py-4" style={{ borderTop: '1px solid var(--cb-border)' }} data-html2canvas-ignore="true">
         <button
@@ -620,7 +627,7 @@ function ExportPDFButton({
           {isExporting ? (
             <><Loader2 style={{ width: 12, height: 12 }} className="animate-spin" /> GENERATING PROSPECTUS...</>
           ) : (
-            <><Download style={{ width: 12, height: 12 }} /> DOWNLOAD TCFD PROSPECTUS</>
+            <><Download style={{ width: 12, height: 12 }} /> {mode === 'finance' ? 'EXPORT INVESTMENT PROSPECTUS' : 'DOWNLOAD TCFD PROSPECTUS'}</>
           )}
         </button>
       </div>
@@ -681,6 +688,7 @@ export interface RightPanelContentProps {
   isSplitMode?: boolean;
   scenarioAgriResults?: AgricultureResults;
   scenarioFloodResults?: FloodResults;
+  onBlendedResultChange?: (data: BlendedFinanceData | null) => void;
 }
 
 export function RightPanelContent({
@@ -736,6 +744,7 @@ export function RightPanelContent({
   isSplitMode,
   scenarioAgriResults,
   scenarioFloodResults,
+  onBlendedResultChange,
 }: RightPanelContentProps) {
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [isGeneratingAi, setIsGeneratingAi] = useState(false);
@@ -870,6 +879,7 @@ export function RightPanelContent({
           longitude={longitude}
           cropType={cropType}
           propertyValue={propertyValue}
+          onBlendedResultChange={onBlendedResultChange}
         />
       )}
 
@@ -1910,6 +1920,7 @@ function FinanceContent({
   longitude,
   cropType,
   propertyValue,
+  onBlendedResultChange,
 }: {
   atlasFinancialData: any;
   atlasMonteCarloData: any;
@@ -1926,6 +1937,7 @@ function FinanceContent({
   longitude?: number | null;
   cropType?: string;
   propertyValue?: number;
+  onBlendedResultChange?: (data: BlendedFinanceData | null) => void;
 }) {
   const [localFinancialData, setLocalFinancialData] = useState<any>(null);
   const [localMonteCarloData, setLocalMonteCarloData] = useState<any>(null);
@@ -2130,6 +2142,7 @@ function FinanceContent({
             activeFinancialData?.metrics?.resilience_score ??
             null
           }
+          onResultChange={onBlendedResultChange}
         />
       </div>
 

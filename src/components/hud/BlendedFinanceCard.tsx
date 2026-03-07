@@ -20,9 +20,17 @@ export interface BlendedResult {
   lifetime_interest_saved: number;
 }
 
+export interface BlendedFinanceData {
+  result: BlendedResult;
+  stack: CapitalStack;
+  totalCapex: number;
+  resilienceScore: number;
+}
+
 interface BlendedFinanceCardProps {
   totalCapex: number | null;
   resilienceScore: number | null;
+  onResultChange?: (data: BlendedFinanceData | null) => void;
 }
 
 const TRANCHE_COLORS: Record<keyof CapitalStack, string> = {
@@ -65,6 +73,7 @@ const DonutTooltip = ({ active, payload }: any) => {
 export const BlendedFinanceCard = ({
   totalCapex,
   resilienceScore,
+  onResultChange,
 }: BlendedFinanceCardProps) => {
   const [stack, setStack] = useState<CapitalStack>({ commercial: 50, concessional: 30, equity: 20 });
   const [isCalculating, setIsCalculating] = useState(false);
@@ -97,6 +106,16 @@ export const BlendedFinanceCard = ({
     });
   }, []);
 
+  const publishResult = useCallback((r: BlendedResult) => {
+    setResult(r);
+    onResultChange?.({
+      result: r,
+      stack,
+      totalCapex: totalCapex ?? 0,
+      resilienceScore: resilienceScore ?? 0,
+    });
+  }, [onResultChange, stack, totalCapex, resilienceScore]);
+
   const handleCalculate = useCallback(async () => {
     setIsCalculating(true);
     try {
@@ -120,7 +139,7 @@ export const BlendedFinanceCard = ({
       const json = await res.json().catch(() => ({}));
       const inner = json?.data ?? json;
 
-      setResult({
+      publishResult({
         blended_interest_rate: inner.blended_interest_rate ?? inner.blended_rate ?? 0,
         greenium_discount_bps: inner.greenium_discount_bps ?? inner.greenium_bps ?? 0,
         annual_debt_service: inner.annual_debt_service ?? 0,
@@ -128,7 +147,6 @@ export const BlendedFinanceCard = ({
       });
     } catch (err: any) {
       console.error('[BlendedFinance] API error', err);
-      // Fallback: compute locally
       const capex = totalCapex ?? 0;
       const commRate = 0.065;
       const concRate = 0.025;
@@ -139,9 +157,9 @@ export const BlendedFinanceCard = ({
         (stack.concessional / 100) * concRate;
       const annualDebt = capex * (1 - stack.equity / 100) * blended;
       const baselineAnnual = capex * (1 - stack.equity / 100) * commRate;
-      const saved = (baselineAnnual - annualDebt) * 20; // 20yr tenor
+      const saved = (baselineAnnual - annualDebt) * 20;
 
-      setResult({
+      publishResult({
         blended_interest_rate: blended * 100,
         greenium_discount_bps: -greeniumBps,
         annual_debt_service: annualDebt,
@@ -152,7 +170,7 @@ export const BlendedFinanceCard = ({
     } finally {
       setIsCalculating(false);
     }
-  }, [stack, totalCapex, resilienceScore]);
+  }, [stack, totalCapex, resilienceScore, publishResult]);
 
   const showGreenium = (resilienceScore ?? 0) >= 80;
   const capexDisplay = totalCapex != null && totalCapex > 0 ? fmtCurrency(totalCapex) : '—';
