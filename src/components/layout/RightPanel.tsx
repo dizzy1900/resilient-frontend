@@ -627,7 +627,7 @@ function ExportPDFButton({
           {isExporting ? (
             <><Loader2 style={{ width: 12, height: 12 }} className="animate-spin" /> GENERATING PROSPECTUS...</>
           ) : (
-            <><Download style={{ width: 12, height: 12 }} /> DOWNLOAD TCFD PROSPECTUS</>
+            <><Download style={{ width: 12, height: 12 }} /> {mode === 'finance' ? 'EXPORT INVESTMENT PROSPECTUS' : 'DOWNLOAD TCFD PROSPECTUS'}</>
           )}
         </button>
       </div>
