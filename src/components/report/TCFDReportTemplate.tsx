@@ -463,3 +463,152 @@ function fmtCurrency(val: number): string {
   if (val >= 1_000) return `$${(val / 1_000).toFixed(0)}K`;
   return `$${val.toFixed(0)}`;
 }
+
+function fmtCurrencyFull(val: number): string {
+  return `$${Math.round(val).toLocaleString('en-US')}`;
+}
+
+/* ── Green Bond Term Sheet ── */
+
+const TRANCHE_COLORS: Record<string, string> = {
+  commercial: '#3b82f6',
+  concessional: '#d97706',
+  equity: '#059669',
+};
+
+const TRANCHE_LABELS: Record<string, string> = {
+  commercial: 'Commercial Debt',
+  concessional: 'Concessional / DFI',
+  equity: 'Equity / Grant',
+};
+
+function GreenBondTermSheet({ blendedData }: { blendedData: import('@/components/hud/BlendedFinanceCard').BlendedFinanceData }) {
+  const { result, stack, totalCapex, resilienceScore } = blendedData;
+
+  const tranches = [
+    { key: 'commercial', pct: stack.commercial, amount: Math.round((totalCapex * stack.commercial) / 100) },
+    { key: 'concessional', pct: stack.concessional, amount: Math.round((totalCapex * stack.concessional) / 100) },
+    { key: 'equity', pct: stack.equity, amount: Math.round((totalCapex * stack.equity) / 100) },
+  ];
+
+  const hasGreenium = resilienceScore >= 80;
+
+  return (
+    <Section number="3" title="Green Bond Term Sheet — Capital Structure">
+      <p style={{ fontSize: 11, color: '#475569', marginBottom: 16, lineHeight: 1.7 }}>
+        Blended finance structure for a total project CAPEX of <strong>{fmtCurrencyFull(totalCapex)}</strong> with a resilience score of <strong>{Math.round(resilienceScore)}</strong>.
+      </p>
+
+      {/* Capital Stack Donut (CSS-only for print safety) */}
+      <div style={{ display: 'flex', gap: 32, marginBottom: 24, alignItems: 'center' }}>
+        {/* CSS donut */}
+        <div style={{ position: 'relative', width: 120, height: 120, flexShrink: 0 }}>
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            {(() => {
+              let offset = 0;
+              const radius = 45;
+              const circumference = 2 * Math.PI * radius;
+              return tranches.map((t) => {
+                const dashLen = (t.pct / 100) * circumference;
+                const dashGap = circumference - dashLen;
+                const el = (
+                  <circle
+                    key={t.key}
+                    cx="60"
+                    cy="60"
+                    r={radius}
+                    fill="none"
+                    stroke={TRANCHE_COLORS[t.key]}
+                    strokeWidth="16"
+                    strokeDasharray={`${dashLen} ${dashGap}`}
+                    strokeDashoffset={-offset}
+                    transform="rotate(-90 60 60)"
+                  />
+                );
+                offset += dashLen;
+                return el;
+              });
+            })()}
+          </svg>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>{fmtCurrency(totalCapex)}</span>
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ flex: 1 }}>
+          {tranches.map((t) => (
+            <div key={t.key} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+              <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 2, backgroundColor: TRANCHE_COLORS[t.key] }} />
+              <span style={{ fontSize: 11, color: '#475569', flex: 1 }}>{TRANCHE_LABELS[t.key]}</span>
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#0f172a' }}>{t.pct}%</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: TRANCHE_COLORS[t.key], minWidth: 70, textAlign: 'right' }}>{fmtCurrencyFull(t.amount)}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Tranche Summary Table */}
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, marginBottom: 20 }}>
+        <thead>
+          <tr>
+            <th style={{ textAlign: 'left', padding: '8px 12px', backgroundColor: '#0f172a', color: '#ffffff', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', borderTopLeftRadius: 4 }}>TRANCHE</th>
+            <th style={{ textAlign: 'center', padding: '8px 12px', backgroundColor: '#0f172a', color: '#ffffff', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em' }}>ALLOCATION</th>
+            <th style={{ textAlign: 'right', padding: '8px 12px', backgroundColor: '#0f172a', color: '#ffffff', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', borderTopRightRadius: 4 }}>AMOUNT</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tranches.map((t, i) => (
+            <tr key={t.key} style={{ backgroundColor: i % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
+              <td style={{ padding: '8px 12px', color: '#334155', fontWeight: 500 }}>
+                <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 2, backgroundColor: TRANCHE_COLORS[t.key], marginRight: 8 }} />
+                {TRANCHE_LABELS[t.key]}
+              </td>
+              <td style={{ padding: '8px 12px', textAlign: 'center', color: '#0f172a', fontWeight: 600 }}>{t.pct}%</td>
+              <td style={{ padding: '8px 12px', textAlign: 'right', color: '#0f172a', fontWeight: 700 }}>{fmtCurrencyFull(t.amount)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Blended Results Summary */}
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, marginBottom: 20 }}>
+        <thead>
+          <tr>
+            <th style={{ textAlign: 'left', padding: '8px 12px', backgroundColor: '#d97706', color: '#ffffff', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', borderTopLeftRadius: 4 }}>METRIC</th>
+            <th style={{ textAlign: 'right', padding: '8px 12px', backgroundColor: '#d97706', color: '#ffffff', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', borderTopRightRadius: 4 }}>VALUE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            { label: 'Blended Interest Rate', value: `${result.blended_interest_rate.toFixed(2)}%` },
+            { label: 'Greenium Discount', value: `${result.greenium_discount_bps > 0 ? '+' : ''}${result.greenium_discount_bps} bps` },
+            { label: 'Annual Debt Service', value: fmtCurrencyFull(result.annual_debt_service) },
+            { label: 'Lifetime Interest Saved', value: fmtCurrencyFull(result.lifetime_interest_saved) },
+          ].map((row, i) => (
+            <tr key={row.label} style={{ backgroundColor: i % 2 === 0 ? '#fffbeb' : '#ffffff' }}>
+              <td style={{ padding: '8px 12px', color: '#334155', fontWeight: 500 }}>{row.label}</td>
+              <td style={{ padding: '8px 12px', textAlign: 'right', color: row.label === 'Lifetime Interest Saved' ? '#059669' : '#0f172a', fontWeight: 700 }}>{row.value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Greenium Impact Highlight */}
+      {hasGreenium && result.lifetime_interest_saved > 0 && (
+        <div style={{
+          backgroundColor: '#ecfdf5',
+          border: '1px solid #a7f3d0',
+          borderLeft: '4px solid #059669',
+          borderRadius: 6,
+          padding: 16,
+          fontSize: 12,
+          lineHeight: 1.7,
+          color: '#065f46',
+        }}>
+          <strong>🌿 Greenium Impact:</strong> This structure saves <strong style={{ color: '#059669' }}>{fmtCurrencyFull(result.lifetime_interest_saved)}</strong> in lifetime interest costs due to the project's high resilience score ({Math.round(resilienceScore)}/100), qualifying for a <strong>{Math.abs(result.greenium_discount_bps)} bps</strong> green bond discount.
+        </div>
+      )}
+    </Section>
+  );
+}
