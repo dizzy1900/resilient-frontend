@@ -25,6 +25,7 @@ import { ZoneMode } from '@/utils/zoneGeneration';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AnalyticsHighlightsCard } from '@/components/hud/AnalyticsHighlightsCard';
 import { ProjectParams } from '@/components/hud/InterventionWizardModal';
+import { BlendedFinanceCard } from '@/components/hud/BlendedFinanceCard';
 import { DefensiveProjectParams } from '@/components/hud/DefensiveInfrastructureModal';
 import { PortfolioAnalysisResult, PortfolioSummary } from '@/types/portfolio';
 
