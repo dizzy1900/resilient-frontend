@@ -2150,12 +2150,7 @@ function FinanceContent({
             activeFinancialData?.metrics?.resilience_score ??
             null
           }
-          avoidedRevenueLoss={
-            (agricultureResults as any)?.avoidedRevenueLoss ??
-            (agricultureResults as any)?.avoidedLoss ??
-            (coastalResults as any)?.avoidedLoss ??
-            null
-          }
+          avoidedRevenueLoss={avoidedRevenueLoss}
           onResultChange={onBlendedResultChange}
         />
       </div>
