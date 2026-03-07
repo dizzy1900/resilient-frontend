@@ -21,11 +21,18 @@ export interface BlendedResult {
   lifetime_interest_saved: number;
 }
 
+export interface StressScenario {
+  shock_bps: number;
+  blended_rate: number;
+  annual_debt_service: number;
+}
+
 export interface BlendedFinanceData {
   result: BlendedResult;
   stack: CapitalStack;
   totalCapex: number;
   resilienceScore: number;
+  stressScenarios?: StressScenario[];
 }
 
 interface BlendedFinanceCardProps {
